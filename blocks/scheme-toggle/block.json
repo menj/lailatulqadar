@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/scheme-toggle",
+	"title": "Light and dark switch",
+	"category": "theme",
+	"icon": "lightbulb",
+	"description": "Lets visitors switch between the night (dark) and dawn (light) schemes. Remembered in their browser.",
+	"textdomain": "lailatulqadar",
+	"attributes": {},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

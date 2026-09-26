@@ -1,0 +1,5 @@
+Arslan Wessam A and Arslan Wessam B
+Copyright: Arslan, Dev-Point.com (as stated in the font files).
+Source: http://www.dev-point.com/vb/members/127441.html
+
+The font files carry no licence text. Their embedding flag (fsType 8) permits editable embedding. They are included here, subset to the Arabic ranges and converted to WOFF2, at the request of the site owner, who supplied them.

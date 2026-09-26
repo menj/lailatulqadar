@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/logo-mark",
+	"title": "Logo mark",
+	"category": "theme",
+	"icon": "star-filled",
+	"description": "The site's mark: a Ramadan lantern with a crescent and star, and the Arabic calligraphy of Laylat al-Qadr. Follows the colour scheme.",
+	"textdomain": "lailatulqadar",
+	"attributes": {},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/odd-nights",
+	"title": "Odd nights dates",
+	"category": "theme",
+	"icon": "calendar-alt",
+	"description": "Table of the evenings on which the odd nights begin, for the current or next Ramadan. Updates itself every year.",
+	"textdomain": "lailatulqadar",
+	"attributes": {
+		"eid": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

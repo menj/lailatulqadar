@@ -1,0 +1,34 @@
+/**
+ * Lailatulqadar "Search appearance" box.
+ */
+
+.lq-seo__field {
+	display: grid;
+	gap: 0.35rem;
+	margin-bottom: 1rem;
+}
+
+.lq-seo__field label {
+	font-weight: 600;
+}
+
+.lq-seo__field input,
+.lq-seo__field textarea {
+	width: 100%;
+}
+
+.lq-seo__count {
+	margin: 0;
+	color: #555c70;
+	font-variant-numeric: tabular-nums;
+}
+
+.lq-seo__count.is-over {
+	color: #b32d2e;
+	font-weight: 600;
+}
+
+.lq-seo__help {
+	margin: 0;
+	color: #555c70;
+}

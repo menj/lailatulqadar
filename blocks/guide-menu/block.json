@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/guide-menu",
+	"title": "Guide menu",
+	"category": "theme",
+	"icon": "list-view",
+	"description": "Lists the published guide pages in the visitor's language.",
+	"textdomain": "lailatulqadar",
+	"attributes": {
+		"set": {
+			"type": "string",
+			"enum": [ "header", "path", "footer", "sitemap" ],
+			"default": "header"
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

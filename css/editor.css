@@ -1,0 +1,9 @@
+/**
+ * Lailatulqadar editor-only adjustments. The editor also loads front.css,
+ * so the canvas matches the front end in the night scheme.
+ */
+
+.editor-styles-wrapper .wp-block-lailatulqadar-guide-menu a,
+.editor-styles-wrapper .wp-block-lailatulqadar-language-switcher a {
+	pointer-events: none;
+}

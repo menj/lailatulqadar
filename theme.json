@@ -1,0 +1,260 @@
+{
+	"$schema": "https://schemas.wp.org/wp/6.7/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"color": {
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"palette": [
+				{
+					"slug": "base",
+					"name": "Ground",
+					"color": "#141b2e"
+				},
+				{
+					"slug": "contrast",
+					"name": "Text",
+					"color": "#e8e4d8"
+				},
+				{
+					"slug": "accent-1",
+					"name": "Lamplight",
+					"color": "#c9a85c"
+				},
+				{
+					"slug": "accent-2",
+					"name": "Pale gold",
+					"color": "#e3cf9a"
+				},
+				{
+					"slug": "accent-3",
+					"name": "Deep panel",
+					"color": "#2c3654"
+				},
+				{
+					"slug": "accent-4",
+					"name": "Muted text",
+					"color": "#9aa3b8"
+				},
+				{
+					"slug": "accent-5",
+					"name": "Surface",
+					"color": "#1c2540"
+				},
+				{
+					"slug": "accent-6",
+					"name": "Hairline",
+					"color": "color-mix(in srgb, currentColor 20%, transparent)"
+				}
+			]
+		},
+		"layout": {
+			"contentSize": "40rem",
+			"wideSize": "70rem"
+		},
+		"typography": {
+			"fontFamilies": [
+				{
+					"name": "EB Garamond",
+					"slug": "garamond",
+					"fontFamily": "\"EB Garamond\", \"Arslan Wessam A\", \"Noto Naskh Arabic\", Garamond, Georgia, serif",
+					"fontFace": [
+						{
+							"fontFamily": "EB Garamond",
+							"fontStyle": "normal",
+							"fontWeight": "400 700",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./fonts/eb-garamond/eb-garamond-roman.woff2"
+							]
+						},
+						{
+							"fontFamily": "EB Garamond",
+							"fontStyle": "italic",
+							"fontWeight": "400 700",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./fonts/eb-garamond/eb-garamond-italic.woff2"
+							]
+						}
+					]
+				},
+				{
+					"name": "Hadith (Arslan Wessam A)",
+					"slug": "hadith",
+					"fontFamily": "\"Arslan Wessam A\", \"EB Garamond\", \"Noto Naskh Arabic\", serif",
+					"fontFace": [
+						{
+							"fontFamily": "Arslan Wessam A",
+							"fontStyle": "normal",
+							"fontWeight": "400",
+							"fontDisplay": "swap",
+							"unicodeRange": "U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F, U+25CC",
+							"src": [
+								"file:./fonts/arslan-wessam/arslan-wessam-a.woff2"
+							],
+							"sizeAdjust": "140%"
+						}
+					]
+				},
+				{
+					"name": "Arabic quotation (Arslan Wessam B)",
+					"slug": "arabic-quote",
+					"fontFamily": "\"Arslan Wessam B\", \"Arslan Wessam A\", \"EB Garamond\", \"Noto Naskh Arabic\", serif",
+					"fontFace": [
+						{
+							"fontFamily": "Arslan Wessam B",
+							"fontStyle": "normal",
+							"fontWeight": "400",
+							"fontDisplay": "swap",
+							"unicodeRange": "U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F, U+25CC",
+							"src": [
+								"file:./fonts/arslan-wessam/arslan-wessam-b.woff2"
+							],
+							"sizeAdjust": "140%"
+						}
+					]
+				},
+				{
+					"name": "Noto Naskh Arabic (fallback)",
+					"slug": "naskh",
+					"fontFamily": "\"Noto Naskh Arabic\", \"Traditional Arabic\", serif",
+					"fontFace": [
+						{
+							"fontFamily": "Noto Naskh Arabic",
+							"fontStyle": "normal",
+							"fontWeight": "400 700",
+							"fontDisplay": "swap",
+							"unicodeRange": "U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F, U+25CC",
+							"src": [
+								"file:./fonts/noto-naskh-arabic/noto-naskh-arabic.woff2"
+							]
+						}
+					]
+				},
+				{
+					"name": "Qur'an (KFGQPC Hafs)",
+					"slug": "quran",
+					"fontFamily": "\"KFGQPC HAFS Uthmanic Script\"",
+					"fontFace": [
+						{
+							"fontFamily": "KFGQPC HAFS Uthmanic Script",
+							"fontStyle": "normal",
+							"fontWeight": "400",
+							"fontDisplay": "block",
+							"src": [
+								"file:./fonts/kfgqpc/kfgqpc-hafs-uthmanic.ttf"
+							]
+						}
+					]
+				},
+				{
+					"name": "Interface sans",
+					"slug": "interface",
+					"fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+				},
+				{
+					"name": "Monospace",
+					"slug": "mono",
+					"fontFamily": "ui-monospace, \"SFMono-Regular\", Menlo, Consolas, monospace"
+				}
+			]
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "var:preset|color|base",
+			"text": "var:preset|color|contrast"
+		},
+		"typography": {
+			"fontFamily": "var:preset|font-family|garamond",
+			"fontSize": "clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem)",
+			"fontWeight": "400",
+			"letterSpacing": "0",
+			"lineHeight": "1.65"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontWeight": "500",
+					"lineHeight": "1.2",
+					"letterSpacing": "-0.01em"
+				}
+			},
+			"link": {
+				"color": {
+					"text": "var:preset|color|accent-1"
+				},
+				"typography": {
+					"textDecoration": "underline"
+				},
+				":hover": {
+					"color": {
+						"text": "var:preset|color|contrast"
+					}
+				}
+			},
+			"button": {
+				"color": {
+					"background": "var:preset|color|accent-1",
+					"text": "var:preset|color|base"
+				},
+				"typography": {
+					"fontFamily": "var:preset|font-family|interface",
+					"fontWeight": "600"
+				},
+				":hover": {
+					"color": {
+						"background": "var:preset|color|contrast",
+						"text": "var:preset|color|base"
+					}
+				},
+				":focus": {
+					"outline": {
+						"color": "var:preset|color|accent-1",
+						"offset": "3px"
+					}
+				}
+			}
+		},
+		"blocks": {
+			"core/code": {
+				"typography": {
+					"fontFamily": "var:preset|font-family|mono",
+					"fontWeight": "400"
+				}
+			},
+			"core/quote": {
+				"border": {
+					"left": {
+						"color": "var:preset|color|accent-1",
+						"width": "2px",
+						"style": "solid"
+					}
+				}
+			},
+			"core/separator": {
+				"color": {
+					"text": "var:preset|color|accent-3"
+				}
+			}
+		}
+	},
+	"customTemplates": [
+		{
+			"name": "page-no-title",
+			"title": "Page without title",
+			"postTypes": [
+				"page"
+			]
+		},
+		{
+			"name": "page-home",
+			"title": "Language home page",
+			"postTypes": [
+				"page"
+			]
+		}
+	]
+}

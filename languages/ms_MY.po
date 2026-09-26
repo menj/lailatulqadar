@@ -1,0 +1,879 @@
+# Copyright (C) 2026 Mohd Elfie Nieshaem Juferi
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Lailatulqadar 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/lailatulqadar\n"
+"POT-Creation-Date: 2026-09-26T03:45:21+00:00\n"
+"PO-Revision-Date: 2026-09-24T19:21:20+00:00\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: Bahasa Melayu\n"
+"Language: ms\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: lailatulqadar\n"
+
+#. Theme Name of the theme
+#: style.css inc/settings.php:72 inc/settings.php:179
+msgid "Lailatulqadar"
+msgstr ""
+
+#. Theme URI of the theme
+#: style.css
+msgid "https://lailatulqadar.guide"
+msgstr ""
+
+#. Description of the theme
+#: style.css
+msgid ""
+"A bilingual (English and Malay) guide theme for Laylat al-Qadr, built as a "
+"child of Twenty Twenty-Five. Night and dawn colour schemes, self-hosted EB "
+"Garamond, Arslan Wessam and KFGQPC Hafs typefaces, a language-aware guide "
+"menu, and a tabbed settings screen."
+msgstr ""
+
+#. Author of the theme
+#: style.css
+msgid "Mohd Elfie Nieshaem Juferi"
+msgstr ""
+
+#. Author URI of the theme
+#: style.css
+msgid "https://menj.me"
+msgstr ""
+
+#: blocks/guide-menu/render.php:25
+msgid "Site information"
+msgstr "Maklumat laman"
+
+#: blocks/guide-menu/render.php:47
+msgid ""
+"Publish the guide pages to list them here. Only editors see this notice."
+msgstr ""
+"Terbitkan halaman panduan untuk menyenaraikannya di sini. Hanya penyunting "
+"dapat melihat notis ini."
+
+#: blocks/guide-menu/render.php:81
+msgid "Guide"
+msgstr "Panduan"
+
+#: inc/blocks.php:46
+msgid "Qurʾān verse"
+msgstr ""
+
+#: inc/blocks.php:53
+msgid "Hadith or supplication"
+msgstr ""
+
+#: inc/blocks.php:60
+msgid "Arabic quotation (display)"
+msgstr ""
+
+#: inc/languages.php:121
+msgid ""
+"Lailatulqadar now handles English and Malay itself. Deactivate Polylang, "
+"then press Run setup under Appearance > Lailatulqadar > Tools."
+msgstr ""
+
+#: inc/seo.php:99 inc/settings.php:582
+msgid "Search appearance"
+msgstr ""
+
+#: inc/seo.php:125 inc/settings.php:613
+msgid "Title tag"
+msgstr ""
+
+#: inc/seo.php:126 inc/settings.php:614
+msgid "Meta description"
+msgstr ""
+
+#. translators: 1: characters used, 2: limit
+#: inc/seo.php:142
+#, php-format
+msgid "%1$d of %2$d characters"
+msgstr ""
+
+#: inc/seo.php:146
+msgid ""
+"Leave the title tag empty to use the page title. The meta description should "
+"end with a call to action."
+msgstr ""
+
+#: inc/seo.php:198
+msgid "Ramadan year (Gregorian)"
+msgstr ""
+
+#: inc/seo.php:199
+msgid ""
+"Gregorian year of the current or next Ramadan, from the Lailatulqadar theme."
+msgstr ""
+
+#: inc/seo.php:211
+msgid "Ramadan year (Hijri)"
+msgstr ""
+
+#: inc/seo.php:212
+msgid ""
+"Hijri year of the current or next Ramadan, from the Lailatulqadar theme."
+msgstr ""
+
+#: inc/settings.php:20
+msgid "General"
+msgstr ""
+
+#: inc/settings.php:24
+msgid "Languages"
+msgstr ""
+
+#: inc/settings.php:28
+msgid "Colours"
+msgstr ""
+
+#: inc/settings.php:32
+msgid "Ramadan Dates"
+msgstr ""
+
+#: inc/settings.php:36
+msgid "Login"
+msgstr ""
+
+#: inc/settings.php:40
+msgid "Search"
+msgstr ""
+
+#: inc/settings.php:44
+msgid "Tools"
+msgstr ""
+
+#: inc/settings.php:71
+msgid "Lailatulqadar settings"
+msgstr ""
+
+#. translators: %s: version
+#: inc/settings.php:180
+#, php-format
+msgid "Version %s"
+msgstr ""
+
+#: inc/settings.php:185
+msgid "Settings sections"
+msgstr ""
+
+#: inc/settings.php:202 inc/settings.php:211
+msgid "Save changes"
+msgstr ""
+
+#: inc/settings.php:240
+msgid "Logo calligraphy"
+msgstr ""
+
+#: inc/settings.php:241
+msgid ""
+"The Arabic calligraphy of ليلة القدر shown beside the lamp in the header and "
+"on the login screen. Choose a transparent PNG from the Media Library (or an "
+"SVG, if the site allows SVG uploads); the theme recolours it to the scheme's "
+"gold. With no image chosen, the words are typeset in Arslan Wessam B. Use "
+"only artwork you are licensed to use."
+msgstr ""
+
+#: inc/settings.php:248
+msgid "Choose the calligraphy image"
+msgstr ""
+
+#: inc/settings.php:248
+msgid "Use this image"
+msgstr ""
+
+#: inc/settings.php:248
+msgid "Choose image"
+msgstr ""
+
+#: inc/settings.php:249
+msgid "Use the typeset calligraphy"
+msgstr ""
+
+#: inc/settings.php:255
+msgid "Footer note"
+msgstr ""
+
+#: inc/settings.php:256
+msgid ""
+"A short line shown in the footer above the copyright. Leave empty to hide it."
+msgstr ""
+
+#: inc/settings.php:268
+msgid "Author for structured data"
+msgstr ""
+
+#: inc/settings.php:269
+msgid ""
+"Named as the author of every guide article in the Article structured data. "
+"Leave empty to use each page author’s display name and the About page."
+msgstr ""
+
+#. translators: %s: SEO plugin name
+#: inc/settings.php:271
+#, php-format
+msgid ""
+"%s is active and outputs the structured data, so these fields are not used. "
+"Set the author and publisher in the plugin."
+msgstr ""
+
+#: inc/settings.php:275
+msgid "Author name"
+msgstr ""
+
+#: inc/settings.php:279
+msgid "Author profile URL"
+msgstr ""
+
+#: inc/settings.php:286 inc/settings.php:682
+msgid "Guide pages"
+msgstr ""
+
+#: inc/settings.php:287
+msgid "Pages appear in the site menus once published. Drafts stay hidden."
+msgstr ""
+
+#: inc/settings.php:291 inc/settings.php:612 inc/settings.php:687
+msgid "Page"
+msgstr ""
+
+#: inc/settings.php:319 inc/settings.php:674
+msgid "Not created"
+msgstr ""
+
+#: inc/settings.php:322 inc/settings.php:670
+msgid "Published"
+msgstr ""
+
+#: inc/settings.php:322
+msgid "Draft"
+msgstr ""
+
+#: inc/settings.php:339
+msgid "How the two languages work"
+msgstr ""
+
+#: inc/settings.php:340
+msgid ""
+"The theme handles English and Malay itself; no plugin is needed. English "
+"pages sit at the root of the site. The Malay home is the page at /ms/, and "
+"every Malay page sits beneath it, so its address begins with /ms/. Run setup "
+"creates both sets of pages and pairs each page with its translation; the "
+"language switcher, the page language and the hreflang links for search "
+"engines follow from that pairing."
+msgstr ""
+
+#. translators: %s: address of the Malay home page
+#: inc/settings.php:344
+#, php-format
+msgid "Malay home: %s"
+msgstr ""
+
+#: inc/settings.php:346
+msgid "The Malay pages do not exist yet. Press Run setup on the Tools tab."
+msgstr ""
+
+#: inc/settings.php:351
+msgid ""
+"Polylang is still active. Deactivate it: its own language filtering would "
+"hide pages the theme now manages."
+msgstr ""
+
+#: inc/settings.php:357
+msgid "English"
+msgstr ""
+
+#: inc/settings.php:359 inc/settings.php:367
+msgid "Switcher label"
+msgstr ""
+
+#: inc/settings.php:365
+msgid "Malay"
+msgstr ""
+
+#: inc/settings.php:371
+msgid "Site name on Malay pages"
+msgstr ""
+
+#: inc/settings.php:386
+msgid "Night (dark)"
+msgstr ""
+
+#: inc/settings.php:387
+msgid "Dawn (light)"
+msgstr ""
+
+#: inc/settings.php:388
+msgid "Follow the visitor’s device"
+msgstr ""
+
+#: inc/settings.php:392 inc/settings.php:394
+msgid "Colour scheme"
+msgstr ""
+
+#: inc/settings.php:406
+msgid "Visitor switch"
+msgstr ""
+
+#: inc/settings.php:408
+msgid "Light and dark switch in the header"
+msgstr ""
+
+#: inc/settings.php:410
+msgid "Show: visitors can switch; their choice is remembered in their browser"
+msgstr ""
+
+#: inc/settings.php:411
+msgid "Hide: everyone sees the scheme chosen above"
+msgstr ""
+
+#: inc/settings.php:414
+msgid ""
+"The scheme chosen above is what first-time visitors see. A visitor who uses "
+"the switch keeps their choice on later visits."
+msgstr ""
+
+#: inc/settings.php:419
+msgid "Night accent"
+msgstr ""
+
+#: inc/settings.php:423 inc/settings.php:431
+msgid "Link colour"
+msgstr ""
+
+#: inc/settings.php:427
+msgid "Dawn accent"
+msgstr ""
+
+#: inc/settings.php:434
+msgid ""
+"Accents carry the Arabic verse, links and buttons. Keep a contrast ratio of "
+"at least 4.5:1 against the background: light accents for night, dark accents "
+"for dawn."
+msgstr ""
+
+#: inc/settings.php:447
+msgid "Automatic dates"
+msgstr ""
+
+#: inc/settings.php:448
+msgid ""
+"The site takes the dates of Ramadan from the Umm al-Qura calendar for every "
+"year up to 1473 AH (2051), and offers visitors the following day as an "
+"alternative start for countries that rely on local sighting. Articles, title "
+"tags and the night window switch to the next Ramadan the day after Eid, with "
+"no yearly update."
+msgstr ""
+
+#: inc/settings.php:452 inc/settings.php:484
+msgid "Hijri year"
+msgstr ""
+
+#: inc/settings.php:453
+msgid "1 Ramadan (Umm al-Qura)"
+msgstr ""
+
+#: inc/settings.php:454
+msgid "Alternative start"
+msgstr ""
+
+#: inc/settings.php:455
+msgid "27th night begins"
+msgstr ""
+
+#: inc/settings.php:476
+msgid ""
+"The first row is the Ramadan the site currently shows. An asterisk marks a "
+"year with an override."
+msgstr ""
+
+#: inc/settings.php:480
+msgid "Override one year (optional)"
+msgstr ""
+
+#: inc/settings.php:481
+msgid ""
+"Use this only when an official announcement differs from the Umm al-Qura "
+"date. Leave the fields empty to use the automatic dates."
+msgstr ""
+
+#: inc/settings.php:488
+msgid "1 Ramadan"
+msgstr ""
+
+#: inc/settings.php:492
+msgid "Alternative 1 Ramadan"
+msgstr ""
+
+#: inc/settings.php:506
+msgid "Login screen"
+msgstr ""
+
+#: inc/settings.php:507
+msgid ""
+"The login screen follows the theme: logo mark, site name, colour scheme and "
+"accent colours. The tagline and note below appear under the site name, in "
+"the language the visitor logs in with. Leave the tagline empty to use the "
+"default; leave the note empty to show none."
+msgstr ""
+
+#: inc/settings.php:510
+msgid "Tagline (English)"
+msgstr ""
+
+#: inc/settings.php:514
+msgid "Tagline (Malay)"
+msgstr ""
+
+#: inc/settings.php:518
+msgid "Note (English)"
+msgstr ""
+
+#: inc/settings.php:522
+msgid "Note (Malay)"
+msgstr ""
+
+#: inc/settings.php:526
+msgid "Preview the login screen"
+msgstr ""
+
+#: inc/settings.php:527
+msgid ""
+"The preview opens in a new tab; log out there, or use a private window, to "
+"see the screen as visitors do."
+msgstr ""
+
+#: inc/settings.php:540 inc/settings.php:558
+msgid "Webmaster tools verification"
+msgstr ""
+
+#. translators: %s: SEO plugin name
+#: inc/settings.php:546
+#, php-format
+msgid ""
+"%s is active and handles verification codes. Enter them in its own settings "
+"(in Rank Math: General Settings > Webmaster Tools). The theme prints none of "
+"its own."
+msgstr ""
+
+#: inc/settings.php:559
+msgid ""
+"Paste the HTML-tag verification code from Google Search Console or Bing "
+"Webmaster Tools, either the code alone or the whole meta tag. The theme "
+"prints it on the front page; remove it only after verifying another way."
+msgstr ""
+
+#: inc/settings.php:562
+msgid "Google Search Console"
+msgstr ""
+
+#: inc/settings.php:566
+msgid "Bing Webmaster Tools"
+msgstr ""
+
+#. translators: %s: SEO plugin name
+#: inc/settings.php:589
+#, php-format
+msgid ""
+"%s is active, so the theme does not print its own title tags or meta "
+"descriptions. The values below are kept for reference."
+msgstr ""
+
+#. translators: 1: title limit, 2: description limit
+#: inc/settings.php:601
+#, php-format
+msgid ""
+"Limits: %1$d characters for title tags, %2$d for meta descriptions. Edit "
+"each value in the Search appearance box on the page."
+msgstr ""
+
+#: inc/settings.php:649
+msgid "Empty"
+msgstr ""
+
+#: inc/settings.php:671
+msgid "Draft, written: ready to publish"
+msgstr ""
+
+#: inc/settings.php:672
+msgid "Draft, not written yet"
+msgstr ""
+
+#: inc/settings.php:673
+msgid "Published, but has little or no text"
+msgstr ""
+
+#: inc/settings.php:683
+msgid ""
+"Menus, the reading path, the HTML sitemap and search engines see published "
+"pages only. Pages still in preparation appear in the reading path as "
+"\"Coming soon\", without a link."
+msgstr ""
+
+#: inc/settings.php:688
+msgid "Language"
+msgstr "Bahasa"
+
+#: inc/settings.php:689
+msgid "Words"
+msgstr ""
+
+#: inc/settings.php:690
+msgid "State"
+msgstr ""
+
+#. translators: %d: number of drafts ready to publish
+#: inc/settings.php:717
+#, php-format
+msgid "Publish written drafts (%d)"
+msgstr ""
+
+#: inc/settings.php:721
+msgid ""
+"Publish every written draft listed as ready? Check each one in the editor "
+"first."
+msgstr ""
+
+#. translators: %d: number of published pages with little text
+#: inc/settings.php:731
+#, php-format
+msgid "Return empty published pages to draft (%d)"
+msgstr ""
+
+#: inc/settings.php:745
+msgid ""
+"WordPress's own \"Sample Page\" is still published. It is not part of the "
+"guide;"
+msgstr ""
+
+#: inc/settings.php:746
+msgid "move it to the trash"
+msgstr ""
+
+#: inc/settings.php:752 inc/settings.php:757
+msgid "Run setup"
+msgstr ""
+
+#: inc/settings.php:753
+msgid ""
+"Creates any missing guide pages in both languages, places the Malay pages "
+"beneath the Malay home at /ms/, pairs each page with its translation and "
+"sets the front page. Drafts with no content take the current titles and "
+"slugs; pages with content are never changed. Empty title tags and meta "
+"descriptions are filled from the keyword plan."
+msgstr ""
+
+#: inc/settings.php:762 inc/settings.php:767
+msgid "Reset settings"
+msgstr ""
+
+#: inc/settings.php:763
+msgid ""
+"Restores every setting on this screen to its default. Pages and content are "
+"not touched."
+msgstr ""
+
+#: inc/settings.php:767
+msgid "Reset every Lailatulqadar setting to its default?"
+msgstr ""
+
+#. translators: 1: pages created, 2: pages reused, 3: drafts renamed
+#: inc/settings.php:785
+#, php-format
+msgid ""
+"Setup finished. %1$d pages created, %2$d existing pages reused, %3$d "
+"untouched drafts renamed."
+msgstr ""
+
+#. translators: %s: list of page titles
+#: inc/settings.php:803
+#, php-format
+msgid "Published: %s."
+msgstr ""
+
+#. translators: %s: list of page titles
+#: inc/settings.php:805
+#, php-format
+msgid "Returned to draft: %s."
+msgstr ""
+
+#: inc/settings.php:806
+msgid "No pages needed changing."
+msgstr ""
+
+#: inc/settings.php:810
+msgid "Settings reset to their defaults."
+msgstr ""
+
+#: inc/settings.php:814
+msgid "Changes saved."
+msgstr ""
+
+#: inc/settings.php:823
+msgid "You do not have permission to run setup."
+msgstr ""
+
+#: inc/settings.php:837
+msgid "You do not have permission to reset settings."
+msgstr ""
+
+#: inc/settings.php:855
+msgid "You are not allowed to do this."
+msgstr ""
+
+#: inc/settings.php:901
+msgid "Lailatulqadar has created the guide pages."
+msgstr ""
+
+#: inc/settings.php:903
+msgid "Review the setup report"
+msgstr ""
+
+#: patterns/blog-title.php
+msgctxt "Pattern title"
+msgid "Blog index title"
+msgstr ""
+
+#: patterns/front-en.php
+msgctxt "Pattern title"
+msgid "Front page (English)"
+msgstr ""
+
+#: patterns/front-en.php
+msgctxt "Pattern description"
+msgid "Verse hero, title and reading path for the English front page."
+msgstr ""
+
+#: patterns/front-ms.php
+msgctxt "Pattern title"
+msgid "Front page (Malay)"
+msgstr ""
+
+#: patterns/front-ms.php
+msgctxt "Pattern description"
+msgid "Verse hero, title and reading path for the Malay front page."
+msgstr ""
+
+#: patterns/no-results.php
+msgctxt "Pattern title"
+msgid "No results"
+msgstr ""
+
+#: js/editor-blocks.js:27
+msgid "Menu"
+msgstr ""
+
+#: js/editor-blocks.js:29
+msgid "Show"
+msgstr ""
+
+#: js/editor-blocks.js:32
+msgid "Header links"
+msgstr ""
+
+#: js/editor-blocks.js:33
+msgid "Reading path"
+msgstr ""
+
+#: js/editor-blocks.js:34
+msgid "Footer"
+msgstr ""
+
+#: js/editor-blocks.js:35
+msgid "Sitemap (every page)"
+msgstr ""
+
+#: js/editor-blocks.js:59
+#, fuzzy
+msgid "Language switcher"
+msgstr "Penukar bahasa"
+
+#: js/editor-blocks.js:88
+msgid "Home › Page title"
+msgstr ""
+
+#: js/editor-blocks.js:106
+msgid "Rows"
+msgstr ""
+
+#: js/editor-blocks.js:108
+msgid "Add the expected Eid al-Fitr"
+msgstr ""
+
+#: js/editor-blocks.js:129
+msgid "Night window"
+msgstr ""
+
+#: js/editor-blocks.js:130
+msgid ""
+"Interactive timetable of the last ten nights. It appears on the published "
+"page."
+msgstr ""
+
+#: blocks/breadcrumbs/block.json
+msgctxt "block title"
+msgid "Breadcrumbs"
+msgstr ""
+
+#: blocks/breadcrumbs/block.json
+msgctxt "block description"
+msgid "Visible breadcrumb trail matching the BreadcrumbList structured data."
+msgstr ""
+
+#: blocks/guide-menu/block.json
+msgctxt "block title"
+msgid "Guide menu"
+msgstr "Menu panduan"
+
+#: blocks/guide-menu/block.json
+msgctxt "block description"
+msgid "Lists the published guide pages in the visitor's language."
+msgstr ""
+
+#: blocks/language-switcher/block.json
+msgctxt "block title"
+msgid "Language switcher"
+msgstr "Penukar bahasa"
+
+#: blocks/language-switcher/block.json
+msgctxt "block description"
+msgid "Links to the current page in the other language. Requires Polylang."
+msgstr ""
+
+#: blocks/logo-mark/block.json
+msgctxt "block title"
+msgid "Logo mark"
+msgstr ""
+
+#: blocks/logo-mark/block.json
+msgctxt "block description"
+msgid ""
+"The site's mark: a Ramadan lantern with a crescent and star, and the Arabic "
+"calligraphy of Laylat al-Qadr. Follows the colour scheme."
+msgstr ""
+
+#: blocks/night-window/block.json
+msgctxt "block title"
+msgid "Night window"
+msgstr ""
+
+#: blocks/night-window/block.json
+msgctxt "block description"
+msgid ""
+"Interactive timetable of the last ten nights: sunset, the last third and "
+"dawn for the visitor's city."
+msgstr ""
+
+#: blocks/odd-nights/block.json
+msgctxt "block title"
+msgid "Odd nights dates"
+msgstr ""
+
+#: blocks/odd-nights/block.json
+msgctxt "block description"
+msgid ""
+"Table of the evenings on which the odd nights begin, for the current or next "
+"Ramadan. Updates itself every year."
+msgstr ""
+
+#: blocks/scheme-toggle/block.json
+msgctxt "block title"
+msgid "Light and dark switch"
+msgstr ""
+
+#: blocks/scheme-toggle/block.json
+msgctxt "block description"
+msgid ""
+"Lets visitors switch between the night (dark) and dawn (light) schemes. "
+"Remembered in their browser."
+msgstr ""
+
+#: theme.json
+msgctxt "Color name"
+msgid "Ground"
+msgstr ""
+
+#: theme.json
+msgctxt "Color name"
+msgid "Text"
+msgstr ""
+
+#: theme.json
+msgctxt "Color name"
+msgid "Lamplight"
+msgstr ""
+
+#: theme.json
+msgctxt "Color name"
+msgid "Pale gold"
+msgstr ""
+
+#: theme.json
+msgctxt "Color name"
+msgid "Deep panel"
+msgstr ""
+
+#: theme.json
+msgctxt "Color name"
+msgid "Muted text"
+msgstr ""
+
+#: theme.json
+msgctxt "Color name"
+msgid "Surface"
+msgstr ""
+
+#: theme.json
+msgctxt "Color name"
+msgid "Hairline"
+msgstr ""
+
+#: theme.json
+msgctxt "Font family name"
+msgid "EB Garamond"
+msgstr ""
+
+#: theme.json
+msgctxt "Font family name"
+msgid "Hadith (Arslan Wessam A)"
+msgstr ""
+
+#: theme.json
+msgctxt "Font family name"
+msgid "Arabic quotation (Arslan Wessam B)"
+msgstr ""
+
+#: theme.json
+msgctxt "Font family name"
+msgid "Noto Naskh Arabic (fallback)"
+msgstr ""
+
+#: theme.json
+msgctxt "Font family name"
+msgid "Qur'an (KFGQPC Hafs)"
+msgstr ""
+
+#: theme.json
+msgctxt "Font family name"
+msgid "Interface sans"
+msgstr ""
+
+#: theme.json
+msgctxt "Font family name"
+msgid "Monospace"
+msgstr ""
+
+#: theme.json
+msgctxt "Custom template name"
+msgid "Page without title"
+msgstr ""
+
+#: theme.json
+#, fuzzy
+msgctxt "Custom template name"
+msgid "Language home page"
+msgstr "Penukar bahasa"

@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/breadcrumbs",
+	"title": "Breadcrumbs",
+	"category": "theme",
+	"icon": "arrow-right-alt2",
+	"description": "Visible breadcrumb trail matching the BreadcrumbList structured data.",
+	"textdomain": "lailatulqadar",
+	"attributes": {},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

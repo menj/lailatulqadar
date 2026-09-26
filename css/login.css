@@ -1,0 +1,582 @@
+/**
+ * Lailatulqadar login screen.
+ *
+ * Night by default; dawn when the Colours tab says so; "auto" follows the
+ * visitor's device. Accent colours arrive as --lq-accent-night and
+ * --lq-accent-dawn from the Colours tab.
+ */
+
+/* ---------- Scheme tokens ---------- */
+
+body.login {
+	--lq-bg: #141b2e;
+	--lq-bg-deep: #0d1322;
+	--lq-surface: rgba(28, 37, 64, 0.88);
+	--lq-line: #2c3654;
+	--lq-text: #e8e4d8;
+	--lq-muted: #9aa3b8;
+	--lq-accent: var(--lq-accent-night, #c9a85c);
+	--lq-accent-soft: #e3cf9a;
+	--lq-input-bg: #f4f1e8;
+	--lq-input-text: #141b2e;
+	--lq-on-accent: #141b2e;
+	--lq-star: rgba(232, 228, 216, 0.75);
+	--lq-star-gold: #e3cf9a;
+	--lq-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.55);
+	--lq-glow: rgba(201, 168, 92, 0.22);
+	--lq-error: #e08a7a;
+	--lq-serif: "EB Garamond", Garamond, Georgia, serif;
+	--lq-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+body.login.lq-scheme-dawn {
+	--lq-bg: #f2f1f6;
+	--lq-bg-deep: #e6e2ec;
+	--lq-surface: rgba(255, 255, 255, 0.9);
+	--lq-line: #d6d2de;
+	--lq-text: #1b2033;
+	--lq-muted: #5a6275;
+	--lq-accent: var(--lq-accent-dawn, #7a5a14);
+	--lq-accent-soft: #a8842f;
+	--lq-input-bg: #ffffff;
+	--lq-input-text: #1b2033;
+	--lq-on-accent: #ffffff;
+	--lq-star: transparent;
+	--lq-star-gold: transparent;
+	--lq-shadow: 0 18px 40px -26px rgba(27, 32, 51, 0.35);
+	--lq-glow: rgba(122, 90, 20, 0.14);
+	--lq-error: #a2382a;
+}
+
+@media (prefers-color-scheme: light) {
+	body.login.lq-scheme-auto {
+		--lq-bg: #f2f1f6;
+		--lq-bg-deep: #e6e2ec;
+		--lq-surface: rgba(255, 255, 255, 0.9);
+		--lq-line: #d6d2de;
+		--lq-text: #1b2033;
+		--lq-muted: #5a6275;
+		--lq-accent: var(--lq-accent-dawn, #7a5a14);
+		--lq-accent-soft: #a8842f;
+		--lq-input-bg: #ffffff;
+		--lq-input-text: #1b2033;
+		--lq-on-accent: #ffffff;
+		--lq-star: transparent;
+		--lq-glow: rgba(122, 90, 20, 0.14);
+		--lq-error: #a2382a;
+	}
+}
+
+/* ---------- Page ---------- */
+
+body.login {
+	position: relative;
+	min-height: 100vh;
+	margin: 0;
+	font-family: var(--lq-serif);
+	font-size: 17px;
+	color: var(--lq-text);
+	background:
+		radial-gradient(1px 1px at 12% 16%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1px 1px at 22% 38%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1.5px 1.5px at 31% 9%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1px 1px at 44% 27%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1px 1px at 58% 12%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1.5px 1.5px at 67% 33%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1px 1px at 76% 8%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1px 1px at 84% 24%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1.5px 1.5px at 91% 42%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1px 1px at 6% 52%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1px 1px at 95% 60%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1.5px 1.5px at 16% 71%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1px 1px at 37% 58%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(2px 2px at 71% 18%, var(--lq-star-gold) 50%, transparent 51%),
+		radial-gradient(1px 1px at 82% 67%, var(--lq-star) 50%, transparent 51%),
+		radial-gradient(1.5px 1.5px at 27% 22%, var(--lq-star) 50%, transparent 51%),
+		linear-gradient(180deg, var(--lq-bg-deep) 0%, var(--lq-bg) 70%);
+	background-attachment: fixed;
+}
+
+/* The horizon: a rayless sun rising at the foot of the page, as in the mark. */
+body.login::before {
+	content: "";
+	position: fixed;
+	left: 50%;
+	bottom: -44vmin;
+	z-index: 0;
+	width: 88vmin;
+	height: 88vmin;
+	border-radius: 50%;
+	background: radial-gradient(circle, var(--lq-glow) 0%, transparent 68%);
+	transform: translateX(-50%);
+	pointer-events: none;
+}
+
+body.login::after {
+	content: "";
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 0;
+	height: 1px;
+	background: linear-gradient(90deg, transparent, var(--lq-accent) 50%, transparent);
+	opacity: 0.45;
+	pointer-events: none;
+}
+
+body.login a:focus,
+body.login input:focus,
+body.login button:focus,
+body.login select:focus {
+	box-shadow: none;
+}
+
+body.login a:focus-visible,
+body.login button:focus-visible,
+body.login select:focus-visible,
+body.login input[type="checkbox"]:focus-visible {
+	outline: 2px solid var(--lq-accent);
+	outline-offset: 2px;
+}
+
+/* ---------- Brand ---------- */
+
+.lq-login-brand {
+	position: relative;
+	z-index: 1;
+	max-width: 420px;
+	margin: 0 auto;
+	padding: 7vh 24px 0;
+	text-align: center;
+}
+
+.lq-login-brand__link {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.6rem;
+	color: var(--lq-text);
+	text-decoration: none;
+}
+
+.lq-login-brand__link:hover .lq-login-brand__name {
+	color: var(--lq-accent);
+}
+
+.lq-login-brand__mark svg {
+	display: block;
+	width: 88px;
+	height: auto;
+}
+
+.lq-mark__metal {
+	fill: var(--lq-accent);
+}
+
+.lq-mark__glass {
+	fill: var(--lq-accent);
+	fill-opacity: 0.16;
+	stroke: var(--lq-accent);
+	stroke-width: 2.2;
+	stroke-linejoin: round;
+}
+
+.lq-mark__glow {
+	fill: var(--lq-accent-soft);
+}
+
+.lq-mark__flame {
+	fill: var(--lq-accent);
+}
+
+.lq-mark__cut {
+	fill: none;
+	stroke: var(--lq-bg-deep);
+	stroke-width: 1.3;
+	stroke-linecap: round;
+}
+
+.lq-mark__ring {
+	fill: none;
+	stroke: var(--lq-muted);
+	stroke-width: 1.5;
+}
+
+.lq-mark__crescent {
+	fill: var(--lq-accent);
+	fill-opacity: 0.45;
+}
+
+.lq-mark__star {
+	fill: var(--lq-accent-soft);
+}
+
+.lq-calli {
+	display: inline-block;
+	color: var(--lq-accent);
+}
+
+.lq-calli--type {
+	font-family: "Arslan Wessam B", "Noto Naskh Arabic", serif;
+	font-size: 3.4rem;
+	line-height: 1.1;
+	white-space: nowrap;
+}
+
+.lq-calli--image {
+	height: 4.6rem;
+	aspect-ratio: var(--lq-calli-ratio, 3);
+	background-color: currentColor;
+	-webkit-mask: var(--lq-calli-src) center / contain no-repeat;
+	mask: var(--lq-calli-src) center / contain no-repeat;
+}
+
+
+.lq-login-brand__name {
+	font-family: var(--lq-serif);
+	font-size: 2rem;
+	font-weight: 500;
+	letter-spacing: 0.01em;
+	line-height: 1.1;
+	transition: color 0.15s ease;
+}
+
+.lq-login-brand__tagline {
+	margin: 0.75rem auto 0;
+	max-width: 26rem;
+	font-style: italic;
+	font-size: 1.05rem;
+	line-height: 1.5;
+	color: var(--lq-muted);
+}
+
+.lq-login-brand__note {
+	display: inline-block;
+	margin: 0.9rem 0 0;
+	padding: 0.25rem 0.8rem;
+	font-family: var(--lq-sans);
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--lq-accent);
+	border: 1px solid var(--lq-accent);
+	border-radius: 999px;
+}
+
+/* The WordPress logo is replaced by the brand block above; its link stays
+   in the page, visually hidden, for assistive technology. */
+.login h1 {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* ---------- Card ---------- */
+
+#login {
+	position: relative;
+	z-index: 1;
+	width: min(400px, calc(100% - 32px));
+	padding: 1.75rem 0 3rem;
+}
+
+.login form,
+.login #loginform,
+.login #lostpasswordform,
+.login #registerform,
+.login #resetpassform {
+	margin-top: 0;
+	padding: 1.75rem 1.75rem 1.5rem;
+	background: var(--lq-surface);
+	border: 1px solid var(--lq-line);
+	border-top: 3px solid var(--lq-accent);
+	border-radius: 14px;
+	box-shadow: var(--lq-shadow);
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+}
+
+.login label,
+.login form .indicator-hint,
+.login .reset-pass-submit + p,
+.login #reg_passmail {
+	font-family: var(--lq-serif);
+	font-size: 1rem;
+	color: var(--lq-text);
+}
+
+.login form p {
+	margin-bottom: 0;
+}
+
+.login form .input,
+.login input[type="text"],
+.login input[type="email"],
+.login input[type="password"] {
+	min-height: 46px;
+	margin: 0.35rem 0 1.1rem;
+	padding: 0.45rem 0.8rem;
+	font-family: var(--lq-sans);
+	font-size: 1rem;
+	color: var(--lq-input-text);
+	background: var(--lq-input-bg);
+	border: 1px solid transparent;
+	border-radius: 9px;
+	box-shadow: none;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login form .input:focus,
+.login input[type="text"]:focus,
+.login input[type="email"]:focus,
+.login input[type="password"]:focus {
+	border-color: var(--lq-accent);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--lq-accent) 35%, transparent);
+	outline: none;
+}
+
+.login .wp-pwd {
+	position: relative;
+}
+
+.login .button.wp-hide-pw {
+	top: 0.35rem;
+	height: 46px;
+	min-height: 46px;
+	color: var(--lq-input-text);
+	opacity: 0.6;
+	background: transparent;
+	border: 0;
+}
+
+.login .button.wp-hide-pw:hover,
+.login .button.wp-hide-pw:focus {
+	opacity: 1;
+	background: transparent;
+	box-shadow: none;
+}
+
+.login .button.wp-hide-pw .dashicons {
+	top: 0.6rem;
+}
+
+.login form .forgetmenot {
+	display: flex;
+	align-items: center;
+	float: none;
+	margin: 0.2rem 0 1.1rem;
+}
+
+.login form .forgetmenot label {
+	font-size: 0.95rem;
+	color: var(--lq-muted);
+}
+
+.login input[type="checkbox"] {
+	width: 1.1rem;
+	height: 1.1rem;
+	margin: 0 0.5rem 0 0;
+	background: var(--lq-input-bg);
+	border: 1px solid var(--lq-line);
+	border-radius: 4px;
+	box-shadow: none;
+}
+
+.login input[type="checkbox"]:checked::before {
+	content: "";
+	display: block;
+	width: 0.35rem;
+	height: 0.65rem;
+	margin: 0.08rem auto 0;
+	border: solid var(--lq-accent);
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+}
+
+.login .submit,
+.login p.submit {
+	float: none;
+	margin: 0;
+	padding: 0;
+}
+
+.login .button-primary,
+.login #wp-submit {
+	float: none;
+	width: 100%;
+	min-height: 48px;
+	font-family: var(--lq-serif);
+	font-size: 1.1rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	color: var(--lq-on-accent);
+	text-shadow: none;
+	background: var(--lq-accent);
+	border: 1px solid var(--lq-accent);
+	border-radius: 9px;
+	box-shadow: none;
+	transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.login .button-primary:hover,
+.login .button-primary:focus,
+.login #wp-submit:hover,
+.login #wp-submit:focus {
+	color: var(--lq-on-accent);
+	background: var(--lq-accent);
+	border-color: var(--lq-accent);
+	filter: brightness(1.08);
+}
+
+.login .button-primary:active {
+	transform: translateY(1px);
+}
+
+/* Secondary buttons (for example "Generate Password" on the reset screen). */
+.login .button:not(.button-primary):not(.wp-hide-pw) {
+	color: var(--lq-text);
+	background: transparent;
+	border: 1px solid var(--lq-line);
+	border-radius: 9px;
+}
+
+/* ---------- Messages ---------- */
+
+.login .message,
+.login .notice,
+.login .success,
+.login #login_error {
+	margin: 0 0 1.25rem;
+	padding: 0.85rem 1rem;
+	font-family: var(--lq-sans);
+	font-size: 0.9rem;
+	line-height: 1.5;
+	color: var(--lq-text);
+	background: var(--lq-surface);
+	border: 1px solid var(--lq-line);
+	border-left: 3px solid var(--lq-accent);
+	border-radius: 10px;
+	box-shadow: none;
+}
+
+.login #login_error,
+.login .notice-error {
+	border-left-color: var(--lq-error);
+}
+
+.login .message a,
+.login #login_error a {
+	color: var(--lq-accent);
+}
+
+/* ---------- Links beneath the card ---------- */
+
+.login #nav,
+.login #backtoblog {
+	margin: 1.1rem 0 0;
+	padding: 0;
+	text-align: center;
+	font-size: 0.98rem;
+}
+
+.login #nav a,
+.login #backtoblog a,
+.login .privacy-policy-page-link a {
+	color: var(--lq-muted);
+	text-decoration: underline;
+	text-decoration-color: color-mix(in srgb, var(--lq-muted) 45%, transparent);
+	text-underline-offset: 0.25em;
+	transition: color 0.15s ease;
+}
+
+.login #nav a:hover,
+.login #backtoblog a:hover,
+.login .privacy-policy-page-link a:hover {
+	color: var(--lq-accent);
+	text-decoration-color: currentColor;
+}
+
+.login .privacy-policy-page-link {
+	position: relative;
+	z-index: 1;
+	margin: 1.4rem 0 0;
+	text-align: center;
+	font-size: 0.95rem;
+}
+
+/* ---------- Language switcher ---------- */
+
+.login .language-switcher {
+	position: relative;
+	z-index: 1;
+	margin-bottom: 3rem;
+}
+
+.login #language-switcher {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0;
+}
+
+.login #language-switcher label .dashicons {
+	color: var(--lq-muted);
+}
+
+.login #language-switcher select {
+	min-height: 38px;
+	padding: 0 2rem 0 0.75rem;
+	font-family: var(--lq-sans);
+	color: var(--lq-text);
+	background-color: var(--lq-surface);
+	border: 1px solid var(--lq-line);
+	border-radius: 8px;
+}
+
+.login #language-switcher .button {
+	min-height: 38px;
+	color: var(--lq-text);
+	background: transparent;
+	border: 1px solid var(--lq-line);
+	border-radius: 8px;
+}
+
+/* ---------- Interim login (session expired, in a modal) ---------- */
+
+body.interim-login .lq-login-brand {
+	padding-top: 1.25rem;
+}
+
+body.interim-login .lq-login-brand__tagline,
+body.interim-login .lq-login-brand__note {
+	display: none;
+}
+
+/* ---------- Small screens and motion ---------- */
+
+@media (max-width: 480px) {
+	.lq-login-brand {
+		padding-top: 4vh;
+	}
+
+	.lq-login-brand__name {
+		font-size: 1.7rem;
+	}
+
+	.login form,
+	.login #loginform {
+		padding: 1.4rem 1.25rem 1.25rem;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body.login * {
+		transition: none !important;
+	}
+}

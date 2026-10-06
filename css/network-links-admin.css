@@ -1,0 +1,7 @@
+.nl-admin__tabs{display:flex;gap:.25rem;margin:1rem 0;border-bottom:1px solid #dcdcde}
+.nl-admin__tab{padding:.6rem 1.1rem;border:0;border-bottom:2px solid transparent;background:none;font-size:14px;cursor:pointer;color:#50575e}
+.nl-admin__tab[aria-selected="true"]{border-bottom-color:#2271b1;color:#1d2327;font-weight:600}
+.nl-admin__panel[hidden]{display:none}
+.nl-admin__row{display:flex;align-items:center;gap:1rem;margin:.6rem 0}
+.nl-admin__row>label:first-child{min-width:14rem}
+.nl-admin input[type=color]{width:2.5rem;height:2rem;padding:0;border:1px solid #8c8f94;border-radius:4px}

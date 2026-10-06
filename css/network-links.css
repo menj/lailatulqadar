@@ -1,0 +1,9 @@
+/* Network links — minimal card row; colours come from per-site variables. */
+.nl{margin:var(--wp--preset--spacing--60,3rem) 0 0;padding-top:1.5rem;border-top:1px solid var(--nl-line,rgba(127,127,127,.25))}
+.nl__heading{margin:0 0 1rem;font-size:.8125rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.nl__list{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.75rem;margin:0;padding:0;list-style:none}
+.nl__link{display:block;height:100%;padding:.875rem 1rem;border:1px solid var(--nl-line,rgba(127,127,127,.25));border-left:3px solid var(--nl-site,currentColor);border-radius:.375rem;color:inherit;text-decoration:none;transition:transform .15s ease,box-shadow .15s ease}
+.nl__link:hover,.nl__link:focus-visible{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.nl__site{display:block;margin-bottom:.25rem;font-size:.75rem;font-weight:600;color:var(--nl-site,currentColor)}
+.nl__title{display:block;line-height:1.35}
+@media (prefers-reduced-motion:reduce){.nl__link{transition:none}}

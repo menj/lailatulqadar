@@ -35,3 +35,6 @@ function lq_theme_setup() {
 	add_editor_style( array( 'css/front.css', 'css/editor.css' ) );
 }
 add_action( 'after_setup_theme', 'lq_theme_setup' );
+
+/* Cross-site content links between the sister sites. */
+require_once get_stylesheet_directory() . '/inc/network-links.php';

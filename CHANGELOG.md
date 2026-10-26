@@ -5,6 +5,7 @@ All notable changes to the Lailatulqadar theme are recorded here.
 ## 1.9.4 (2026-10-26)
 
 - Five new English articles, seeded into empty drafts by Run setup: Start Here (`start`), What Is Laylat al-Qadr? (`what`), Prayer and Worship on Laylat al-Qadr (`worship`), Frequently Asked Questions (`faq`) and Hadith and Sources (`sources`). Qurʾānic text is quran.com `text_qpc_hafs`, inserted verbatim. Every hadith cited is VERIFIED on sunnah.com and shamela.ws (26 October 2026), with gradings from al-Albānī and Dār al-Salām; where gradings differ, al-Albānī's takes precedence, so Ibn Mājah 1644 is listed as ḥasan ṣaḥīḥ, with Dār al-Salām's ḍaʿīf shown beside it. Written with the sister sites' content in mind: consistent hadith numbers, and links out where a sister site goes deeper.
+- Links to guide pages that are not yet published show as plain text to visitors (`inc/draft-links.php`), so publishing one article before the pages it links to never leads a reader to a page not found. Editors still see the links.
 - Sūrat al-Qadr: a thousand lunar months is about 29,530 nights, not 30,400.
 - When Is Laylat al-Qadr?: al-Bukhārī 2023 is glossed literally ("the ninth, the seventh, the fifth").
 

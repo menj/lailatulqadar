@@ -20,6 +20,7 @@ require_once LQ_DIR . '/inc/ramadan.php';
 require_once LQ_DIR . '/inc/night-window.php';
 require_once LQ_DIR . '/inc/seo.php';
 require_once LQ_DIR . '/inc/contextual-links.php';
+require_once LQ_DIR . '/inc/draft-links.php';
 require_once LQ_DIR . '/inc/schema.php';
 require_once LQ_DIR . '/inc/login.php';
 require_once LQ_DIR . '/inc/setup.php';

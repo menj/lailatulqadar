@@ -427,7 +427,7 @@ function lq_render_links_tab() {
 	?>
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'How contextual links work', 'lailatulqadar' ); ?></h2>
-		<p class="lq-help"><?php esc_html_e( 'In the running text of a guide page, the first mention of a known phrase links to the page that treats it, here or on a sister site. Links are added as the page is shown, so the stored text is never changed. Headings, quotations, verses, hadith, Arabic, figures, tables, footnotes and the "In brief" box are never linked. Each address is linked once a page, and no paragraph receives more than one new link. Malay pages link only to Malay pages on this site.', 'lailatulqadar' ); ?></p>
+		<p class="lq-help"><?php esc_html_e( 'In the running text of a guide page or blog post, the first mention of a known phrase links to the page that treats it, here or on a sister site. Links are added as the page is shown, so the stored text is never changed. Headings, quotations, verses, hadith, Arabic, figures, tables, footnotes and the "In brief" box are never linked. Each address is linked once a page, and no paragraph or list item receives more than one new link. Malay pages link only to Malay pages on this site.', 'lailatulqadar' ); ?></p>
 		<p class="lq-callout">
 			<?php
 			echo esc_html(

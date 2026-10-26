@@ -15,6 +15,7 @@ All notable changes to the Lailatulqadar theme are recorded here.
 - Without mbstring, a phrase written in non-ASCII capitals ("SŪRAT AL-QADR") links; before, its lookup missed because `strtolower()` lowers ASCII only.
 - Extra phrases and excluded slugs are split byte-wise, so a stray invalid byte drops one line instead of every line, and no longer stops the page with a TypeError.
 - An element left unclosed inside a region where no link may go (a `<code>` or `<q>` without its end tag inside a list item or paragraph) ends with its parent; before, it switched contextual links off for the rest of the page. Every open element is now tracked, so closing one closes any left open inside it.
+- `languages/lailatulqadar.pot` and `languages/ms_MY.po` list the strings of the Contextual links tab, which were missing; the tab's help text now names blog posts and list items.
 - Extra phrases, Malay extra phrases and excluded slugs keep percent-encoded characters when saved (`lq_sanitize_ctx_textarea()`); before, `sanitize_textarea_field()` stripped them, so an encoded sister address such as `https://bestofislam.org/glossary/%D8%B5…/` was saved as `/glossary//` and linked to the wrong page.
 
 ## 1.9.1 (2026-10-26)

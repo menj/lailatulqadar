@@ -1,8 +1,8 @@
 <?php
 /**
  * Contextual links: the first mention of a known phrase in the running text
- * of a guide page links to the inner page that treats it, on this site or on
- * one of the six sister sites.
+ * of a guide page or blog post links to the inner page that treats it, on
+ * this site or on one of the six sister sites.
  *
  * English pages read inc/data/network-links.json, a shared file kept
  * identical in all seven themes. Entries for this site link to the
@@ -155,7 +155,7 @@ function lq_ctx_parse_extra( $text, $allow_out ) {
  * entry for a phrase wins, so lines from the settings override the maps.
  *
  * @param array<int,array{phrase:string,url:string,sister:bool}> $entries Targets.
- * @return array{pattern:string,by:array<string,array{url:string,sister:bool}>}
+ * @return array{patterns:string[],parts:string[],by:array<string,array{url:string,sister:bool}>}
  */
 function lq_ctx_compile( $entries ) {
 	$by      = array();
@@ -283,7 +283,7 @@ function lq_ctx_replace( $patterns, $text, $link ) {
  * Compiled targets for one language, once a request.
  *
  * @param string $role primary (English) or secondary (Malay).
- * @return array{pattern:string,by:array<string,array{url:string,sister:bool}>}
+ * @return array{patterns:string[],parts:string[],by:array<string,array{url:string,sister:bool}>}
  */
 function lq_ctx_targets( $role ) {
 	static $cache = array();
@@ -465,9 +465,9 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 }
 
 /**
- * Whether the page being rendered takes contextual links.
+ * Whether the page or post being rendered takes contextual links.
  *
- * @param WP_Post $post Page.
+ * @param WP_Post $post Page or post.
  * @return bool
  */
 function lq_ctx_enabled_for( $post ) {

@@ -207,6 +207,7 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 	}
 
 	lq_seed_content( $id, $key, $role, $report );
+	lq_attach_featured_image( $id, $key );
 
 	// Superseded defaults from earlier releases.
 	$legacy = array(

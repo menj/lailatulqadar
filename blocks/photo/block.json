@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/photo",
+	"title": "Commons image",
+	"category": "theme",
+	"icon": "format-image",
+	"description": "A freely licensed Wikimedia Commons image of a guide page, with caption and credit (author, licence, source), from inc/data/images.json.",
+	"textdomain": "lailatulqadar",
+	"attributes": {
+		"key": { "type": "string", "default": "" },
+		"n": { "type": "number", "default": 1 }
+	},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

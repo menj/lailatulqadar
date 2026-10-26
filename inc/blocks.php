@@ -31,6 +31,8 @@ function lq_register_blocks() {
 	register_block_type( LQ_DIR . '/blocks/scheme-toggle' );
 	register_block_type( LQ_DIR . '/blocks/logo-mark' );
 	register_block_type( LQ_DIR . '/blocks/language-switcher' );
+	register_block_type( LQ_DIR . '/blocks/photo' );
+	register_block_type( LQ_DIR . '/blocks/image-credits' );
 }
 add_action( 'init', 'lq_register_blocks' );
 

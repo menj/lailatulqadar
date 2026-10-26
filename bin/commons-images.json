@@ -1,0 +1,126 @@
+{
+	"start": [
+		{
+			"title": "File:Blue Mosque Courtyard Dusk Wikimedia Commons.jpg",
+			"alt": "The courtyard of the Sultan Ahmed Mosque in Istanbul at dusk, its domes and minarets lit against a deep blue sky",
+			"caption": "Evening falls over a mosque courtyard: the guide begins where the night begins."
+		}
+	],
+	"what": [
+		{
+			"title": "File:Crescent moon - Hilal.jpg",
+			"alt": "A thin crescent moon in a darkening sky",
+			"caption": "The new crescent (hilāl) that opens each lunar month."
+		},
+		{
+			"title": "File:Desert Stars (iotw2024a).jpg",
+			"alt": "A clear night sky full of stars above a desert landscape",
+			"caption": "A clear desert night. The Qurʾān calls the night of decree “peace, until the rising of the dawn.”"
+		}
+	],
+	"surah": [
+		{
+			"title": "File:Folios from a Qur'an Manuscript MET sf26-161-1r.jpg",
+			"alt": "Two folios of an early Qurʾān manuscript in brown ink on parchment, with gold verse markers",
+			"caption": "Folios from an early Qurʾān manuscript, Metropolitan Museum of Art.",
+			"artist": "Unknown calligrapher (Metropolitan Museum of Art)"
+		},
+		{
+			"title": "File:Tapurian Qur'an (Al-Qadr).PNG",
+			"alt": "A page of a historic Qurʾān manuscript with Sūrat al-Qadr in Arabic and an interlinear Persian translation",
+			"caption": "Sūrat al-Qadr in the Tapurian Qurʾān, a historic manuscript with an interlinear Persian translation."
+		}
+	],
+	"when": [
+		{
+			"title": "File:Waxing Crescent Moon 13 February 2026.jpg",
+			"alt": "A waxing crescent moon against a black sky",
+			"caption": "A waxing crescent. The Islamic month begins at sunset, so each night precedes its day."
+		},
+		{
+			"title": "File:Stars@desertSunset(byTdeGroot).JPG",
+			"alt": "The first stars appearing over a desert just after sunset",
+			"caption": "The first stars after sunset, when an odd night of the last ten begins."
+		}
+	],
+	"last10": [
+		{
+			"title": "File:Jemaah bersujud tampak belakang.jpg",
+			"alt": "Rows of worshippers in prostration in a mosque, seen from behind",
+			"caption": "Congregational prayer in a mosque during Ramadan."
+		},
+		{
+			"title": "File:Iktikaf.jpg",
+			"alt": "Worshippers resting and reading in a mosque during iʿtikāf, the retreat of the last ten nights",
+			"caption": "Iʿtikāf: staying in the mosque for worship in the last ten nights."
+		}
+	],
+	"signs": [
+		{
+			"title": "File:A Desert Dawn (226203045).jpeg",
+			"alt": "The sun rising softly over a desert horizon",
+			"caption": "Dawn over the desert. A reported sign of the night is a morning sun without strong rays."
+		},
+		{
+			"title": "File:Wadi Shawka night sky 01.jpg",
+			"alt": "A calm, clear night sky over the mountains of Wadi Shawka in the United Arab Emirates",
+			"caption": "A still, clear night in the Arabian Peninsula."
+		}
+	],
+	"worship": [
+		{
+			"title": "File:Tarawih Prayers at Istiqlal.jpg",
+			"alt": "Long rows of worshippers standing in the night prayer of Ramadan in the Istiqlal Mosque, Jakarta",
+			"caption": "The night prayer of Ramadan in the Istiqlal Mosque, Jakarta."
+		},
+		{
+			"title": "File:Iktikaf while reading the Quran at the Ubay bin Kaab Mosque.jpg",
+			"alt": "A worshipper reading the Qurʾān in a mosque during iʿtikāf",
+			"caption": "Reading the Qurʾān during iʿtikāf."
+		}
+	],
+	"dua": [
+		{
+			"title": "File:Supplication for Forgiveness and Personal Needs During Ramadan.jpg",
+			"alt": "A worshipper with hands raised in supplication during Ramadan",
+			"caption": "Hands raised in duʿāʾ during Ramadan."
+		},
+		{
+			"title": "File:Lanterns Illuminated.jpg",
+			"alt": "Lit lanterns glowing in the dark",
+			"caption": "Lanterns lit for the nights of Ramadan."
+		}
+	],
+	"planner": [
+		{
+			"title": "File:Mosque with mahya at night Istanbul 2026.jpg",
+			"alt": "A mosque in Istanbul at night with a mahya, a string of lights hung between its minarets for Ramadan",
+			"caption": "A mahya, the Ramadan message in lights strung between minarets, Istanbul."
+		},
+		{
+			"title": "File:Ramadan fanoos.JPG",
+			"alt": "A decorated Ramadan lantern (fanoos) glowing at night",
+			"caption": "A Ramadan lantern, or fanoos."
+		}
+	],
+	"faq": [
+		{
+			"title": "File:Fanous Ramadan.jpg",
+			"alt": "Coloured Ramadan lanterns hanging in a row",
+			"caption": "Ramadan lanterns (fawānīs)."
+		}
+	],
+	"sources": [
+		{
+			"title": "File:Unknown artist - Qur'an Manuscript Folio - 1933.494 - Cleveland Museum of Art.jpg",
+			"alt": "A folio of a Qurʾān manuscript in Kufic script on parchment",
+			"caption": "A Qurʾān folio in Kufic script, Cleveland Museum of Art.",
+			"artist": "Unknown calligrapher (Cleveland Museum of Art)"
+		},
+		{
+			"title": "File:Folio from a Koran (8th-9th century).jpg",
+			"alt": "A horizontal Qurʾān folio in early Kufic script with gold verse markers",
+			"caption": "A Qurʾān folio of the 8th to 9th century."
+		}
+	]
+}

@@ -73,6 +73,12 @@ Version 1.9.4. This file records the architecture, stored data and binding decis
 | `fonts/arslan-wessam/` | Arslan Wessam A and B, WOFF2 subsets, with a notice (no licence text in the source files) |
 | `fonts/kfgqpc/` | KFGQPC Hafs as a WOFF2 conversion of the original TTF, with its licence |
 | `languages/` | POT file and `ms_MY` translation |
+| `inc/images.php` | Commons images: reads and checks `inc/data/images.json`, renders figures with credits, the credits list, and sets lead images as featured images during setup |
+| `inc/data/images.json` | Credits for every Commons image, keyed by page key (file, Commons title, alt, caption, author, licence, licence deed, file page, widths, size). Data only, read with `json_decode()` |
+| `images/commons/` | The Commons images as WebP, `<key>-<n>-<width>.webp` at 640 and 1200 pixels (smaller originals are never enlarged), each under 200 KB |
+| `blocks/photo/` | Commons image block (`lailatulqadar/photo`, attributes `key` and `n`): one image of a page with caption and credit |
+| `blocks/image-credits/` | Lists every Commons image with author, licence and source (on the Sources page) |
+| `bin/fetch-commons-images.py`, `bin/commons-images.json` | Chosen Commons files per page, and the script that checks each licence through the Commons API and writes the WebP files and `inc/data/images.json` |
 
 ## Stored data
 
@@ -84,6 +90,10 @@ Version 1.9.4. This file records the architecture, stored data and binding decis
 | `lailatulqadar_needs_setup` | Set on activation, cleared on the first admin visit |
 | Transient `lailatulqadar_setup_report` | Result of the last setup run, shown once |
 | Post meta `_lq_seo_title`, `_lq_meta_description` | Per-page title tag and meta description |
+| `lailatulqadar_settings['commons_featured']` | `1` or `0`: setup sets each page's lead Commons image as its featured image |
+| `lailatulqadar_commons_media` | Attachment IDs of the Commons images copied into the media library, keyed by image file base, so English and Malay pages share one attachment |
+| Post meta `_lq_featured_seeded` | Set once setup has given a page its featured image, so an image an editor removes is not put back |
+| Attachment meta `_lq_credit` | Author, licence, licence deed and source of a Commons attachment |
 
 ## Page registry
 
@@ -104,6 +114,15 @@ The `theme.json` palette is the night scheme and keeps the parent's slugs (`base
 | accent-5 | #1c2540 | #ffffff | Surface |
 | accent-6 | currentColor at 20% | same | Hairline |
 
+## Images
+
+- Only Wikimedia Commons files under public domain, CC0, CC BY or CC BY-SA; `lq_images_data()` drops any other licence, and `bin/fetch-commons-images.py` refuses it, and any file tagged as a copyright violation or for deletion, after reading the file's own licence from the Commons API.
+- Every image shows its author, its licence linked to the deed, and a link to its file page on Wikimedia Commons, beneath the image (`lq_image_credit_html()`), and again in the credits list on the Sources page.
+- No depiction of the Prophet ﷺ or any prophet, nothing sectarian or polemical. Subjects: night skies, the crescent, mosques at night, prayer and iʿtikāf shown respectfully (from behind or at a distance where possible), Qurʾān manuscripts, lanterns, dawn.
+- No file used by a sister theme of the network (checked by file name, by author and subject, and by SHA-256).
+- Articles place images with `<!-- wp:lailatulqadar/photo {"key":"<key>","n":<n>} /-->`; image 1 is the lead, placed after the In brief box, eager and `fetchpriority="high"`; later images are lazy. Each carries `width`, `height`, `srcset` and `sizes`.
+- Setup sets the lead image as the page's featured image (Images tab), never replacing one an editor chose.
+
 ## Typography
 
 | Role | Face | Where | Notes |
@@ -121,7 +140,7 @@ Binding rules: Qurʾānic text is always taken verbatim from a verified source a
 
 ## Settings tabs
 
-General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Tools.
+General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Images, Tools.
 
 ## Roadmap
 

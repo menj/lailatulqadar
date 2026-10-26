@@ -45,6 +45,10 @@ function lq_settings_tabs() {
 			'label'  => __( 'Contextual links', 'lailatulqadar' ),
 			'fields' => array( 'ctx_own', 'ctx_sister', 'ctx_own_max', 'ctx_sister_max', 'ctx_extra', 'ctx_extra_ms', 'ctx_exclude' ),
 		),
+		'images'    => array(
+			'label'  => __( 'Images', 'lailatulqadar' ),
+			'fields' => array( 'commons_featured' ),
+		),
 		'tools'     => array(
 			'label'  => __( 'Tools', 'lailatulqadar' ),
 			'fields' => array(),
@@ -176,6 +180,7 @@ function lq_sanitize_settings( $input ) {
 				break;
 			case 'ctx_own':
 			case 'ctx_sister':
+			case 'commons_featured':
 				$value = '1' === (string) $value ? '1' : '0';
 				break;
 			case 'ctx_own_max':
@@ -487,6 +492,28 @@ function lq_render_links_tab() {
 			<label for="lq-ctx-exclude"><?php esc_html_e( 'Page slugs that never receive contextual links, one per line', 'lailatulqadar' ); ?></label>
 			<textarea id="lq-ctx-exclude" class="code" name="<?php echo esc_attr( lq_field_name( 'ctx_exclude' ) ); ?>" rows="3"><?php echo esc_textarea( lq_setting( 'ctx_exclude' ) ); ?></textarea>
 		</div>
+	</section>
+	<?php
+}
+
+/**
+ * Images tab: Commons images and the featured-image switch.
+ */
+function lq_render_images_tab() {
+	$count = 0;
+	foreach ( lq_images_data() as $list ) {
+		$count += count( $list );
+	}
+	?>
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Wikimedia Commons images', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help"><?php esc_html_e( 'The guide pages carry freely licensed images from Wikimedia Commons (public domain, CC0, CC BY or CC BY-SA). Each is shown with its author, its licence linked to the licence deed, and a link to its file page, as the licences require. The images and their credits ship with the theme in images/commons/ and inc/data/images.json; bin/fetch-commons-images.py checks each licence against Commons and rebuilds both.', 'lailatulqadar' ); ?></p>
+		<p class="lq-callout"><?php echo esc_html( sprintf( /* translators: %d: number of images. */ _n( '%d image is listed.', '%d images are listed.', $count, 'lailatulqadar' ), $count ) ); ?></p>
+		<div class="lq-field lq-field--check">
+			<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'commons_featured' ) ); ?>" value="0">
+			<label><input type="checkbox" name="<?php echo esc_attr( lq_field_name( 'commons_featured' ) ); ?>" value="1" <?php checked( lq_setting( 'commons_featured' ), '1' ); ?>> <?php esc_html_e( 'When setup runs, set each page\'s lead image as its featured image', 'lailatulqadar' ); ?></label>
+		</div>
+		<p class="lq-help"><?php esc_html_e( 'A featured image an editor has chosen is never replaced, and one an editor has removed is not put back.', 'lailatulqadar' ); ?></p>
 	</section>
 	<?php
 }

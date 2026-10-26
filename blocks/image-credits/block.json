@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/image-credits",
+	"title": "Image credits",
+	"category": "theme",
+	"icon": "images-alt2",
+	"description": "Lists every Commons image in the guide with its author, licence and source.",
+	"textdomain": "lailatulqadar",
+	"attributes": {},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

@@ -16,6 +16,7 @@ require_once LQ_DIR . '/inc/parent.php';
 require_once LQ_DIR . '/inc/languages.php';
 require_once LQ_DIR . '/inc/assets.php';
 require_once LQ_DIR . '/inc/blocks.php';
+require_once LQ_DIR . '/inc/images.php';
 require_once LQ_DIR . '/inc/ramadan.php';
 require_once LQ_DIR . '/inc/night-window.php';
 require_once LQ_DIR . '/inc/seo.php';

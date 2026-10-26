@@ -1,0 +1,80 @@
+{
+	"start": [
+		{
+			"file": "start-1",
+			"title": "File:Blue Mosque Courtyard Dusk Wikimedia Commons.jpg",
+			"lead": true,
+			"alt": "The courtyard of the Sultan Ahmed Mosque in Istanbul at dusk, its domes and minarets lit against a deep blue sky",
+			"caption": "Evening falls over a mosque courtyard: the guide begins where the night begins.",
+			"artist": "Benh LIEU SONG (Flickr)",
+			"licence": "CC BY-SA 3.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/3.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Blue_Mosque_Courtyard_Dusk_Wikimedia_Commons.jpg",
+			"sha1": "3c73a8713bca6d1f0f36279a527a8ebb1603dcb7",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 844
+		}
+	],
+	"what": [
+		{
+			"file": "what-1",
+			"title": "File:Crescent moon - Hilal.jpg",
+			"lead": true,
+			"alt": "A thin crescent moon in a darkening sky",
+			"caption": "The new crescent (hilāl) that opens each lunar month.",
+			"artist": "Zeynel Cebeci",
+			"licence": "CC BY-SA 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Crescent_moon_-_Hilal.jpg",
+			"sha1": "92907fe571055a67df8b3753a8699ac9bcce5cf5",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 842
+		},
+		{
+			"file": "what-2",
+			"title": "File:Desert Stars (iotw2024a).jpg",
+			"lead": false,
+			"alt": "A clear night sky full of stars above a desert landscape",
+			"caption": "A clear desert night. The Qurʾān calls the night of decree “peace, until the rising of the dawn.”",
+			"artist": "CTIO/NOIRLab/NSF/AURA/B. Tafreshi",
+			"licence": "CC BY 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Desert_Stars_(iotw2024a).jpg",
+			"sha1": "c0cc67ec519c3b82ab580ca0adb6124797205b96",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 800
+		}
+	],
+	"surah": [
+		{
+			"file": "surah-1",
+			"title": "File:Folios from a Qur'an Manuscript MET sf26-161-1r.jpg",
+			"lead": true,
+			"alt": "Two folios of an early Qurʾān manuscript in brown ink on parchment, with gold verse markers",
+			"caption": "Folios from an early Qurʾān manuscript, Metropolitan Museum of Art.",
+			"artist": "Unknown calligrapher (Metropolitan Museum of Art)",
+			"licence": "CC0",
+			"licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+			"source": "https://commons.wikimedia.org/wiki/File:Folios_from_a_Qur%27an_Manuscript_MET_sf26-161-1r.jpg",
+			"sha1": "c73900029088d5a554798ea28411d3f1f86df5d6",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 792
+		}
+	]
+}

@@ -159,7 +159,20 @@
 					"slug": "mono",
 					"fontFamily": "ui-monospace, \"SFMono-Regular\", Menlo, Consolas, monospace"
 				}
-			]
+			],
+			"fluid": {
+				"minFontSize": "15px",
+				"minViewportWidth": "320px",
+				"maxViewportWidth": "1280px"
+			}
+		},
+		"custom": {
+			"radius": {
+				"small": "8px",
+				"medium": "14px",
+				"large": "22px",
+				"pill": "999px"
+			}
 		}
 	},
 	"styles": {

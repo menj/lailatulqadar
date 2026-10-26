@@ -19,7 +19,7 @@
 	margin-block: var(--wp--preset--spacing--50);
 	padding: clamp(1.25rem, 3vw, 2.5rem);
 	border: 1px solid var(--lq-nw-line);
-	border-radius: 18px;
+	border-radius: var(--wp--custom--radius--large, 22px);
 	background:
 		radial-gradient(120% 90% at 85% -10%, color-mix(in srgb, var(--wp--preset--color--accent-1) 18%, transparent), transparent 60%),
 		linear-gradient(180deg, var(--wp--preset--color--accent-5), var(--wp--preset--color--base));
@@ -120,7 +120,7 @@ html[data-scheme="dawn"] .lq-nw {
 	color: var(--wp--preset--color--contrast);
 	background: var(--wp--preset--color--base) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%23c9a85c' stroke-width='1.6'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 0.9rem center / 12px 8px;
 	border: 1px solid var(--lq-nw-line);
-	border-radius: 10px;
+	border-radius: var(--wp--custom--radius--medium, 14px);
 	appearance: none;
 }
 
@@ -145,7 +145,7 @@ html[data-scheme="dawn"] .lq-nw {
 	color: var(--wp--preset--color--contrast);
 	background: transparent;
 	border: 1px solid var(--lq-nw-line);
-	border-radius: 10px;
+	border-radius: var(--wp--custom--radius--pill, 999px);
 	cursor: pointer;
 	transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
@@ -201,7 +201,7 @@ html[data-scheme="dawn"] .lq-nw {
 	font-family: var(--wp--preset--font-family--interface);
 	font-size: 0.9rem;
 	border: 1px solid var(--lq-nw-line);
-	border-radius: 999px;
+	border-radius: var(--wp--custom--radius--pill, 999px);
 	transition: all 0.15s ease;
 }
 
@@ -269,7 +269,7 @@ html[data-scheme="dawn"] .lq-nw {
 	font-size: 0.95rem;
 	border-left: 3px solid var(--wp--preset--color--accent-1);
 	background: color-mix(in srgb, var(--wp--preset--color--accent-1) 9%, transparent);
-	border-radius: 0 8px 8px 0;
+	border-radius: var(--wp--custom--radius--medium, 14px);
 }
 
 .lq-nw__status:empty {
@@ -299,7 +299,7 @@ html[data-scheme="dawn"] .lq-nw {
 	color: var(--wp--preset--color--contrast);
 	background: color-mix(in srgb, var(--wp--preset--color--base) 60%, transparent);
 	border: 1px solid var(--lq-nw-line);
-	border-radius: 12px;
+	border-radius: var(--wp--custom--radius--medium, 14px);
 	cursor: pointer;
 	scroll-snap-align: center;
 	transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
@@ -373,7 +373,7 @@ html[data-scheme="dawn"] .lq-nw {
 	padding: clamp(1rem, 2.5vw, 1.75rem);
 	background: color-mix(in srgb, var(--wp--preset--color--base) 72%, transparent);
 	border: 1px solid var(--lq-nw-line);
-	border-radius: 14px;
+	border-radius: var(--wp--custom--radius--large, 22px);
 }
 
 .lq-nw__kicker {
@@ -401,7 +401,7 @@ html[data-scheme="dawn"] .lq-nw {
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
 	border: 1px solid var(--lq-nw-line);
-	border-radius: 999px;
+	border-radius: var(--wp--custom--radius--pill, 999px);
 	color: var(--wp--preset--color--accent-4);
 }
 
@@ -505,7 +505,7 @@ html[data-scheme="dawn"] .lq-nw {
 .lq-nw__stat {
 	padding: 0.8rem 0.9rem;
 	border: 1px solid var(--lq-nw-line);
-	border-radius: 10px;
+	border-radius: var(--wp--custom--radius--medium, 14px);
 }
 
 .lq-nw__stat dt {
@@ -616,4 +616,13 @@ html[data-scheme="dawn"] .lq-nw {
 	.lq-nw__chip:hover {
 		transform: none;
 	}
+}
+
+/* Touch: tap targets of at least 44px. */
+.lq-nw__city,
+.lq-nw__btn,
+.lq-nw__locate,
+.lq-nw__chip,
+.lq-nw__pill span {
+	min-height: 44px;
 }

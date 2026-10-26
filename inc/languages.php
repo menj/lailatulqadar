@@ -118,7 +118,7 @@ function lq_polylang_notice() {
 	if ( ! current_user_can( 'activate_plugins' ) || ! function_exists( 'pll_current_language' ) ) {
 		return;
 	}
-	echo '<div class="notice notice-warning"><p>' . esc_html__( 'Lailatulqadar now handles English and Malay itself. Deactivate Polylang, then press Run setup under Appearance > Lailatulqadar > Tools.', 'lailatulqadar' ) . '</p></div>';
+	echo '<div class="notice notice-warning"><p>' . esc_html__( 'Lailatulqadar now handles English and Malay itself. Deactivate Polylang, then press Run setup under Appearance > Theme Options > Tools.', 'lailatulqadar' ) . '</p></div>';
 }
 add_action( 'admin_notices', 'lq_polylang_notice' );
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings screen: Appearance > Lailatulqadar, organised in tabs.
+ * Settings screen: Appearance > Theme Options, organised in tabs.
  *
  * Tabs: General, Languages, Colours, Ramadan Dates, Login, Search,
  * Contextual links, Tools.
@@ -69,12 +69,12 @@ function lq_settings_init() {
 add_action( 'admin_init', 'lq_settings_init' );
 
 /**
- * Add Appearance > Lailatulqadar.
+ * Add Appearance > Theme Options.
  */
 function lq_settings_menu() {
 	$hook = add_theme_page(
-		__( 'Lailatulqadar settings', 'lailatulqadar' ),
-		__( 'Lailatulqadar', 'lailatulqadar' ),
+		__( 'Theme Options', 'lailatulqadar' ),
+		__( 'Theme Options', 'lailatulqadar' ),
 		'manage_options',
 		'lailatulqadar',
 		'lq_render_settings'
@@ -210,7 +210,7 @@ function lq_render_settings() {
 	?>
 	<div class="wrap lq-admin">
 		<header class="lq-admin__head">
-			<h1><?php esc_html_e( 'Lailatulqadar', 'lailatulqadar' ); ?></h1>
+			<h1><?php esc_html_e( 'Theme Options', 'lailatulqadar' ); ?></h1>
 			<p class="lq-admin__version"><?php echo esc_html( sprintf( /* translators: %s: version */ __( 'Version %s', 'lailatulqadar' ), LQ_VERSION ) ); ?></p>
 		</header>
 

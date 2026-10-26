@@ -74,7 +74,7 @@ msgstr ""
 #: inc/languages.php:121
 msgid ""
 "Lailatulqadar now handles English and Malay itself. Deactivate Polylang, "
-"then press Run setup under Appearance > Lailatulqadar > Tools."
+"then press Run setup under Appearance > Theme Options > Tools."
 msgstr ""
 
 #: inc/seo.php:99 inc/settings.php:582
@@ -148,7 +148,7 @@ msgid "Tools"
 msgstr ""
 
 #: inc/settings.php:71
-msgid "Lailatulqadar settings"
+msgid "Theme Options"
 msgstr ""
 
 #. translators: %s: version

@@ -1,6 +1,6 @@
 # Settings reference
 
-Appearance > Lailatulqadar. Each tab saves only its own fields.
+Appearance > Theme Options. Each tab saves only its own fields.
 
 ## General
 - **Footer note (English, Bahasa Melayu).** One line above the copyright notice in the footer. Empty hides it.

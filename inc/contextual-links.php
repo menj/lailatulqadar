@@ -366,7 +366,11 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 	$made     = array( 'own' => 0, 'sister' => 0 );
 	$used     = false; // Whether the current paragraph or list item already has a new link.
 	$blocks   = 0;     // Open p, li and dd outside skip regions; $used resets only at the outermost.
-	$stack    = array(); // Open elements inside a region where no link may go.
+	$skips    = 0;     // Open elements that forbid links.
+	// Every open element as array( tag, forbids links, is a block ), so closing
+	// an element also closes any left open inside it: an unclosed <code> in a
+	// list item ends with the item instead of switching links off for the page.
+	$open     = array();
 	$out      = '';
 
 	$link = static function ( $text ) use ( $targets, $here_key, $own_max, $sister_max, &$done, &$made, &$used ) {
@@ -409,33 +413,33 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 				$tag = strtolower( $m[2] );
 				$is_block = 'p' === $tag || 'li' === $tag || 'dd' === $tag;
 				if ( '/' === $m[1] ) {
-					$closed = false;
-					for ( $i = count( $stack ) - 1; $i >= 0; $i-- ) {
-						if ( $stack[ $i ] === $tag ) {
-							array_splice( $stack, $i );
-							$closed = true;
+					for ( $i = count( $open ) - 1; $i >= 0; $i-- ) {
+						if ( $open[ $i ][0] === $tag ) {
+							foreach ( array_splice( $open, $i ) as $closed ) {
+								$skips  -= $closed[1] ? 1 : 0;
+								$blocks -= $closed[2] ? 1 : 0;
+							}
 							break;
 						}
 					}
-					if ( ! $closed && $is_block && $blocks > 0 ) {
-						--$blocks;
-					}
 				} elseif ( ! in_array( $tag, $void, true ) && '/>' !== substr( $piece, -2 ) ) {
-					if ( $stack || in_array( $tag, $skip_tags, true ) || preg_match( $skip_class, $piece ) || preg_match( $skip_lang, $piece ) ) {
-						$stack[] = $tag;
-					} elseif ( $is_block ) {
+					$forbid = $skips > 0 || in_array( $tag, $skip_tags, true ) || preg_match( $skip_class, $piece ) || preg_match( $skip_lang, $piece );
+					$block  = ! $forbid && $is_block;
+					if ( $block ) {
 						// A paragraph inside a list item belongs to that item.
 						if ( 0 === $blocks ) {
 							$used = false;
 						}
 						++$blocks;
 					}
+					$skips  += $forbid ? 1 : 0;
+					$open[]  = array( $tag, (bool) $forbid, $block );
 				}
 			}
 			$out .= $piece;
 			continue;
 		}
-		if ( $stack || '' === trim( $piece ) || ( $made['own'] >= $own_max && $made['sister'] >= $sister_max ) ) {
+		if ( $skips > 0 || '' === trim( $piece ) || ( $made['own'] >= $own_max && $made['sister'] >= $sister_max ) ) {
 			$out .= $piece;
 			continue;
 		}

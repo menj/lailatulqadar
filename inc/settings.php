@@ -93,6 +93,20 @@ function lq_admin_assets() {
 }
 
 /**
+ * A contextual-links textarea, sanitised like any textarea but keeping
+ * percent-encoded characters: sanitize_textarea_field() strips "%D8%B5", so an
+ * encoded address or slug would be saved broken ("/glossary//").
+ *
+ * @param string $value Submitted text.
+ * @return string
+ */
+function lq_sanitize_ctx_textarea( $value ) {
+	$mark  = "\u{E000}";
+	$value = str_replace( array( $mark, '%' ), array( '', $mark ), (string) $value );
+	return str_replace( $mark, '%', sanitize_textarea_field( $value ) );
+}
+
+/**
  * Sanitize the submitted tab and merge it into the stored settings,
  * so saving one tab leaves the others untouched.
  *
@@ -153,10 +167,12 @@ function lq_sanitize_settings( $input ) {
 				break;
 			case 'footer_note_primary':
 			case 'footer_note_secondary':
+				$value = sanitize_textarea_field( $value );
+				break;
 			case 'ctx_extra':
 			case 'ctx_extra_ms':
 			case 'ctx_exclude':
-				$value = sanitize_textarea_field( $value );
+				$value = lq_sanitize_ctx_textarea( $value );
 				break;
 			case 'ctx_own':
 			case 'ctx_sister':

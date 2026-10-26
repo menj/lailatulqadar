@@ -295,8 +295,12 @@ function lq_article_data( $lang, $key ) {
 	if ( ! is_array( $data ) || ! isset( $data['content'] ) || ! is_string( $data['content'] ) ) {
 		return null;
 	}
+	$list = $data['footnotes'] ?? array();
+	if ( ! is_array( $list ) || array_values( $list ) !== $list ) {
+		return null;
+	}
 	$notes = array();
-	foreach ( (array) ( $data['footnotes'] ?? array() ) as $note ) {
+	foreach ( $list as $note ) {
 		if ( ! is_array( $note ) || ! isset( $note['id'], $note['content'] ) || ! is_string( $note['id'] ) || ! is_string( $note['content'] ) ) {
 			return null;
 		}
@@ -304,6 +308,12 @@ function lq_article_data( $lang, $key ) {
 			'id'      => $note['id'],
 			'content' => $note['content'],
 		);
+	}
+	// Every footnote marker in the text needs its note, or the article would
+	// seed with citations that point at nothing.
+	preg_match_all( '/\bdata-fn="([^"]+)"/', $data['content'], $marks );
+	if ( array_diff( array_unique( $marks[1] ), array_column( $notes, 'id' ) ) ) {
+		return null;
 	}
 	return array(
 		'content'   => $data['content'],

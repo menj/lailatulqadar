@@ -75,7 +75,7 @@ a {
 :focus-visible {
 	outline: 2px solid var(--wp--preset--color--accent-1);
 	outline-offset: 3px;
-	border-radius: 2px;
+	border-radius: var(--wp--custom--radius--small, 8px);
 }
 
 ::selection {
@@ -538,7 +538,7 @@ ul.lq-menu--sitemap li {
 	padding: 1.25rem 1.5rem;
 	border-left: 3px solid var(--wp--preset--color--accent-1);
 	background: var(--wp--preset--color--accent-5);
-	border-radius: 0 6px 6px 0;
+	border-radius: var(--wp--custom--radius--large, 22px);
 }
 
 .lq-brief__label {
@@ -750,7 +750,7 @@ sup.fn a {
 }
 
 .lq-featured img {
-	border-radius: 12px;
+	border-radius: var(--wp--custom--radius--medium, 14px);
 }
 
 .lq-post-nav {
@@ -788,7 +788,7 @@ sup.fn a {
 	padding: 1.4rem 1.5rem;
 	background: var(--wp--preset--color--accent-5);
 	border: 1px solid var(--wp--preset--color--accent-3);
-	border-radius: 14px;
+	border-radius: var(--wp--custom--radius--large, 22px);
 	transition: border-color 0.15s ease;
 }
 
@@ -846,7 +846,7 @@ sup.fn a {
 .lq-pagination .current {
 	padding: 0.35rem 0.75rem;
 	border: 1px solid var(--wp--preset--color--accent-3);
-	border-radius: 8px;
+	border-radius: var(--wp--custom--radius--medium, 14px);
 	text-decoration: none;
 }
 
@@ -872,7 +872,7 @@ sup.fn a {
 	color: var(--wp--preset--color--contrast);
 	background: var(--wp--preset--color--accent-5);
 	border: 1px solid var(--wp--preset--color--accent-3);
-	border-radius: 10px;
+	border-radius: var(--wp--custom--radius--medium, 14px);
 }
 
 .lq-search-form .wp-block-search__input:focus {
@@ -886,7 +886,7 @@ sup.fn a {
 	color: var(--wp--preset--color--base);
 	background: var(--wp--preset--color--accent-1);
 	border: 0;
-	border-radius: 10px;
+	border-radius: var(--wp--custom--radius--medium, 14px);
 }
 
 .lq-no-results {
@@ -922,5 +922,370 @@ sup.fn a {
 	vertical-align: middle;
 	color: var(--wp--preset--color--accent-4);
 	border: 1px solid var(--wp--preset--color--accent-3);
-	border-radius: 999px;
+	border-radius: var(--wp--custom--radius--pill, 999px);
+}
+
+/* ---------- Rounded corners and pills ----------
+ * Radius tokens come from theme.json (settings.custom.radius): small,
+ * medium, large and pill. Colours stay on the palette variables, so both
+ * schemes follow; focus rings stay visible because outlines follow the
+ * rounded shape. */
+
+:focus-visible {
+	border-radius: var(--wp--custom--radius--small, 8px);
+}
+
+/* Buttons, tags and categories */
+.wp-element-button,
+.wp-block-button__link,
+.wp-block-search__button,
+.lq-search-form .wp-block-search__button,
+.wp-block-post-terms a,
+.wp-block-tag-cloud a,
+.taxonomy-category a,
+.taxonomy-post_tag a {
+	border-radius: var(--wp--custom--radius--pill, 999px);
+}
+
+.wp-block-post-terms a,
+.wp-block-tag-cloud a {
+	display: inline-block;
+	padding: 0.15rem 0.7rem;
+	border: 1px solid var(--wp--preset--color--accent-3);
+	text-decoration: none;
+}
+
+.lq-search-form .wp-block-search__input,
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="number"],
+input[type="time"],
+input[type="date"],
+select,
+textarea {
+	border-radius: var(--wp--custom--radius--medium, 14px);
+}
+
+.lq-search-form .wp-block-search__input {
+	border-radius: var(--wp--custom--radius--pill, 999px);
+	padding-inline: 1.25rem;
+}
+
+/* Navigation pills */
+.lq-menu--header a,
+.lq-lang a,
+.lq-lang span {
+	display: inline-block;
+	padding: 0.3rem 0.8rem;
+	border-radius: var(--wp--custom--radius--pill, 999px);
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.lq-menu--header a:hover,
+.lq-lang a:hover {
+	background: var(--wp--preset--color--accent-5);
+}
+
+.lq-menu--header a[aria-current="page"] {
+	text-decoration: none;
+	background: var(--wp--preset--color--accent-5);
+	box-shadow: inset 0 0 0 1px var(--wp--preset--color--accent-1);
+}
+
+.lq-lang span[aria-current] {
+	box-shadow: inset 0 0 0 1px var(--wp--preset--color--accent-3);
+}
+
+.lq-menu__list,
+.lq-lang__list {
+	gap: 0.25rem 0.35rem;
+}
+
+/* Breadcrumb chips */
+.lq-crumbs a,
+.lq-crumbs--rank-math a {
+	display: inline-block;
+	padding: 0.15rem 0.7rem;
+	background: var(--wp--preset--color--accent-5);
+	border-radius: var(--wp--custom--radius--pill, 999px);
+}
+
+.lq-crumbs a:hover,
+.lq-crumbs--rank-math a:hover {
+	text-decoration: none;
+	box-shadow: inset 0 0 0 1px var(--wp--preset--color--accent-1);
+}
+
+/* Pagination pills */
+.lq-pagination a,
+.lq-pagination .current,
+.wp-block-query-pagination a,
+.wp-block-query-pagination .page-numbers {
+	border-radius: var(--wp--custom--radius--pill, 999px);
+}
+
+/* Cards and panels */
+.lq-brief,
+.lq-no-results {
+	border-left: 0;
+	border: 1px solid var(--wp--preset--color--accent-3);
+	border-radius: var(--wp--custom--radius--large, 22px);
+	box-shadow: inset 4px 0 0 var(--wp--preset--color--accent-1);
+}
+
+.lq-verse,
+.lq-hadith-card {
+	padding: 1.25rem 1.5rem;
+	background: var(--wp--preset--color--accent-5);
+	border: 1px solid var(--wp--preset--color--accent-3);
+	border-radius: var(--wp--custom--radius--large, 22px);
+}
+
+.lq-table {
+	border: 1px solid var(--wp--preset--color--accent-3);
+	border-radius: var(--wp--custom--radius--large, 22px);
+}
+
+.lq-table table {
+	overflow: hidden;
+}
+
+.lq-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.lq-table figcaption {
+	padding: 0 0.75rem 0.75rem;
+}
+
+.lq-figure svg,
+.lq-figure img,
+.wp-block-image img,
+.lq-featured img {
+	border-radius: var(--wp--custom--radius--large, 22px);
+}
+
+.wp-block-footnotes {
+	padding: 1.25rem 1.5rem 1.25rem 2.5rem;
+	background: var(--wp--preset--color--accent-5);
+	border: 1px solid var(--wp--preset--color--accent-3);
+	border-radius: var(--wp--custom--radius--large, 22px);
+}
+
+/* Commons figures: image, then a credit with pill links */
+.lq-photo {
+	margin: var(--wp--preset--spacing--50) 0;
+}
+
+.lq-photo img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: var(--wp--custom--radius--large, 22px);
+	background: var(--wp--preset--color--accent-5);
+}
+
+.lq-photo figcaption {
+	margin-top: 0.6rem;
+	font-size: var(--wp--preset--font-size--small);
+	color: var(--wp--preset--color--accent-4);
+}
+
+.lq-photo__caption {
+	display: block;
+	font-style: italic;
+}
+
+.lq-credit {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.3rem 0.4rem;
+	margin-top: 0.35rem;
+	font-family: var(--wp--preset--font-family--interface);
+	font-size: 0.78rem;
+}
+
+.lq-credit a {
+	display: inline-block;
+	padding: 0.05rem 0.6rem;
+	color: var(--wp--preset--color--accent-4);
+	text-decoration: none;
+	border: 1px solid var(--wp--preset--color--accent-3);
+	border-radius: var(--wp--custom--radius--pill, 999px);
+}
+
+.lq-credit a:hover {
+	color: var(--wp--preset--color--contrast);
+	border-color: var(--wp--preset--color--accent-1);
+}
+
+/* Image credits list on the Sources page */
+.lq-credits-list {
+	display: grid;
+	gap: 0.6rem;
+	padding: 0;
+	list-style: none;
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.lq-credits-list li {
+	padding: 0.75rem 1rem;
+	background: var(--wp--preset--color--accent-5);
+	border: 1px solid var(--wp--preset--color--accent-3);
+	border-radius: var(--wp--custom--radius--medium, 14px);
+}
+
+/* ---------- Responsive: phone (to 600px), tablet (601 to 1024px), desktop ---------- */
+
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+
+body {
+	overflow-wrap: break-word;
+}
+
+.wp-site-blocks {
+	padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+img,
+svg,
+video {
+	max-width: 100%;
+}
+
+.lq-figure svg,
+.lq-photo img {
+	height: auto;
+}
+
+.wp-site-blocks > *,
+.lq-table,
+.lq-figure,
+.lq-photo {
+	min-width: 0;
+	max-width: 100%;
+}
+
+.lq-table {
+	-webkit-overflow-scrolling: touch;
+	overscroll-behavior-x: contain;
+}
+
+.lq-table table {
+	min-width: 32rem;
+}
+
+.lq-verse .lq-quran,
+.lq-hadith-card .lq-hadith,
+[lang="ar"] {
+	max-width: 100%;
+	overflow-wrap: anywhere;
+}
+
+.lq-verse .lq-quran {
+	font-size: clamp(1.35rem, 1rem + 2vw, var(--wp--preset--font-size--x-large, 2rem));
+	line-height: 2.1;
+}
+
+.lq-page-title,
+.lq-hero__title {
+	font-size: clamp(1.9rem, 1.3rem + 2.6vw, 3.2rem);
+	overflow-wrap: anywhere;
+	hyphens: auto;
+}
+
+@media (max-width: 600px) {
+	.lq-header__bar {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.lq-header__nav {
+		width: 100%;
+		min-width: 0;
+		gap: 0.5rem;
+	}
+
+	.lq-header__nav > *,
+	.lq-menu--header {
+		min-width: 0;
+		max-width: 100%;
+	}
+
+	.lq-menu--header {
+		flex: 1 1 100%;
+	}
+
+	.lq-menu__list {
+		flex-wrap: nowrap;
+		gap: 0.35rem;
+		margin-inline: -0.25rem;
+		padding: 0.25rem;
+		overflow-x: auto;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.lq-menu__list::-webkit-scrollbar {
+		display: none;
+	}
+
+	.lq-menu--header a,
+	.lq-lang a,
+	.lq-lang span {
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		white-space: nowrap;
+		background: var(--wp--preset--color--accent-5);
+	}
+
+	.lq-lang {
+		padding-left: 0;
+		border-left: 0;
+	}
+
+	.lq-brief,
+	.lq-verse,
+	.lq-hadith-card,
+	.wp-block-footnotes {
+		padding: 1rem 1.1rem;
+		border-radius: var(--wp--custom--radius--medium, 14px);
+	}
+
+	.wp-block-footnotes {
+		padding-left: 2rem;
+	}
+
+	.lq-pagination a,
+	.lq-pagination .current,
+	.wp-element-button,
+	.wp-block-button__link {
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.lq-credit {
+		font-size: 0.75rem;
+	}
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+	.lq-header__bar {
+		flex-wrap: wrap;
+	}
+
+	.lq-menu--header a,
+	.lq-lang a,
+	.lq-lang span {
+		min-height: 40px;
+		display: inline-flex;
+		align-items: center;
+	}
 }

@@ -1,5 +1,9 @@
 # Upgrading
 
+## From 1.9.3 to 1.9.4
+
+Upload the new zip over 1.9.3 and open any admin screen as an administrator. Setup runs by itself once (it notices the new version): every page whose article ships with the theme is filled and published, pages seeded earlier and not edited take the new text (the old text stays as a revision), and obsolete copies the theme created earlier go to the trash. Pages you have edited are not changed; the Tools tab lists them under "Edited, not updated" with a button to replace each one. About, Contact and Malay pages awaiting translation stay drafts. Read the setup report on the Tools tab.
+
 ## From 1.9.2 to 1.9.3
 
 Upload the new zip over 1.9.2. The articles in `content/en/` and `content/ms/` are now `.json` files; an upload over the old folder leaves the `.html` and `.footnotes.json` files behind, which nothing reads, so delete them (or delete the theme folder before uploading). Pages already seeded are not touched.

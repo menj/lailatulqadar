@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.3
+Stable tag: 1.9.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
+
+= 1.9.4 =
+* Five new English articles: Start Here, What Is Laylat al-Qadr?, Prayer and Worship, FAQ, Hadith and Sources.
 
 = 1.9.3 =
 * The shipped articles are JSON data files (`content/<lang>/<key>.json`), read with `json_decode()`; the HTML and separate footnotes files are gone.

@@ -1,0 +1,382 @@
+{
+	"start": [
+		{
+			"file": "start-1",
+			"title": "File:Blue Mosque Courtyard Dusk Wikimedia Commons.jpg",
+			"lead": true,
+			"alt": "The courtyard of the Sultan Ahmed Mosque in Istanbul at dusk, its domes and minarets lit against a deep blue sky",
+			"caption": "Evening falls over a mosque courtyard: the guide begins where the night begins.",
+			"artist": "Benh LIEU SONG (Flickr)",
+			"licence": "CC BY-SA 3.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/3.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Blue_Mosque_Courtyard_Dusk_Wikimedia_Commons.jpg",
+			"sha1": "3c73a8713bca6d1f0f36279a527a8ebb1603dcb7",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 844
+		}
+	],
+	"what": [
+		{
+			"file": "what-1",
+			"title": "File:Crescent moon - Hilal.jpg",
+			"lead": true,
+			"alt": "A thin crescent moon in a darkening sky",
+			"caption": "The new crescent (hilāl) that opens each lunar month.",
+			"artist": "Zeynel Cebeci",
+			"licence": "CC BY-SA 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Crescent_moon_-_Hilal.jpg",
+			"sha1": "92907fe571055a67df8b3753a8699ac9bcce5cf5",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 842
+		},
+		{
+			"file": "what-2",
+			"title": "File:Desert Stars (iotw2024a).jpg",
+			"lead": false,
+			"alt": "A clear night sky full of stars above a desert landscape",
+			"caption": "A clear desert night. The Qurʾān calls the night of decree “peace, until the rising of the dawn.”",
+			"artist": "CTIO/NOIRLab/NSF/AURA/B. Tafreshi",
+			"licence": "CC BY 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Desert_Stars_(iotw2024a).jpg",
+			"sha1": "c0cc67ec519c3b82ab580ca0adb6124797205b96",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 800
+		}
+	],
+	"surah": [
+		{
+			"file": "surah-1",
+			"title": "File:Folios from a Qur'an Manuscript MET sf26-161-1r.jpg",
+			"lead": true,
+			"alt": "Two folios of an early Qurʾān manuscript in brown ink on parchment, with gold verse markers",
+			"caption": "Folios from an early Qurʾān manuscript, Metropolitan Museum of Art.",
+			"artist": "Unknown calligrapher (Metropolitan Museum of Art)",
+			"licence": "CC0",
+			"licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+			"source": "https://commons.wikimedia.org/wiki/File:Folios_from_a_Qur%27an_Manuscript_MET_sf26-161-1r.jpg",
+			"sha1": "c73900029088d5a554798ea28411d3f1f86df5d6",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 792
+		},
+		{
+			"file": "surah-2",
+			"title": "File:Tapurian Qur'an (Al-Qadr).PNG",
+			"lead": false,
+			"alt": "A page of a historic Qurʾān manuscript with Sūrat al-Qadr in Arabic and an interlinear Persian translation",
+			"caption": "Sūrat al-Qadr in the Tapurian Qurʾān, a historic manuscript with an interlinear Persian translation.",
+			"artist": "Old pages",
+			"licence": "Public domain",
+			"licence_url": "",
+			"source": "https://commons.wikimedia.org/wiki/File:Tapurian_Qur%27an_(Al-Qadr).PNG",
+			"sha1": "2e628ceacca0743509e99bd02381acae81a3e797",
+			"widths": [
+				640
+			],
+			"width": 445,
+			"height": 535
+		}
+	],
+	"when": [
+		{
+			"file": "when-1",
+			"title": "File:Waxing Crescent Moon 13 February 2026.jpg",
+			"lead": true,
+			"alt": "A waxing crescent moon against a black sky",
+			"caption": "A waxing crescent. The Islamic month begins at sunset, so each night precedes its day.",
+			"artist": "Wxao Zexw",
+			"licence": "CC0",
+			"licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+			"source": "https://commons.wikimedia.org/wiki/File:Waxing_Crescent_Moon_13_February_2026.jpg",
+			"sha1": "1d53540cc72931db614aa21fbdd77613c6737d4a",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 1200
+		},
+		{
+			"file": "when-2",
+			"title": "File:Stars@desertSunset(byTdeGroot).JPG",
+			"lead": false,
+			"alt": "The first stars appearing over a desert just after sunset",
+			"caption": "The first stars after sunset, when an odd night of the last ten begins.",
+			"artist": "Tim de Groot",
+			"licence": "CC0",
+			"licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+			"source": "https://commons.wikimedia.org/wiki/File:Stars@desertSunset(byTdeGroot).JPG",
+			"sha1": "ecf0f53fea71f1cbde002f8041d639ed092df24e",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 797
+		}
+	],
+	"last10": [
+		{
+			"file": "last10-1",
+			"title": "File:Jemaah bersujud tampak belakang.jpg",
+			"lead": true,
+			"alt": "Rows of worshippers in prostration in a mosque, seen from behind",
+			"caption": "Congregational prayer in a mosque during Ramadan.",
+			"artist": "Muhamad Izzul Fiqih",
+			"licence": "CC BY-SA 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Jemaah_bersujud_tampak_belakang.jpg",
+			"sha1": "1c4a76d55bc7b967495810c2d59952c2a98598db",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 675
+		},
+		{
+			"file": "last10-2",
+			"title": "File:Iktikaf.jpg",
+			"lead": false,
+			"alt": "Worshippers resting and reading in a mosque during iʿtikāf, the retreat of the last ten nights",
+			"caption": "Iʿtikāf: staying in the mosque for worship in the last ten nights.",
+			"artist": "M Wildan Fathurrohman (Muhwilf)",
+			"licence": "CC BY-SA 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Iktikaf.jpg",
+			"sha1": "c3c056cbc0f439825c0adab7255c11588caa5e7b",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 801
+		}
+	],
+	"signs": [
+		{
+			"file": "signs-1",
+			"title": "File:A Desert Dawn (226203045).jpeg",
+			"lead": true,
+			"alt": "The sun rising softly over a desert horizon",
+			"caption": "Dawn over the desert. A reported sign of the night is a morning sun without strong rays.",
+			"artist": "Paul Grach",
+			"licence": "CC BY 3.0",
+			"licence_url": "https://creativecommons.org/licenses/by/3.0",
+			"source": "https://commons.wikimedia.org/wiki/File:A_Desert_Dawn_(226203045).jpeg",
+			"sha1": "3ebb4061d8ba8b14e48f8124e0626639f15368de",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 675
+		},
+		{
+			"file": "signs-2",
+			"title": "File:Wadi Shawka night sky 01.jpg",
+			"lead": false,
+			"alt": "A calm, clear night sky over the mountains of Wadi Shawka in the United Arab Emirates",
+			"caption": "A still, clear night in the Arabian Peninsula.",
+			"artist": "ShaniaJ",
+			"licence": "CC BY-SA 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Wadi_Shawka_night_sky_01.jpg",
+			"sha1": "5aa2ed3d5ed4ef49a9dc772277692d555191081d",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 2134
+		}
+	],
+	"worship": [
+		{
+			"file": "worship-1",
+			"title": "File:Tarawih Prayers at Istiqlal.jpg",
+			"lead": true,
+			"alt": "Long rows of worshippers standing in the night prayer of Ramadan in the Istiqlal Mosque, Jakarta",
+			"caption": "The night prayer of Ramadan in the Istiqlal Mosque, Jakarta.",
+			"artist": "Arifmuttaqin",
+			"licence": "CC BY-SA 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Tarawih_Prayers_at_Istiqlal.jpg",
+			"sha1": "69c8258ca41fd0644d2a94fbfb46bb4c9208fa88",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 800
+		},
+		{
+			"file": "worship-2",
+			"title": "File:Iktikaf while reading the Quran at the Ubay bin Kaab Mosque.jpg",
+			"lead": false,
+			"alt": "A worshipper reading the Qurʾān in a mosque during iʿtikāf",
+			"caption": "Reading the Qurʾān during iʿtikāf.",
+			"artist": "Muhamad Izzul Fiqih",
+			"licence": "CC BY-SA 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Iktikaf_while_reading_the_Quran_at_the_Ubay_bin_Kaab_Mosque.jpg",
+			"sha1": "ecb818f964f626b583a18297b8101d19f4e8b0db",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 901
+		}
+	],
+	"dua": [
+		{
+			"file": "dua-1",
+			"title": "File:Supplication for Forgiveness and Personal Needs During Ramadan.jpg",
+			"lead": true,
+			"alt": "A worshipper with hands raised in supplication during Ramadan",
+			"caption": "Hands raised in duʿāʾ during Ramadan.",
+			"artist": "Pharouqenr",
+			"licence": "CC BY-SA 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Supplication_for_Forgiveness_and_Personal_Needs_During_Ramadan.jpg",
+			"sha1": "82ee05df019f6e547f9e1e4242be9d09c1f2cbc4",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 1256
+		},
+		{
+			"file": "dua-2",
+			"title": "File:Lanterns Illuminated.jpg",
+			"lead": false,
+			"alt": "Lit lanterns glowing in the dark",
+			"caption": "Lanterns lit for the nights of Ramadan.",
+			"artist": "Basmala Ahmed Abd0",
+			"licence": "CC0",
+			"licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+			"source": "https://commons.wikimedia.org/wiki/File:Lanterns_Illuminated.jpg",
+			"sha1": "ffe53130bf22de7ef0c1e2ffa65235461991bd0b",
+			"widths": [
+				640
+			],
+			"width": 640,
+			"height": 960
+		}
+	],
+	"planner": [
+		{
+			"file": "planner-1",
+			"title": "File:Mosque with mahya at night Istanbul 2026.jpg",
+			"lead": true,
+			"alt": "A mosque in Istanbul at night with a mahya, a string of lights hung between its minarets for Ramadan",
+			"caption": "A mahya, the Ramadan message in lights strung between minarets, Istanbul.",
+			"artist": "Furkan Akkurt",
+			"licence": "CC BY-SA 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Mosque_with_mahya_at_night_Istanbul_2026.jpg",
+			"sha1": "39e0988abc7da8e0b3b1ed1a2750db4508046c2c",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 1600
+		},
+		{
+			"file": "planner-2",
+			"title": "File:Ramadan fanoos.JPG",
+			"lead": false,
+			"alt": "A decorated Ramadan lantern (fanoos) glowing at night",
+			"caption": "A Ramadan lantern, or fanoos.",
+			"artist": "Waelfouda",
+			"licence": "CC BY-SA 4.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Ramadan_fanoos.JPG",
+			"sha1": "02c5f604864fbc71a99fd99cf65e3801b296ffd1",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 800
+		}
+	],
+	"faq": [
+		{
+			"file": "faq-1",
+			"title": "File:Fanous Ramadan.jpg",
+			"lead": true,
+			"alt": "Coloured Ramadan lanterns hanging in a row",
+			"caption": "Ramadan lanterns (fawānīs).",
+			"artist": "Ibrahim.ID",
+			"licence": "CC BY-SA 3.0",
+			"licence_url": "https://creativecommons.org/licenses/by-sa/3.0",
+			"source": "https://commons.wikimedia.org/wiki/File:Fanous_Ramadan.jpg",
+			"sha1": "6266d19cfc8ee1b41b7ec2b3a1687aae3b329e5d",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 712
+		}
+	],
+	"sources": [
+		{
+			"file": "sources-1",
+			"title": "File:Unknown artist - Qur'an Manuscript Folio - 1933.494 - Cleveland Museum of Art.jpg",
+			"lead": true,
+			"alt": "A folio of a Qurʾān manuscript in Kufic script on parchment",
+			"caption": "A Qurʾān folio in Kufic script, Cleveland Museum of Art.",
+			"artist": "Unknown calligrapher (Cleveland Museum of Art)",
+			"licence": "CC0",
+			"licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+			"source": "https://commons.wikimedia.org/wiki/File:Unknown_artist_-_Qur%27an_Manuscript_Folio_-_1933.494_-_Cleveland_Museum_of_Art.jpg",
+			"sha1": "27db2260c0750fe44f82db985bd6b092836d43fe",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 838
+		},
+		{
+			"file": "sources-2",
+			"title": "File:Folio from a Koran (8th-9th century).jpg",
+			"lead": false,
+			"alt": "A horizontal Qurʾān folio in early Kufic script with gold verse markers",
+			"caption": "A Qurʾān folio of the 8th to 9th century.",
+			"artist": "Unknown in Abbasid dynasty",
+			"licence": "Public domain",
+			"licence_url": "",
+			"source": "https://commons.wikimedia.org/wiki/File:Folio_from_a_Koran_(8th-9th_century).jpg",
+			"sha1": "31fa1f4fbdf39edf74d3e634adb6266718645470",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 835
+		}
+	]
+}

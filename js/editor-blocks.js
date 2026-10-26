@@ -83,6 +83,24 @@
 		}
 	} );
 
+	registerBlockType( 'lailatulqadar/photo', {
+		edit: function ( props ) {
+			return el( 'div', useBlockProps(), el( ServerSideRender, { block: 'lailatulqadar/photo', attributes: props.attributes } ) );
+		},
+		save: function () {
+			return null;
+		}
+	} );
+
+	registerBlockType( 'lailatulqadar/image-credits', {
+		edit: function () {
+			return el( 'div', useBlockProps(), el( ServerSideRender, { block: 'lailatulqadar/image-credits' } ) );
+		},
+		save: function () {
+			return null;
+		}
+	} );
+
 	registerBlockType( 'lailatulqadar/breadcrumbs', {
 		edit: function () {
 			return el( 'div', useBlockProps(), el( 'span', { className: 'lq-crumbs' }, __( 'Home › Page title', 'lailatulqadar' ) ) );

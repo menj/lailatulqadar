@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.9.3' );
+define( 'LQ_VERSION', '1.9.4' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 
@@ -16,10 +16,12 @@ require_once LQ_DIR . '/inc/parent.php';
 require_once LQ_DIR . '/inc/languages.php';
 require_once LQ_DIR . '/inc/assets.php';
 require_once LQ_DIR . '/inc/blocks.php';
+require_once LQ_DIR . '/inc/images.php';
 require_once LQ_DIR . '/inc/ramadan.php';
 require_once LQ_DIR . '/inc/night-window.php';
 require_once LQ_DIR . '/inc/seo.php';
 require_once LQ_DIR . '/inc/contextual-links.php';
+require_once LQ_DIR . '/inc/draft-links.php';
 require_once LQ_DIR . '/inc/schema.php';
 require_once LQ_DIR . '/inc/login.php';
 require_once LQ_DIR . '/inc/setup.php';

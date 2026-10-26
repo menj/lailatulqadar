@@ -41,6 +41,7 @@ function lq_default_settings() {
 		'ramadan_start'         => '',
 		'ramadan_alt'           => '',
 		'ctx_own'               => '1',
+		'commons_featured'      => '1',
 		'ctx_sister'            => '1',
 		'ctx_own_max'           => '4',
 		'ctx_sister_max'        => '3',

@@ -20,6 +20,11 @@
 | When Is Laylat al-Qadr? | 1,317 | 10 | Draft for review |
 | The Last Ten Nights of Ramadan | 1,268 | 8 | Draft for review |
 | Signs of Laylat al-Qadr | 1,240 | 5 | Draft for review |
+| Start Here | about 720 | 3 | Draft for review |
+| What Is Laylat al-Qadr? | about 2,050 | 15 | Draft for review |
+| Prayer and Worship on Laylat al-Qadr | about 2,470 | 22 | Draft for review |
+| Frequently Asked Questions | about 2,200 | 20 | Draft for review |
+| Hadith and Sources | about 2,700 | 34 | Draft for review |
 
 Word counts exclude Arabic text, illustrations and footnotes.
 

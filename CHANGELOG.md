@@ -2,6 +2,12 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.4 (2026-10-26)
+
+- Five new English articles, seeded into empty drafts by Run setup: Start Here (`start`), What Is Laylat al-Qadr? (`what`), Prayer and Worship on Laylat al-Qadr (`worship`), Frequently Asked Questions (`faq`) and Hadith and Sources (`sources`). Qurʾānic text is quran.com `text_qpc_hafs`, inserted verbatim. Every hadith cited is VERIFIED on sunnah.com and shamela.ws (26 October 2026), with gradings from al-Albānī and Dār al-Salām; Ibn Mājah 1644 is held back because its gradings differ. Written with the sister sites' content in mind: consistent hadith numbers, and links out where a sister site goes deeper.
+- Sūrat al-Qadr: a thousand lunar months is about 29,530 nights, not 30,400.
+- When Is Laylat al-Qadr?: al-Bukhārī 2023 is glossed literally ("the ninth, the seventh, the fifth").
+
 ## 1.9.3 (2026-10-26)
 
 - The shipped articles are JSON data files: `content/<lang>/<key>.json` holds the block markup under `content` and the core footnotes under `footnotes`, in place of `<key>.html` and `<key>.footnotes.json` (both removed). For security, setup reads them with `json_decode()` through `lq_article_data()`, which accepts only a lower-case language and key, refuses a file of any other shape whole, and never includes or executes it. The seeded text is byte-identical; footnotes carry the same entries.

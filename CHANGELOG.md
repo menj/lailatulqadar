@@ -9,6 +9,7 @@ All notable changes to the Lailatulqadar theme are recorded here.
 - Front pages (English and Malay): verse 97:3 is now quran.com `text_qpc_hafs` exactly (shadda before kasra, no-break space before the verse number).
 - When Is and Last Ten Nights: the fixed Gregorian date for Ramadan 1448 is removed from the calendar footnote, following the SSOT date rule.
 - `inc/data/seed-history.json` regenerated, so unedited pages take the corrected content.
+- New English article, The Islamic Dilemma and the Qurʾān as Guardian (`dilemma`, /islamic-dilemma/; Malay slug `dilema-islam`, a draft until translated), in the reading path and footer. It answers the "Islamic dilemma" from the verses on the Qurʾān sent down on the Night of Decree as confirming (2:97, 3:3, 46:12) and guardian (5:48), with 5:46 to 5:47, 5:68, 10:94 and 2:79. Qurʾānic text is quran.com `text_qpc_hafs`, verbatim. Ibn Kathīr on 5:47 and 5:48, al-Bukhārī 7362 and 7363 and the chapter heading on taḥrīf are VERIFIED on shamela.ws (26 October 2026); the parallel in Abū Dāwūd 3644 is noted with al-Albānī's grading, ḍaʿīf. It carries the network block "The Islamic dilemma across the network" linking the six sister pieces. Focus keyword "islamic dilemma"; setup seeds and publishes it like the other shipped articles.
 
 ## 1.9.4 (2026-10-26)
 

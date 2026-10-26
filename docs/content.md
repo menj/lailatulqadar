@@ -25,6 +25,7 @@
 | Prayer and Worship on Laylat al-Qadr | about 2,470 | 22 | Published by setup |
 | Frequently Asked Questions | about 2,200 | 20 | Published by setup |
 | Hadith and Sources | about 2,700 | 34 | Published by setup |
+| The Islamic Dilemma and the Qurʾān as Guardian (1.9.5) | about 2,070 | 7 | Published by setup; Malay draft |
 
 Word counts exclude Arabic text, illustrations and footnotes.
 

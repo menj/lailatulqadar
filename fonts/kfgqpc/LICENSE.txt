@@ -1,7 +1,7 @@
 KFGQPC HAFS Uthmanic Script, Version 2.2
 Source: http://fonts.qurancomplex.gov.sa/
 
-This font file is distributed unmodified, as its licence requires.
+This font file is a WOFF2 conversion of the original TTF. The owner chose on 2026-10-26 to serve a WOFF2 conversion of the KFGQPC HAFS Uthmanic Script (107 KB, from 298 KB), accepting that the KFGQPC licence forbids modifying the font. The conversion is lossless for glyphs, cmap and OpenType layout; the digital signature (DSIG) is dropped.
 
 The digitally signed machine readable Typeface(Font) licensed to you is copyrighted, (2010), King Fahd Glorious Quran Printing Complex.
 ISBN: 978-603-8010-15-0, Accession No. 1430/7278

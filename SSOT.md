@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.9.1. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.9.2. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -71,7 +71,7 @@ Version 1.9.1. This file records the architecture, stored data and binding decis
 | `content/<lang>/<key>.html`, `<key>.footnotes.json` | Shipped articles and their footnotes, seeded into empty drafts by setup |
 | `fonts/eb-garamond/`, `fonts/noto-naskh-arabic/` | Self-hosted WOFF2 subsets with OFL licences |
 | `fonts/arslan-wessam/` | Arslan Wessam A and B, WOFF2 subsets, with a notice (no licence text in the source files) |
-| `fonts/kfgqpc/` | KFGQPC Hafs TTF, unmodified, with its licence |
+| `fonts/kfgqpc/` | KFGQPC Hafs as a WOFF2 conversion of the original TTF, with its licence |
 | `languages/` | POT file and `ms_MY` translation |
 
 ## Stored data
@@ -109,7 +109,7 @@ The `theme.json` palette is the night scheme and keeps the parent's slugs (`base
 | Role | Face | Where | Notes |
 |---|---|---|---|
 | Latin text | EB Garamond (owner-supplied, OFL) | Everywhere | Variable, 400 to 700; covers ā, ī, ū, ḥ, ṣ, ṭ, ḍ, ẓ, ʿ, ʾ |
-| Qurʾānic text | KFGQPC HAFS Uthmanic Script v2.2, supplied by the site owner; no fallback face | `.lq-ayah__text`, `.lq-quran`, `.is-style-lq-quran` (block style "Qurʾān verse") | Licence forbids modification: never subset, convert or rename internally. Feed it KFGQPC Hafs-encoded text (quran.com `text_qpc_hafs`); Arabic-Indic digits render as verse markers |
+| Qurʾānic text | KFGQPC HAFS Uthmanic Script v2.2, supplied by the site owner; no fallback face | `.lq-ayah__text`, `.lq-quran`, `.is-style-lq-quran` (block style "Qurʾān verse") | Licence forbids modification. The owner chose on 2026-10-26 to serve a WOFF2 conversion of the KFGQPC HAFS Uthmanic Script (107 KB, from 298 KB), accepting that the KFGQPC licence forbids modifying the font. The conversion is lossless for glyphs, cmap and OpenType layout; the digital signature (DSIG) is dropped. Never subset it or rename it internally. Feed it KFGQPC Hafs-encoded text (quran.com `text_qpc_hafs`); Arabic-Indic digits render as verse markers |
 | Hadith, supplications, Arabic terms | Arslan Wessam A (owner-supplied) | `[lang="ar"]`, `.lq-hadith`, `.is-style-lq-hadith`, second in the body stack | `size-adjust: 140%`; `unicode-range` limits downloads to pages with Arabic |
 | Display Arabic quotations | Arslan Wessam B (owner-supplied) | `.lq-arabic-quote`, `.is-style-lq-arabic-quote` | Centred, pale gold |
 | Fallback only | Noto Naskh Arabic | Behind Arslan | Downloads only if Arslan lacks a glyph |

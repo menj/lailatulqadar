@@ -4,7 +4,7 @@
 
 @font-face {
 	font-family: "KFGQPC HAFS Uthmanic Script";
-	src: url("../fonts/kfgqpc/kfgqpc-hafs-uthmanic.ttf") format("truetype");
+	src: url("../fonts/kfgqpc/kfgqpc-hafs-uthmanic.woff2") format("woff2");
 	font-display: block;
 }
 

@@ -2,6 +2,10 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.2 (2026-10-26)
+
+- The Qurʾān face is served as `fonts/kfgqpc/kfgqpc-hafs-uthmanic.woff2` (107 KB) in place of the original TTF (298 KB, removed): `theme.json`, the verse-page preload (`type="font/woff2"`) and the settings preview all point at it. The owner chose on 2026-10-26 to serve a WOFF2 conversion of the KFGQPC HAFS Uthmanic Script (107 KB, from 298 KB), accepting that the KFGQPC licence forbids modifying the font. The conversion is lossless for glyphs, cmap and OpenType layout; the digital signature (DSIG) is dropped. Recorded in SSOT.md.
+
 ## 1.9.1 (2026-10-26)
 
 Contextual links in the running text, to the guide pages here and to inner pages on the six sister sites.

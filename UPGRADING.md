@@ -1,5 +1,9 @@
 # Upgrading
 
+## From 1.9.1 to 1.9.2
+
+Upload the new zip over 1.9.1. `fonts/kfgqpc/kfgqpc-hafs-uthmanic.ttf` gives way to `kfgqpc-hafs-uthmanic.woff2`; an upload over the old folder leaves the TTF behind, which nothing reads. Clear caches so verse pages preload the new file.
+
 ## From 1.9.0 to 1.9.1
 
 Upload the new zip over 1.9.0. Contextual links are on from the start. Review or change them under Appearance > Lailatulqadar > Contextual links. No setup run is needed.

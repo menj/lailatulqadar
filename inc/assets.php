@@ -72,8 +72,8 @@ function lq_preload_quran_font() {
 		return;
 	}
 	printf(
-		'<link rel="preload" href="%s" as="font" type="font/ttf" crossorigin>' . "\n",
-		esc_url( LQ_URI . '/fonts/kfgqpc/kfgqpc-hafs-uthmanic.ttf' )
+		'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+		esc_url( LQ_URI . '/fonts/kfgqpc/kfgqpc-hafs-uthmanic.woff2' )
 	);
 }
 add_action( 'wp_head', 'lq_preload_quran_font', 2 );

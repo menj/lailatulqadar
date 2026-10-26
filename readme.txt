@@ -33,7 +33,7 @@ Setup saves guide pages as drafts. A page joins the menus when it is published.
 * The Qurʾān face is served as a WOFF2 conversion (107 KB, from 298 KB) in place of the original TTF, by the owner's decision, accepting that the font's licence forbids modifying it.
 
 = 1.9.1 =
-* Contextual links: the first mention of a known phrase in a guide page links to the page that treats it, on this site or on a sister site.
+* Contextual links: the first mention of a known phrase in a guide page or post links to the page that treats it, on this site or on a sister site.
 
 = 1.9.0 =
 * English and Malay handled by the theme itself; Polylang no longer used.

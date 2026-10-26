@@ -5,7 +5,7 @@ All notable changes to the Lailatulqadar theme are recorded here.
 ## 1.9.2 (2026-10-26)
 
 - The Qurʾān face is served as `fonts/kfgqpc/kfgqpc-hafs-uthmanic.woff2` (107 KB) in place of the original TTF (298 KB, removed): `theme.json`, the verse-page preload (`type="font/woff2"`) and the settings preview all point at it. The owner chose on 2026-10-26 to serve a WOFF2 conversion of the KFGQPC HAFS Uthmanic Script (107 KB, from 298 KB), accepting that the KFGQPC licence forbids modifying the font. The conversion is lossless for glyphs, cmap and OpenType layout; the digital signature (DSIG) is dropped. Recorded in SSOT.md.
-- Contextual links run on pages only, as documented: a blog post or another post type no longer receives them.
+- Contextual links run on guide pages and blog posts, and the docs now say so; another post type (an event, a product) receives none. Only the post being viewed is linked, never one rendered beside it.
 - A list item holding several paragraphs receives at most one new link, like a paragraph; before, each inner paragraph reset the count.
 - A negative cap on the Contextual links tab saves as 0; before, `absint()` turned -4 into 4.
 

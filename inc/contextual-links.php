@@ -392,7 +392,7 @@ function lq_contextual_links_filter( $content ) {
 		return $content;
 	}
 	$post = get_post();
-	if ( ! $post || 'page' !== $post->post_type || (int) $post->ID !== (int) get_queried_object_id() || ! lq_ctx_enabled_for( $post ) ) {
+	if ( ! $post || ! in_array( $post->post_type, array( 'page', 'post' ), true ) || (int) $post->ID !== (int) get_queried_object_id() || ! lq_ctx_enabled_for( $post ) ) {
 		return $content;
 	}
 	$role = lq_role_of( $post->ID );

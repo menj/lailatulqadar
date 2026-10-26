@@ -41,7 +41,7 @@ Version 1.9.2. This file records the architecture, stored data and binding decis
 | `inc/schema.php` | JSON-LD graph (Organization, WebSite, WebPage, BreadcrumbList, Article), breadcrumb trail, XML sitemap trimming |
 | `blocks/breadcrumbs/` | Visible breadcrumbs above the page title |
 | `inc/seo.php` | Title tag, meta description, editor box, SEO plugin detection |
-| `inc/contextual-links.php` | Contextual links in the running text of guide pages, to this site and the sister sites |
+| `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and the sister sites |
 | `inc/data/network-links.json` | Shared phrase map of the seven-site network; identical in every theme, edit it in all seven together |
 | `inc/data/contextual-links-ms.json` | Malay phrases for the Malay guide pages, keyed by page key |
 | `inc/setup.php` | First-run and on-demand setup routine, draft renaming, SEO prefill |
@@ -153,7 +153,7 @@ Work tracking follows the agency template: `lailatulqadar.guide - SEO Work Progr
 
 ## Contextual links
 
-The first mention of a known phrase in the running text of a guide page links to the inner page that treats it, here or on a sister site. The phrase map `inc/data/network-links.json` is shared by the seven themes of the network and must stay identical in all of them; each phrase belongs to exactly one page, chosen by the site whose subject it is (Laylat al-Qadr, the last ten nights, the odd nights, iʿtikāf and the night prayer belong to this site). Malay pages use `inc/data/contextual-links-ms.json` and link only within the Malay guide. Caps: 4 links to this site and 3 to sister sites a page by default, one new link a paragraph. Never in headings, quotations, verses, hadith, Arabic, figures, tables, footnotes or the "In brief" box.
+The first mention of a known phrase in the running text of a guide page or a blog post links to the inner page that treats it, here or on a sister site. The phrase map `inc/data/network-links.json` is shared by the seven themes of the network and must stay identical in all of them; each phrase belongs to exactly one page, chosen by the site whose subject it is (Laylat al-Qadr, the last ten nights, the odd nights, iʿtikāf and the night prayer belong to this site). Malay pages use `inc/data/contextual-links-ms.json` and link only within the Malay guide. Caps: 4 links to this site and 3 to sister sites a page by default, one new link a paragraph. Never in headings, quotations, verses, hadith, Arabic, figures, tables, footnotes or the "In brief" box.
 
 ## Writing rule: no contractions
 

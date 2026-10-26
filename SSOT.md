@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.9.2. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.9.3. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -68,7 +68,7 @@ Version 1.9.2. This file records the architecture, stored data and binding decis
 | `parts/header.html`, `parts/footer.html` | Override the parent parts |
 | `templates/front-page.html`, `page.html`, `404.html` | Override the parent templates |
 | `patterns/front-en.php`, `front-ms.php` | Front page content per language |
-| `content/<lang>/<key>.html`, `<key>.footnotes.json` | Shipped articles and their footnotes, seeded into empty drafts by setup |
+| `content/<lang>/<key>.json` | Shipped articles, seeded into empty drafts by setup: block markup under `content`, core footnotes under `footnotes`. Data only, read with `json_decode()` and validated; never included or executed |
 | `fonts/eb-garamond/`, `fonts/noto-naskh-arabic/` | Self-hosted WOFF2 subsets with OFL licences |
 | `fonts/arslan-wessam/` | Arslan Wessam A and B, WOFF2 subsets, with a notice (no licence text in the source files) |
 | `fonts/kfgqpc/` | KFGQPC Hafs as a WOFF2 conversion of the original TTF, with its licence |

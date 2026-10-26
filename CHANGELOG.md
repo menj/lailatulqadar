@@ -2,6 +2,17 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.1 (2026-10-26)
+
+Contextual links in the running text, to the guide pages here and to inner pages on the six sister sites.
+
+### Added
+- `inc/contextual-links.php`: as a guide page renders, the first mention of a known phrase in its running text links to the page that treats it. Each address is linked once a page; no paragraph or list item receives more than one new link; the current page is never linked; headings, links, quotations, figures and captions, tables, footnotes, verses, hadith, Arabic, and the "In brief" box are skipped. The stored text is never changed.
+- `inc/data/network-links.json`: the shared map of phrases and inner pages for all seven sites of the network (abrahamic-religions.com, bestofislam.org, injil.help, apostleofdoom.org, compelling-evidence.com, murtadd.org, lailatulqadar.guide). The same file ships in every theme. Entries for this site link to the published guide page, so a draft is never linked; entries for a sister site link to that site.
+- `inc/data/contextual-links-ms.json`: Malay phrases for the Malay guide pages beneath /ms/. Malay pages link only to Malay pages on this site, since the sister sites are in English.
+- Settings, Contextual links tab: links to this site on or off, links to sister sites on or off, a cap for each (default 4 and 3 a page), extra phrases for English and Malay pages ("phrase | address", read before the maps), and page slugs that never receive links. Filters `lq_contextual_links_map` and `lq_contextual_links_enabled`.
+- Links carry the class `lq-ctx-link`; links to a sister site add `lq-ctx-link--sister` and `rel="noopener"`, and open in the same tab.
+
 ## 1.9.0 (2026-09-26)
 
 The theme now runs both languages itself. Polylang is no longer needed or supported. See docs/languages.md.

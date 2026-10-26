@@ -40,6 +40,13 @@ function lq_default_settings() {
 		'ramadan_year'          => '',
 		'ramadan_start'         => '',
 		'ramadan_alt'           => '',
+		'ctx_own'               => '1',
+		'ctx_sister'            => '1',
+		'ctx_own_max'           => '4',
+		'ctx_sister_max'        => '3',
+		'ctx_extra'             => '',
+		'ctx_extra_ms'          => '',
+		'ctx_exclude'           => '',
 	);
 }
 

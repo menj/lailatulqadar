@@ -22,6 +22,12 @@ Appearance > Lailatulqadar. Each tab saves only its own fields.
 ## Search
 - **Search appearance.** Every guide page in both languages with its title tag and meta description and a length badge (green within 60 and 130 characters, red over). Edit values in the Search appearance box on each page. When an SEO plugin is active the theme stops printing these tags and says so here.
 
+## Contextual links
+- **How contextual links work.** Explains the rules and shows how many pages the shared map lists here and on the sister sites.
+- **This site / Sister sites.** Turn each kind of link on or off, and set the most links of each kind on one page (defaults 4 and 3). Sister-site links appear on English pages only.
+- **Extra phrases.** One per line, "phrase | address". An address beginning with / is on this site; a full address must be on this site or a sister site. Lines here are read before the shared map, so they win. Malay pages have their own field, for addresses on this site only.
+- **Pages without links.** Page slugs that never receive contextual links.
+
 ## Tools
 - **Run setup.** Creates missing guide pages, links translations, sets the front page, adds the Malay site title if none exists, renames guide pages that are still empty drafts, and fills empty title tags and meta descriptions.
 - **Reset settings.** Returns every setting to its default. Pages are untouched.

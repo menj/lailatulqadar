@@ -1,5 +1,9 @@
 # Upgrading
 
+## From 1.9.0 to 1.9.1
+
+Upload the new zip over 1.9.0. Contextual links are on from the start. Review or change them under Appearance > Lailatulqadar > Contextual links. No setup run is needed.
+
 ## From 1.8.1 to 1.9.0
 
 1. If Polylang is installed, deactivate and delete it.

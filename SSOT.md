@@ -44,7 +44,8 @@ Version 1.9.4. This file records the architecture, stored data and binding decis
 | `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and the sister sites |
 | `inc/data/network-links.json` | Shared phrase map of the seven-site network; identical in every theme, edit it in all seven together |
 | `inc/data/contextual-links-ms.json` | Malay phrases for the Malay guide pages, keyed by page key |
-| `inc/setup.php` | First-run and on-demand setup routine, draft renaming, SEO prefill |
+| `inc/setup.php` | Setup on activation, on update and on demand: page creation, publishing of shipped articles, content refresh, trashing of obsolete copies, draft renaming, SEO prefill |
+| `inc/data/seed-history.json` | md5 of every version of each article shipped in earlier releases (rebuilt from the git history of `content/`), so a page seeded before `_lq_seed_hash` existed is recognised as unedited. Data only, read with `json_decode()`. Add the old version's md5 here whenever an article changes |
 | `inc/settings.php` | Tabbed settings screen and Tools handlers (admin only) |
 | `blocks/guide-menu/` | Header links, numbered reading path, footer |
 | `blocks/language-switcher/` | Link to the same page in the other language |
@@ -68,7 +69,7 @@ Version 1.9.4. This file records the architecture, stored data and binding decis
 | `parts/header.html`, `parts/footer.html` | Override the parent parts |
 | `templates/front-page.html`, `page.html`, `404.html` | Override the parent templates |
 | `patterns/front-en.php`, `front-ms.php` | Front page content per language |
-| `content/<lang>/<key>.json` | Shipped articles, seeded into empty drafts by setup: block markup under `content`, core footnotes under `footnotes`. Data only, read with `json_decode()` and validated; never included or executed |
+| `content/<lang>/<key>.json` | Shipped articles, written into their pages and published by setup: block markup under `content`, core footnotes under `footnotes`. Data only, read with `json_decode()` and validated; never included or executed |
 | `fonts/eb-garamond/`, `fonts/noto-naskh-arabic/` | Self-hosted WOFF2 subsets with OFL licences |
 | `fonts/arslan-wessam/` | Arslan Wessam A and B, WOFF2 subsets, with a notice (no licence text in the source files) |
 | `fonts/kfgqpc/` | KFGQPC Hafs as a WOFF2 conversion of the original TTF, with its licence |
@@ -87,17 +88,21 @@ Version 1.9.4. This file records the architecture, stored data and binding decis
 | `lailatulqadar_settings` | Array: `primary_slug`, `secondary_slug`, `primary_label`, `secondary_label`, `footer_note_primary`, `footer_note_secondary`, `scheme` (`night`, `dawn`, `auto`), `scheme_toggle` (`show`, `hide`), `accent_night`, `accent_dawn`, `calligraphy_id`, `login_tagline_primary`, `login_tagline_secondary`, `login_note_primary`, `login_note_secondary`, `verify_google`, `verify_bing`, `author_name`, `author_url`, `ramadan_year`, `ramadan_start`, `ramadan_alt` (optional override for one year; empty means automatic), `ctx_own`, `ctx_sister` (`1` or `0`), `ctx_own_max` (0 to 15), `ctx_sister_max` (0 to 10), `ctx_extra`, `ctx_extra_ms`, `ctx_exclude` |
 | `lailatulqadar_pages` | Page IDs keyed by role (`primary`, `secondary`) then page key |
 | `lailatulqadar_setup_version` | Theme version that last ran setup |
-| `lailatulqadar_needs_setup` | Set on activation, cleared on the first admin visit |
+| `lailatulqadar_needs_setup` | Set on activation, cleared once setup has run on an admin visit. Setup also runs when `lailatulqadar_setup_version` differs from `LQ_VERSION` |
+| Transient `lailatulqadar_setup_lock` | Held while setup runs (five minutes at most), so two requests never run it at once |
 | Transient `lailatulqadar_setup_report` | Result of the last setup run, shown once |
 | Post meta `_lq_seo_title`, `_lq_meta_description` | Per-page title tag and meta description |
 | `lailatulqadar_settings['commons_featured']` | `1` or `0`: setup sets each page's lead Commons image as its featured image |
 | `lailatulqadar_commons_media` | Attachment IDs of the Commons images copied into the media library, keyed by image file base, so English and Malay pages share one attachment |
+| Post meta `_lq_lang`, `_lq_key` | Language and page key of a page setup created or adopted; the theme's ownership marker. Only pages carrying `_lq_lang` are ever trashed as obsolete copies |
+| Post meta `_lq_seed_hash` | md5 of the content setup wrote (links resolved, line endings unified, trimmed), a colon, and md5 of its footnotes. A page whose content and footnotes still match is unedited and takes new shipped versions |
+| Post meta `_lq_seed_edited` | Set when an editor has changed a page and the shipped article differs; the Tools tab lists it as "Edited, not updated" |
 | Post meta `_lq_featured_seeded` | Set once setup has given a page its featured image, so an image an editor removes is not put back |
 | Attachment meta `_lq_credit` | Author, licence, licence deed and source of a Commons attachment |
 
 ## Page registry
 
-Keys, in reading order: `home`, `start`, `what`, `surah`, `when`, `last10`, `signs`, `worship`, `dua`, `planner`, `faq`, `sources`, `about`, `sitemap`, `contact`. Titles, slugs, menu labels, title tags, meta descriptions, focus keywords and menu membership live in `lq_page_definitions()` in `inc/helpers.php`. Setup publishes the home and sitemap pages in both languages and saves every other page as a draft. Menus list published pages only; the reading path also shows unpublished pages as "Coming soon". Malay pages sit beneath the Malay home at /ms/. Keyword targets per page: docs/seo.md.
+Keys, in reading order: `home`, `start`, `what`, `surah`, `when`, `last10`, `signs`, `worship`, `dua`, `planner`, `faq`, `sources`, `about`, `sitemap`, `contact`. Titles, slugs, menu labels, title tags, meta descriptions, focus keywords and menu membership live in `lq_page_definitions()` in `inc/helpers.php`. Setup runs on the first admin visit (manage_options) after activation or a version change, never on a front-end request. It publishes the home and sitemap pages in both languages and every page whose article ships in `content/<lang>/<key>.json`; a page with no shipped article (About, Contact, a Malay page awaiting translation) stays a draft. When a shipped article changes, a page whose content and footnotes still match `_lq_seed_hash` (or, before the hash, an earlier shipped version in `inc/data/seed-history.json`) is replaced through `wp_update_post()`, which keeps a revision, and keeps its status; an edited page is never overwritten and is listed on the Tools tab with a button to replace it. Copies of guide pages the theme created (carrying `_lq_lang`) that the registry no longer points to go to the trash when they hold no text or only text the theme wrote; edited copies are kept and reported; pages without the marker are never touched. Menus list published pages only; the reading path also shows unpublished pages as "Coming soon". Malay pages sit beneath the Malay home at /ms/. Keyword targets per page: docs/seo.md.
 
 ## Colour system
 

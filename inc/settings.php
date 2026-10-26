@@ -889,9 +889,42 @@ function lq_render_tools_tab() {
 		<?php endif; ?>
 	</section>
 
+	<?php
+	$edited = array_filter(
+		$rows,
+		static function ( $row ) {
+			return $row['id'] && get_post_meta( $row['id'], '_lq_seed_edited', true );
+		}
+	);
+	if ( $edited ) :
+		?>
+		<section class="lq-section">
+			<h2><?php esc_html_e( 'Edited, not updated', 'lailatulqadar' ); ?></h2>
+			<p class="lq-help"><?php esc_html_e( 'The theme ships a newer version of these articles, but an editor has changed the page, so setup left it as it is. Compare the page with the shipped version and either keep the edits or replace the page. Replacing publishes the shipped version; the current text stays in the page\'s revisions.', 'lailatulqadar' ); ?></p>
+			<table class="lq-pages">
+				<tbody>
+					<?php foreach ( $edited as $row ) : ?>
+						<tr>
+							<th scope="row"><a href="<?php echo esc_url( get_edit_post_link( $row['id'] ) ); ?>"><?php echo esc_html( $row['title'] ); ?></a></th>
+							<td><?php echo esc_html( $langs[ $row['role'] ] ); ?></td>
+							<td>
+								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+									<input type="hidden" name="action" value="lq_replace_shipped">
+									<input type="hidden" name="page_id" value="<?php echo esc_attr( $row['id'] ); ?>">
+									<?php wp_nonce_field( 'lq_replace_shipped_' . $row['id'] ); ?>
+									<?php submit_button( __( 'Replace with the shipped version', 'lailatulqadar' ), 'secondary', 'submit', false, array( 'data-lq-confirm' => __( 'Replace this page with the version shipped with the theme? The edited text stays in its revisions.', 'lailatulqadar' ) ) ); ?>
+								</form>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</section>
+	<?php endif; ?>
+
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Run setup', 'lailatulqadar' ); ?></h2>
-		<p class="lq-help"><?php esc_html_e( 'Creates any missing guide pages in both languages, places the Malay pages beneath the Malay home at /ms/, pairs each page with its translation and sets the front page. Drafts with no content take the current titles and slugs; pages with content are never changed. Empty title tags and meta descriptions are filled from the keyword plan.', 'lailatulqadar' ); ?></p>
+		<p class="lq-help"><?php esc_html_e( 'Setup runs by itself on the first admin visit after the theme is activated or updated; this button runs it again. It creates any missing guide pages in both languages, places the Malay pages beneath the Malay home at /ms/, pairs each page with its translation and sets the front page. Every page whose article ships with the theme is filled and published; pages with no article yet (About, Contact, Malay pages awaiting translation) stay drafts. When the theme ships a new version of an article, a page nobody has edited takes it (WordPress keeps the old text as a revision); a page an editor has changed is never overwritten and is listed under "Edited, not updated". Obsolete copies of guide pages left by earlier setups go to the trash; pages the theme did not create are never touched. Featured images an editor chose are kept. Empty title tags and meta descriptions are filled from the keyword plan.', 'lailatulqadar' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="lq_run_setup">
 			<?php wp_nonce_field( 'lq_run_setup' ); ?>
@@ -930,6 +963,20 @@ function lq_render_notices() {
 			)
 		);
 		echo '</p>';
+		$lists = array(
+			'seeded'    => __( 'Filled with the shipped article: %s.', 'lailatulqadar' ),
+			'published' => __( 'Published: %s.', 'lailatulqadar' ),
+			'refreshed' => __( 'Updated to the new shipped version (the old text is kept as a revision): %s.', 'lailatulqadar' ),
+			'edited'    => __( 'Edited by an editor, so not updated: %s.', 'lailatulqadar' ),
+			'trashed'   => __( 'Obsolete copies moved to the trash: %s.', 'lailatulqadar' ),
+			'kept'      => __( 'Older copies kept because they have been edited: %s.', 'lailatulqadar' ),
+		);
+		foreach ( $lists as $list => $message ) {
+			if ( ! empty( $report[ $list ] ) ) {
+				/* translators: %s: list of page titles */
+				echo '<p>' . esc_html( sprintf( $message, implode( ', ', $report[ $list ] ) ) ) . '</p>';
+			}
+		}
 		foreach ( $report['errors'] as $error ) {
 			echo '<p>' . esc_html( $error ) . '</p>';
 		}
@@ -964,11 +1011,48 @@ function lq_handle_run_setup() {
 		wp_die( esc_html__( 'You do not have permission to run setup.', 'lailatulqadar' ) );
 	}
 	check_admin_referer( 'lq_run_setup' );
-	set_transient( 'lailatulqadar_setup_report', lq_run_setup(), MINUTE_IN_SECONDS * 10 );
+	$report = lq_run_setup_locked();
+	if ( null === $report ) {
+		wp_die( esc_html__( 'Setup is already running. Try again in a minute.', 'lailatulqadar' ) );
+	}
+	set_transient( 'lailatulqadar_setup_report', $report, MINUTE_IN_SECONDS * 10 );
 	wp_safe_redirect( admin_url( 'themes.php?page=lailatulqadar&tab=tools' ) );
 	exit;
 }
 add_action( 'admin_post_lq_run_setup', 'lq_handle_run_setup' );
+
+/**
+ * Tools: replace an edited guide page with the article the theme ships.
+ */
+function lq_handle_replace_shipped() {
+	$id = isset( $_POST['page_id'] ) ? absint( $_POST['page_id'] ) : 0;
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'You do not have permission to replace pages.', 'lailatulqadar' ) );
+	}
+	check_admin_referer( 'lq_replace_shipped_' . $id );
+	$report = array(
+		'created'   => array(),
+		'reused'    => array(),
+		'seeded'    => array(),
+		'published' => array(),
+		'refreshed' => array(),
+		'edited'    => array(),
+		'trashed'   => array(),
+		'kept'      => array(),
+		'errors'    => array(),
+	);
+	foreach ( lq_page_map() as $role => $ids ) {
+		$key = array_search( $id, array_map( 'intval', (array) $ids ), true );
+		if ( $id && false !== $key ) {
+			lq_seed_content( $id, (string) $key, (string) $role, $report, true );
+			break;
+		}
+	}
+	set_transient( 'lailatulqadar_setup_report', $report, MINUTE_IN_SECONDS * 10 );
+	wp_safe_redirect( admin_url( 'themes.php?page=lailatulqadar&tab=tools' ) );
+	exit;
+}
+add_action( 'admin_post_lq_replace_shipped', 'lq_handle_replace_shipped' );
 
 /**
  * Tools: reset settings.

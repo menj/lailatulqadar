@@ -4,9 +4,13 @@
  * the two languages to each other, places the Malay pages beneath the
  * Malay home at /ms/ and sets the static front page.
  *
- * Runs on the first admin visit after activation and again on demand
- * from Appearance > Theme Options > Tools. The routine is idempotent:
- * existing pages are reused and never overwritten.
+ * Runs on the first admin visit after activation or after an update, and
+ * on demand from Appearance > Theme Options > Tools. Every page whose
+ * article ships in content/<lang>/<key>.json is seeded and published; a
+ * page the theme seeded and nobody has edited takes the new version when
+ * the shipped article changes; an editor's changes are never overwritten.
+ * Obsolete duplicates the theme created go to the trash. The routine is
+ * idempotent: a second run with nothing changed does nothing.
  *
  * @package Lailatulqadar
  */
@@ -22,16 +26,43 @@ function lq_flag_setup() {
 add_action( 'after_switch_theme', 'lq_flag_setup' );
 
 /**
- * Run the flagged setup on the first admin visit by an administrator.
+ * Run setup on the first admin visit by an administrator after the theme
+ * is activated, and again after an update (a new LQ_VERSION). Only an
+ * admin request with manage_options runs it; a front-end request never
+ * writes.
  */
 function lq_maybe_run_setup() {
-	if ( wp_doing_ajax() || ! get_option( 'lailatulqadar_needs_setup' ) || ! current_user_can( 'manage_options' ) ) {
+	if ( wp_doing_ajax() || ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
+	if ( ! get_option( 'lailatulqadar_needs_setup' ) && LQ_VERSION === get_option( 'lailatulqadar_setup_version' ) ) {
+		return;
+	}
+	$report = lq_run_setup_locked();
+	if ( null === $report ) {
+		return; // Another request is running it; the flag stays for the next visit.
+	}
 	delete_option( 'lailatulqadar_needs_setup' );
-	set_transient( 'lailatulqadar_setup_report', lq_run_setup(), MINUTE_IN_SECONDS * 10 );
+	set_transient( 'lailatulqadar_setup_report', $report, MINUTE_IN_SECONDS * 10 );
 }
 add_action( 'admin_init', 'lq_maybe_run_setup' );
+
+/**
+ * Run setup under a lock, so two requests never run it at once.
+ *
+ * @return array|null The report, or null when another run holds the lock.
+ */
+function lq_run_setup_locked() {
+	if ( get_transient( 'lailatulqadar_setup_lock' ) ) {
+		return null;
+	}
+	set_transient( 'lailatulqadar_setup_lock', 1, MINUTE_IN_SECONDS * 5 );
+	try {
+		return lq_run_setup();
+	} finally {
+		delete_transient( 'lailatulqadar_setup_lock' );
+	}
+}
 
 /**
  * Find or create one guide page.
@@ -93,11 +124,16 @@ function lq_ensure_page( $key, $role, $map, &$report ) {
  */
 function lq_run_setup() {
 	$report   = array(
-		'created'  => array(),
-		'reused'   => array(),
-		'renamed'  => array(),
-		'seeded'   => array(),
-		'errors'   => array(),
+		'created'   => array(),
+		'reused'    => array(),
+		'renamed'   => array(),
+		'seeded'    => array(),
+		'published' => array(),
+		'refreshed' => array(),
+		'edited'    => array(),
+		'trashed'   => array(),
+		'kept'      => array(),
+		'errors'    => array(),
 	);
 	$map = lq_page_map();
 
@@ -123,6 +159,7 @@ function lq_run_setup() {
 	}
 
 	update_option( LQ_PAGES_OPTION, $map, false );
+	lq_trash_duplicates( $map, $report );
 
 	if ( ! empty( $map['primary']['home'] ) ) {
 		update_option( 'show_on_front', 'page' );
@@ -146,6 +183,7 @@ function lq_run_setup() {
  */
 function lq_place_page( $id, $key, $role, $map ) {
 	update_post_meta( $id, '_lq_lang', 'secondary' === $role ? 'ms' : 'en' );
+	update_post_meta( $id, '_lq_key', $key );
 	if ( 'secondary' !== $role ) {
 		return;
 	}
@@ -322,23 +360,196 @@ function lq_article_data( $lang, $key ) {
 	);
 }
 
+
 /**
- * Fill an empty draft with the article shipped in content/<lang>/<key>.json.
+ * Content normalised for comparison: line endings unified, outer space
+ * trimmed, as setup compares content elsewhere.
  *
- * Only drafts with no content are touched, so an editor's work is never
- * overwritten. Internal links written as {{url:key}} resolve to the page's
- * address in the same language, and footnotes load into the core
- * footnotes meta. Seeded pages stay drafts until an editor publishes them.
+ * @param string $content Block markup.
+ * @return string
+ */
+function lq_seed_normalise( $content ) {
+	return trim( str_replace( array( "\r\n", "\r" ), "\n", (string) $content ) );
+}
+
+/**
+ * Fingerprint of a page's content and footnotes, stored as _lq_seed_hash
+ * when setup writes a page.
+ *
+ * @param string $content   Content as written (links resolved).
+ * @param array  $footnotes Footnotes: id and content of each.
+ * @return string
+ */
+function lq_seed_hash( $content, $footnotes ) {
+	$notes = array();
+	foreach ( (array) $footnotes as $note ) {
+		if ( is_array( $note ) && isset( $note['id'], $note['content'] ) ) {
+			$notes[] = array(
+				'id'      => (string) $note['id'],
+				'content' => (string) $note['content'],
+			);
+		}
+	}
+	return md5( lq_seed_normalise( $content ) ) . ':' . md5( (string) wp_json_encode( $notes, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) );
+}
+
+/**
+ * A page's footnotes as stored in the core footnotes meta.
+ *
+ * @param int $id Page ID.
+ * @return array
+ */
+function lq_page_footnotes( $id ) {
+	$notes = json_decode( (string) get_post_meta( $id, 'footnotes', true ), true );
+	return is_array( $notes ) ? $notes : array();
+}
+
+/**
+ * The address a {{url:key}} token resolves to, and the fallback address
+ * used before the page exists.
+ *
+ * @param string $key  Page key in the token.
+ * @param string $role primary or secondary.
+ * @return string[] Resolved address first, then the fallback.
+ */
+function lq_article_link_urls( $key, $role ) {
+	$defs = lq_page_definitions();
+	if ( empty( $defs[ $key ] ) ) {
+		return array( home_url( '/' ) );
+	}
+	$prefix   = 'secondary' === $role ? lq_setting( 'secondary_slug' ) . '/' : '';
+	$slug     = 'home' === $key ? '' : $defs[ $key ][ $role ]['slug'] . '/';
+	$fallback = home_url( '/' . $prefix . $slug );
+	$map      = lq_page_map();
+	if ( ! empty( $map[ $role ][ $key ] ) && get_post( (int) $map[ $role ][ $key ] ) ) {
+		return array( get_permalink( (int) $map[ $role ][ $key ] ), $fallback );
+	}
+	return array( $fallback, $fallback );
+}
+
+/**
+ * Resolve the {{url:key}} tokens of a shipped article to addresses in the
+ * same language.
+ *
+ * @param string $content Shipped block markup.
+ * @param string $role    primary or secondary.
+ * @return string
+ */
+function lq_resolve_article_links( $content, $role ) {
+	return preg_replace_callback(
+		'/\{\{url:([a-z0-9]+)\}\}/',
+		static function ( $m ) use ( $role ) {
+			return lq_article_link_urls( $m[1], $role )[0];
+		},
+		$content
+	);
+}
+
+/**
+ * Turn guide-page addresses in a page's links back into {{url:key}}
+ * tokens, so a page seeded by an earlier release can be compared with the
+ * shipped text of that release.
+ *
+ * @param string $content Page content.
+ * @param string $role    primary or secondary.
+ * @return string
+ */
+function lq_unresolve_article_links( $content, $role ) {
+	$urls = array();
+	foreach ( array_keys( lq_page_definitions() ) as $key ) {
+		foreach ( lq_article_link_urls( $key, $role ) as $url ) {
+			if ( ! isset( $urls[ $url ] ) ) {
+				$urls[ $url ] = $key;
+			}
+		}
+	}
+	return preg_replace_callback(
+		'/href="([^"]*)"/',
+		static function ( $m ) use ( $urls ) {
+			return isset( $urls[ $m[1] ] ) ? 'href="{{url:' . $urls[ $m[1] ] . '}}"' : $m[0];
+		},
+		(string) $content
+	);
+}
+
+/**
+ * md5 of every version of each article the theme has shipped, from
+ * inc/data/seed-history.json (built from the git history of content/).
+ * Data only, read with json_decode().
+ *
+ * @param string $lang en or ms.
+ * @param string $key  Page key.
+ * @return string[]
+ */
+function lq_seed_history( $lang, $key ) {
+	static $data = null;
+	if ( null === $data ) {
+		$file = LQ_DIR . '/inc/data/seed-history.json';
+		$data = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : array(); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$data = is_array( $data ) ? $data : array();
+	}
+	$list = isset( $data[ $lang ][ $key ] ) && is_array( $data[ $lang ][ $key ] ) ? $data[ $lang ][ $key ] : array();
+	return array_values( array_filter( $list, 'is_string' ) );
+}
+
+/**
+ * Whether a page still holds text the theme wrote: it is empty, matches
+ * its stored seed hash, or (for a page seeded before the hash existed)
+ * matches a version of the article shipped in an earlier release.
+ *
+ * @param WP_Post $post Page.
+ * @param string  $key  Page key.
+ * @param string  $role primary or secondary.
+ * @return bool
+ */
+function lq_page_is_unedited( $post, $key, $role ) {
+	if ( '' === trim( $post->post_content ) ) {
+		return true;
+	}
+	$stored = (string) get_post_meta( $post->ID, '_lq_seed_hash', true );
+	if ( '' !== $stored ) {
+		return lq_seed_hash( $post->post_content, lq_page_footnotes( $post->ID ) ) === $stored;
+	}
+	$lang    = 'secondary' === $role ? 'ms' : 'en';
+	$hash    = md5( lq_seed_normalise( lq_unresolve_article_links( $post->post_content, $role ) ) );
+	$known   = lq_seed_history( $lang, $key );
+	$article = lq_article_data( $lang, $key );
+	if ( $article ) {
+		$known[] = md5( lq_seed_normalise( $article['content'] ) );
+	}
+	return in_array( $hash, $known, true );
+}
+
+/**
+ * Write the article shipped in content/<lang>/<key>.json into a page, and
+ * keep it current.
+ *
+ * - An empty page (draft or published) is seeded and published.
+ * - A page the theme wrote and nobody has edited (its content and
+ *   footnotes still match _lq_seed_hash, or, before the hash existed, an
+ *   earlier shipped version) takes the new version when the shipped
+ *   article changes, through wp_update_post(), which keeps a revision.
+ *   A page seeded before the hash existed is published; one the theme
+ *   has hashed keeps its status, so a page an editor returns to draft
+ *   stays a draft.
+ * - A page an editor has changed is never overwritten. When the shipped
+ *   article differs from it, it is marked _lq_seed_edited and listed on
+ *   the Tools tab as "Edited, not updated".
+ *
+ * Internal links written as {{url:key}} resolve to the page's address in
+ * the same language, and footnotes load into the core footnotes meta.
+ * A page with no shipped article is left alone.
  *
  * @param int    $id     Page ID.
  * @param string $key    Page key.
  * @param string $role   primary or secondary.
  * @param array  $report Report, passed by reference.
+ * @param bool   $force  Replace even an edited page (the Tools button).
  */
-function lq_seed_content( $id, $key, $role, &$report ) {
+function lq_seed_content( $id, $key, $role, &$report, $force = false ) {
 	$lang = 'secondary' === $role ? 'ms' : 'en';
 	$post = get_post( $id );
-	if ( ! $post || 'draft' !== $post->post_status || '' !== trim( $post->post_content ) ) {
+	if ( ! $post || ! in_array( $post->post_status, array( 'draft', 'pending', 'publish' ), true ) ) {
 		return;
 	}
 	$article = lq_article_data( $lang, $key );
@@ -346,34 +557,141 @@ function lq_seed_content( $id, $key, $role, &$report ) {
 		return;
 	}
 
-	$content = $article['content'];
-	$defs    = lq_page_definitions();
-	$map     = lq_page_map();
-	$content = preg_replace_callback(
-		'/\{\{url:([a-z0-9]+)\}\}/',
-		function ( $m ) use ( $defs, $role, $map ) {
-			if ( empty( $defs[ $m[1] ] ) ) {
-				return home_url( '/' );
-			}
-			if ( ! empty( $map[ $role ][ $m[1] ] ) && get_post( (int) $map[ $role ][ $m[1] ] ) ) {
-				return get_permalink( (int) $map[ $role ][ $m[1] ] );
-			}
-			$prefix = 'secondary' === $role ? lq_setting( 'secondary_slug' ) . '/' : '';
-			$slug   = 'home' === $m[1] ? '' : $defs[ $m[1] ][ $role ]['slug'] . '/';
-			return home_url( '/' . $prefix . $slug );
-		},
-		$content
-	);
+	$title    = lq_page_definitions()[ $key ][ $role ]['title'];
+	$content  = lq_resolve_article_links( $article['content'], $role );
+	$new      = lq_seed_hash( $content, $article['footnotes'] );
+	$stored   = (string) get_post_meta( $id, '_lq_seed_hash', true );
+	$empty    = '' === trim( $post->post_content );
+	$current  = lq_seed_hash( $post->post_content, lq_page_footnotes( $id ) );
+	$unedited = $force || lq_page_is_unedited( $post, $key, $role );
+	$was      = $post->post_status;
 
-	wp_update_post(
+	if ( ! $unedited ) {
+		if ( $new === $stored || $new === $current ) {
+			delete_post_meta( $id, '_lq_seed_edited' );
+		} else {
+			update_post_meta( $id, '_lq_seed_edited', 1 );
+			$report['edited'][] = $title;
+		}
+		return;
+	}
+	delete_post_meta( $id, '_lq_seed_edited' );
+
+	// Publish a page being seeded for the first time, or one seeded before
+	// the hash existed; a hashed page keeps the status an editor gave it.
+	$status  = ( $empty || '' === $stored || $force ) ? 'publish' : $was;
+	$changed = $new !== $current;
+
+	if ( ! $changed && $status === $was ) {
+		if ( $stored !== $new ) {
+			update_post_meta( $id, '_lq_seed_hash', $new );
+		}
+		return;
+	}
+
+	$args = array(
+		'ID'          => $id,
+		'post_status' => $status,
+	);
+	if ( $changed ) {
+		$args['post_content'] = wp_slash( $content );
+	}
+	$result = wp_update_post( $args, true );
+	if ( is_wp_error( $result ) ) {
+		$report['errors'][] = $title . ': ' . $result->get_error_message();
+		return;
+	}
+
+	if ( $changed ) {
+		if ( $article['footnotes'] ) {
+			update_post_meta( $id, 'footnotes', wp_slash( wp_json_encode( $article['footnotes'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ) );
+		} else {
+			delete_post_meta( $id, 'footnotes' );
+		}
+	}
+	update_post_meta( $id, '_lq_seed_hash', $new );
+
+	if ( $empty ) {
+		$report['seeded'][] = $title;
+	} elseif ( $changed ) {
+		$report['refreshed'][] = $title;
+	}
+	if ( 'publish' === $status && 'publish' !== $was ) {
+		$report['published'][] = $title;
+	}
+}
+
+/**
+ * Move obsolete copies of guide pages to the trash: pages the theme
+ * created or adopted (they carry its _lq_lang marker) that the registry
+ * no longer points to, such as drafts left by an earlier setup or a page
+ * renamed to slug-2. Only a copy that still holds text the theme wrote
+ * (or none) is trashed; an edited copy is kept and reported. Pages
+ * without the theme's marker are never touched.
+ *
+ * @param array $map    Page map.
+ * @param array $report Report, passed by reference.
+ */
+function lq_trash_duplicates( $map, &$report ) {
+	$owned = array();
+	foreach ( $map as $ids ) {
+		$owned = array_merge( $owned, array_values( array_map( 'intval', (array) $ids ) ) );
+	}
+	$defs  = lq_page_definitions();
+	$posts = get_posts(
 		array(
-			'ID'           => $id,
-			'post_content' => wp_slash( $content ),
+			'post_type'   => 'page',
+			'post_status' => array( 'draft', 'pending', 'publish', 'private' ),
+			'numberposts' => -1,
+			'meta_key'    => '_lq_lang', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 		)
 	);
-
-	if ( $article['footnotes'] ) {
-		update_post_meta( $id, 'footnotes', wp_slash( wp_json_encode( $article['footnotes'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ) );
+	foreach ( $posts as $post ) {
+		if ( in_array( (int) $post->ID, $owned, true ) ) {
+			continue;
+		}
+		$lang = (string) get_post_meta( $post->ID, '_lq_lang', true );
+		if ( 'en' !== $lang && 'ms' !== $lang ) {
+			continue;
+		}
+		$role = 'ms' === $lang ? 'secondary' : 'primary';
+		$key  = (string) get_post_meta( $post->ID, '_lq_key', true );
+		if ( '' === $key || empty( $defs[ $key ] ) ) {
+			$key = '';
+			foreach ( $defs as $k => $def ) {
+				if ( preg_match( '/^' . preg_quote( $def[ $role ]['slug'], '/' ) . '(-\d+)?$/', $post->post_name ) ) {
+					$key = $k;
+					break;
+				}
+			}
+		}
+		if ( '' === $key || empty( $map[ $role ][ $key ] ) ) {
+			continue; // Not a copy of a page the registry holds.
+		}
+		$label = $post->post_title . ' (#' . $post->ID . ')';
+		if ( in_array( $key, array( 'home', 'sitemap' ), true ) ? lq_is_default_block_page( $post, $key ) : lq_page_is_unedited( $post, $key, $role ) ) {
+			if ( wp_trash_post( $post->ID ) ) {
+				$report['trashed'][] = $label;
+			}
+		} else {
+			$report['kept'][] = $label;
+		}
 	}
-	$report['seeded'][] = $defs[ $key ][ $role ]['title'];
+}
+
+/**
+ * Whether a home or sitemap page still holds the block setup wrote.
+ *
+ * @param WP_Post $post Page.
+ * @param string  $key  home or sitemap.
+ * @return bool
+ */
+function lq_is_default_block_page( $post, $key ) {
+	$body = trim( $post->post_content );
+	if ( '' === $body ) {
+		return true;
+	}
+	return 'home' === $key
+		? (bool) preg_match( '#^<!-- wp:pattern \{"slug":"lailatulqadar/front-(en|ms)"\} /-->$#', $body )
+		: '<!-- wp:lailatulqadar/guide-menu {"set":"sitemap"} /-->' === $body;
 }

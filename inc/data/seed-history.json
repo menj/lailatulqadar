@@ -1,0 +1,62 @@
+{
+    "en": {
+        "dua": [
+            "7361920e544b742f0c9bc67271c2e271",
+            "df5bc09c64bd02c05e9ec30d0fb46061"
+        ],
+        "faq": [
+            "0036d677cafb2fc40c4112a91c342d13",
+            "66b9f01e082413eee8592856cf33bad7"
+        ],
+        "last10": [
+            "144c0d44f329c2c3477d03bc53f3a442",
+            "1fd0f5a12c484767d6d4fade28d72c8e"
+        ],
+        "planner": [
+            "188eb225fd14687ca2ce0f1117986979",
+            "f965e6ce87e22561e861cacb17c34db5"
+        ],
+        "signs": [
+            "e4e381cfe462f958fac3411c13ac68fe",
+            "f7ee11a35c365e5629ee672f50cc41ac"
+        ],
+        "sources": [
+            "107d872a7b6d02084f583e0e4ee01232",
+            "4a00ffcc2d50286e6d479d0651e6e3e2",
+            "94f5fe7a13b62ebcb02353bbcb332f52",
+            "bad58c252fec564e79f4bdd51d6ff341",
+            "c26c84b66ea0f5a6877c8e215b97bdc5",
+            "e1ccb838a192d642eb57b894939f15fc"
+        ],
+        "start": [
+            "57a33a582dfe9ce944da65249f1c1258",
+            "c66fc4af9388f297bc80df3a3d209432"
+        ],
+        "surah": [
+            "7a93552fdd3a0eb7fe05d2de65e8bb97",
+            "a724ec8af3d4992f4a8032161bce5381",
+            "b032f5c905360a1a16feb2cf663fbc1c",
+            "c8019d9f8609d1b24e4230e9c75cb779"
+        ],
+        "what": [
+            "16aefb754c8415b17095c984885753ae",
+            "c88eb1760caed26bdebb2082e4e64a64",
+            "dcedc10487194d8bcc041c01f438b921",
+            "f7aa23c352ce329241c406381e8a3e6c"
+        ],
+        "when": [
+            "4bd57a72edfd88fe079141ada607b3cb",
+            "518be9f2a3bbf62d1a68aa6022306c70",
+            "8a8fbb924806df1641b28f7f3c1f0a31"
+        ],
+        "worship": [
+            "2a94f7be930d262e1120774fc5b4ae05",
+            "72678be15bc7379d663a7c467bc5edd5"
+        ]
+    },
+    "ms": {
+        "planner": [
+            "ec11e485cd0e5777ede68a965d16ea24"
+        ]
+    }
+}

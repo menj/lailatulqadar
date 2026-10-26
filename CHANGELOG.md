@@ -2,6 +2,14 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.5 (2026-10-26)
+
+- Signs of Laylat al-Qadr: the FAQ on watching the sunrise no longer suggests looking at the sun; it now says never to look directly at the sun.
+- Gradings: the Duʿāʾ page (footnotes and table) and Last Ten Nights now give al-Albānī's grading first, beside Dār al-Salām's, as the other pages do. The Duʿāʾ page keeps both wordings of al-Tirmidhī 3513 (sunnah.com, Darussalam, includes *karīm*; the Shākir edition omits it).
+- Front pages (English and Malay): verse 97:3 is now quran.com `text_qpc_hafs` exactly (shadda before kasra, no-break space before the verse number).
+- When Is and Last Ten Nights: the fixed Gregorian date for Ramadan 1448 is removed from the calendar footnote, following the SSOT date rule.
+- `inc/data/seed-history.json` regenerated, so unedited pages take the corrected content.
+
 ## 1.9.4 (2026-10-26)
 
 - Content publishes itself. Setup runs on the first admin visit (manage_options) after the theme is activated and again after every update (when `LQ_VERSION` differs from `lailatulqadar_setup_version`), under a lock (transient `lailatulqadar_setup_lock`) so two requests never run it at once; a front-end request never writes. Every page whose article ships in `content/<lang>/<key>.json` is filled and published; About, Contact and Malay pages without a translation stay drafts, so nothing empty goes live.

@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <!-- wp:group {"align":"full","className":"lq-hero","layout":{"type":"constrained"}} -->
 <div class="wp-block-group alignfull lq-hero"><!-- wp:html -->
-<figure class="lq-ayah"><p class="lq-ayah__text" lang="ar" dir="rtl">لَيۡلَةُ ٱلۡقَدۡرِ خَيۡرٞ مِّنۡ أَلۡفِ شَهۡرٖ ٣</p><figcaption class="lq-ayah__meaning"><span class="lq-ayah__translation">Lailatulqadar itu lebih baik daripada seribu bulan.</span> <cite>Surah al-Qadr, 97:3</cite></figcaption></figure>
+<figure class="lq-ayah"><p class="lq-ayah__text" lang="ar" dir="rtl">لَيۡلَةُ ٱلۡقَدۡرِ خَيۡرٞ مِّنۡ أَلۡفِ شَهۡرٖ ٣</p><figcaption class="lq-ayah__meaning"><span class="lq-ayah__translation">Lailatulqadar itu lebih baik daripada seribu bulan.</span> <cite>Surah al-Qadr, 97:3</cite></figcaption></figure>
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":1,"className":"lq-hero__title"} -->

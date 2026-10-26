@@ -233,17 +233,23 @@ function lq_ctx_patterns( $parts, $size = 0 ) {
  * Replace every phrase in a text run, left to right, as one pattern would:
  * the earliest match wins, and of two at the same place the longer. With
  * several patterns each is searched from the current place, so the result
- * is the same however the phrases are split.
+ * is the same however the phrases are split. A match the callback passes over
+ * (it returns null) resumes the search one character on, so a phrase running
+ * past its end ("Paul of Tarsus" after "Peter and Paul") can still link, while
+ * one wholly inside it ("Barnabas" in "Gospel of Barnabas") stays part of
+ * that name.
  *
  * @param string[] $patterns From lq_ctx_patterns().
  * @param string   $text     Text run, no tags.
- * @param callable $link     Receives the matched text, returns its markup.
+ * @param callable $link    Receives the matched text, returns its markup or null to pass it over.
  * @return string|null Null when the text cannot be searched (invalid UTF-8).
  */
 function lq_ctx_replace( $patterns, $text, $link ) {
-	$out = '';
-	$pos = 0;
-	$len = strlen( $text );
+	$out    = '';
+	$pos    = 0; // Search position.
+	$at     = 0; // Text emitted up to here.
+	$shadow = 0; // End of the furthest match passed over.
+	$len    = strlen( $text );
 	while ( $pos < $len ) {
 		$best = null;
 		foreach ( $patterns as $pattern ) {
@@ -258,10 +264,19 @@ function lq_ctx_replace( $patterns, $text, $link ) {
 		if ( null === $best || '' === $best[0] ) {
 			break;
 		}
-		$out .= substr( $text, $pos, $best[1] - $pos ) . $link( $best[0] );
-		$pos  = $best[1] + strlen( $best[0] );
+		$end    = $best[1] + strlen( $best[0] );
+		$markup = $end <= $shadow ? null : $link( $best[0] );
+		if ( null === $markup ) {
+			$shadow = max( $shadow, $end );
+			$byte   = ord( $text[ $best[1] ] );
+			$pos    = $best[1] + ( $byte >= 0xF0 ? 4 : ( $byte >= 0xE0 ? 3 : ( $byte >= 0xC0 ? 2 : 1 ) ) );
+			continue;
+		}
+		$out .= substr( $text, $at, $best[1] - $at ) . $markup;
+		$at   = $end;
+		$pos  = $end;
 	}
-	return $out . substr( $text, $pos );
+	return $out . substr( $text, $at );
 }
 
 /**
@@ -386,14 +401,14 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 			}
 		}
 		if ( $used || ! isset( $targets['by'][ $key ] ) ) {
-			return $text;
+			return null;
 		}
 		$target = $targets['by'][ $key ];
 		$url    = lq_ctx_url_key( $target['url'] );
 		$kind   = $target['sister'] ? 'sister' : 'own';
 		$max    = $target['sister'] ? $sister_max : $own_max;
 		if ( isset( $done[ $url ] ) || $url === $here_key || $made[ $kind ] >= $max ) {
-			return $text;
+			return null;
 		}
 		$done[ $url ] = true;
 		++$made[ $kind ];

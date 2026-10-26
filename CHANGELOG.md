@@ -8,6 +8,10 @@ All notable changes to the Lailatulqadar theme are recorded here.
 - Contextual links run on guide pages and blog posts, and the docs now say so; another post type (an event, a product) receives none. Only the post being viewed is linked, never one rendered beside it.
 - A list item holding several paragraphs receives at most one new link, like a paragraph; before, each inner paragraph reset the count.
 - A negative cap on the Contextual links tab saves as 0; before, `absint()` turned -4 into 4.
+- A paragraph holding one invalid UTF-8 byte (a bad import or paste) keeps its text; before, the contextual links emptied it, because a `/u` pattern returns nothing on invalid UTF-8. The run is left as it is and the rest of the page is still linked.
+- The phrase pattern can no longer blank the page. It is checked as it is built; once it outgrows PCRE's size limit (about 600 extra phrases on top of the shared map), the phrases are split into patterns that compile, searched together so the first and longest mention still wins (`lq_ctx_patterns()`, `lq_ctx_replace()`). Before, a pattern too large to compile emptied every paragraph on every page.
+- Without mbstring, a phrase written in non-ASCII capitals ("SŪRAT AL-QADR") links; before, its lookup missed because `strtolower()` lowers ASCII only.
+- Extra phrases and excluded slugs are split byte-wise, so a stray invalid byte drops one line instead of every line, and no longer stops the page with a TypeError.
 
 ## 1.9.1 (2026-10-26)
 

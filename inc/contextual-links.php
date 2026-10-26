@@ -34,7 +34,7 @@ const LQ_SITE_KEY = 'lailatulqadar';
 function lq_ctx_norm( $text ) {
 	$text = html_entity_decode( (string) $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 	$text = str_replace( array( "\u{2019}", "\u{2018}", "\u{02BC}", "\u{00A0}" ), array( "'", "'", "'", ' ' ), $text );
-	$text = preg_replace( '/\s+/u', ' ', trim( $text ) );
+	$text = preg_replace( '/\s+/u', ' ', trim( $text ) ) ?? trim( $text );
 	return function_exists( 'mb_strtolower' ) ? mb_strtolower( $text, 'UTF-8' ) : strtolower( $text );
 }
 
@@ -127,7 +127,8 @@ function lq_ctx_parse_extra( $text, $allow_out ) {
 	$out    = array();
 	$own    = strtolower( (string) wp_parse_url( home_url( '/' ), PHP_URL_HOST ) );
 	$sister = lq_ctx_sister_hosts();
-	foreach ( preg_split( '/\R/u', (string) $text ) as $line ) {
+	// Byte-wise split (no /u), so a stray invalid byte drops one line, not all.
+	foreach ( preg_split( '/\r\n|\r|\n/', (string) $text ) as $line ) {
 		$parts = array_map( 'trim', explode( '|', $line, 2 ) );
 		if ( count( $parts ) < 2 || '' === $parts[0] || '' === $parts[1] ) {
 			continue;
@@ -168,7 +169,7 @@ function lq_ctx_compile( $entries ) {
 		$phrases[]  = trim( $entry['phrase'] );
 	}
 	if ( ! $phrases ) {
-		return array( 'pattern' => '', 'by' => array() );
+		return array( 'patterns' => array(), 'parts' => array(), 'by' => array() );
 	}
 	usort(
 		$phrases,
@@ -176,21 +177,91 @@ function lq_ctx_compile( $entries ) {
 			return strlen( $b ) <=> strlen( $a );
 		}
 	);
+	$parts = array();
+	foreach ( $phrases as $phrase ) {
+		$quoted = preg_quote( $phrase, '/' );
+		$quoted = str_replace( array( "'", "\u{2019}", "\u{2018}", "\u{02BC}" ), '(?&q)', $quoted );
+		$quoted = preg_replace( '/(?:\\\\ |\s)+/u', '(?&s)', $quoted );
+		if ( null !== $quoted ) {
+			$parts[] = $quoted;
+		}
+	}
+	return array(
+		'patterns' => lq_ctx_patterns( $parts ),
+		'parts'    => $parts,
+		'by'       => $by,
+	);
+}
+
+/**
+ * The phrase alternatives as compiled patterns: one pattern while it fits
+ * PCRE's size limit, else halves until each half compiles. A phrase that
+ * cannot compile on its own is left out, never the rest.
+ *
+ * @param string[] $parts Quoted phrase alternatives, longest first.
+ * @param int      $size  Most alternatives a pattern (0: as many as compile).
+ * @return string[]
+ */
+function lq_ctx_patterns( $parts, $size = 0 ) {
+	if ( ! $parts ) {
+		return array();
+	}
+	if ( $size > 0 && count( $parts ) > $size ) {
+		$out = array();
+		foreach ( array_chunk( $parts, $size ) as $chunk ) {
+			$out = array_merge( $out, lq_ctx_patterns( $chunk ) );
+		}
+		return $out;
+	}
 	// An apostrophe in a phrase matches the straight one, the curly one and
 	// the entities wptexturize writes; a space matches any run of spaces.
 	// Both are named once and called by name, which keeps the compiled
-	// pattern within PCRE's size limit for a map of a thousand phrases.
-	$define = "(?(DEFINE)(?<q>'|\u{2019}|\u{2018}|\u{02BC}|&\#8217;|&\#8216;|&\#039;|&\#39;|&rsquo;|&apos;)(?<s>(?:\s|&nbsp;|&\#160;)+))";
-	$parts  = array();
-	foreach ( $phrases as $phrase ) {
-		$quoted  = preg_quote( $phrase, '/' );
-		$quoted  = str_replace( array( "'", "\u{2019}", "\u{2018}", "\u{02BC}" ), '(?&q)', $quoted );
-		$parts[] = preg_replace( '/(?:\\\\ |\s)+/u', '(?&s)', $quoted );
+	// pattern small.
+	$define  = "(?(DEFINE)(?<q>'|\u{2019}|\u{2018}|\u{02BC}|&\#8217;|&\#8216;|&\#039;|&\#39;|&rsquo;|&apos;)(?<s>(?:\s|&nbsp;|&\#160;)+))";
+	$pattern = '/' . $define . '(?<![\p{L}\p{N}])(?:' . implode( '|', $parts ) . ')(?![\p{L}\p{N}])/iu';
+	if ( false !== @preg_match( $pattern, '' ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors
+		return array( $pattern );
 	}
-	return array(
-		'pattern' => '/' . $define . '(?<![\p{L}\p{N}])(?:' . implode( '|', $parts ) . ')(?![\p{L}\p{N}])/iu',
-		'by'      => $by,
-	);
+	if ( 1 === count( $parts ) ) {
+		return array();
+	}
+	$half = (int) ceil( count( $parts ) / 2 );
+	return array_merge( lq_ctx_patterns( array_slice( $parts, 0, $half ) ), lq_ctx_patterns( array_slice( $parts, $half ) ) );
+}
+
+/**
+ * Replace every phrase in a text run, left to right, as one pattern would:
+ * the earliest match wins, and of two at the same place the longer. With
+ * several patterns each is searched from the current place, so the result
+ * is the same however the phrases are split.
+ *
+ * @param string[] $patterns From lq_ctx_patterns().
+ * @param string   $text     Text run, no tags.
+ * @param callable $link     Receives the matched text, returns its markup.
+ * @return string|null Null when the text cannot be searched (invalid UTF-8).
+ */
+function lq_ctx_replace( $patterns, $text, $link ) {
+	$out = '';
+	$pos = 0;
+	$len = strlen( $text );
+	while ( $pos < $len ) {
+		$best = null;
+		foreach ( $patterns as $pattern ) {
+			$hit = preg_match( $pattern, $text, $m, PREG_OFFSET_CAPTURE, $pos );
+			if ( false === $hit ) {
+				return null;
+			}
+			if ( $hit && ( null === $best || $m[0][1] < $best[1] || ( $m[0][1] === $best[1] && strlen( $m[0][0] ) > strlen( $best[0] ) ) ) ) {
+				$best = $m[0];
+			}
+		}
+		if ( null === $best || '' === $best[0] ) {
+			break;
+		}
+		$out .= substr( $text, $pos, $best[1] - $pos ) . $link( $best[0] );
+		$pos  = $best[1] + strlen( $best[0] );
+	}
+	return $out . substr( $text, $pos );
 }
 
 /**
@@ -277,7 +348,7 @@ function lq_ctx_url_key( $url ) {
  * @return string
  */
 function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
-	if ( '' === $targets['pattern'] || false === strpos( $content, '<' ) || ( $own_max < 1 && $sister_max < 1 ) ) {
+	if ( empty( $targets['patterns'] ) || false === strpos( $content, '<' ) || ( $own_max < 1 && $sister_max < 1 ) ) {
 		return $content;
 	}
 	$pieces = preg_split( '/(<[^>]+>)/', $content, -1, PREG_SPLIT_DELIM_CAPTURE );
@@ -297,6 +368,37 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 	$blocks   = 0;     // Open p, li and dd outside skip regions; $used resets only at the outermost.
 	$stack    = array(); // Open elements inside a region where no link may go.
 	$out      = '';
+
+	$link = static function ( $text ) use ( $targets, $here_key, $own_max, $sister_max, &$done, &$made, &$used ) {
+		$key = lq_ctx_norm( $text );
+		// Without mbstring only ASCII letters are lowered, so a match in
+		// non-ASCII capitals ("SŪRAT AL-QADR") is looked up key by key.
+		if ( ! isset( $targets['by'][ $key ] ) && ! function_exists( 'mb_strtolower' ) ) {
+			foreach ( array_keys( $targets['by'] ) as $candidate ) {
+				if ( preg_match( '/^' . preg_quote( (string) $candidate, '/' ) . '$/iu', $key ) ) {
+					$key = $candidate;
+					break;
+				}
+			}
+		}
+		if ( $used || ! isset( $targets['by'][ $key ] ) ) {
+			return $text;
+		}
+		$target = $targets['by'][ $key ];
+		$url    = lq_ctx_url_key( $target['url'] );
+		$kind   = $target['sister'] ? 'sister' : 'own';
+		$max    = $target['sister'] ? $sister_max : $own_max;
+		if ( isset( $done[ $url ] ) || $url === $here_key || $made[ $kind ] >= $max ) {
+			return $text;
+		}
+		$done[ $url ] = true;
+		++$made[ $kind ];
+		$used = true;
+		if ( $target['sister'] ) {
+			return '<a class="lq-ctx-link lq-ctx-link--sister" href="' . esc_url( $target['url'] ) . '" rel="noopener">' . $text . '</a>';
+		}
+		return '<a class="lq-ctx-link" href="' . esc_url( $target['url'] ) . '">' . $text . '</a>';
+	};
 
 	foreach ( $pieces as $piece ) {
 		if ( '' === $piece ) {
@@ -337,30 +439,8 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 			$out .= $piece;
 			continue;
 		}
-		$out .= preg_replace_callback(
-			$targets['pattern'],
-			static function ( $m ) use ( $targets, $here_key, $own_max, $sister_max, &$done, &$made, &$used ) {
-				$key = lq_ctx_norm( $m[0] );
-				if ( $used || ! isset( $targets['by'][ $key ] ) ) {
-					return $m[0];
-				}
-				$target = $targets['by'][ $key ];
-				$url    = lq_ctx_url_key( $target['url'] );
-				$kind   = $target['sister'] ? 'sister' : 'own';
-				$max    = $target['sister'] ? $sister_max : $own_max;
-				if ( isset( $done[ $url ] ) || $url === $here_key || $made[ $kind ] >= $max ) {
-					return $m[0];
-				}
-				$done[ $url ] = true;
-				++$made[ $kind ];
-				$used = true;
-				if ( $target['sister'] ) {
-					return '<a class="lq-ctx-link lq-ctx-link--sister" href="' . esc_url( $target['url'] ) . '" rel="noopener">' . $m[0] . '</a>';
-				}
-				return '<a class="lq-ctx-link" href="' . esc_url( $target['url'] ) . '">' . $m[0] . '</a>';
-			},
-			$piece
-		);
+		// A run that cannot be searched (an invalid UTF-8 byte) stays as it is.
+		$out .= lq_ctx_replace( $targets['patterns'], $piece, $link ) ?? $piece;
 	}
 	return $out;
 }
@@ -372,7 +452,7 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
  * @return bool
  */
 function lq_ctx_enabled_for( $post ) {
-	$excluded = array_filter( array_map( 'sanitize_title', preg_split( '/[\s,]+/u', (string) lq_setting( 'ctx_exclude' ) ) ) );
+	$excluded = array_filter( array_map( 'sanitize_title', preg_split( '/[\s,]+/', (string) lq_setting( 'ctx_exclude' ) ) ) );
 	$enabled  = ! in_array( $post->post_name, $excluded, true );
 	return (bool) apply_filters( 'lq_contextual_links_enabled', $enabled, $post );
 }

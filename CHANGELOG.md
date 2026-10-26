@@ -2,6 +2,10 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.3 (2026-10-26)
+
+- The shipped articles are JSON data files: `content/<lang>/<key>.json` holds the block markup under `content` and the core footnotes under `footnotes`, in place of `<key>.html` and `<key>.footnotes.json` (both removed). For security, setup reads them with `json_decode()` through `lq_article_data()`, which accepts only a lower-case language and key, refuses a file of any other shape whole, and never includes or executes it. The seeded text is byte-identical; footnotes carry the same entries.
+
 ## 1.9.2 (2026-10-26)
 
 - The settings screen is called Theme Options (Appearance > Theme Options), as in the other themes of the network; its address (`themes.php?page=lailatulqadar`) and its tabs are unchanged.

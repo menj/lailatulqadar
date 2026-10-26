@@ -1,5 +1,9 @@
 # Upgrading
 
+## From 1.9.2 to 1.9.3
+
+Upload the new zip over 1.9.2. The articles in `content/en/` and `content/ms/` are now `.json` files; an upload over the old folder leaves the `.html` and `.footnotes.json` files behind, which nothing reads, so delete them (or delete the theme folder before uploading). Pages already seeded are not touched.
+
 ## From 1.9.1 to 1.9.2
 
 Upload the new zip over 1.9.1. `fonts/kfgqpc/kfgqpc-hafs-uthmanic.ttf` gives way to `kfgqpc-hafs-uthmanic.woff2`; an upload over the old folder leaves the TTF behind, which nothing reads. Clear caches so verse pages preload the new file.

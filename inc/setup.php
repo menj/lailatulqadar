@@ -273,7 +273,56 @@ function lq_page_is_claimable( $id, $role, $map ) {
 }
 
 /**
- * Fill an empty draft with the article shipped in content/<lang>/<key>.html.
+ * The article shipped in content/<lang>/<key>.json: its block markup under
+ * "content" and, when it has any, its footnotes under "footnotes".
+ *
+ * The file is data only, read with json_decode() and never executed or
+ * included. Anything not shaped as expected is refused whole.
+ *
+ * @param string $lang en or ms.
+ * @param string $key  Page key.
+ * @return array{content:string,footnotes:array<int,array{id:string,content:string}>}|null
+ */
+function lq_article_data( $lang, $key ) {
+	if ( ! preg_match( '/^[a-z]{2}$/', $lang ) || ! preg_match( '/^[a-z0-9]+$/', $key ) ) {
+		return null;
+	}
+	$file = LQ_DIR . '/content/' . $lang . '/' . $key . '.json';
+	if ( ! is_readable( $file ) ) {
+		return null;
+	}
+	$data = json_decode( (string) file_get_contents( $file ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+	if ( ! is_array( $data ) || ! isset( $data['content'] ) || ! is_string( $data['content'] ) ) {
+		return null;
+	}
+	$list = $data['footnotes'] ?? array();
+	if ( ! is_array( $list ) || array_values( $list ) !== $list ) {
+		return null;
+	}
+	$notes = array();
+	foreach ( $list as $note ) {
+		if ( ! is_array( $note ) || ! isset( $note['id'], $note['content'] ) || ! is_string( $note['id'] ) || ! is_string( $note['content'] ) ) {
+			return null;
+		}
+		$notes[] = array(
+			'id'      => $note['id'],
+			'content' => $note['content'],
+		);
+	}
+	// Every footnote marker in the text needs its note, or the article would
+	// seed with citations that point at nothing.
+	preg_match_all( '/\bdata-fn="([^"]+)"/', $data['content'], $marks );
+	if ( array_diff( array_unique( $marks[1] ), array_column( $notes, 'id' ) ) ) {
+		return null;
+	}
+	return array(
+		'content'   => $data['content'],
+		'footnotes' => $notes,
+	);
+}
+
+/**
+ * Fill an empty draft with the article shipped in content/<lang>/<key>.json.
  *
  * Only drafts with no content are touched, so an editor's work is never
  * overwritten. Internal links written as {{url:key}} resolve to the page's
@@ -287,13 +336,16 @@ function lq_page_is_claimable( $id, $role, $map ) {
  */
 function lq_seed_content( $id, $key, $role, &$report ) {
 	$lang = 'secondary' === $role ? 'ms' : 'en';
-	$file = LQ_DIR . '/content/' . $lang . '/' . $key . '.html';
 	$post = get_post( $id );
-	if ( ! $post || 'draft' !== $post->post_status || '' !== trim( $post->post_content ) || ! is_readable( $file ) ) {
+	if ( ! $post || 'draft' !== $post->post_status || '' !== trim( $post->post_content ) ) {
+		return;
+	}
+	$article = lq_article_data( $lang, $key );
+	if ( null === $article ) {
 		return;
 	}
 
-	$content = (string) file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+	$content = $article['content'];
 	$defs    = lq_page_definitions();
 	$map     = lq_page_map();
 	$content = preg_replace_callback(
@@ -319,9 +371,8 @@ function lq_seed_content( $id, $key, $role, &$report ) {
 		)
 	);
 
-	$notes = LQ_DIR . '/content/' . $lang . '/' . $key . '.footnotes.json';
-	if ( is_readable( $notes ) ) {
-		update_post_meta( $id, 'footnotes', wp_slash( (string) file_get_contents( $notes ) ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+	if ( $article['footnotes'] ) {
+		update_post_meta( $id, 'footnotes', wp_slash( wp_json_encode( $article['footnotes'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ) );
 	}
 	$report['seeded'][] = $defs[ $key ][ $role ]['title'];
 }

@@ -294,6 +294,7 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 	$done     = array();
 	$made     = array( 'own' => 0, 'sister' => 0 );
 	$used     = false; // Whether the current paragraph or list item already has a new link.
+	$blocks   = 0;     // Open p, li and dd outside skip regions; $used resets only at the outermost.
 	$stack    = array(); // Open elements inside a region where no link may go.
 	$out      = '';
 
@@ -304,18 +305,28 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 		if ( '<' === $piece[0] ) {
 			if ( preg_match( '#^<(/?)([a-zA-Z][a-zA-Z0-9-]*)#', $piece, $m ) ) {
 				$tag = strtolower( $m[2] );
+				$is_block = 'p' === $tag || 'li' === $tag || 'dd' === $tag;
 				if ( '/' === $m[1] ) {
+					$closed = false;
 					for ( $i = count( $stack ) - 1; $i >= 0; $i-- ) {
 						if ( $stack[ $i ] === $tag ) {
 							array_splice( $stack, $i );
+							$closed = true;
 							break;
 						}
+					}
+					if ( ! $closed && $is_block && $blocks > 0 ) {
+						--$blocks;
 					}
 				} elseif ( ! in_array( $tag, $void, true ) && '/>' !== substr( $piece, -2 ) ) {
 					if ( $stack || in_array( $tag, $skip_tags, true ) || preg_match( $skip_class, $piece ) || preg_match( $skip_lang, $piece ) ) {
 						$stack[] = $tag;
-					} elseif ( 'p' === $tag || 'li' === $tag || 'dd' === $tag ) {
-						$used = false;
+					} elseif ( $is_block ) {
+						// A paragraph inside a list item belongs to that item.
+						if ( 0 === $blocks ) {
+							$used = false;
+						}
+						++$blocks;
 					}
 				}
 			}
@@ -381,7 +392,7 @@ function lq_contextual_links_filter( $content ) {
 		return $content;
 	}
 	$post = get_post();
-	if ( ! $post || (int) $post->ID !== (int) get_queried_object_id() || ! lq_ctx_enabled_for( $post ) ) {
+	if ( ! $post || 'page' !== $post->post_type || (int) $post->ID !== (int) get_queried_object_id() || ! lq_ctx_enabled_for( $post ) ) {
 		return $content;
 	}
 	$role = lq_role_of( $post->ID );

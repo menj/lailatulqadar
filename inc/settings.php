@@ -163,10 +163,10 @@ function lq_sanitize_settings( $input ) {
 				$value = '1' === (string) $value ? '1' : '0';
 				break;
 			case 'ctx_own_max':
-				$value = (string) max( 0, min( 15, absint( $value ) ) );
+				$value = (string) max( 0, min( 15, (int) $value ) );
 				break;
 			case 'ctx_sister_max':
-				$value = (string) max( 0, min( 10, absint( $value ) ) );
+				$value = (string) max( 0, min( 10, (int) $value ) );
 				break;
 			default:
 				$value = sanitize_text_field( $value );

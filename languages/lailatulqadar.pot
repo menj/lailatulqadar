@@ -16,8 +16,6 @@ msgstr ""
 
 #. Theme Name of the theme
 #: style.css
-#: inc/settings.php:72
-#: inc/settings.php:179
 msgid "Lailatulqadar"
 msgstr ""
 
@@ -66,7 +64,7 @@ msgid "Arabic quotation (display)"
 msgstr ""
 
 #: inc/languages.php:121
-msgid "Lailatulqadar now handles English and Malay itself. Deactivate Polylang, then press Run setup under Appearance > Lailatulqadar > Tools."
+msgid "Lailatulqadar now handles English and Malay itself. Deactivate Polylang, then press Run setup under Appearance > Theme Options > Tools."
 msgstr ""
 
 #: inc/seo.php:99
@@ -138,8 +136,76 @@ msgstr ""
 msgid "Tools"
 msgstr ""
 
-#: inc/settings.php:71
-msgid "Lailatulqadar settings"
+#: inc/settings.php:45
+msgid "Contextual links"
+msgstr ""
+
+#: inc/settings.php:429
+msgid "How contextual links work"
+msgstr ""
+
+#: inc/settings.php:430
+msgid "In the running text of a guide page or blog post, the first mention of a known phrase links to the page that treats it, here or on a sister site. Links are added as the page is shown, so the stored text is never changed. Headings, quotations, verses, hadith, Arabic, figures, tables, footnotes and the \"In brief\" box are never linked. Each address is linked once a page, and no paragraph or list item receives more than one new link. Malay pages link only to Malay pages on this site."
+msgstr ""
+
+#. translators: 1: pages on this site, 2: pages on sister sites, 3: number of sister sites
+#: inc/settings.php:436
+#, php-format
+msgid "The shared map lists %1$d pages on this site and %2$d pages on %3$d sister sites. It lives in inc/data/network-links.json and is the same file in every theme of the network."
+msgstr ""
+
+#: inc/settings.php:448
+msgid "This site"
+msgstr ""
+
+#: inc/settings.php:451
+msgid "Link to other guide pages on this site"
+msgstr ""
+
+#: inc/settings.php:454
+msgid "Links of this kind on one page, at most (0 to 15)"
+msgstr ""
+
+#: inc/settings.php:459
+msgid "Sister sites"
+msgstr ""
+
+#: inc/settings.php:462
+msgid "Link to pages on the sister sites (English pages only)"
+msgstr ""
+
+#: inc/settings.php:465
+msgid "Links of this kind on one page, at most (0 to 10)"
+msgstr ""
+
+#: inc/settings.php:472
+msgid "Extra phrases"
+msgstr ""
+
+#: inc/settings.php:473
+msgid "One per line: phrase | address. An address beginning with / is a page on this site; a full address must be on this site or a sister site, and any other address is ignored. These lines are read before the shared map, so a phrase listed here takes its address from here."
+msgstr ""
+
+#: inc/settings.php:475
+msgid "English pages"
+msgstr ""
+
+#: inc/settings.php:479
+msgid "Malay pages (addresses on this site only)"
+msgstr ""
+
+#: inc/settings.php:485
+msgid "Pages without links"
+msgstr ""
+
+#: inc/settings.php:487
+msgid "Page slugs that never receive contextual links, one per line"
+msgstr ""
+
+#: inc/settings.php:76
+#: inc/settings.php:77
+#: inc/settings.php:213
+msgid "Theme Options"
 msgstr ""
 
 #. translators: %s: version

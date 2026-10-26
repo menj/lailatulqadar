@@ -5,7 +5,7 @@
  * Malay home at /ms/ and sets the static front page.
  *
  * Runs on the first admin visit after activation and again on demand
- * from Appearance > Lailatulqadar > Tools. The routine is idempotent:
+ * from Appearance > Theme Options > Tools. The routine is idempotent:
  * existing pages are reused and never overwritten.
  *
  * @package Lailatulqadar

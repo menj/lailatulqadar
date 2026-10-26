@@ -144,7 +144,7 @@
 							"fontWeight": "400",
 							"fontDisplay": "block",
 							"src": [
-								"file:./fonts/kfgqpc/kfgqpc-hafs-uthmanic.ttf"
+								"file:./fonts/kfgqpc/kfgqpc-hafs-uthmanic.woff2"
 							]
 						}
 					]

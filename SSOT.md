@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.9.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.9.2. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -41,6 +41,9 @@ Version 1.9.0. This file records the architecture, stored data and binding decis
 | `inc/schema.php` | JSON-LD graph (Organization, WebSite, WebPage, BreadcrumbList, Article), breadcrumb trail, XML sitemap trimming |
 | `blocks/breadcrumbs/` | Visible breadcrumbs above the page title |
 | `inc/seo.php` | Title tag, meta description, editor box, SEO plugin detection |
+| `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and the sister sites |
+| `inc/data/network-links.json` | Shared phrase map of the seven-site network; identical in every theme, edit it in all seven together |
+| `inc/data/contextual-links-ms.json` | Malay phrases for the Malay guide pages, keyed by page key |
 | `inc/setup.php` | First-run and on-demand setup routine, draft renaming, SEO prefill |
 | `inc/settings.php` | Tabbed settings screen and Tools handlers (admin only) |
 | `blocks/guide-menu/` | Header links, numbered reading path, footer |
@@ -68,14 +71,14 @@ Version 1.9.0. This file records the architecture, stored data and binding decis
 | `content/<lang>/<key>.html`, `<key>.footnotes.json` | Shipped articles and their footnotes, seeded into empty drafts by setup |
 | `fonts/eb-garamond/`, `fonts/noto-naskh-arabic/` | Self-hosted WOFF2 subsets with OFL licences |
 | `fonts/arslan-wessam/` | Arslan Wessam A and B, WOFF2 subsets, with a notice (no licence text in the source files) |
-| `fonts/kfgqpc/` | KFGQPC Hafs TTF, unmodified, with its licence |
+| `fonts/kfgqpc/` | KFGQPC Hafs as a WOFF2 conversion of the original TTF, with its licence |
 | `languages/` | POT file and `ms_MY` translation |
 
 ## Stored data
 
 | Option | Contents |
 |---|---|
-| `lailatulqadar_settings` | Array: `primary_slug`, `secondary_slug`, `primary_label`, `secondary_label`, `footer_note_primary`, `footer_note_secondary`, `scheme` (`night`, `dawn`, `auto`), `scheme_toggle` (`show`, `hide`), `accent_night`, `accent_dawn`, `calligraphy_id`, `login_tagline_primary`, `login_tagline_secondary`, `login_note_primary`, `login_note_secondary`, `verify_google`, `verify_bing`, `author_name`, `author_url`, `ramadan_year`, `ramadan_start`, `ramadan_alt` (optional override for one year; empty means automatic) |
+| `lailatulqadar_settings` | Array: `primary_slug`, `secondary_slug`, `primary_label`, `secondary_label`, `footer_note_primary`, `footer_note_secondary`, `scheme` (`night`, `dawn`, `auto`), `scheme_toggle` (`show`, `hide`), `accent_night`, `accent_dawn`, `calligraphy_id`, `login_tagline_primary`, `login_tagline_secondary`, `login_note_primary`, `login_note_secondary`, `verify_google`, `verify_bing`, `author_name`, `author_url`, `ramadan_year`, `ramadan_start`, `ramadan_alt` (optional override for one year; empty means automatic), `ctx_own`, `ctx_sister` (`1` or `0`), `ctx_own_max` (0 to 15), `ctx_sister_max` (0 to 10), `ctx_extra`, `ctx_extra_ms`, `ctx_exclude` |
 | `lailatulqadar_pages` | Page IDs keyed by role (`primary`, `secondary`) then page key |
 | `lailatulqadar_setup_version` | Theme version that last ran setup |
 | `lailatulqadar_needs_setup` | Set on activation, cleared on the first admin visit |
@@ -106,7 +109,7 @@ The `theme.json` palette is the night scheme and keeps the parent's slugs (`base
 | Role | Face | Where | Notes |
 |---|---|---|---|
 | Latin text | EB Garamond (owner-supplied, OFL) | Everywhere | Variable, 400 to 700; covers ā, ī, ū, ḥ, ṣ, ṭ, ḍ, ẓ, ʿ, ʾ |
-| Qurʾānic text | KFGQPC HAFS Uthmanic Script v2.2, supplied by the site owner; no fallback face | `.lq-ayah__text`, `.lq-quran`, `.is-style-lq-quran` (block style "Qurʾān verse") | Licence forbids modification: never subset, convert or rename internally. Feed it KFGQPC Hafs-encoded text (quran.com `text_qpc_hafs`); Arabic-Indic digits render as verse markers |
+| Qurʾānic text | KFGQPC HAFS Uthmanic Script v2.2, supplied by the site owner; no fallback face | `.lq-ayah__text`, `.lq-quran`, `.is-style-lq-quran` (block style "Qurʾān verse") | Licence forbids modification. The owner chose on 2026-10-26 to serve a WOFF2 conversion of the KFGQPC HAFS Uthmanic Script (107 KB, from 298 KB), accepting that the KFGQPC licence forbids modifying the font. The conversion is lossless for glyphs, cmap and OpenType layout; the digital signature (DSIG) is dropped. Never subset it or rename it internally. Feed it KFGQPC Hafs-encoded text (quran.com `text_qpc_hafs`); Arabic-Indic digits render as verse markers |
 | Hadith, supplications, Arabic terms | Arslan Wessam A (owner-supplied) | `[lang="ar"]`, `.lq-hadith`, `.is-style-lq-hadith`, second in the body stack | `size-adjust: 140%`; `unicode-range` limits downloads to pages with Arabic |
 | Display Arabic quotations | Arslan Wessam B (owner-supplied) | `.lq-arabic-quote`, `.is-style-lq-arabic-quote` | Centred, pale gold |
 | Fallback only | Noto Naskh Arabic | Behind Arslan | Downloads only if Arslan lacks a glyph |
@@ -118,7 +121,7 @@ Binding rules: Qurʾānic text is always taken verbatim from a verified source a
 
 ## Settings tabs
 
-General, Languages, Colours, Ramadan Dates, Login, Search, Tools.
+General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Tools.
 
 ## Roadmap
 
@@ -147,6 +150,10 @@ Structured data uses only types on Google's supported list (docs/google-guidelin
 Dates: never write a Gregorian year or date of Ramadan into content, titles or descriptions. Use `[lq_ramadan]` or the Odd nights dates block. Every Gregorian date shown to readers carries its Hijri equivalent (English "27 Ramadan 1448 AH", Malay "27 Ramadan 1448 H"; Shawwal is Syawal in Malay). The Umm al-Qura table runs to 1473 AH (2051); extend it before then.
 
 Work tracking follows the agency template: `lailatulqadar.guide - SEO Work Progress (2026).xlsx` (CHECKPOINT, META INFO, CONTENT, TIMELINE). Month 0 is October 2026; Ramadan 1448 is expected to begin on 8 February 2027, subject to sighting.
+
+## Contextual links
+
+The first mention of a known phrase in the running text of a guide page or a blog post links to the inner page that treats it, here or on a sister site. The phrase map `inc/data/network-links.json` is shared by the seven themes of the network and must stay identical in all of them; each phrase belongs to exactly one page, chosen by the site whose subject it is (Laylat al-Qadr, the last ten nights, the odd nights, iʿtikāf and the night prayer belong to this site). Malay pages use `inc/data/contextual-links-ms.json` and link only within the Malay guide. Caps: 4 links to this site and 3 to sister sites a page by default, one new link a paragraph. Never in headings, quotations, verses, hadith, Arabic, figures, tables, footnotes or the "In brief" box.
 
 ## Writing rule: no contractions
 

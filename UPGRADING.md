@@ -1,17 +1,25 @@
 # Upgrading
 
+## From 1.9.1 to 1.9.2
+
+Upload the new zip over 1.9.1. `fonts/kfgqpc/kfgqpc-hafs-uthmanic.ttf` gives way to `kfgqpc-hafs-uthmanic.woff2`; an upload over the old folder leaves the TTF behind, which nothing reads. Clear caches so verse pages preload the new file.
+
+## From 1.9.0 to 1.9.1
+
+Upload the new zip over 1.9.0. Contextual links are on from the start. Review or change them under Appearance > Theme Options > Contextual links. No setup run is needed.
+
 ## From 1.8.1 to 1.9.0
 
 1. If Polylang is installed, deactivate and delete it.
 2. Upload the new zip over 1.8.1.
-3. Press Run setup (Appearance > Lailatulqadar > Tools). It creates the Malay home at /ms/ and every Malay page beneath it, and pairs each page with its English version.
+3. Press Run setup (Appearance > Theme Options > Tools). It creates the Malay home at /ms/ and every Malay page beneath it, and pairs each page with its English version.
 4. On the Tools tab, publish the drafts marked ready. The Malay articles arrive as they are translated.
 5. If Rank Math is active, submit the sitemap again in Search Console once the Malay pages are published.
 
 ## From 1.8.0 to 1.8.1
 
 1. Upload the new zip over 1.8.0.
-2. Open Appearance > Lailatulqadar > Tools. Review each page marked "ready to publish" in the editor, then press "Publish written drafts".
+2. Open Appearance > Theme Options > Tools. Review each page marked "ready to publish" in the editor, then press "Publish written drafts".
 3. Press "Return empty published pages to draft" for any page published without text (for example Start Here, until it is written).
 4. Move WordPress's "Sample Page" to the trash if the Tools tab lists it.
 
@@ -33,7 +41,7 @@ Upload the new zip over 1.7.6. The new templates apply at once, unless a templat
 
 ## From 1.7.5 to 1.7.6
 
-Upload the new zip over 1.7.5. The lamp and the typeset calligraphy appear at once. To use a calligraphy image, upload a licensed transparent PNG and choose it under Appearance > Lailatulqadar > General > Logo calligraphy. If a Site Icon is set in Settings > General, replace it with images/lailatulqadar-mark-512.png or your own lamp artwork, since the Site Icon takes precedence over the theme's favicon.
+Upload the new zip over 1.7.5. The lamp and the typeset calligraphy appear at once. To use a calligraphy image, upload a licensed transparent PNG and choose it under Appearance > Theme Options > General > Logo calligraphy. If a Site Icon is set in Settings > General, replace it with images/lailatulqadar-mark-512.png or your own lamp artwork, since the Site Icon takes precedence over the theme's favicon.
 
 ## From 1.7.4 to 1.7.5
 
@@ -61,7 +69,7 @@ Upload the new zip over 1.7.0. The switch appears in the header automatically. I
 
 1. Upload the new zip over 1.6.1 and press Run setup (refreshes the planner title and description).
 2. Set a Site Icon of at least 512 × 512 pixels in Settings > General; it becomes the Organization logo.
-3. Optionally set the author name and profile URL in Appearance > Lailatulqadar > General.
+3. Optionally set the author name and profile URL in Appearance > Theme Options > General.
 4. After launch, run each template through Google's Rich Results Test and submit /wp-sitemap.xml in Search Console.
 
 ## From 1.6.0 to 1.6.1
@@ -85,7 +93,7 @@ Upload the new zip over 1.5.0. No setup run is needed.
 ## From 1.4.0 to 1.5.0
 
 1. Upload the new zip over 1.4.0 and press Run setup. The Night Planner page, in both languages, receives its text and the night window if it is still an empty draft.
-2. Check Appearance > Lailatulqadar > Ramadan Dates. The defaults are 8 and 9 February 2027 for Ramadan 1448.
+2. Check Appearance > Theme Options > Ramadan Dates. The defaults are 8 and 9 February 2027 for Ramadan 1448.
 3. Publish the planner pages.
 
 ## From 1.3.0 to 1.4.0
@@ -111,7 +119,7 @@ Upload the new zip over 1.1.0. No setup run is needed. Existing verses marked wi
 ## From 1.0.1 to 1.1.0
 
 1. Upload the new zip over 1.0.1.
-2. Open Appearance > Lailatulqadar > Tools and press Run setup. This creates the six new pages as drafts, fills empty title tags and meta descriptions, and renames any guide page that is still an empty draft.
+2. Open Appearance > Theme Options > Tools and press Run setup. This creates the six new pages as drafts, fills empty title tags and meta descriptions, and renames any guide page that is still an empty draft.
 3. Pages that already have content keep their titles and slugs. If the old Worship and Duʿāʾ page already holds content, rename it to "Prayer and Worship on Laylat al-Qadr" with the slug `laylat-al-qadr-prayer` (Malay: "Amalan Malam Lailatulqadar", `amalan-malam-lailatulqadar`) and move any duʿāʾ text to the new Duʿāʾ page. Do the same for Sources ("Hadith and Sources", `hadith-and-sources`).
 4. Check the Search tab: every row should show green length badges.
 
@@ -124,7 +132,7 @@ Upload the new zip over 1.0.0. No settings change. The front pages pick up the c
 1. Install and activate Polylang. In Languages > Languages, add English (code `en`) and Bahasa Melayu (code `ms`). Set English as the default language.
 2. In Languages > Settings > URL modifications, tick "The front page URL contains the language code instead of the page name or page id". Without it, `/ms/` redirects to `/ms/utama/`.
 3. Make sure Twenty Twenty-Five is installed. Upload `lailatulqadar-1.9.0.zip` in Appearance > Themes > Add New Theme and activate it.
-4. Visit any admin screen. Setup runs once and reports the result in Appearance > Lailatulqadar.
+4. Visit any admin screen. Setup runs once and reports the result in Appearance > Theme Options.
 5. If Polylang was not ready at step 4, finish steps 1 and 2 and press Run setup in the Tools tab. Existing pages are kept.
 
 The live site currently runs Twenty Twenty-Four with its demonstration content. That content lives in the Twenty Twenty-Four templates and disappears when this theme is activated. The default "Sample Page" remains and can be deleted.

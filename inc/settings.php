@@ -1,8 +1,9 @@
 <?php
 /**
- * Settings screen: Appearance > Lailatulqadar, organised in tabs.
+ * Settings screen: Appearance > Theme Options, organised in tabs.
  *
- * Tabs: General, Languages, Colours, Ramadan Dates, Search, Tools.
+ * Tabs: General, Languages, Colours, Ramadan Dates, Login, Search,
+ * Contextual links, Tools.
  *
  * @package Lailatulqadar
  */
@@ -40,6 +41,10 @@ function lq_settings_tabs() {
 			'label'  => __( 'Search', 'lailatulqadar' ),
 			'fields' => array( 'verify_google', 'verify_bing' ),
 		),
+		'links'     => array(
+			'label'  => __( 'Contextual links', 'lailatulqadar' ),
+			'fields' => array( 'ctx_own', 'ctx_sister', 'ctx_own_max', 'ctx_sister_max', 'ctx_extra', 'ctx_extra_ms', 'ctx_exclude' ),
+		),
 		'tools'     => array(
 			'label'  => __( 'Tools', 'lailatulqadar' ),
 			'fields' => array(),
@@ -64,12 +69,12 @@ function lq_settings_init() {
 add_action( 'admin_init', 'lq_settings_init' );
 
 /**
- * Add Appearance > Lailatulqadar.
+ * Add Appearance > Theme Options.
  */
 function lq_settings_menu() {
 	$hook = add_theme_page(
-		__( 'Lailatulqadar settings', 'lailatulqadar' ),
-		__( 'Lailatulqadar', 'lailatulqadar' ),
+		__( 'Theme Options', 'lailatulqadar' ),
+		__( 'Theme Options', 'lailatulqadar' ),
 		'manage_options',
 		'lailatulqadar',
 		'lq_render_settings'
@@ -85,6 +90,20 @@ function lq_admin_assets() {
 	wp_enqueue_style( 'lailatulqadar-admin', LQ_URI . '/css/admin.css', array(), LQ_VERSION );
 	wp_enqueue_media();
 	wp_enqueue_script( 'lailatulqadar-admin', LQ_URI . '/js/admin.js', array(), LQ_VERSION, true );
+}
+
+/**
+ * A contextual-links textarea, sanitised like any textarea but keeping
+ * percent-encoded characters: sanitize_textarea_field() strips "%D8%B5", so an
+ * encoded address or slug would be saved broken ("/glossary//").
+ *
+ * @param string $value Submitted text.
+ * @return string
+ */
+function lq_sanitize_ctx_textarea( $value ) {
+	$mark  = "\u{E000}";
+	$value = str_replace( array( $mark, '%' ), array( '', $mark ), (string) $value );
+	return str_replace( $mark, '%', sanitize_textarea_field( $value ) );
 }
 
 /**
@@ -150,11 +169,26 @@ function lq_sanitize_settings( $input ) {
 			case 'footer_note_secondary':
 				$value = sanitize_textarea_field( $value );
 				break;
+			case 'ctx_extra':
+			case 'ctx_extra_ms':
+			case 'ctx_exclude':
+				$value = lq_sanitize_ctx_textarea( $value );
+				break;
+			case 'ctx_own':
+			case 'ctx_sister':
+				$value = '1' === (string) $value ? '1' : '0';
+				break;
+			case 'ctx_own_max':
+				$value = (string) max( 0, min( 15, (int) $value ) );
+				break;
+			case 'ctx_sister_max':
+				$value = (string) max( 0, min( 10, (int) $value ) );
+				break;
 			default:
 				$value = sanitize_text_field( $value );
 		}
 
-		$is_optional    = in_array( $key, array( 'footer_note_primary', 'footer_note_secondary', 'login_tagline_primary', 'login_tagline_secondary', 'login_note_primary', 'login_note_secondary', 'verify_google', 'verify_bing', 'author_name', 'author_url', 'ramadan_year', 'ramadan_start', 'ramadan_alt' ), true );
+		$is_optional    = in_array( $key, array( 'footer_note_primary', 'footer_note_secondary', 'login_tagline_primary', 'login_tagline_secondary', 'login_note_primary', 'login_note_secondary', 'verify_google', 'verify_bing', 'author_name', 'author_url', 'ramadan_year', 'ramadan_start', 'ramadan_alt', 'ctx_extra', 'ctx_extra_ms', 'ctx_exclude' ), true );
 		$stored[ $key ] = ( '' === $value || null === $value ) && ! $is_optional ? $defaults[ $key ] : $value;
 	}
 
@@ -176,7 +210,7 @@ function lq_render_settings() {
 	?>
 	<div class="wrap lq-admin">
 		<header class="lq-admin__head">
-			<h1><?php esc_html_e( 'Lailatulqadar', 'lailatulqadar' ); ?></h1>
+			<h1><?php esc_html_e( 'Theme Options', 'lailatulqadar' ); ?></h1>
 			<p class="lq-admin__version"><?php echo esc_html( sprintf( /* translators: %s: version */ __( 'Version %s', 'lailatulqadar' ), LQ_VERSION ) ); ?></p>
 		</header>
 
@@ -372,6 +406,86 @@ function lq_render_languages_tab() {
 				<input id="lq-site-name-secondary" type="text" name="<?php echo esc_attr( lq_field_name( 'site_name_secondary' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'site_name_secondary' ) ); ?>" lang="ms">
 			</div>
 			<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'secondary_slug' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'secondary_slug' ) ); ?>">
+		</div>
+	</section>
+	<?php
+}
+
+/**
+ * Contextual links tab.
+ */
+function lq_render_links_tab() {
+	$map    = lq_ctx_shared_map();
+	$counts = array();
+	foreach ( $map['links'] as $link ) {
+		$site            = isset( $link['site'] ) ? (string) $link['site'] : '';
+		$counts[ $site ] = ( isset( $counts[ $site ] ) ? $counts[ $site ] : 0 ) + 1;
+	}
+	$own_count    = isset( $counts[ LQ_SITE_KEY ] ) ? $counts[ LQ_SITE_KEY ] : 0;
+	$sister_count = array_sum( $counts ) - $own_count;
+	$sister_sites = count( $map['sites'] ) - ( isset( $map['sites'][ LQ_SITE_KEY ] ) ? 1 : 0 );
+	?>
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'How contextual links work', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help"><?php esc_html_e( 'In the running text of a guide page or blog post, the first mention of a known phrase links to the page that treats it, here or on a sister site. Links are added as the page is shown, so the stored text is never changed. Headings, quotations, verses, hadith, Arabic, figures, tables, footnotes and the "In brief" box are never linked. Each address is linked once a page, and no paragraph or list item receives more than one new link. Malay pages link only to Malay pages on this site.', 'lailatulqadar' ); ?></p>
+		<p class="lq-callout">
+			<?php
+			echo esc_html(
+				sprintf(
+					/* translators: 1: pages on this site, 2: pages on sister sites, 3: number of sister sites */
+					__( 'The shared map lists %1$d pages on this site and %2$d pages on %3$d sister sites. It lives in inc/data/network-links.json and is the same file in every theme of the network.', 'lailatulqadar' ),
+					$own_count,
+					$sister_count,
+					$sister_sites
+				)
+			);
+			?>
+		</p>
+	</section>
+
+	<section class="lq-section lq-grid">
+		<div>
+			<h2><?php esc_html_e( 'This site', 'lailatulqadar' ); ?></h2>
+			<div class="lq-field lq-field--check">
+				<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'ctx_own' ) ); ?>" value="0">
+				<label><input type="checkbox" name="<?php echo esc_attr( lq_field_name( 'ctx_own' ) ); ?>" value="1" <?php checked( lq_setting( 'ctx_own' ), '1' ); ?>> <?php esc_html_e( 'Link to other guide pages on this site', 'lailatulqadar' ); ?></label>
+			</div>
+			<div class="lq-field">
+				<label for="lq-ctx-own-max"><?php esc_html_e( 'Links of this kind on one page, at most (0 to 15)', 'lailatulqadar' ); ?></label>
+				<input id="lq-ctx-own-max" class="small-text" type="number" min="0" max="15" name="<?php echo esc_attr( lq_field_name( 'ctx_own_max' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'ctx_own_max' ) ); ?>">
+			</div>
+		</div>
+		<div>
+			<h2><?php esc_html_e( 'Sister sites', 'lailatulqadar' ); ?></h2>
+			<div class="lq-field lq-field--check">
+				<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'ctx_sister' ) ); ?>" value="0">
+				<label><input type="checkbox" name="<?php echo esc_attr( lq_field_name( 'ctx_sister' ) ); ?>" value="1" <?php checked( lq_setting( 'ctx_sister' ), '1' ); ?>> <?php esc_html_e( 'Link to pages on the sister sites (English pages only)', 'lailatulqadar' ); ?></label>
+			</div>
+			<div class="lq-field">
+				<label for="lq-ctx-sister-max"><?php esc_html_e( 'Links of this kind on one page, at most (0 to 10)', 'lailatulqadar' ); ?></label>
+				<input id="lq-ctx-sister-max" class="small-text" type="number" min="0" max="10" name="<?php echo esc_attr( lq_field_name( 'ctx_sister_max' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'ctx_sister_max' ) ); ?>">
+			</div>
+		</div>
+	</section>
+
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Extra phrases', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help"><?php esc_html_e( 'One per line: phrase | address. An address beginning with / is a page on this site; a full address must be on this site or a sister site, and any other address is ignored. These lines are read before the shared map, so a phrase listed here takes its address from here.', 'lailatulqadar' ); ?></p>
+		<div class="lq-field">
+			<label for="lq-ctx-extra"><?php esc_html_e( 'English pages', 'lailatulqadar' ); ?></label>
+			<textarea id="lq-ctx-extra" class="code" name="<?php echo esc_attr( lq_field_name( 'ctx_extra' ) ); ?>" rows="5" placeholder="night vigil | /laylat-al-qadr-prayer/"><?php echo esc_textarea( lq_setting( 'ctx_extra' ) ); ?></textarea>
+		</div>
+		<div class="lq-field">
+			<label for="lq-ctx-extra-ms"><?php esc_html_e( 'Malay pages (addresses on this site only)', 'lailatulqadar' ); ?></label>
+			<textarea id="lq-ctx-extra-ms" class="code" name="<?php echo esc_attr( lq_field_name( 'ctx_extra_ms' ) ); ?>" rows="4" lang="ms" placeholder="malam kemuliaan | /ms/apa-itu-lailatulqadar/"><?php echo esc_textarea( lq_setting( 'ctx_extra_ms' ) ); ?></textarea>
+		</div>
+	</section>
+
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Pages without links', 'lailatulqadar' ); ?></h2>
+		<div class="lq-field">
+			<label for="lq-ctx-exclude"><?php esc_html_e( 'Page slugs that never receive contextual links, one per line', 'lailatulqadar' ); ?></label>
+			<textarea id="lq-ctx-exclude" class="code" name="<?php echo esc_attr( lq_field_name( 'ctx_exclude' ) ); ?>" rows="3"><?php echo esc_textarea( lq_setting( 'ctx_exclude' ) ); ?></textarea>
 		</div>
 	</section>
 	<?php

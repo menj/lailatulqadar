@@ -2,6 +2,33 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.2 (2026-10-26)
+
+- The settings screen is called Theme Options (Appearance > Theme Options), as in the other themes of the network; its address (`themes.php?page=lailatulqadar`) and its tabs are unchanged.
+- The Qurʾān face is served as `fonts/kfgqpc/kfgqpc-hafs-uthmanic.woff2` (107 KB) in place of the original TTF (298 KB, removed): `theme.json`, the verse-page preload (`type="font/woff2"`) and the settings preview all point at it. The owner chose on 2026-10-26 to serve a WOFF2 conversion of the KFGQPC HAFS Uthmanic Script (107 KB, from 298 KB), accepting that the KFGQPC licence forbids modifying the font. The conversion is lossless for glyphs, cmap and OpenType layout; the digital signature (DSIG) is dropped. Recorded in SSOT.md.
+- Contextual links run on guide pages and blog posts, and the docs now say so; another post type (an event, a product) receives none. Only the post being viewed is linked, never one rendered beside it.
+- A list item holding several paragraphs receives at most one new link, like a paragraph; before, each inner paragraph reset the count.
+- A match the contextual links pass over (its page already linked, this page, a full limit, a used paragraph) no longer hides a phrase that overlaps it: "Paul of Tarsus" in "Peter and Paul of Tarsus" now links after "Peter and Paul" has been linked, because the search resumes one character after a passed-over match. A phrase wholly inside it ("Barnabas" in "Gospel of Barnabas") still stays unlinked. Output on the guide content is unchanged.
+- A negative cap on the Contextual links tab saves as 0; before, `absint()` turned -4 into 4.
+- A paragraph holding one invalid UTF-8 byte (a bad import or paste) keeps its text; before, the contextual links emptied it, because a `/u` pattern returns nothing on invalid UTF-8. The run is left as it is and the rest of the page is still linked.
+- The phrase pattern can no longer blank the page. It is checked as it is built; once it outgrows PCRE's size limit (about 600 extra phrases on top of the shared map), the phrases are split into patterns that compile, searched together so the first and longest mention still wins (`lq_ctx_patterns()`, `lq_ctx_replace()`). Before, a pattern too large to compile emptied every paragraph on every page.
+- Without mbstring, a phrase written in non-ASCII capitals ("SŪRAT AL-QADR") links; before, its lookup missed because `strtolower()` lowers ASCII only.
+- Extra phrases and excluded slugs are split byte-wise, so a stray invalid byte drops one line instead of every line, and no longer stops the page with a TypeError.
+- An element left unclosed inside a region where no link may go (a `<code>` or `<q>` without its end tag inside a list item or paragraph) ends with its parent; before, it switched contextual links off for the rest of the page. Every open element is now tracked, so closing one closes any left open inside it.
+- `languages/lailatulqadar.pot` and `languages/ms_MY.po` list the strings of the Contextual links tab, which were missing; the tab's help text now names blog posts and list items.
+- Extra phrases, Malay extra phrases and excluded slugs keep percent-encoded characters when saved (`lq_sanitize_ctx_textarea()`); before, `sanitize_textarea_field()` stripped them, so an encoded sister address such as `https://bestofislam.org/glossary/%D8%B5…/` was saved as `/glossary//` and linked to the wrong page.
+
+## 1.9.1 (2026-10-26)
+
+Contextual links in the running text, to the guide pages here and to inner pages on the six sister sites.
+
+### Added
+- `inc/contextual-links.php`: as a guide page renders, the first mention of a known phrase in its running text links to the page that treats it. Each address is linked once a page; no paragraph or list item receives more than one new link; the current page is never linked; headings, links, quotations, figures and captions, tables, footnotes, verses, hadith, Arabic, and the "In brief" box are skipped. The stored text is never changed.
+- `inc/data/network-links.json`: the shared map of phrases and inner pages for all seven sites of the network (abrahamic-religions.com, bestofislam.org, injil.help, apostleofdoom.org, compelling-evidence.com, murtadd.org, lailatulqadar.guide). The same file ships in every theme. Entries for this site link to the published guide page, so a draft is never linked; entries for a sister site link to that site.
+- `inc/data/contextual-links-ms.json`: Malay phrases for the Malay guide pages beneath /ms/. Malay pages link only to Malay pages on this site, since the sister sites are in English.
+- Settings, Contextual links tab: links to this site on or off, links to sister sites on or off, a cap for each (default 4 and 3 a page), extra phrases for English and Malay pages ("phrase | address", read before the maps), and page slugs that never receive links. Filters `lq_contextual_links_map` and `lq_contextual_links_enabled`.
+- Links carry the class `lq-ctx-link`; links to a sister site add `lq-ctx-link--sister` and `rel="noopener"`, and open in the same tab.
+
 ## 1.9.0 (2026-09-26)
 
 The theme now runs both languages itself. Polylang is no longer needed or supported. See docs/languages.md.

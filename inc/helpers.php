@@ -386,3 +386,20 @@ function lq_calligraphy_html( $class = '' ) {
 	}
 	return sprintf( '<span class="lq-calli lq-calli--type %s" lang="ar" dir="rtl">ليلة القدر</span>', esc_attr( $class ) );
 }
+
+/**
+ * [lq_lanah] The curse "laʿnat Allāh" (the curse of God) after the name of
+ * Paul of Tarsus, as calligraphy (images/lanat-allah.svg, drawn as a mask in
+ * the scheme's accent, so it follows night, dawn and the Colours settings).
+ * The words stay inside, visually hidden, for screen readers, search and a
+ * copy and paste, and show as written where the mask cannot draw. It appears
+ * only where content places the shortcode, by hand and rarely; no shipped
+ * article uses it.
+ *
+ * @return string
+ */
+function lq_lanah_shortcode() {
+	$words = 'laʿnat Allāh, the curse of God';
+	return '<span class="lq-lanah" lang="ar-Latn" title="' . esc_attr( $words ) . '"><span class="lq-lanah__text">' . esc_html( $words ) . '</span></span>';
+}
+add_shortcode( 'lq_lanah', 'lq_lanah_shortcode' );

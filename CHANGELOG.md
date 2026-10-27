@@ -5,6 +5,7 @@ All notable changes to the Lailatulqadar theme are recorded here.
 ## 1.9.6 (2026-10-26)
 
 - New shortcode `[lq_lanah]` (`inc/helpers.php`): لعنة الله, laʿnat Allāh, "the curse of God", set after the name of Paul of Tarsus as calligraphy. `.lq-lanah` (`css/front.css`) draws `images/lanat-allah.svg` (copied from injil.help) as a mask in the `accent-1` preset, so it follows the night and dawn schemes and the accent colours in the settings; the palette has no red. In forced-colours mode it is drawn in `CanvasText`. The words "laʿnat Allāh, the curse of God" stay inside, visually hidden, for screen readers, search and a copy and paste, and show as written where the browser cannot draw a mask. The contextual-link engine skips `.lq-lanah`.
+- Prose revised to the house style (The Islamic Dilemma and the Qurʾān as Guardian, English).
 - No placement. The site's only mentions of Paul are two passing links to Apostle of Doom in The Islamic Dilemma and the Qurʾān as Guardian (`dilemma`), which does not discuss him. No content changed, so `inc/data/seed-history.json` is unchanged. Policy for the owner: by hand and rare, never in titles, headings, excerpts, descriptions, menus, alt text, structured data or quotations.
 - Font licence: the calligraphy is drawn from the outlines of Dubidam Arabic (NamelaType), whose metadata names a free personal-use licence. A web licence is the site owner's to hold.
 

@@ -31,7 +31,7 @@
   },
   {
    "id": "3649d72e-ad4d-40ec-926e-4a6c3f91a718",
-   "content": "Dates follow the Umm al-Qura calendar of Saudi Arabia, as encoded in the Unicode CLDR calendar “islamic-umalqura”; they update automatically each year. For 1448 the calendar gives Monday 8 February 2027, matching the expectations published by <a href=\"https://makkahlive.net/en/tools/ramadan-countdown\">Makkah Live</a> and <a href=\"https://blog.wego.com/ramadan-2027/\">Wego</a>, checked 25 September 2026."
+   "content": "Dates follow the Umm al-Qura calendar of Saudi Arabia, as encoded in the Unicode CLDR calendar “islamic-umalqura”; they update automatically each year."
   },
   {
    "id": "ef2df976-6c2d-491a-8af4-446b77d1670f",

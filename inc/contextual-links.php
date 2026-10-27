@@ -372,7 +372,7 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 	}
 
 	$skip_tags  = array( 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'q', 'figure', 'figcaption', 'cite', 'code', 'pre', 'sup', 'sub', 'nav', 'table', 'button', 'label', 'select', 'textarea', 'summary', 'details', 'script', 'style', 'aside', 'svg', 'math' );
-	$skip_class = '/\bclass\s*=\s*["\'][^"\']*(?<![\w-])(?:fn|footnotes|wp-block-footnotes|lq-quran|lq-verse|lq-verse__translation|lq-hadith|lq-hadith-card|lq-table|lq-brief|lq-brief__label|lq-figure|lq-calli|lq-dua)(?![\w-])/i';
+	$skip_class = '/\bclass\s*=\s*["\'][^"\']*(?<![\w-])(?:fn|footnotes|wp-block-footnotes|lq-quran|lq-verse|lq-verse__translation|lq-hadith|lq-hadith-card|lq-table|lq-brief|lq-brief__label|lq-figure|lq-calli|lq-dua|lq-lanah)(?![\w-])/i';
 	$skip_lang  = '/\blang\s*=\s*["\']?(?:ar|he|el|syr)(?:-[a-z]+)?\b/i';
 	$void       = array( 'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr' );
 

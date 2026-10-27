@@ -2,6 +2,22 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.6 (2026-10-26)
+
+- New shortcode `[lq_lanah]` (`inc/helpers.php`): لعنة الله, laʿnat Allāh, "the curse of God", set after the name of Paul of Tarsus as calligraphy. `.lq-lanah` (`css/front.css`) draws `images/lanat-allah.svg` (copied from injil.help) as a mask in the `accent-1` preset, so it follows the night and dawn schemes and the accent colours in the settings; the palette has no red. In forced-colours mode it is drawn in `CanvasText`. The words "laʿnat Allāh, the curse of God" stay inside, visually hidden, for screen readers, search and a copy and paste, and show as written where the browser cannot draw a mask. The contextual-link engine skips `.lq-lanah`.
+- Prose revised to the house style (The Islamic Dilemma and the Qurʾān as Guardian, English).
+- No placement. The site's only mentions of Paul are two passing links to Apostle of Doom in The Islamic Dilemma and the Qurʾān as Guardian (`dilemma`), which does not discuss him. No content changed, so `inc/data/seed-history.json` is unchanged. Policy for the owner: by hand and rare, never in titles, headings, excerpts, descriptions, menus, alt text, structured data or quotations.
+- Font licence: the calligraphy is drawn from the outlines of Dubidam Arabic (NamelaType), whose metadata names a free personal-use licence. A web licence is the site owner's to hold.
+
+## 1.9.5 (2026-10-26)
+
+- Signs of Laylat al-Qadr: the FAQ on watching the sunrise no longer suggests looking at the sun; it now says never to look directly at the sun.
+- Gradings: the Duʿāʾ page (footnotes and table) and Last Ten Nights now give al-Albānī's grading first, beside Dār al-Salām's, as the other pages do. The Duʿāʾ page keeps both wordings of al-Tirmidhī 3513 (sunnah.com, Darussalam, includes *karīm*; the Shākir edition omits it).
+- Front pages (English and Malay): verse 97:3 is now quran.com `text_qpc_hafs` exactly (shadda before kasra, no-break space before the verse number).
+- When Is and Last Ten Nights: the fixed Gregorian date for Ramadan 1448 is removed from the calendar footnote, following the SSOT date rule.
+- `inc/data/seed-history.json` regenerated, so unedited pages take the corrected content.
+- New English article, The Islamic Dilemma and the Qurʾān as Guardian (`dilemma`, /islamic-dilemma/; Malay slug `dilema-islam`, a draft until translated), in the reading path and footer. It answers the "Islamic dilemma" from the verses on the Qurʾān sent down on the Night of Decree as confirming (2:97, 3:3, 46:12) and guardian (5:48), with 5:46 to 5:47, 5:68, 10:94 and 2:79. Qurʾānic text is quran.com `text_qpc_hafs`, verbatim. Ibn Kathīr on 5:47 and 5:48, al-Bukhārī 7362 and 7363 and the chapter heading on taḥrīf are VERIFIED on shamela.ws (26 October 2026); the parallel in Abū Dāwūd 3644 is noted with al-Albānī's grading, ḍaʿīf. It carries the network block "The Islamic dilemma across the network" linking the six sister pieces. Focus keyword "islamic dilemma"; setup seeds and publishes it like the other shipped articles.
+
 ## 1.9.4 (2026-10-26)
 
 - Content publishes itself. Setup runs on the first admin visit (manage_options) after the theme is activated and again after every update (when `LQ_VERSION` differs from `lailatulqadar_setup_version`), under a lock (transient `lailatulqadar_setup_lock`) so two requests never run it at once; a front-end request never writes. Every page whose article ships in `content/<lang>/<key>.json` is filled and published; About, Contact and Malay pages without a translation stay drafts, so nothing empty goes live.

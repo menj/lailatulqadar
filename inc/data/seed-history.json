@@ -1,7 +1,12 @@
 {
     "en": {
+        "dilemma": [
+            "6492a340e23418af200a8053e03e82a4",
+            "f837be467809f2a94d168bd855a14ab5"
+        ],
         "dua": [
             "7361920e544b742f0c9bc67271c2e271",
+            "8b74fe0754c8958be6fd48a717024cc8",
             "df5bc09c64bd02c05e9ec30d0fb46061"
         ],
         "faq": [
@@ -17,6 +22,7 @@
             "f965e6ce87e22561e861cacb17c34db5"
         ],
         "signs": [
+            "12fdfc20c22bc274aa95119b23e6a316",
             "e4e381cfe462f958fac3411c13ac68fe",
             "f7ee11a35c365e5629ee672f50cc41ac"
         ],

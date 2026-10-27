@@ -222,6 +222,11 @@ function lq_page_definitions() {
 			'primary'   => array( 'title' => 'Hadith and Sources', 'slug' => 'hadith-and-sources', 'short' => 'Sources', 'seo' => 'Hadith on Laylat al-Qadr: Authentic Narrations and Sources', 'meta' => 'Authentic hadith on Laylat al-Qadr with collection, number and grading, and the sources this guide relies on. Check sources.', 'focus' => 'laylatul qadr hadith' ),
 			'secondary' => array( 'title' => 'Hadis dan Sumber Rujukan', 'slug' => 'hadis-dan-sumber-rujukan', 'short' => 'Sumber', 'seo' => 'Hadis Lailatulqadar: Riwayat Sahih dan Sumber Rujukan', 'meta' => 'Hadis sahih tentang Lailatulqadar beserta kitab, nombor dan status, serta sumber rujukan panduan ini. Semak sumbernya.', 'focus' => 'lailatulqadar hadis' ),
 		),
+		'dilemma' => array(
+			'sets'      => array( 'path', 'footer' ),
+			'primary'   => array( 'title' => 'The Islamic Dilemma and the Qurʾān as Guardian', 'slug' => 'islamic-dilemma', 'short' => 'Islamic dilemma', 'seo' => 'Islamic Dilemma: What the Qurʾān Means by Confirming', 'meta' => 'The Islamic dilemma answered from the Qurʾān of the Night of Decree: what confirming and muhaymin mean. Read the answer.', 'focus' => 'islamic dilemma' ),
+			'secondary' => array( 'title' => 'Dilema Islam dan al-Quran sebagai Pengawas', 'slug' => 'dilema-islam', 'short' => 'Dilema Islam', 'seo' => 'Dilema Islam: Maksud al-Quran Membenarkan Kitab Terdahulu', 'meta' => 'Dilema Islam dijawab daripada al-Quran yang turun pada Lailatulqadar: maksud membenarkan dan muhaimin. Baca jawapannya.', 'focus' => 'dilema islam' ),
+		),
 		'about' => array(
 			'sets'      => array( 'footer' ),
 			'primary'   => array( 'title' => 'About', 'slug' => 'about', 'short' => 'About', 'seo' => 'About This Guide', 'meta' => 'Who writes this Laylat al-Qadr guide, how sources are checked, and how to report an error. Read about us.', 'focus' => '' ),
@@ -381,3 +386,20 @@ function lq_calligraphy_html( $class = '' ) {
 	}
 	return sprintf( '<span class="lq-calli lq-calli--type %s" lang="ar" dir="rtl">ليلة القدر</span>', esc_attr( $class ) );
 }
+
+/**
+ * [lq_lanah] The curse "laʿnat Allāh" (the curse of God) after the name of
+ * Paul of Tarsus, as calligraphy (images/lanat-allah.svg, drawn as a mask in
+ * the scheme's accent, so it follows night, dawn and the Colours settings).
+ * The words stay inside, visually hidden, for screen readers, search and a
+ * copy and paste, and show as written where the mask cannot draw. It appears
+ * only where content places the shortcode, by hand and rarely; no shipped
+ * article uses it.
+ *
+ * @return string
+ */
+function lq_lanah_shortcode() {
+	$words = 'laʿnat Allāh, the curse of God';
+	return '<span class="lq-lanah" lang="ar-Latn" title="' . esc_attr( $words ) . '"><span class="lq-lanah__text">' . esc_html( $words ) . '</span></span>';
+}
+add_shortcode( 'lq_lanah', 'lq_lanah_shortcode' );

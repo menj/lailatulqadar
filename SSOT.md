@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.9.6. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.10.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -37,6 +37,9 @@ Version 1.9.6. This file records the architecture, stored data and binding decis
 | `inc/night-window.php` | City presets, strings and dates for the night window |
 | `blocks/night-window/` | Night window block (server shell; the browser script builds the interface) |
 | `js/night-window.js`, `css/night-window.css` | Night window script and styles |
+| `inc/security.php`, `inc/security-detector.php` | Security tab: remote-publishing locks, spam gate, scan and trash tool, 410 Gone, reports and log. The detector is plain PHP |
+| `js/security.js`, `css/security.css` | Security tab script and styles |
+| `tests/security-detector-test.php` | Detector self-test against every shipped article, page definition and pattern, and the attack samples |
 | `js/vendor/adhan.min.js` | adhan 4.4.6 prayer-time library (MIT) |
 | `inc/schema.php` | JSON-LD graph (Organization, WebSite, WebPage, BreadcrumbList, Article), breadcrumb trail, XML sitemap trimming |
 | `blocks/breadcrumbs/` | Visible breadcrumbs above the page title |
@@ -85,7 +88,7 @@ Version 1.9.6. This file records the architecture, stored data and binding decis
 
 | Option | Contents |
 |---|---|
-| `lailatulqadar_settings` | Array: `primary_slug`, `secondary_slug`, `primary_label`, `secondary_label`, `footer_note_primary`, `footer_note_secondary`, `scheme` (`night`, `dawn`, `auto`), `scheme_toggle` (`show`, `hide`), `accent_night`, `accent_dawn`, `calligraphy_id`, `login_tagline_primary`, `login_tagline_secondary`, `login_note_primary`, `login_note_secondary`, `verify_google`, `verify_bing`, `author_name`, `author_url`, `ramadan_year`, `ramadan_start`, `ramadan_alt` (optional override for one year; empty means automatic), `ctx_own`, `ctx_sister` (`1` or `0`), `ctx_own_max` (0 to 15), `ctx_sister_max` (0 to 10), `ctx_extra`, `ctx_extra_ms`, `ctx_exclude` |
+| `lailatulqadar_settings` | Array: `primary_slug`, `secondary_slug`, `primary_label`, `secondary_label`, `footer_note_primary`, `footer_note_secondary`, `scheme` (`night`, `dawn`, `auto`), `scheme_toggle` (`show`, `hide`), `accent_night`, `accent_dawn`, `calligraphy_id`, `login_tagline_primary`, `login_tagline_secondary`, `login_note_primary`, `login_note_secondary`, `verify_google`, `verify_bing`, `author_name`, `author_url`, `ramadan_year`, `ramadan_start`, `ramadan_alt` (optional override for one year; empty means automatic), `ctx_own`, `ctx_sister` (`1` or `0`), `ctx_own_max` (0 to 15), `ctx_sister_max` (0 to 10), `ctx_extra`, `ctx_extra_ms`, `ctx_exclude`, `sec_xmlrpc_off`, `sec_app_passwords_off`, `sec_rest_lock`, `sec_spam_gate`, `sec_gone` (`1` or `0`, all `1` by default) |
 | `lailatulqadar_pages` | Page IDs keyed by role (`primary`, `secondary`) then page key |
 | `lailatulqadar_setup_version` | Theme version that last ran setup |
 | `lailatulqadar_needs_setup` | Set on activation, cleared once setup has run on an admin visit. Setup also runs when `lailatulqadar_setup_version` differs from `LQ_VERSION` |
@@ -98,6 +101,8 @@ Version 1.9.6. This file records the architecture, stored data and binding decis
 | Post meta `_lq_seed_hash` | md5 of the content setup wrote (links resolved, line endings unified, trimmed), a colon, and md5 of its footnotes. A page whose content and footnotes still match is unedited and takes new shipped versions |
 | Post meta `_lq_seed_edited` | Set when an editor has changed a page and the shipped article differs; the Tools tab lists it as "Edited, not updated" |
 | Post meta `_lq_featured_seeded` | Set once setup has given a page its featured image, so an image an editor removes is not put back |
+| `lq_security_log`, `lq_security_counts`, `lq_security_failed`, `lq_security_gone`, `lq_security_htaccess` | Security tab: the capped log (200 lines), per-day counts for 30 days, failed logins by account name for a rolling day, addresses of trashed spam answered with 410, and the state of the .htaccess block. None autoloaded |
+| Post meta `_lq_spam_held`, user meta `_lq_last_login` | Time the spam gate held a post; last login time and IP of a user |
 | Attachment meta `_lq_credit` | Author, licence, licence deed and source of a Commons attachment |
 
 ## Page registry
@@ -151,7 +156,7 @@ Binding rules: Qurʾānic text is always taken verbatim from a verified source a
 
 ## Settings tabs
 
-General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Images, Tools.
+General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Images, Security, Tools.
 
 ## Roadmap
 

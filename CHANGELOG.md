@@ -2,6 +2,12 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.7 (2026-10-27)
+
+- Night Planner (English): new section "A checklist for each night", which hangs the step-by-step plan from Prayer and Worship on the planner's three times (sunset, the last third, dawn). The When Is and FAQ pages already promised that the planner "turns this into a checklist"; the page now carries one. No new facts: every step is taken from the Prayer and Worship page.
+- The Last Ten Nights of Ramadan (English): one sentence in the introduction on counting the last ten days with their nights, each night beginning at sunset before its day (as set out in When Is Laylat al-Qadr?).
+- Both pages were unedited on existing sites if they still match `_lq_seed_hash` or `inc/data/seed-history.json`, so setup refreshes them; the previous versions were already recorded in `inc/data/seed-history.json` (rebuilt with `bin/build-seed-history.php` and merged with the existing hashes; no new entries).
+
 ## 1.9.6 (2026-10-26)
 
 - New shortcode `[lq_lanah]` (`inc/helpers.php`): لعنة الله, laʿnat Allāh, "the curse of God", set after the name of Paul of Tarsus as calligraphy. `.lq-lanah` (`css/front.css`) draws `images/lanat-allah.svg` (copied from injil.help) as a mask in the `accent-1` preset, so it follows the night and dawn schemes and the accent colours in the settings; the palette has no red. In forced-colours mode it is drawn in `CanvasText`. The words "laʿnat Allāh, the curse of God" stay inside, visually hidden, for screen readers, search and a copy and paste, and show as written where the browser cannot draw a mask. The contextual-link engine skips `.lq-lanah`.

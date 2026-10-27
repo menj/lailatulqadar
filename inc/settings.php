@@ -3,7 +3,7 @@
  * Settings screen: Appearance > Theme Options, organised in tabs.
  *
  * Tabs: General, Languages, Colours, Ramadan Dates, Login, Search,
- * Contextual links, Tools.
+ * Contextual links, Images, Security, Tools.
  *
  * @package Lailatulqadar
  */
@@ -48,6 +48,10 @@ function lq_settings_tabs() {
 		'images'    => array(
 			'label'  => __( 'Images', 'lailatulqadar' ),
 			'fields' => array( 'commons_featured' ),
+		),
+		'security'  => array(
+			'label'  => __( 'Security', 'lailatulqadar' ),
+			'fields' => array( 'sec_xmlrpc_off', 'sec_app_passwords_off', 'sec_rest_lock', 'sec_spam_gate', 'sec_gone' ),
 		),
 		'tools'     => array(
 			'label'  => __( 'Tools', 'lailatulqadar' ),
@@ -94,6 +98,9 @@ function lq_admin_assets() {
 	wp_enqueue_style( 'lailatulqadar-admin', LQ_URI . '/css/admin.css', array(), LQ_VERSION );
 	wp_enqueue_media();
 	wp_enqueue_script( 'lailatulqadar-admin', LQ_URI . '/js/admin.js', array(), LQ_VERSION, true );
+	if ( isset( $_GET['tab'] ) && 'security' === sanitize_key( wp_unslash( $_GET['tab'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		lq_sec_assets();
+	}
 }
 
 /**
@@ -181,6 +188,11 @@ function lq_sanitize_settings( $input ) {
 			case 'ctx_own':
 			case 'ctx_sister':
 			case 'commons_featured':
+			case 'sec_xmlrpc_off':
+			case 'sec_app_passwords_off':
+			case 'sec_rest_lock':
+			case 'sec_spam_gate':
+			case 'sec_gone':
 				$value = '1' === (string) $value ? '1' : '0';
 				break;
 			case 'ctx_own_max':
@@ -250,6 +262,9 @@ function lq_render_settings() {
 					<?php submit_button( __( 'Save changes', 'lailatulqadar' ) ); ?>
 				</form>
 				<?php
+				if ( 'security' === $current ) {
+					lq_sec_render_tools();
+				}
 			}
 			?>
 		</div>

@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.7
+Stable tag: 1.10.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
+
+= 1.10.0 =
+* New Security tab: XML-RPC, application passwords and REST writes from outside the browser are off; gambling spam and anything published from outside the editor is held as Pending; spam scan, trash tool, 410 Gone and reports.
 
 = 1.9.7 =
 * Night Planner: a checklist for each night. Last Ten Nights: one sentence on counting the last ten days with their nights.

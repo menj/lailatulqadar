@@ -1,5 +1,21 @@
 # Upgrading
 
+## From 1.9.7 to 1.10.0
+
+Upload the new zip over 1.9.7. The Security tab (Appearance > Theme Options > Security) is on by default: XML-RPC, application passwords and REST writes from outside the browser stop at once. Writing in the editor, Rank Math and everything visitors do are unchanged.
+
+After the October 2026 attack on the sister site, the owner checklist:
+
+1. Change the password of every administrator to a long random one used nowhere else, then Log Out Everywhere Else (Users > Profile), or press "Log out all sessions" on the Security tab.
+2. Create a new administrator whose name is not the site name, log in as it, and delete the old account, attributing its content to the new one.
+3. Press "Revoke all application passwords".
+4. Check Plugins for anything not installed by you (auto-posting, AI writers, remote management) and remove it. Check Users for unknown accounts.
+5. Run the spam scan, select the results, move them to the trash, then delete the empty spam categories.
+6. Purge any page cache, then resubmit the sitemap in Google Search Console.
+7. Nothing to do at the server: on Apache the theme writes a "Block xmlrpc.php" section into .htaccess itself, repairs it hourly from the admin, and removes it when XML-RPC is switched back on or the site moves to a theme outside the sister themes. Jetpack needs XML-RPC; if Jetpack is ever used, switch "Turn off XML-RPC" off.
+
+If a lock breaks a tool you rely on, `define( 'LQ_SECURITY_LOCK', false );` in wp-config.php turns the three locks off without changing the settings.
+
 ## From 1.9.3 to 1.9.4
 
 Upload the new zip over 1.9.3 and open any admin screen as an administrator. Setup runs by itself once (it notices the new version): every page whose article ships with the theme is filled and published, pages seeded earlier and not edited take the new text (the old text stays as a revision), and obsolete copies the theme created earlier go to the trash. Pages you have edited are not changed; the Tools tab lists them under "Edited, not updated" with a button to replace each one. About, Contact and Malay pages awaiting translation stay drafts. Read the setup report on the Tools tab.

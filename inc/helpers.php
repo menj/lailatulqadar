@@ -48,6 +48,11 @@ function lq_default_settings() {
 		'ctx_extra'             => '',
 		'ctx_extra_ms'          => '',
 		'ctx_exclude'           => '',
+		'sec_xmlrpc_off'        => '1',
+		'sec_app_passwords_off' => '1',
+		'sec_rest_lock'         => '1',
+		'sec_spam_gate'         => '1',
+		'sec_gone'              => '1',
 	);
 }
 

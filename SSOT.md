@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.9.7. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.9.8. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -18,6 +18,7 @@ Version 1.9.7. This file records the architecture, stored data and binding decis
 
 - English display form: **Laylat al-Qadr**. Malay display form: **Lailatulqadar**, capitalised in all positions (Pedoman Umum Ejaan Bahasa Melayu, huruf besar, rule 8).
 - Malay page titles capitalise every word except particles such as *di* and *dan*, and both halves of a reduplicated word (rules 11 and 12).
+- Malay copy follows Pedoman Umum Ejaan Bahasa Melayu and Tatabahasa Dewan (3rd ed.). Fixed forms: *Surah al-Qadr* (never *Sūrat*), *al-Quran* (*Al-Quran* only at the start of a sentence), *Rasulullah SAW*, pronouns for Allah capitalised and hyphenated (*-Nya*, *-Mu*, *Engkau*), names without diacritics in running text (Abu Hurairah, Aisyah, Ibnu Abbas, at-Tirmizi). Titles of works in footnotes keep the transliteration of the English notes; "VERIFIED" is *Disahkan*, NOT_FOUND is *TIDAK DITEMUI*.
 - Spelling variants belong in schema `alternateName` and the FAQ, never rotated through body copy. Exception adopted in 1.1.0 on the keyword evidence ("laylatul qadr" 4,400 US searches a month against 1,300 for "laylat al qadr"): the home and Duʿāʾ title tags carry "(Laylatul Qadr)", and the English front-page introduction names that spelling once.
 - Audience: mixed. English at the site root, Malay under `/ms/`.
 - Arabic terms carry transliteration and translation on first use.
@@ -167,7 +168,7 @@ General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Ima
 | 1.7.x | Remaining English articles, then Malay translations |
 | 1.8.0 | Parent-theme compatibility with Twenty Twenty-Five 1.5 (done) |
 | 1.9.0 | Built-in English and Malay; Polylang removed (done) |
-| 1.9.x | Malay translations of the articles |
+| 1.9.8 | Malay translations of the articles (done) |
 | 1.10.0 | Duʿāʾ, evidence and Qurʾān verse blocks, glossary; November to mid-December 2026 |
 | 1.11.0 | Performance pass and pre-season SEO review; by 15 January 2027 |
 

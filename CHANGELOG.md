@@ -2,6 +2,12 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.8 (2026-10-28)
+
+- Malay translations of all eleven articles in `content/ms/`: Mula di Sini, Apa Itu Lailatulqadar?, Surah al-Qadr, Bilakah Lailatulqadar?, Sepuluh Malam Terakhir Ramadan, Tanda-Tanda Lailatulqadar, Amalan Malam Lailatulqadar, Doa Lailatulqadar, Soalan Lazim, Hadis dan Sumber Rujukan, and Dilema Islam dan al-Quran sebagai Pengawas (until now a Malay draft). With the existing Perancang Malam, every Malay guide page now ships an article, so setup seeds and publishes them all beneath /ms/ on the next admin visit and the Malay reading path has no "Akan datang" entries left. Each article keeps the block structure, Arabic text, footnotes, internal `{{url:key}}` links and `[lq_ramadan]` shortcodes of its English original; footnote IDs are new. Spelling and grammar follow Pedoman Umum Ejaan Bahasa Melayu and Tatabahasa Dewan (rules recorded in SSOT.md, Editorial decisions). Links to sister sites, which are in English, are marked as such.
+- Commons images on Malay pages: `inc/data/images.json` and `bin/commons-images.json` carry `alt_ms` and `caption_ms`, which `lq_image_figure()` uses on Malay pages (falling back to English); the credit label reads "Imej". `bin/fetch-commons-images.py` passes the two fields through. The image credits list on Hadis dan Sumber Rujukan uses Malay page titles and alt text.
+- `inc/data/contextual-links-ms.json`: "dilema Islam" links to the Malay Islamic dilemma page.
+
 ## 1.9.7 (2026-10-28)
 
 - Upgrade fix (`inc/setup.php`): pages seeded by 1.9.0, before `_lq_seed_hash` existed, were reported as "Edited, not updated" although nobody had changed them, so they stayed drafts ("Coming soon" in the reading path) and never took newer content. When 1.9.0 seeded a page, links to guide pages that were still drafts were written as WordPress's draft address, `/?page_id=N`, which the comparison with `inc/data/seed-history.json` did not recognise. `lq_article_link_urls()` now also returns that address, so `lq_unresolve_article_links()` turns it back into `{{url:key}}` and those pages match their shipped version. Seen on a 1.9.0 site upgraded to 1.9.6: The Last Ten Nights of Ramadan, Signs of Laylat al-Qadr and Laylat al-Qadr Duʿāʾ. Setup reruns on the version change, so affected sites are corrected on the next admin visit.

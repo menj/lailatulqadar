@@ -146,6 +146,8 @@ def main():
                 'lead': n == 1,
                 'alt': item['alt'],
                 'caption': item.get('caption', ''),
+                'alt_ms': item.get('alt_ms', ''),
+                'caption_ms': item.get('caption_ms', ''),
                 'artist': artist[:120],
                 'licence': 'Public domain' if re.match(r'^(public domain|pd\b)', licence, re.I) else licence,
                 'licence_url': meta.get('LicenseUrl', {}).get('value', ''),

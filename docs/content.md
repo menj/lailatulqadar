@@ -25,7 +25,7 @@
 | Prayer and Worship on Laylat al-Qadr | about 2,470 | 22 | Published by setup |
 | Frequently Asked Questions | about 2,200 | 20 | Published by setup |
 | Hadith and Sources | about 2,700 | 34 | Published by setup |
-| The Islamic Dilemma and the Qurʾān as Guardian (1.9.5) | about 2,070 | 7 | Published by setup; Malay draft |
+| The Islamic Dilemma and the Qurʾān as Guardian (1.9.5) | about 2,070 | 7 | Published by setup |
 
 Word counts exclude Arabic text, illustrations and footnotes.
 
@@ -43,4 +43,6 @@ Setup (on activation, on each theme update, and from Tools > Run setup) writes e
 
 - Every hadith carries its collection, number and grading, verified live before publication.
 - One display spelling per language; no rotation of variants in body copy.
-- Malay copy follows DBP standards; each Malay page is a translation of its English counterpart and is paired with it by Run setup.
+- Malay copy follows DBP standards (Pedoman Umum Ejaan Bahasa Melayu, Tatabahasa Dewan); each Malay page is a translation of its English counterpart and is paired with it by Run setup.
+
+Since 1.9.8 every guide article also ships in Malay (`content/ms/<key>.json`, the same block structure, footnotes and links as the English file), and setup publishes the Malay pages beneath /ms/. When an English article changes, update its Malay file in the same release.

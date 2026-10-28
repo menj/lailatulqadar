@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.7
+Stable tag: 1.9.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
+
+= 1.9.8 =
+* Malay translations of all eleven articles; setup publishes them beneath /ms/. Malay alt text and captions for the Commons images.
 
 = 1.9.7 =
 * Upgrade fix: guide pages first seeded by 1.9.0 are no longer mistaken for edited pages, so they update and publish.

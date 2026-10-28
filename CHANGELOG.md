@@ -2,6 +2,10 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.7 (2026-10-28)
+
+- Upgrade fix (`inc/setup.php`): pages seeded by 1.9.0, before `_lq_seed_hash` existed, were reported as "Edited, not updated" although nobody had changed them, so they stayed drafts ("Coming soon" in the reading path) and never took newer content. When 1.9.0 seeded a page, links to guide pages that were still drafts were written as WordPress's draft address, `/?page_id=N`, which the comparison with `inc/data/seed-history.json` did not recognise. `lq_article_link_urls()` now also returns that address, so `lq_unresolve_article_links()` turns it back into `{{url:key}}` and those pages match their shipped version. Seen on a 1.9.0 site upgraded to 1.9.6: The Last Ten Nights of Ramadan, Signs of Laylat al-Qadr and Laylat al-Qadr Duʿāʾ. Setup reruns on the version change, so affected sites are corrected on the next admin visit.
+
 ## 1.9.6 (2026-10-26)
 
 - New shortcode `[lq_lanah]` (`inc/helpers.php`): لعنة الله, laʿnat Allāh, "the curse of God", set after the name of Paul of Tarsus as calligraphy. `.lq-lanah` (`css/front.css`) draws `images/lanat-allah.svg` (copied from injil.help) as a mask in the `accent-1` preset, so it follows the night and dawn schemes and the accent colours in the settings; the palette has no red. In forced-colours mode it is drawn in `CanvasText`. The words "laʿnat Allāh, the curse of God" stay inside, visually hidden, for screen readers, search and a copy and paste, and show as written where the browser cannot draw a mask. The contextual-link engine skips `.lq-lanah`.

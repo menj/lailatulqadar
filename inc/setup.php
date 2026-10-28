@@ -405,12 +405,13 @@ function lq_page_footnotes( $id ) {
 }
 
 /**
- * The address a {{url:key}} token resolves to, and the fallback address
- * used before the page exists.
+ * The address a {{url:key}} token resolves to, the fallback address used
+ * before the page exists, and the ?page_id= address WordPress gives a
+ * draft (what a link to a page that was still a draft was written as).
  *
  * @param string $key  Page key in the token.
  * @param string $role primary or secondary.
- * @return string[] Resolved address first, then the fallback.
+ * @return string[] Resolved address first, then the others.
  */
 function lq_article_link_urls( $key, $role ) {
 	$defs = lq_page_definitions();
@@ -422,7 +423,7 @@ function lq_article_link_urls( $key, $role ) {
 	$fallback = home_url( '/' . $prefix . $slug );
 	$map      = lq_page_map();
 	if ( ! empty( $map[ $role ][ $key ] ) && get_post( (int) $map[ $role ][ $key ] ) ) {
-		return array( get_permalink( (int) $map[ $role ][ $key ] ), $fallback );
+		return array( get_permalink( (int) $map[ $role ][ $key ] ), $fallback, home_url( '/?page_id=' . (int) $map[ $role ][ $key ] ) );
 	}
 	return array( $fallback, $fallback );
 }

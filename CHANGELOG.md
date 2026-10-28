@@ -2,6 +2,11 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.10 (2026-10-28)
+
+- Hadith and Sources (English and Malay): the hadith tables now cover every report in the Laylat al-Qadr chapters of Ṣaḥīḥ al-Bukhārī (nos. 2014–2024) and Ṣaḥīḥ Muslim (nos. 1165–1170). Six rows were added, each with a footnote linking the shamela.ws page where it was checked and the sunnah.com entry: al-Bukhārī 2018 (Abū Saʿīd: the move to the last ten and the rain on the 21st night), 2019 (ʿĀʾishah: “Seek it”, the shortened chain of no. 2017) and 2022 (Ibn ʿAbbās: “when nine have passed or seven remain”, with his “seek it on the twenty-fourth”); Muslim 1165 (Ibn ʿUmar: the Companions' dreams agreeing on the last seven), 1167 (Abū Saʿīd, as al-Bukhārī 2018) and 1169 (ʿĀʾishah: seek it in the last ten).
+- `inc/data/seed-history.json`: hashes of the 1.9.9 articles added.
+
 ## 1.9.9 (2026-10-28)
 
 - Citations: all 52 hadith numbers the guide cites (al-Bukhari, Muslim, al-Tirmidhi, Abu Dawud, Ibn Majah, al-Nasa'i) were located on shamela.ws at the cited number and the key wording checked. Footnotes that cited only sunnah.com now also link the shamela.ws page. Link text is the linked page's title instead of a bare address (shamela.ws: the Arabic page title; sunnah.com: collection and number; Quran.com API and Britannica named). English and Malay.

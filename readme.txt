@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.9
+Stable tag: 1.9.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
+
+= 1.9.10 =
+* Hadith and Sources lists every hadith in the Laylat al-Qadr chapters of al-Bukhari and Muslim: six reports added, each checked on shamela.ws.
 
 = 1.9.9 =
 * Every hadith checked on shamela.ws; source links show page titles. New sections from Ibn Hajar, al-Nawawi and Ibn Rajab in English and Malay.

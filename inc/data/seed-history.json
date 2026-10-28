@@ -28,6 +28,7 @@
         ],
         "sources": [
             "107d872a7b6d02084f583e0e4ee01232",
+            "2737998bb179353a23740e9af4fc7d1c",
             "4a00ffcc2d50286e6d479d0651e6e3e2",
             "94f5fe7a13b62ebcb02353bbcb332f52",
             "bad58c252fec564e79f4bdd51d6ff341",
@@ -61,8 +62,43 @@
         ]
     },
     "ms": {
+        "dilemma": [
+            "f57d2cdaca06c69284bdc31175e387bb"
+        ],
+        "dua": [
+            "5c65ba3d8025916f64db45ec22a2c057"
+        ],
+        "faq": [
+            "602b9eb53e4310f17be525fe69864ff8",
+            "c0dbc96b9fcf80bbac251e29fb4f7bc9"
+        ],
+        "last10": [
+            "74874e42f0032961b36be4c3dbb9e034"
+        ],
         "planner": [
             "ec11e485cd0e5777ede68a965d16ea24"
+        ],
+        "signs": [
+            "e19bfc100e0a5f7f463bbf95a8c2e1e6"
+        ],
+        "sources": [
+            "ab26754b309194cfc52ac72a4f72a36f",
+            "b88d403b2a3c1da475210f4f5a92a34e"
+        ],
+        "start": [
+            "fab3f3b689bfb1f5fe9ec39d16d9778d"
+        ],
+        "surah": [
+            "c9c0c413f529192e3763194e88c6fd86"
+        ],
+        "what": [
+            "685fe413be400472925d39f909c34724"
+        ],
+        "when": [
+            "540d6133dbb02c3dd6a5b9f38b740e60"
+        ],
+        "worship": [
+            "b0d16d79a9dab1265be770a329cac05b"
         ]
     }
 }

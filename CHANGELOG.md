@@ -2,6 +2,21 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.9 (2026-10-28)
+
+- Citations: all 52 hadith numbers the guide cites (al-Bukhari, Muslim, al-Tirmidhi, Abu Dawud, Ibn Majah, al-Nasa'i) were located on shamela.ws at the cited number and the key wording checked. Footnotes that cited only sunnah.com now also link the shamela.ws page. Link text is the linked page's title instead of a bare address (shamela.ws: the Arabic page title; sunnah.com: collection and number; Quran.com API and Britannica named). English and Malay.
+- New material from three commentaries read on shamela.ws (English and Malay):
+  - When Is Laylat al-Qadr?: "What the scholars concluded about the date": Ibn Hajar's survey of more than forty positions, five of them in a table, and his conclusion (an odd night of the last ten that moves; the 21st or 23rd for the Shafi'is, the 27th for the majority); al-Nawawi on the agreement that the night continues, and al-Qadi 'Iyad on what "taken up" means; Zayd ibn Thabit and the 17th night, with Ahmad's remark, from Ibn Rajab.
+  - Prayer and Worship: "How the early generations kept these nights" from Ibn Rajab (bathing, perfume and best clothes on the hoped-for nights; Sufyan al-Thawri on supplication; Sa'id ibn al-Musayyib and al-Shafi'i on 'Isha' and Fajr in congregation; striving by day as well).
+  - Signs: al-Qadi 'Iyad's two explanations of the sun without rays; "Signs, wonders and steadfastness" (Ibn Hajar, al-Tabari, Ibn al-Munayyir). The sea-water report is traced (Ibn Rajab, through Abu al-Shaykh): an observation of the 17th night by a servant of 'Uthman ibn Abi al-'As, not a saying of the Prophet.
+  - Du'a: Ibn Rajab on why pardon is asked for at the end of the effort.
+  - Hadith and Sources: "Commentaries consulted"; the sea-water row updated.
+- Correction: pages that said recognising the night is no condition of its reward (FAQ, What Is, Signs, Prayer and Worship, Sources) now give both scholarly views as Ibn Hajar records them: al-Tabari and others held that the reward is gained without anything being made known; most scholars, reading Muslim's "and he coincides with it", held that the promised reward is for one to whom the night is made known, without denying reward to every sincere seeker.
+- "Tightening the waist-wrapper" (What Is, Last Ten Nights) now gives both explanations, with Ibn Rajab's preference for withdrawing from his wives.
+- What Is: Malik's report without a chain (balagh) on the shorter lives of this community, via Ibn Rajab.
+- Malay Night Planner: the two Commons photos, as on the English page.
+- `inc/data/seed-history.json`: hashes of the 1.9.8 and link-title versions added, so unedited pages take the new text.
+
 ## 1.9.8 (2026-10-28)
 
 - Malay translations of all eleven articles in `content/ms/`: Mula di Sini, Apa Itu Lailatulqadar?, Surah al-Qadr, Bilakah Lailatulqadar?, Sepuluh Malam Terakhir Ramadan, Tanda-Tanda Lailatulqadar, Amalan Malam Lailatulqadar, Doa Lailatulqadar, Soalan Lazim, Hadis dan Sumber Rujukan, and Dilema Islam dan al-Quran sebagai Pengawas (until now a Malay draft). With the existing Perancang Malam, every Malay guide page now ships an article, so setup seeds and publishes them all beneath /ms/ on the next admin visit and the Malay reading path has no "Akan datang" entries left. Each article keeps the block structure, Arabic text, footnotes, internal `{{url:key}}` links and `[lq_ramadan]` shortcodes of its English original; footnote IDs are new. Spelling and grammar follow Pedoman Umum Ejaan Bahasa Melayu and Tatabahasa Dewan (rules recorded in SSOT.md, Editorial decisions). Links to sister sites, which are in English, are marked as such.

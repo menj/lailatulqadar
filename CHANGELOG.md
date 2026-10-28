@@ -2,6 +2,19 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.11 (2026-10-28)
+
+- Every shamela.ws link with an Arabic page title is followed by a translation of that title in parentheses: English on English pages, Malay on Malay pages (volume, page, book and edition, chapter). 288 links across all articles; the rule is recorded in SSOT.md.
+- New material from Ibn Kathīr's *Tafsīr al-Qurʾān al-ʿAẓīm* (ed. al-Salāmah, vol. 8, pp. 441–450), read on shamela.ws (English and Malay):
+  - Surah al-Qadr, verse 3: what "better than a thousand months" measures (Mujāhid, Qatādah, al-Shāfiʿī; Ibn Jarīr's choice, which Ibn Kathīr calls correct); the story of the Israelite warrior, given as Mujāhid's unattributed report; the report that the thousand months are the Umayyad reign (al-Tirmidhī 3350, verified on shamela.ws), with al-Tirmidhī's, al-Albānī's, al-Mizzī's and Ibn Kathīr's judgements.
+  - Surah al-Qadr, verse 4: Ibn Kathīr's two explanations of the Spirit (Jibrīl, or a distinct kind of angel), replacing the statement that no other reading was needed.
+  - Surah al-Qadr, new question: the word "hiya" as the 27th word.
+  - What Is, new question: whether earlier communities had the night (Ibn Kathīr's two views).
+  - What Is: the four Ibn Kathīr notes that cited the abridged English edition now also link the Arabic pages.
+  - Hadith and Sources: held-back reports traced through Ibn Kathīr (angels outnumbering the pebbles; the mild night and weak sun; no star thrown), each still marked as not yet verified in its collection; the Umayyad report added as weak; Ibn Kathīr added to "Commentaries consulted".
+  - Signs: the mild-night sign traced to its reports, still unverified.
+- `inc/data/seed-history.json`: hashes of the 1.9.10 articles added.
+
 ## 1.9.10 (2026-10-28)
 
 - Hadith and Sources (English and Malay): the hadith tables now cover every report in the Laylat al-Qadr chapters of Ṣaḥīḥ al-Bukhārī (nos. 2014–2024) and Ṣaḥīḥ Muslim (nos. 1165–1170). Six rows were added, each with a footnote linking the shamela.ws page where it was checked and the sunnah.com entry: al-Bukhārī 2018 (Abū Saʿīd: the move to the last ten and the rain on the 21st night), 2019 (ʿĀʾishah: “Seek it”, the shortened chain of no. 2017) and 2022 (Ibn ʿAbbās: “when nine have passed or seven remain”, with his “seek it on the twenty-fourth”); Muslim 1165 (Ibn ʿUmar: the Companions' dreams agreeing on the last seven), 1167 (Abū Saʿīd, as al-Bukhārī 2018) and 1169 (ʿĀʾishah: seek it in the last ten).

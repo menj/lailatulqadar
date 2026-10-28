@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.9.10. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.9.11. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -146,7 +146,7 @@ Breakpoints: phones to 600px, tablets 601 to 1024px, desktop above. Type is flui
 | Fallback only | Noto Naskh Arabic | Behind Arslan | Downloads only if Arslan lacks a glyph |
 | Interface | System sans-serif | Menus, footer, captions | |
 
-Article rules: at least 1,200 words; an In brief box, tables and at least one illustration; titles of works appear only in footnotes; every hadith VERIFIED on shamela.ws (and sunnah.com) before inclusion, NOT_FOUND items held back. Links to sources use the linked page's title as their text, never a bare address: a shamela.ws page shows its Arabic title (volume, page, book and chapter, without "المكتبة الشاملة"), with `lang="ar" dir="rtl"`; a sunnah.com link shows the collection and number that open its title ("Sahih al-Bukhari 2014"). Classical commentaries (Ibn Ḥajar, al-Nawawī, Ibn Rajab) are cited as their authors' views, read on shamela.ws ("Read on …"); reports they mention are not presented as verified hadith, and practices of the early generations are labelled as theirs, not as sayings of the Prophet ﷺ. Where gradings differ, al-Albānī's takes precedence; other gradings, such as Dār al-Salām's, are shown beside it.
+Article rules: at least 1,200 words; an In brief box, tables and at least one illustration; titles of works appear only in footnotes; every hadith VERIFIED on shamela.ws (and sunnah.com) before inclusion, NOT_FOUND items held back. Links to sources use the linked page's title as their text, never a bare address: a shamela.ws page shows its Arabic title (volume, page, book and chapter, without "المكتبة الشاملة"), with `lang="ar" dir="rtl"`, followed outside the link by a translation of that title in parentheses, in the page's language (English pages in English, Malay pages in Malay); a sunnah.com link shows the collection and number that open its title ("Sahih al-Bukhari 2014"). Classical commentaries (Ibn Ḥajar, al-Nawawī, Ibn Rajab, Ibn Kathīr) are cited as their authors' views, read on shamela.ws ("Read on …"); reports they mention are not presented as verified hadith, and practices of the early generations are labelled as theirs, not as sayings of the Prophet ﷺ. Where gradings differ, al-Albānī's takes precedence; other gradings, such as Dār al-Salām's, are shown beside it.
 
 Binding rules: Qurʾānic text is always taken verbatim from a verified source and set in the KFGQPC face; it is never retyped, and no other typeface may render it. Hadith and other Arabic never use the KFGQPC face, so the two are always visually distinct. Rejected owner-supplied fonts: Sabon Next LT (Monotype desktop licence does not cover web embedding; lacks ḥ, ṭ, ḍ, ẓ, ʿ, ʾ), Dubidam Arabic (free for personal use only), Special Elite (typewriter display face; lacks the dot-below letters and ʿ ʾ).
 

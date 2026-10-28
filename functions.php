@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.9.10' );
+define( 'LQ_VERSION', '1.9.11' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 

@@ -2,6 +2,13 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.16 (2026-10-29)
+
+- Addresses without "a", "an" or "the" (`inc/slugs.php`, new): when WordPress builds an address from a title, on a post's or page's first publish, the words a, an and the are left out ("The Night of Decree" becomes `night-of-decree`). Other small words (is, of, and, dan) stay. A slug an editor types, the slugs setup gives the guide pages and every existing address are left as they are, so no address changes and no redirect is needed. If a title has nothing but those words, its address keeps them. The words come from the filter `lq_slug_stopwords`. Rule recorded in SSOT.md.
+- None of the 30 guide-page addresses contained a, an or the, so none changed.
+- Seed files: all 24 article seeds were already `content/<lang>/<key>.json` and all pass `lq_article_data()`. `bin/check-content.py` (new) applies the same rules (only `<lang>/<key>.json` files, valid JSON of the expected shape, every footnote marker matched to its note), and the Content workflow (`.github/workflows/content.yml`, new) runs it on pull requests that touch `content/`, so a seed setup would skip fails before it is merged. Documented in `docs/content.md`, which also gives the current seed-history command.
+- SSOT.md: the seed-history row describes `bin/build-seed-history.php` as it now works (it adds to the file and never drops a hash); the page registry no longer mentions Malay pages awaiting translation.
+
 ## 1.9.15 (2026-10-29)
 
 - The Islamic Dilemma and the Qurʾān as Guardian (`dilemma`, English) names the two parts of the argument "the first claim" and "the second claim", the term the sister sites use. The 1.9.14 text is already in `inc/data/seed-history.json`, so an unedited page takes the new wording on this version change.

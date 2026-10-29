@@ -29,6 +29,10 @@
 
 Word counts exclude Arabic text, illustrations and footnotes.
 
+## Seed files
+
+Every article ships as one JSON file, `content/<lang>/<key>.json` (`en` or `ms`; the page key from the registry), and setup seeds pages from nothing else. The file is an object with `content`, the page's block markup, and `footnotes`, a list of `{ "id", "content" }` notes. Every footnote marker in the content (`data-fn="…"`) needs its note and every note its marker: `lq_article_data()` refuses a file that breaks any of these rules, and setup then skips the page. `bin/check-content.py` applies the same rules, and the Content workflow runs it on every pull request that touches `content/`, so a seed setup would skip fails before it is merged.
+
 ## Publishing and updates
 
 Setup (on activation, on each theme update, and from Tools > Run setup) writes every shipped article into its page and publishes it. Pages without a shipped article stay drafts. When an article in `content/` changes in a release:
@@ -37,7 +41,7 @@ Setup (on activation, on each theme update, and from Tools > Run setup) writes e
 - a page an editor has changed is left as it is and listed on the Tools tab under "Edited, not updated", with a button to replace it;
 - obsolete copies the theme created earlier (empty or unedited drafts, or a page renamed to `slug-2`) go to the trash; pages the theme did not create are never touched.
 
-"Unedited" means the content and footnotes still match the fingerprint stored at seeding (`_lq_seed_hash`). Pages seeded before 1.9.4 have no fingerprint; they count as unedited when their text equals any version shipped earlier, listed in `inc/data/seed-history.json`. When you change an article, add the md5 of its previous `content` (trimmed, `\n` line endings) to that file, or rebuild the file from `git log -p content/`.
+"Unedited" means the content and footnotes still match the fingerprint stored at seeding (`_lq_seed_hash`). Pages seeded before 1.9.4 have no fingerprint; they count as unedited when their text equals any version shipped earlier, listed in `inc/data/seed-history.json`. When you change an article, run `php bin/build-seed-history.php > inc/data/seed-history.json.new` and move the new file into place: the script adds every version in the git history of `content/` and keeps the hashes already in the file.
 
 ## Standards
 

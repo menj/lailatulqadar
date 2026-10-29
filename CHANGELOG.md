@@ -2,6 +2,11 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.7 (2026-10-29)
+
+- The Islamic Dilemma and the Qurʾān as Guardian (`dilemma`, English) names the two parts of the argument "the first claim" and "the second claim", the term the sister sites use. The 1.9.6 text is already in `inc/data/seed-history.json`, so an unedited page takes the new wording on this version change.
+- `FARUQI.md` sets out the Faruqian core, al-tawḥīd as al-Fārūqī set it out in *Al Tawhid: Its Implications for Thought and Life*, which every site in the network rests on. `CLAUDE.md` points contributors to it first.
+
 ## 1.9.6 (2026-10-26)
 
 - New shortcode `[lq_lanah]` (`inc/helpers.php`): لعنة الله, laʿnat Allāh, "the curse of God", set after the name of Paul of Tarsus as calligraphy. `.lq-lanah` (`css/front.css`) draws `images/lanat-allah.svg` (copied from injil.help) as a mask in the `accent-1` preset, so it follows the night and dawn schemes and the accent colours in the settings; the palette has no red. In forced-colours mode it is drawn in `CanvasText`. The words "laʿnat Allāh, the curse of God" stay inside, visually hidden, for screen readers, search and a copy and paste, and show as written where the browser cannot draw a mask. The contextual-link engine skips `.lq-lanah`.

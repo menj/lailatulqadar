@@ -20,13 +20,7 @@ defined( 'ABSPATH' ) || exit;
  * @return string Key, or empty string.
  */
 function lq_page_key_for_id( $id ) {
-	foreach ( lq_page_map() as $ids ) {
-		$key = array_search( (int) $id, array_map( 'intval', (array) $ids ), true );
-		if ( false !== $key ) {
-			return (string) $key;
-		}
-	}
-	return '';
+	return lq_page_key_of( $id );
 }
 
 /**
@@ -72,7 +66,8 @@ function lq_breadcrumb_trail() {
 		$trail[] = array( $blog ? get_the_title( $blog ) : ( 'secondary' === $role ? 'Catatan' : 'Posts' ), $blog ? get_permalink( $blog ) : home_url( '/' ) );
 	} elseif ( is_archive() ) {
 		$is_term = is_category() || is_tag() || is_tax();
-		$trail[] = array( $is_term ? single_term_title( '', false ) : wp_strip_all_tags( get_the_archive_title() ), $is_term ? get_term_link( get_queried_object() ) : '' );
+		$link    = $is_term ? get_term_link( get_queried_object() ) : '';
+		$trail[] = array( $is_term ? single_term_title( '', false ) : wp_strip_all_tags( get_the_archive_title() ), is_wp_error( $link ) ? '' : $link );
 	} else {
 		return array();
 	}
@@ -107,14 +102,11 @@ function lq_schema_graph() {
 		'name'  => $name,
 		'url'   => home_url( '/' ),
 	);
-	$icon = get_site_icon_url( 512 );
-	$icon = $icon ? $icon : LQ_URI . '/images/lailatulqadar-mark-512.png';
-	if ( $icon ) {
-		$org['logo'] = array(
-			'@type' => 'ImageObject',
-			'url'   => $icon,
-		);
-	}
+	$icon        = get_site_icon_url( 512 );
+	$org['logo'] = array(
+		'@type' => 'ImageObject',
+		'url'   => $icon ? $icon : LQ_URI . '/images/lailatulqadar-mark-512.png',
+	);
 
 	$graph = array(
 		$org,
@@ -162,7 +154,7 @@ function lq_schema_graph() {
 				)
 			);
 		}
-		$graph[]               = array(
+		$graph[] = array(
 			'@type'           => 'BreadcrumbList',
 			'@id'             => $url . '#breadcrumb',
 			'itemListElement' => $items,

@@ -491,7 +491,26 @@
 			);
 		} );
 		lines.push( 'END:VCALENDAR' );
-		return lines.join( '\r\n' );
+		return lines.map( fold ).join( '\r\n' );
+	}
+
+	// RFC 5545 3.1: a content line is at most 75 octets; a longer one
+	// continues on the next line after CRLF and a space. Octets are counted
+	// in UTF-8, and a character is never split between lines.
+	function fold( line ) {
+		var out = '';
+		var used = 0;
+		Array.from( line ).forEach( function ( ch ) {
+			var c = ch.codePointAt( 0 );
+			var size = c < 0x80 ? 1 : ( c < 0x800 ? 2 : ( c < 0x10000 ? 3 : 4 ) );
+			if ( used + size > 75 ) {
+				out += '\r\n ';
+				used = 1;
+			}
+			out += ch;
+			used += size;
+		} );
+		return out;
 	}
 
 	function stampUtc( ms ) {

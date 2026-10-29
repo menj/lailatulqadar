@@ -2,6 +2,25 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.14 (2026-10-29)
+
+Code review fixes; no content changes.
+
+- Setup lock (`inc/setup.php`): the lock is now a single `INSERT IGNORE` into the options table, as WordPress's upgrader lock is. The transient lock read and then wrote, so two admin requests arriving together could both run setup. A lock older than five minutes is taken over.
+- Word counts on the Tools tab (`lq_word_count()`): counted with Unicode word matching. `str_word_count()` knows only unaccented ASCII letters and split words such as "Ṣaḥīḥ" and "ʿĀʾishah" into fragments.
+- Language detection on a site in a subdirectory (`lq_current_role()`): the base path is removed only at a path boundary, so `/blog` no longer matches `/blogger/...`.
+- Calendar export (`js/night-window.js`): lines longer than 75 octets are folded as RFC 5545 requires, counting UTF-8 octets and never splitting a character.
+- Login screen (`inc/login.php`): accent colours are validated with `sanitize_hex_color()` and fall back to the defaults, as on the front end; the scheme class is passed through `sanitize_html_class()`.
+- Breadcrumbs (`inc/schema.php`): a term link that comes back as `WP_Error` is no longer placed in the trail. `lq_page_key_for_id()` now calls `lq_page_key_of()` instead of duplicating it; an always-true check is gone.
+- Draft links (`inc/draft-links.php`): the fragment is cut with `explode()`; `strtok()` skipped a leading "#" and read an in-page anchor as an address.
+- Parent theme (`inc/parent.php`): `glob()` returning false no longer reaches `foreach`.
+- Tools tab (`inc/settings.php`): "Replace with the shipped version" stops with a message when the page is not a guide page, instead of reporting an empty setup run; the Run setup help no longer says Malay pages await translation; translator comments sit before each string they describe.
+- Search appearance box (`js/meta-box.js`): the live count keeps the translated wording ("12 of 60 characters") instead of replacing it with "12 / 60".
+- `bin/build-seed-history.php`: keeps the hashes already in `inc/data/seed-history.json` and adds the new ones, so a version that left the git history is never dropped; with no argument it uses the theme's own folder. The usage line says to write to a new file, since redirecting onto the file truncates it before it is read.
+- `bin/fetch-commons-images.py`: a 400, 404 or 410 is not retried (eight retries with growing waits held a permanent error for about nine minutes); the User-Agent carries the theme version from `style.css`; files are opened with `with`.
+- Images workflow: skipped for pull requests from forks, which it can neither check out nor push to.
+- Docblocks and alignment: `lq_menu_items()` documents `$upcoming`; the hreflang, block registration, editor script and content-filter comments describe what the code does; aligned assignments in the settings defaults, image data, SEO plugin map and guide menu.
+
 ## 1.9.13 (2026-10-29)
 
 - Malay pages: 43 Arabic passages, Qurʾānic text among them, restored to the exact code points of the source text used on the English pages. The Malay build had applied Unicode NFC normalisation, which reorders shadda and vowel marks, merges alif with combining madda into U+0622 and turned non-breaking spaces before verse numbers into ordinary spaces. The text looked the same but no longer matched the KFGQPC orthography its notes cite.

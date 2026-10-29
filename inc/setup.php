@@ -50,17 +50,29 @@ add_action( 'admin_init', 'lq_maybe_run_setup' );
 /**
  * Run setup under a lock, so two requests never run it at once.
  *
+ * The lock is one INSERT IGNORE into the options table, as WordPress's own
+ * upgrader lock does: the database lets only one request insert the row, so
+ * two requests that arrive together cannot both take it. A lock older than
+ * five minutes belongs to a run that died and is taken over.
+ *
  * @return array|null The report, or null when another run holds the lock.
  */
 function lq_run_setup_locked() {
-	if ( get_transient( 'lailatulqadar_setup_lock' ) ) {
-		return null;
+	global $wpdb;
+	$lock = 'lailatulqadar_setup_lock';
+	$now  = time();
+	$got  = $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO `$wpdb->options` ( `option_name`, `option_value`, `autoload` ) VALUES ( %s, %s, 'off' ) /* LOCK */", $lock, $now ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	if ( ! $got ) {
+		$since = (int) $wpdb->get_var( $wpdb->prepare( "SELECT `option_value` FROM `$wpdb->options` WHERE `option_name` = %s", $lock ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		if ( $since > $now - 5 * MINUTE_IN_SECONDS ) {
+			return null;
+		}
+		update_option( $lock, $now, false );
 	}
-	set_transient( 'lailatulqadar_setup_lock', 1, MINUTE_IN_SECONDS * 5 );
 	try {
 		return lq_run_setup();
 	} finally {
-		delete_transient( 'lailatulqadar_setup_lock' );
+		delete_option( $lock );
 	}
 }
 
@@ -264,11 +276,11 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 	// earlier versions (with "2027" in place of [lq_ramadan]) take the
 	// registry default.
 	$title = (string) get_post_meta( $id, LQ_META_TITLE, true );
-	if ( '' === $title || mb_strlen( $title ) > LQ_TITLE_LIMIT || str_replace( '[lq_ramadan]', '2027', $def['seo'] ) === $title && $title !== $def['seo'] ) {
+	if ( '' === $title || mb_strlen( $title ) > LQ_TITLE_LIMIT || ( str_replace( '[lq_ramadan]', '2027', $def['seo'] ) === $title && $title !== $def['seo'] ) ) {
 		update_post_meta( $id, LQ_META_TITLE, $def['seo'] );
 	}
 	$desc = (string) get_post_meta( $id, LQ_META_DESCRIPTION, true );
-	if ( '' === $desc || mb_strlen( $desc ) > LQ_META_LIMIT || str_replace( '[lq_ramadan]', '2027', $def['meta'] ) === $desc && $desc !== $def['meta'] ) {
+	if ( '' === $desc || mb_strlen( $desc ) > LQ_META_LIMIT || ( str_replace( '[lq_ramadan]', '2027', $def['meta'] ) === $desc && $desc !== $def['meta'] ) ) {
 		update_post_meta( $id, LQ_META_DESCRIPTION, $def['meta'] );
 	}
 
@@ -359,7 +371,6 @@ function lq_article_data( $lang, $key ) {
 		'footnotes' => $notes,
 	);
 }
-
 
 /**
  * Content normalised for comparison: line endings unified, outer space

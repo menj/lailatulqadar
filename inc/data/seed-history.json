@@ -31,6 +31,7 @@
             "5d0468f01fae624dc63c86e35d780850",
             "6cd466b26fbe8b52480dda6be6fc7a3c",
             "a2737e6f4007f1fc8963eb7be08878bf",
+            "ccdd1866de960899452034775ae53c13",
             "e4e381cfe462f958fac3411c13ac68fe",
             "f7ee11a35c365e5629ee672f50cc41ac"
         ],
@@ -42,6 +43,7 @@
             "6bb863ef27199f24c1c2b726684185bc",
             "94f5fe7a13b62ebcb02353bbcb332f52",
             "97ec353c2d45e15c9b5d21804887a0cc",
+            "a20669a159b7cbb514b33d71da9ea26a",
             "bad58c252fec564e79f4bdd51d6ff341",
             "beeef396023d1490710d14749ff88bae",
             "c26c84b66ea0f5a6877c8e215b97bdc5",
@@ -49,6 +51,7 @@
         ],
         "start": [
             "57a33a582dfe9ce944da65249f1c1258",
+            "6afd3f7c7b41f2eb040646d8fc3fbc59",
             "c66fc4af9388f297bc80df3a3d209432",
             "eb0f2522aa5ff9acdc9441e11e58fcca"
         ],
@@ -75,6 +78,7 @@
             "ebed01b7be98876849517019e763ac39"
         ],
         "worship": [
+            "0a6ff99bc8779740a8b46681d93b8aac",
             "2a94f7be930d262e1120774fc5b4ae05",
             "55f8e299df4d7fc49b60f35dabb2ca57",
             "72678be15bc7379d663a7c467bc5edd5"
@@ -82,19 +86,23 @@
     },
     "ms": {
         "dilemma": [
+            "64f808619ac88d03a4147f530744db15",
             "f57d2cdaca06c69284bdc31175e387bb"
         ],
         "dua": [
             "5c65ba3d8025916f64db45ec22a2c057",
             "65c6ef076653c889f5d67e86b2bfa167",
-            "71f5ea1d94c64f24e6aa3640d7822861"
+            "71f5ea1d94c64f24e6aa3640d7822861",
+            "e0410c05732bed38322e1fcb6ce9e99a"
         ],
         "faq": [
             "602b9eb53e4310f17be525fe69864ff8",
             "a1379c272e84a6f4997d212454776ff5",
+            "ac546a002b3f71a64f5501787ce77b9a",
             "c0dbc96b9fcf80bbac251e29fb4f7bc9"
         ],
         "last10": [
+            "1f03d3ab07ff60b2755a56f4256d55a4",
             "4a1d092b4304a404bf2699b044a358ed",
             "74874e42f0032961b36be4c3dbb9e034",
             "c1e6d3f722852b7b9df769b5b52c8c87"
@@ -105,6 +113,7 @@
         ],
         "signs": [
             "41d2e31f119570d2f6ede110c49717da",
+            "54b83208c2a3d5030ff74c379ad73f2b",
             "9171361bb937683a5bb01c2834d85e38",
             "db9618e3fb1ef380abf3ee15001f6b3b",
             "e19bfc100e0a5f7f463bbf95a8c2e1e6"
@@ -112,6 +121,7 @@
         "sources": [
             "011f7f5a0bd24314428cb63dfb579e1d",
             "5ed7817b1db27f75db05430ec56c04f0",
+            "941435c98139d09ac747d566cfdc7b8b",
             "ab26754b309194cfc52ac72a4f72a36f",
             "b88d403b2a3c1da475210f4f5a92a34e",
             "d50d20a557773d3fa60b3d06321af2ae",
@@ -119,13 +129,16 @@
         ],
         "start": [
             "3e9628894979daa0bc85124809c9cd7a",
+            "71dedb17dc44f0b2431d2ec5f8273733",
             "fab3f3b689bfb1f5fe9ec39d16d9778d"
         ],
         "surah": [
             "160ed199864fcc7505a0aedeb86ff639",
+            "7c1a5df9d670558eecb23bd0b0bdee9b",
             "c9c0c413f529192e3763194e88c6fd86"
         ],
         "what": [
+            "02513261649e47799974d0b2f08bd450",
             "14c49493ff35abfb63f7fe6acc7535f9",
             "685fe413be400472925d39f909c34724",
             "c7d977ba2758710698776d18cc6c83ec"
@@ -133,11 +146,13 @@
         "when": [
             "0911093b285956e8ff5c99141368259a",
             "540d6133dbb02c3dd6a5b9f38b740e60",
-            "82da915fbd662ab42a8d22c9850294c8"
+            "82da915fbd662ab42a8d22c9850294c8",
+            "f6e8280eb88f3627ced4815711cdfd8f"
         ],
         "worship": [
             "b0d16d79a9dab1265be770a329cac05b",
-            "c4e22e7650ec61b582f749db00857b2c"
+            "c4e22e7650ec61b582f749db00857b2c",
+            "e3e47a47b0b159c156245c3f57513b39"
         ]
     }
 }

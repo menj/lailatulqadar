@@ -19,6 +19,9 @@ concurrency:
 
 jobs:
   images:
+    # A pull request from a fork can neither check out its branch here nor
+    # push to it with this repository's token, so it is skipped.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

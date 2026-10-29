@@ -68,11 +68,11 @@ function lq_images_data() {
 			if ( ! $ok || 0 !== strpos( $image['source'], 'https://commons.wikimedia.org/wiki/File:' ) ) {
 				continue;
 			}
-			$image['widths']      = array_values( array_filter( array_map( 'absint', $image['widths'] ) ) );
-			$image['width']       = isset( $image['width'] ) ? absint( $image['width'] ) : 0;
-			$image['height']      = isset( $image['height'] ) ? absint( $image['height'] ) : 0;
-			$image['lead']        = ! empty( $image['lead'] );
-			$data[ $key ][]       = $image;
+			$image['widths'] = array_values( array_filter( array_map( 'absint', $image['widths'] ) ) );
+			$image['width']  = isset( $image['width'] ) ? absint( $image['width'] ) : 0;
+			$image['height'] = isset( $image['height'] ) ? absint( $image['height'] ) : 0;
+			$image['lead']   = ! empty( $image['lead'] );
+			$data[ $key ][]  = $image;
 		}
 	}
 	return $data;

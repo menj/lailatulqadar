@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.9.16' );
+define( 'LQ_VERSION', '1.9.17' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 
@@ -25,6 +25,7 @@ require_once LQ_DIR . '/inc/draft-links.php';
 require_once LQ_DIR . '/inc/schema.php';
 require_once LQ_DIR . '/inc/login.php';
 require_once LQ_DIR . '/inc/setup.php';
+require_once LQ_DIR . '/inc/slugs.php';
 
 if ( is_admin() ) {
 	require_once LQ_DIR . '/inc/settings.php';

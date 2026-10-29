@@ -1,5 +1,59 @@
 # Upgrading
 
+You can skip versions: upload the newest zip over any 1.9.x and open any admin screen as an administrator. Setup knows every version of each article the theme has shipped, so in one run it brings every unedited page up to date and lists pages you have edited under "Edited, not updated" on the Tools tab. The entries below say what each version changes on the site.
+
+## From 1.9.16 to 1.9.17
+
+Upload the new zip over 1.9.16 and open any admin screen as an administrator. Setup runs once and finds nothing to change: the page registry now comes from `inc/data/pages.json`, with the same titles, addresses and descriptions as before. If that file is missing or damaged, setup does not run and the Tools tab shows a warning instead of "Setup finished".
+
+## From 1.9.15 to 1.9.16
+
+Upload the new zip over 1.9.15. No page changes and no setup work: existing addresses stay as they are. From now on, a new post or page published without a slug of its own gets an address without "a", "an" or "the".
+
+## From 1.9.14 to 1.9.15
+
+Upload the new zip over 1.9.14 and open any admin screen as an administrator. Setup runs once and gives The Islamic Dilemma and the Qurʾān as Guardian (English) its new wording, unless the page has been edited. `FARUQI.md` is documentation for contributors and changes nothing on the site.
+
+## From 1.9.13 to 1.9.14
+
+Upload the new zip over 1.9.13. Code fixes only: no article changes, so setup finds nothing to update. Clear any page cache, so visitors load the new night window script; editors get the new Search appearance script once their browser reloads the page editor.
+
+## From 1.9.12 to 1.9.13
+
+Upload the new zip over 1.9.12 and open any admin screen as an administrator. Setup refreshes every Malay article, whose Arabic is restored to the exact text of its source, and in English Prayer and Worship, Signs, Start Here and Hadith and Sources. Read the setup report on the Tools tab.
+
+## From 1.9.11 to 1.9.12
+
+Upload the new zip over 1.9.11 and open any admin screen as an administrator. Setup refreshes Start Here, The Last Ten Nights, Duʿāʾ, Signs, When Is and Hadith and Sources in both languages, which gain new sections. Read the setup report on the Tools tab.
+
+## From 1.9.10 to 1.9.11
+
+Upload the new zip over 1.9.10 and open any admin screen as an administrator. Setup refreshes every article that cites shamela.ws in both languages: each Arabic source title now carries a translation. Sūrat al-Qadr, What Is, Signs and Hadith and Sources also gain material from Ibn Kathīr.
+
+## From 1.9.9 to 1.9.10
+
+Upload the new zip over 1.9.9 and open any admin screen as an administrator. Setup refreshes Hadith and Sources in both languages, which gains six hadith rows.
+
+## From 1.9.8 to 1.9.9
+
+Upload the new zip over 1.9.8 and open any admin screen as an administrator. Setup refreshes the articles whose citations or content changed in both languages: footnotes link shamela.ws with titled links, and When Is, Prayer and Worship, Signs, Duʿāʾ and Hadith and Sources gain new sections. Read the setup report on the Tools tab.
+
+## From 1.9.7 to 1.9.8
+
+Upload the new zip over 1.9.7 and open any admin screen as an administrator. Setup fills and publishes every Malay guide page that is still an empty draft, beneath the Malay home at /ms/, so the Malay reading path no longer shows "Akan datang". A Malay page you have written yourself is not replaced; the Tools tab lists it under "Edited, not updated" with a button to replace it. Check the Malay home and the language switcher afterwards.
+
+## From 1.9.6 to 1.9.7
+
+Upload the new zip over 1.9.6 and open any admin screen as an administrator. Pages first seeded by 1.9.0 are now recognised as unedited, so setup gives them the current text and publishes them. If the Tools tab listed The Last Ten Nights, Signs or Duʿāʾ as "Edited, not updated" although nobody had edited them, they now update by themselves.
+
+## From 1.9.5 to 1.9.6
+
+Upload the new zip over 1.9.5. No setup changes. The `[lq_lanah]` shortcode is available for placing by hand; no shipped article uses it. A web licence for the Dubidam Arabic outlines it is drawn from is the site owner's to hold.
+
+## From 1.9.4 to 1.9.5
+
+Upload the new zip over 1.9.4 and open any admin screen as an administrator. Setup creates and publishes The Islamic Dilemma and the Qurʾān as Guardian (English; its Malay page stays a draft until 1.9.8), adds it to the reading path and footer, and refreshes unedited pages whose text changed: Signs, Duʿāʾ, The Last Ten Nights and When Is. The front pages are patterns and change at once.
+
 ## From 1.9.3 to 1.9.4
 
 Upload the new zip over 1.9.3 and open any admin screen as an administrator. Setup runs by itself once (it notices the new version): every page whose article ships with the theme is filled and published, pages seeded earlier and not edited take the new text (the old text stays as a revision), and obsolete copies the theme created earlier go to the trash. Pages you have edited are not changed; the Tools tab lists them under "Edited, not updated" with a button to replace each one. About, Contact and Malay pages awaiting translation stay drafts. Read the setup report on the Tools tab.

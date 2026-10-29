@@ -157,8 +157,8 @@ function lq_sanitize_settings( $input ) {
 			case 'verify_google':
 			case 'verify_bing':
 				// Accept the bare code or the whole meta tag pasted from the tool.
-				if ( preg_match( '/content=["\']([^"\']+)["\']/', (string) $value, $lq_m ) ) {
-					$value = $lq_m[1];
+				if ( preg_match( '/content=["\']([^"\']+)["\']/', (string) $value, $m ) ) {
+					$value = $m[1];
 				}
 				$value = preg_replace( '/[^A-Za-z0-9_\-]/', '', (string) $value );
 				break;
@@ -924,7 +924,7 @@ function lq_render_tools_tab() {
 
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Run setup', 'lailatulqadar' ); ?></h2>
-		<p class="lq-help"><?php esc_html_e( 'Setup runs by itself on the first admin visit after the theme is activated or updated; this button runs it again. It creates any missing guide pages in both languages, places the Malay pages beneath the Malay home at /ms/, pairs each page with its translation and sets the front page. Every page whose article ships with the theme is filled and published; pages with no article yet (About, Contact, Malay pages awaiting translation) stay drafts. When the theme ships a new version of an article, a page nobody has edited takes it (WordPress keeps the old text as a revision); a page an editor has changed is never overwritten and is listed under "Edited, not updated". Obsolete copies of guide pages left by earlier setups go to the trash; pages the theme did not create are never touched. Featured images an editor chose are kept. Empty title tags and meta descriptions are filled from the keyword plan.', 'lailatulqadar' ); ?></p>
+		<p class="lq-help"><?php esc_html_e( 'Setup runs by itself on the first admin visit after the theme is activated or updated; this button runs it again. It creates any missing guide pages in both languages, places the Malay pages beneath the Malay home at /ms/, pairs each page with its translation and sets the front page. Every page whose article ships with the theme is filled and published; pages with no article (About and Contact) stay drafts. When the theme ships a new version of an article, a page nobody has edited takes it (WordPress keeps the old text as a revision); a page an editor has changed is never overwritten and is listed under "Edited, not updated". Obsolete copies of guide pages left by earlier setups go to the trash; pages the theme did not create are never touched. Featured images an editor chose are kept. Empty title tags and meta descriptions are filled from the keyword plan.', 'lailatulqadar' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="lq_run_setup">
 			<?php wp_nonce_field( 'lq_run_setup' ); ?>
@@ -964,16 +964,21 @@ function lq_render_notices() {
 		);
 		echo '</p>';
 		$lists = array(
+			/* translators: %s: list of page titles */
 			'seeded'    => __( 'Filled with the shipped article: %s.', 'lailatulqadar' ),
+			/* translators: %s: list of page titles */
 			'published' => __( 'Published: %s.', 'lailatulqadar' ),
+			/* translators: %s: list of page titles */
 			'refreshed' => __( 'Updated to the new shipped version (the old text is kept as a revision): %s.', 'lailatulqadar' ),
+			/* translators: %s: list of page titles */
 			'edited'    => __( 'Edited by an editor, so not updated: %s.', 'lailatulqadar' ),
+			/* translators: %s: list of page titles */
 			'trashed'   => __( 'Obsolete copies moved to the trash: %s.', 'lailatulqadar' ),
+			/* translators: %s: list of page titles */
 			'kept'      => __( 'Older copies kept because they have been edited: %s.', 'lailatulqadar' ),
 		);
 		foreach ( $lists as $list => $message ) {
 			if ( ! empty( $report[ $list ] ) ) {
-				/* translators: %s: list of page titles */
 				echo '<p>' . esc_html( sprintf( $message, implode( ', ', $report[ $list ] ) ) ) . '</p>';
 			}
 		}
@@ -1041,12 +1046,17 @@ function lq_handle_replace_shipped() {
 		'kept'      => array(),
 		'errors'    => array(),
 	);
+	$found = false;
 	foreach ( lq_page_map() as $role => $ids ) {
 		$key = array_search( $id, array_map( 'intval', (array) $ids ), true );
 		if ( $id && false !== $key ) {
 			lq_seed_content( $id, (string) $key, (string) $role, $report, true );
+			$found = true;
 			break;
 		}
+	}
+	if ( ! $found ) {
+		wp_die( esc_html__( 'That page is not one of the guide pages, so there is no shipped version to replace it with.', 'lailatulqadar' ) );
 	}
 	set_transient( 'lailatulqadar_setup_report', $report, MINUTE_IN_SECONDS * 10 );
 	wp_safe_redirect( admin_url( 'themes.php?page=lailatulqadar&tab=tools' ) );

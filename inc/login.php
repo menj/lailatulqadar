@@ -46,13 +46,17 @@ function lq_login_text() {
  */
 function lq_login_assets() {
 	wp_enqueue_style( 'lailatulqadar-login', LQ_URI . '/css/login.css', array( 'login' ), LQ_VERSION );
-	$css = sprintf(
+	// Validated as on the front end: a value that is not a hex colour falls
+	// back to the default rather than reaching the stylesheet.
+	$night = sanitize_hex_color( lq_setting( 'accent_night' ) );
+	$dawn  = sanitize_hex_color( lq_setting( 'accent_dawn' ) );
+	$css   = sprintf(
 		'body.login{--lq-accent-night:%1$s;--lq-accent-dawn:%2$s;}' .
 		'@font-face{font-family:"EB Garamond";font-style:normal;font-weight:400 700;font-display:swap;src:url("%3$s") format("woff2");}' .
 		'@font-face{font-family:"EB Garamond";font-style:italic;font-weight:400 700;font-display:swap;src:url("%4$s") format("woff2");}' .
 		'@font-face{font-family:"Arslan Wessam B";font-style:normal;font-weight:400;font-display:swap;size-adjust:140%%;src:url("%5$s") format("woff2");}',
-		esc_attr( lq_setting( 'accent_night' ) ),
-		esc_attr( lq_setting( 'accent_dawn' ) ),
+		$night ? $night : '#c9a85c',
+		$dawn ? $dawn : '#7a5a14',
 		esc_url( LQ_URI . '/fonts/eb-garamond/eb-garamond-roman.woff2' ),
 		esc_url( LQ_URI . '/fonts/eb-garamond/eb-garamond-italic.woff2' ),
 		esc_url( LQ_URI . '/fonts/arslan-wessam/arslan-wessam-b.woff2' )
@@ -69,7 +73,7 @@ add_action( 'login_enqueue_scripts', 'lq_login_assets' );
  */
 function lq_login_body_class( $classes ) {
 	$classes[] = 'lq-login';
-	$classes[] = 'lq-scheme-' . lq_setting( 'scheme' );
+	$classes[] = 'lq-scheme-' . sanitize_html_class( lq_setting( 'scheme' ) );
 	return $classes;
 }
 add_filter( 'login_body_class', 'lq_login_body_class' );

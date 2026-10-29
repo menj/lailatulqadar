@@ -37,7 +37,15 @@ import urllib.request
 from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-UA = {'User-Agent': 'LailatulqadarTheme/1.9.4 (https://lailatulqadar.guide; remotiveasia@gmail.com) python-urllib'}
+
+
+def theme_version():
+    with open(os.path.join(ROOT, 'style.css'), encoding='utf-8') as f:
+        found = re.search(r'^Version:\s*(\S+)', f.read(), re.M)
+    return found.group(1) if found else 'dev'
+
+
+UA = {'User-Agent': 'LailatulqadarTheme/%s (https://lailatulqadar.guide; remotiveasia@gmail.com) python-urllib' % theme_version()}
 API = 'https://commons.wikimedia.org/w/api.php?'
 OUT = os.path.join(ROOT, 'images', 'commons')
 DATA = os.path.join(ROOT, 'inc', 'data', 'images.json')
@@ -52,6 +60,8 @@ def get(url):
         try:
             return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60).read()
         except urllib.error.HTTPError as e:
+            if e.code in (400, 404, 410):
+                return None  # permanent: retrying only delays the run
             wait = int(e.headers.get('Retry-After', '0') or 0) if e.code == 429 else 0
             time.sleep(max(wait, 15 * (attempt + 1)))
         except Exception:
@@ -105,8 +115,12 @@ def write(data):
 
 def main():
     force = '--force' in sys.argv
-    plan = json.load(open(os.path.join(ROOT, 'bin', 'commons-images.json'), encoding='utf-8'))
-    data = json.load(open(DATA, encoding='utf-8')) if os.path.exists(DATA) and not force else {}
+    with open(os.path.join(ROOT, 'bin', 'commons-images.json'), encoding='utf-8') as f:
+        plan = json.load(f)
+    data = {}
+    if os.path.exists(DATA) and not force:
+        with open(DATA, encoding='utf-8') as f:
+            data = json.load(f)
     os.makedirs(OUT, exist_ok=True)
     titles = [item['title'] for items in plan.values() for item in items]
     info = {}
@@ -146,6 +160,8 @@ def main():
                 'lead': n == 1,
                 'alt': item['alt'],
                 'caption': item.get('caption', ''),
+                'alt_ms': item.get('alt_ms', ''),
+                'caption_ms': item.get('caption_ms', ''),
                 'artist': artist[:120],
                 'licence': 'Public domain' if re.match(r'^(public domain|pd\b)', licence, re.I) else licence,
                 'licence_url': meta.get('LicenseUrl', {}).get('value', ''),

@@ -24,10 +24,10 @@ const LQ_META_LIMIT       = 130;
  */
 function lq_seo_plugin() {
 	$plugins = array(
-		'WPSEO_VERSION'      => 'Yoast SEO',
-		'RANK_MATH_VERSION'  => 'Rank Math',
-		'SEOPRESS_VERSION'   => 'SEOPress',
-		'AIOSEO_VERSION'     => 'All in One SEO',
+		'WPSEO_VERSION'             => 'Yoast SEO',
+		'RANK_MATH_VERSION'         => 'Rank Math',
+		'SEOPRESS_VERSION'          => 'SEOPress',
+		'AIOSEO_VERSION'            => 'All in One SEO',
 		'THE_SEO_FRAMEWORK_VERSION' => 'The SEO Framework',
 	);
 	foreach ( $plugins as $constant => $name ) {

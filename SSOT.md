@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.9.6. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.9.14. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -18,6 +18,7 @@ Version 1.9.6. This file records the architecture, stored data and binding decis
 
 - English display form: **Laylat al-Qadr**. Malay display form: **Lailatulqadar**, capitalised in all positions (Pedoman Umum Ejaan Bahasa Melayu, huruf besar, rule 8).
 - Malay page titles capitalise every word except particles such as *di* and *dan*, and both halves of a reduplicated word (rules 11 and 12).
+- Malay copy follows Pedoman Umum Ejaan Bahasa Melayu and Tatabahasa Dewan (3rd ed.). Fixed forms: *Surah al-Qadr* (never *Sūrat*), *al-Quran* (*Al-Quran* only at the start of a sentence), *Rasulullah SAW*, pronouns for Allah capitalised and hyphenated (*-Nya*, *-Mu*, *Engkau*), names without diacritics in running text (Abu Hurairah, Aisyah, Ibnu Abbas, at-Tirmizi). Titles of works in footnotes keep the transliteration of the English notes; "VERIFIED" is *Disahkan*, NOT_FOUND is *TIDAK DITEMUI*.
 - Spelling variants belong in schema `alternateName` and the FAQ, never rotated through body copy. Exception adopted in 1.1.0 on the keyword evidence ("laylatul qadr" 4,400 US searches a month against 1,300 for "laylat al qadr"): the home and Duʿāʾ title tags carry "(Laylatul Qadr)", and the English front-page introduction names that spelling once.
 - Audience: mixed. English at the site root, Malay under `/ms/`.
 - Arabic terms carry transliteration and translation on first use.
@@ -145,7 +146,7 @@ Breakpoints: phones to 600px, tablets 601 to 1024px, desktop above. Type is flui
 | Fallback only | Noto Naskh Arabic | Behind Arslan | Downloads only if Arslan lacks a glyph |
 | Interface | System sans-serif | Menus, footer, captions | |
 
-Article rules: at least 1,200 words; an In brief box, tables and at least one illustration; titles of works appear only in footnotes; every hadith VERIFIED on sunnah.com (and shamela.ws) before inclusion, NOT_FOUND items held back. Where gradings differ, al-Albānī's takes precedence; other gradings, such as Dār al-Salām's, are shown beside it.
+Article rules: 1,600 to 2,500 words of body text in each language (footnotes not counted); the Night Planner (a tool page) and Hadith and Sources (a reference page) are exempt, and What Is and Prayer and Worship, which are longer, are kept at their length by the owner's decision; an In brief box, tables and at least one illustration; titles of works appear only in footnotes; every hadith VERIFIED on shamela.ws (and sunnah.com) before inclusion, NOT_FOUND items held back. Links to sources use the linked page's title as their text, never a bare address: a shamela.ws page shows its Arabic title (volume, page, book and chapter, without "المكتبة الشاملة"), with `lang="ar" dir="rtl"`, followed outside the link by a translation of that title in parentheses, in the page's language (English pages in English, Malay pages in Malay); a sunnah.com link shows the collection and number that open its title ("Sahih al-Bukhari 2014"). Classical commentaries (Ibn Ḥajar, al-Nawawī, Ibn Rajab, Ibn Kathīr) are cited as their authors' views, read on shamela.ws ("Read on …"); reports they mention are not presented as verified hadith, and practices of the early generations are labelled as theirs, not as sayings of the Prophet ﷺ. Arabic text is copied code point for code point from its source and never Unicode-normalised (NFC reorders marks and merges alif with madda, which breaks the KFGQPC orthography); a Malay page carries the same Arabic as its English page. Where gradings differ, al-Albānī's takes precedence; other gradings, such as Dār al-Salām's, are shown beside it.
 
 Binding rules: Qurʾānic text is always taken verbatim from a verified source and set in the KFGQPC face; it is never retyped, and no other typeface may render it. Hadith and other Arabic never use the KFGQPC face, so the two are always visually distinct. Rejected owner-supplied fonts: Sabon Next LT (Monotype desktop licence does not cover web embedding; lacks ḥ, ṭ, ḍ, ẓ, ʿ, ʾ), Dubidam Arabic (free for personal use only), Special Elite (typewriter display face; lacks the dot-below letters and ʿ ʾ).
 
@@ -167,7 +168,7 @@ General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Ima
 | 1.7.x | Remaining English articles, then Malay translations |
 | 1.8.0 | Parent-theme compatibility with Twenty Twenty-Five 1.5 (done) |
 | 1.9.0 | Built-in English and Malay; Polylang removed (done) |
-| 1.9.x | Malay translations of the articles |
+| 1.9.8 | Malay translations of the articles (done) |
 | 1.10.0 | Duʿāʾ, evidence and Qurʾān verse blocks, glossary; November to mid-December 2026 |
 | 1.11.0 | Performance pass and pre-season SEO review; by 15 January 2027 |
 

@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.14
+Stable tag: 1.9.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
+
+= 1.9.15 =
+* The Islamic Dilemma page calls the two parts of the argument its two claims, the term the sister sites use.
 
 = 1.9.14 =
 * Code review fixes: an atomic setup lock, accurate word counts, folded calendar lines, safer login colours and several smaller fixes.

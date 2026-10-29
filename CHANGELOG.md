@@ -2,6 +2,11 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.15 (2026-10-29)
+
+- The Islamic Dilemma and the Qurʾān as Guardian (`dilemma`, English) names the two parts of the argument "the first claim" and "the second claim", the term the sister sites use. The 1.9.14 text is already in `inc/data/seed-history.json`, so an unedited page takes the new wording on this version change.
+- `FARUQI.md` sets out the Faruqian core, al-tawḥīd as al-Fārūqī set it out in *Al Tawhid: Its Implications for Thought and Life*, which every site in the network rests on. `CLAUDE.md` points contributors to it first.
+
 ## 1.9.14 (2026-10-29)
 
 Code review fixes; no content changes.

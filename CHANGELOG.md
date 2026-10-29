@@ -2,6 +2,17 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.12 (2026-10-29)
+
+- Article length: every article is now between 1,600 and 2,500 words of body text in English and in Malay (footnotes not counted). The Night Planner and Hadith and Sources are exempt; What Is and Prayer and Worship stay at their current length. Rule recorded in SSOT.md.
+- New material, all read on shamela.ws (English and Malay):
+  - Start Here: "The night at a glance" (table), "Preparing before the last ten" (table), "If you cannot keep every night" (al-Bukhārī 2996), and four questions: why the date is unknown (al-Bukhārī 2023), whether Arabic is needed, the 15th of Shaʿbān, and starting late (al-Bukhārī 2015).
+  - The Last Ten Nights: "All of the night, or most of it?" and "Waking the household" (Ibn Rajab; al-Tirmidhī 795 and al-Bukhārī 1127, both verified); Ibn Rajab on forgiveness at the end of the month, with the Musnad report given as his citation only.
+  - Duʿāʾ: "Pardon and the forgiveness of sins" (Ibn Rajab on minor and major sins, Ibn al-Mundhir, repentance; his reflection on Sūrat Yūsuf 12:88 and 12:92).
+  - Signs: Ibn Rajab's two statements on the calm of the night (Ubayy without a chain; Anas with a chain he calls weak), and a table row for the stars-and-dogs report. Hadith and Sources updated to match.
+  - When: Ibn Kathīr on whether the night is fixed or moves.
+- `inc/data/seed-history.json`: hashes of the 1.9.11 articles added.
+
 ## 1.9.11 (2026-10-28)
 
 - Every shamela.ws link with an Arabic page title is followed by a translation of that title in parentheses: English on English pages, Malay on Malay pages (volume, page, book and edition, chapter). 288 links across all articles; the rule is recorded in SSOT.md.

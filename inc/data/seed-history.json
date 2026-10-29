@@ -26,6 +26,7 @@
         ],
         "signs": [
             "12fdfc20c22bc274aa95119b23e6a316",
+            "5d0468f01fae624dc63c86e35d780850",
             "a2737e6f4007f1fc8963eb7be08878bf",
             "e4e381cfe462f958fac3411c13ac68fe",
             "f7ee11a35c365e5629ee672f50cc41ac"
@@ -36,6 +37,7 @@
             "4a00ffcc2d50286e6d479d0651e6e3e2",
             "6bb863ef27199f24c1c2b726684185bc",
             "94f5fe7a13b62ebcb02353bbcb332f52",
+            "97ec353c2d45e15c9b5d21804887a0cc",
             "bad58c252fec564e79f4bdd51d6ff341",
             "beeef396023d1490710d14749ff88bae",
             "c26c84b66ea0f5a6877c8e215b97bdc5",
@@ -46,6 +48,7 @@
             "c66fc4af9388f297bc80df3a3d209432"
         ],
         "surah": [
+            "1e30a261b0f6d0b45b59547e6aabc804",
             "7a93552fdd3a0eb7fe05d2de65e8bb97",
             "a724ec8af3d4992f4a8032161bce5381",
             "b032f5c905360a1a16feb2cf663fbc1c",
@@ -54,6 +57,7 @@
         "what": [
             "16aefb754c8415b17095c984885753ae",
             "75631ba4fab8a03135bdb96f615477a6",
+            "8edec05959cd2f104aa82010f2cdbb49",
             "c88eb1760caed26bdebb2082e4e64a64",
             "dcedc10487194d8bcc041c01f438b921",
             "f7aa23c352ce329241c406381e8a3e6c"
@@ -92,10 +96,12 @@
             "ec11e485cd0e5777ede68a965d16ea24"
         ],
         "signs": [
+            "9171361bb937683a5bb01c2834d85e38",
             "db9618e3fb1ef380abf3ee15001f6b3b",
             "e19bfc100e0a5f7f463bbf95a8c2e1e6"
         ],
         "sources": [
+            "011f7f5a0bd24314428cb63dfb579e1d",
             "5ed7817b1db27f75db05430ec56c04f0",
             "ab26754b309194cfc52ac72a4f72a36f",
             "b88d403b2a3c1da475210f4f5a92a34e",
@@ -105,11 +111,13 @@
             "fab3f3b689bfb1f5fe9ec39d16d9778d"
         ],
         "surah": [
+            "160ed199864fcc7505a0aedeb86ff639",
             "c9c0c413f529192e3763194e88c6fd86"
         ],
         "what": [
             "14c49493ff35abfb63f7fe6acc7535f9",
-            "685fe413be400472925d39f909c34724"
+            "685fe413be400472925d39f909c34724",
+            "c7d977ba2758710698776d18cc6c83ec"
         ],
         "when": [
             "0911093b285956e8ff5c99141368259a",

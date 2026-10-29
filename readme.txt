@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.11
+Stable tag: 1.9.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
+
+= 1.9.12 =
+* Every article is 1,600 to 2,500 words in English and Malay (planner and sources exempt). New sourced sections on Start Here, Last Ten Nights, Dua, Signs and When.
 
 = 1.9.11 =
 * Arabic source titles now carry a translation in parentheses. New material from Ibn Kathir's tafsir on Surah al-Qadr; held-back reports traced.

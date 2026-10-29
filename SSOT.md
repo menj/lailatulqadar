@@ -81,6 +81,7 @@ Version 1.9.16. This file records the architecture, stored data and binding deci
 | `images/commons/` | The Commons images as WebP, `<key>-<n>-<width>.webp` at 640 and 1200 pixels (smaller originals are never enlarged), each under 200 KB |
 | `blocks/photo/` | Commons image block (`lailatulqadar/photo`, attributes `key` and `n`): one image of a page with caption and credit |
 | `blocks/image-credits/` | Lists every Commons image with author, licence and source (on the Sources page) |
+| `bin/check-content.py`, `.github/workflows/content.yml` | Checks that `content/` holds only `<lang>/<key>.json` seeds in the shape `lq_article_data()` accepts, with every footnote marker matched to its note; runs on pull requests that touch `content/` |
 | `bin/fetch-commons-images.py`, `bin/commons-images.json` | Chosen Commons files per page, and the script that checks each licence through the Commons API and writes the WebP files and `inc/data/images.json` |
 
 ## Stored data

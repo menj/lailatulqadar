@@ -2,13 +2,17 @@
 
 You can skip versions: upload the newest zip over any 1.9.x and open any admin screen as an administrator. Setup knows every version of each article the theme has shipped, so in one run it brings every unedited page up to date and lists pages you have edited under "Edited, not updated" on the Tools tab. The entries below say what each version changes on the site.
 
+## From 1.9.15 to 1.9.16
+
+Upload the new zip over 1.9.15. No page changes and no setup work: existing addresses stay as they are. From now on, a new post or page published without a slug of its own gets an address without "a", "an" or "the".
+
 ## From 1.9.14 to 1.9.15
 
 Upload the new zip over 1.9.14 and open any admin screen as an administrator. Setup runs once and gives The Islamic Dilemma and the Qurʾān as Guardian (English) its new wording, unless the page has been edited. `FARUQI.md` is documentation for contributors and changes nothing on the site.
 
 ## From 1.9.13 to 1.9.14
 
-Upload the new zip over 1.9.13. Code fixes only: no article changes, so setup finds nothing to update. Clear any page cache, so visitors load the new versions of the night window and Search appearance scripts.
+Upload the new zip over 1.9.13. Code fixes only: no article changes, so setup finds nothing to update. Clear any page cache, so visitors load the new night window script; editors get the new Search appearance script once their browser reloads the page editor.
 
 ## From 1.9.12 to 1.9.13
 

@@ -68,11 +68,11 @@ function lq_images_data() {
 			if ( ! $ok || 0 !== strpos( $image['source'], 'https://commons.wikimedia.org/wiki/File:' ) ) {
 				continue;
 			}
-			$image['widths']      = array_values( array_filter( array_map( 'absint', $image['widths'] ) ) );
-			$image['width']       = isset( $image['width'] ) ? absint( $image['width'] ) : 0;
-			$image['height']      = isset( $image['height'] ) ? absint( $image['height'] ) : 0;
-			$image['lead']        = ! empty( $image['lead'] );
-			$data[ $key ][]       = $image;
+			$image['widths'] = array_values( array_filter( array_map( 'absint', $image['widths'] ) ) );
+			$image['width']  = isset( $image['width'] ) ? absint( $image['width'] ) : 0;
+			$image['height'] = isset( $image['height'] ) ? absint( $image['height'] ) : 0;
+			$image['lead']   = ! empty( $image['lead'] );
+			$data[ $key ][]  = $image;
 		}
 	}
 	return $data;
@@ -116,7 +116,7 @@ function lq_image_credit_html( $image ) {
 
 	return '<span class="lq-credit">'
 		/* translators: %s: author of the image. */
-		. '<span>' . esc_html( sprintf( __( 'Image: %s', 'lailatulqadar' ), $image['artist'] ) ) . '</span>'
+		. '<span>' . esc_html( sprintf( 'secondary' === lq_current_role() ? 'Imej: %s' : __( 'Image: %s', 'lailatulqadar' ), $image['artist'] ) ) . '</span>'
 		. $licence
 		. '<a href="' . esc_url( $image['source'] ) . '" rel="noopener">' . esc_html__( 'Wikimedia Commons', 'lailatulqadar' ) . '</a>'
 		. '</span>';
@@ -136,11 +136,20 @@ function lq_image_credit_text( $image ) {
 /**
  * A figure for one image: responsive srcset, width and height for layout
  * stability, lazy loading except for the lead image, caption and credit.
+ * On Malay pages, alt_ms and caption_ms replace the English text.
  *
  * @param array $image Image entry.
  * @return string
  */
 function lq_image_figure( $image ) {
+	// Malay pages take the Malay alt text and caption where the entry has them.
+	if ( 'secondary' === lq_current_role() ) {
+		foreach ( array( 'alt', 'caption' ) as $field ) {
+			if ( isset( $image[ $field . '_ms' ] ) && is_string( $image[ $field . '_ms' ] ) && '' !== $image[ $field . '_ms' ] ) {
+				$image[ $field ] = $image[ $field . '_ms' ];
+			}
+		}
+	}
 	$srcset = array();
 	foreach ( $image['widths'] as $w ) {
 		if ( file_exists( lq_image_file( $image, $w, LQ_DIR ) ) ) {
@@ -190,11 +199,13 @@ function lq_page_key_of( $id ) {
  */
 function lq_image_credits_html() {
 	$defs  = lq_page_definitions();
+	$role  = lq_current_role();
 	$items = '';
 	foreach ( lq_images_data() as $key => $list ) {
-		$page = isset( $defs[ $key ]['primary']['title'] ) ? $defs[ $key ]['primary']['title'] : $key;
+		$page = isset( $defs[ $key ][ $role ]['title'] ) ? $defs[ $key ][ $role ]['title'] : $key;
 		foreach ( $list as $image ) {
-			$items .= '<li><strong>' . esc_html( $page ) . ':</strong> ' . esc_html( $image['alt'] ) . '. ' . lq_image_credit_html( $image ) . '</li>';
+			$alt    = 'secondary' === $role && ! empty( $image['alt_ms'] ) && is_string( $image['alt_ms'] ) ? $image['alt_ms'] : $image['alt'];
+			$items .= '<li><strong>' . esc_html( $page ) . ':</strong> ' . esc_html( $alt ) . '. ' . lq_image_credit_html( $image ) . '</li>';
 		}
 	}
 	return $items ? '<ul class="lq-credits-list">' . $items . '</ul>' : '';

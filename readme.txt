@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.7
+Stable tag: 1.9.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,8 +29,32 @@ Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
 
-= 1.9.7 =
+= 1.9.15 =
 * The Islamic Dilemma page calls the two parts of the argument its two claims, the term the sister sites use.
+
+= 1.9.14 =
+* Code review fixes: an atomic setup lock, accurate word counts, folded calendar lines, safer login colours and several smaller fixes.
+
+= 1.9.13 =
+* Malay pages keep the exact Arabic code points of the source text; a hadith card shows its full Arabic; sign summaries corrected.
+
+= 1.9.12 =
+* Every article is 1,600 to 2,500 words in English and Malay (planner and sources exempt). New sourced sections on Start Here, Last Ten Nights, Dua, Signs and When.
+
+= 1.9.11 =
+* Arabic source titles now carry a translation in parentheses. New material from Ibn Kathir's tafsir on Surah al-Qadr; held-back reports traced.
+
+= 1.9.10 =
+* Hadith and Sources lists every hadith in the Laylat al-Qadr chapters of al-Bukhari and Muslim: six reports added, each checked on shamela.ws.
+
+= 1.9.9 =
+* Every hadith checked on shamela.ws; source links show page titles. New sections from Ibn Hajar, al-Nawawi and Ibn Rajab in English and Malay.
+
+= 1.9.8 =
+* Malay translations of all eleven articles; setup publishes them beneath /ms/. Malay alt text and captions for the Commons images.
+
+= 1.9.7 =
+* Upgrade fix: guide pages first seeded by 1.9.0 are no longer mistaken for edited pages, so they update and publish.
 
 = 1.9.6 =
 * New [lq_lanah] shortcode: laʿnat Allāh after the name of Paul of Tarsus, as calligraphy in the scheme accent. No article uses it.

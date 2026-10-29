@@ -3,19 +3,25 @@
 		{
 			"title": "File:Blue Mosque Courtyard Dusk Wikimedia Commons.jpg",
 			"alt": "The courtyard of the Sultan Ahmed Mosque in Istanbul at dusk, its domes and minarets lit against a deep blue sky",
-			"caption": "Evening falls over a mosque courtyard: the guide begins where the night begins."
+			"caption": "Evening falls over a mosque courtyard: the guide begins where the night begins.",
+			"alt_ms": "Halaman Masjid Sultan Ahmed di Istanbul ketika senja, dengan kubah dan menaranya bercahaya berlatarkan langit biru tua",
+			"caption_ms": "Senja di halaman masjid: panduan ini bermula ketika malam bermula."
 		}
 	],
 	"what": [
 		{
 			"title": "File:Crescent moon - Hilal.jpg",
 			"alt": "A thin crescent moon in a darkening sky",
-			"caption": "The new crescent (hilāl) that opens each lunar month."
+			"caption": "The new crescent (hilāl) that opens each lunar month.",
+			"alt_ms": "Anak bulan sabit yang nipis di langit yang semakin gelap",
+			"caption_ms": "Anak bulan (hilal) yang membuka setiap bulan qamariah."
 		},
 		{
 			"title": "File:Desert Stars (iotw2024a).jpg",
 			"alt": "A clear night sky full of stars above a desert landscape",
-			"caption": "A clear desert night. The Qurʾān calls the night of decree “peace, until the rising of the dawn.”"
+			"caption": "A clear desert night. The Qurʾān calls the night of decree “peace, until the rising of the dawn.”",
+			"alt_ms": "Langit malam yang cerah dan penuh bintang di atas padang pasir",
+			"caption_ms": "Malam padang pasir yang cerah. Al-Quran menyifatkan malam penentuan itu sebagai “sejahtera hingga terbit fajar.”"
 		}
 	],
 	"surah": [
@@ -23,91 +29,121 @@
 			"title": "File:Folios from a Qur'an Manuscript MET sf26-161-1r.jpg",
 			"alt": "Two folios of an early Qurʾān manuscript in brown ink on parchment, with gold verse markers",
 			"caption": "Folios from an early Qurʾān manuscript, Metropolitan Museum of Art.",
+			"alt_ms": "Dua helaian manuskrip al-Quran awal bertinta coklat di atas kulit, dengan penanda ayat berwarna emas",
+			"caption_ms": "Helaian manuskrip al-Quran awal, Metropolitan Museum of Art.",
 			"artist": "Unknown calligrapher (Metropolitan Museum of Art)"
 		},
 		{
 			"title": "File:Tapurian Qur'an (Al-Qadr).PNG",
 			"alt": "A page of a historic Qurʾān manuscript with Sūrat al-Qadr in Arabic and an interlinear Persian translation",
-			"caption": "Sūrat al-Qadr in the Tapurian Qurʾān, a historic manuscript with an interlinear Persian translation."
+			"caption": "Sūrat al-Qadr in the Tapurian Qurʾān, a historic manuscript with an interlinear Persian translation.",
+			"alt_ms": "Halaman manuskrip al-Quran bersejarah yang memuatkan Surah al-Qadr dalam bahasa Arab dengan terjemahan Parsi di antara barisnya",
+			"caption_ms": "Surah al-Qadr dalam al-Quran Tapuria, manuskrip bersejarah dengan terjemahan Parsi di antara barisnya."
 		}
 	],
 	"when": [
 		{
 			"title": "File:Waxing Crescent Moon 13 February 2026.jpg",
 			"alt": "A waxing crescent moon against a black sky",
-			"caption": "A waxing crescent. The Islamic month begins at sunset, so each night precedes its day."
+			"caption": "A waxing crescent. The Islamic month begins at sunset, so each night precedes its day.",
+			"alt_ms": "Bulan sabit yang semakin membesar berlatarkan langit hitam",
+			"caption_ms": "Bulan sabit yang semakin membesar. Bulan Islam bermula ketika matahari terbenam, maka setiap malam mendahului siangnya."
 		},
 		{
 			"title": "File:Stars@desertSunset(byTdeGroot).JPG",
 			"alt": "The first stars appearing over a desert just after sunset",
-			"caption": "The first stars after sunset, when an odd night of the last ten begins."
+			"caption": "The first stars after sunset, when an odd night of the last ten begins.",
+			"alt_ms": "Bintang-bintang pertama muncul di atas padang pasir sejurus selepas matahari terbenam",
+			"caption_ms": "Bintang-bintang pertama selepas matahari terbenam, ketika bermulanya malam ganjil sepuluh malam terakhir."
 		}
 	],
 	"last10": [
 		{
 			"title": "File:Jemaah bersujud tampak belakang.jpg",
 			"alt": "Rows of worshippers in prostration in a mosque, seen from behind",
-			"caption": "Congregational prayer in a mosque during Ramadan."
+			"caption": "Congregational prayer in a mosque during Ramadan.",
+			"alt_ms": "Saf-saf jemaah sedang sujud di dalam masjid, dilihat dari belakang",
+			"caption_ms": "Solat berjemaah di masjid pada bulan Ramadan."
 		},
 		{
 			"title": "File:Iktikaf.jpg",
 			"alt": "Worshippers resting and reading in a mosque during iʿtikāf, the retreat of the last ten nights",
-			"caption": "Iʿtikāf: staying in the mosque for worship in the last ten nights."
+			"caption": "Iʿtikāf: staying in the mosque for worship in the last ten nights.",
+			"alt_ms": "Jemaah berehat dan membaca di dalam masjid ketika iktikaf, ibadah berdiam di masjid pada sepuluh malam terakhir",
+			"caption_ms": "Iktikaf: berdiam di masjid untuk beribadah pada sepuluh malam terakhir."
 		}
 	],
 	"signs": [
 		{
 			"title": "File:A Desert Dawn (226203045).jpeg",
 			"alt": "The sun rising softly over a desert horizon",
-			"caption": "Dawn over the desert. A reported sign of the night is a morning sun without strong rays."
+			"caption": "Dawn over the desert. A reported sign of the night is a morning sun without strong rays.",
+			"alt_ms": "Matahari terbit dengan lembut di ufuk padang pasir",
+			"caption_ms": "Fajar di padang pasir. Antara tanda malam itu yang diriwayatkan ialah matahari pagi yang tidak memancarkan sinar yang terik."
 		},
 		{
 			"title": "File:Wadi Shawka night sky 01.jpg",
 			"alt": "A calm, clear night sky over the mountains of Wadi Shawka in the United Arab Emirates",
-			"caption": "A still, clear night in the Arabian Peninsula."
+			"caption": "A still, clear night in the Arabian Peninsula.",
+			"alt_ms": "Langit malam yang tenang dan cerah di atas pergunungan Wadi Shawka di Emiriah Arab Bersatu",
+			"caption_ms": "Malam yang hening dan cerah di Semenanjung Arab."
 		}
 	],
 	"worship": [
 		{
 			"title": "File:Tarawih Prayers at Istiqlal.jpg",
 			"alt": "Long rows of worshippers standing in the night prayer of Ramadan in the Istiqlal Mosque, Jakarta",
-			"caption": "The night prayer of Ramadan in the Istiqlal Mosque, Jakarta."
+			"caption": "The night prayer of Ramadan in the Istiqlal Mosque, Jakarta.",
+			"alt_ms": "Saf-saf panjang jemaah berdiri dalam solat malam Ramadan di Masjid Istiqlal, Jakarta",
+			"caption_ms": "Solat malam Ramadan di Masjid Istiqlal, Jakarta."
 		},
 		{
 			"title": "File:Iktikaf while reading the Quran at the Ubay bin Kaab Mosque.jpg",
 			"alt": "A worshipper reading the Qurʾān in a mosque during iʿtikāf",
-			"caption": "Reading the Qurʾān during iʿtikāf."
+			"caption": "Reading the Qurʾān during iʿtikāf.",
+			"alt_ms": "Seorang jemaah membaca al-Quran di masjid ketika iktikaf",
+			"caption_ms": "Membaca al-Quran ketika iktikaf."
 		}
 	],
 	"dua": [
 		{
 			"title": "File:Supplication for Forgiveness and Personal Needs During Ramadan.jpg",
 			"alt": "A worshipper with hands raised in supplication during Ramadan",
-			"caption": "Hands raised in duʿāʾ during Ramadan."
+			"caption": "Hands raised in duʿāʾ during Ramadan.",
+			"alt_ms": "Seorang jemaah menadah tangan berdoa pada bulan Ramadan",
+			"caption_ms": "Tangan ditadah berdoa pada bulan Ramadan."
 		},
 		{
 			"title": "File:Lanterns Illuminated.jpg",
 			"alt": "Lit lanterns glowing in the dark",
-			"caption": "Lanterns lit for the nights of Ramadan."
+			"caption": "Lanterns lit for the nights of Ramadan.",
+			"alt_ms": "Tanglung-tanglung yang menyala dalam gelap",
+			"caption_ms": "Tanglung dinyalakan untuk malam-malam Ramadan."
 		}
 	],
 	"planner": [
 		{
 			"title": "File:Mosque with mahya at night Istanbul 2026.jpg",
 			"alt": "A mosque in Istanbul at night with a mahya, a string of lights hung between its minarets for Ramadan",
-			"caption": "A mahya, the Ramadan message in lights strung between minarets, Istanbul."
+			"caption": "A mahya, the Ramadan message in lights strung between minarets, Istanbul.",
+			"alt_ms": "Sebuah masjid di Istanbul pada waktu malam dengan mahya, rangkaian lampu yang digantung di antara menaranya untuk Ramadan",
+			"caption_ms": "Mahya, pesanan Ramadan dalam bentuk lampu yang direntang di antara menara, Istanbul."
 		},
 		{
 			"title": "File:Ramadan fanoos.JPG",
 			"alt": "A decorated Ramadan lantern (fanoos) glowing at night",
-			"caption": "A Ramadan lantern, or fanoos."
+			"caption": "A Ramadan lantern, or fanoos.",
+			"alt_ms": "Tanglung Ramadan berhias (fanus) yang menyala pada waktu malam",
+			"caption_ms": "Tanglung Ramadan, atau fanus."
 		}
 	],
 	"faq": [
 		{
 			"title": "File:Fanous Ramadan.jpg",
 			"alt": "Coloured Ramadan lanterns hanging in a row",
-			"caption": "Ramadan lanterns (fawānīs)."
+			"caption": "Ramadan lanterns (fawānīs).",
+			"alt_ms": "Tanglung-tanglung Ramadan berwarna-warni tergantung dalam satu barisan",
+			"caption_ms": "Tanglung-tanglung Ramadan (fawanis)."
 		}
 	],
 	"sources": [
@@ -115,12 +151,16 @@
 			"title": "File:Unknown artist - Qur'an Manuscript Folio - 1933.494 - Cleveland Museum of Art.jpg",
 			"alt": "A folio of a Qurʾān manuscript in Kufic script on parchment",
 			"caption": "A Qurʾān folio in Kufic script, Cleveland Museum of Art.",
+			"alt_ms": "Sehelai manuskrip al-Quran dalam tulisan Kufi di atas kulit",
+			"caption_ms": "Helaian al-Quran dalam tulisan Kufi, Cleveland Museum of Art.",
 			"artist": "Unknown calligrapher (Cleveland Museum of Art)"
 		},
 		{
 			"title": "File:Folio from a Koran (8th-9th century).jpg",
 			"alt": "A horizontal Qurʾān folio in early Kufic script with gold verse markers",
-			"caption": "A Qurʾān folio of the 8th to 9th century."
+			"caption": "A Qurʾān folio of the 8th to 9th century.",
+			"alt_ms": "Helaian al-Quran mendatar dalam tulisan Kufi awal dengan penanda ayat berwarna emas",
+			"caption_ms": "Helaian al-Quran dari abad ke-8 hingga ke-9."
 		}
 	]
 }

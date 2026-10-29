@@ -17,37 +17,37 @@ const LQ_PAGES_OPTION = 'lailatulqadar_pages';
  */
 function lq_default_settings() {
 	return array(
-		'primary_slug'          => 'en',
-		'secondary_slug'        => 'ms',
-		'primary_label'         => 'English',
-		'secondary_label'       => 'Bahasa Melayu',
-		'site_name_secondary'   => 'Lailatulqadar',
-		'footer_note_primary'   => '',
-		'footer_note_secondary' => '',
-		'scheme'                => 'night',
-		'scheme_toggle'         => 'show',
-		'accent_night'          => '#c9a85c',
-		'accent_dawn'           => '#7a5a14',
+		'primary_slug'            => 'en',
+		'secondary_slug'          => 'ms',
+		'primary_label'           => 'English',
+		'secondary_label'         => 'Bahasa Melayu',
+		'site_name_secondary'     => 'Lailatulqadar',
+		'footer_note_primary'     => '',
+		'footer_note_secondary'   => '',
+		'scheme'                  => 'night',
+		'scheme_toggle'           => 'show',
+		'accent_night'            => '#c9a85c',
+		'accent_dawn'             => '#7a5a14',
 		'calligraphy_id'          => 0,
 		'login_tagline_primary'   => '',
 		'login_tagline_secondary' => '',
 		'login_note_primary'      => '',
 		'login_note_secondary'    => '',
-		'verify_google'         => '',
-		'verify_bing'           => '',
-		'author_name'           => '',
-		'author_url'            => '',
-		'ramadan_year'          => '',
-		'ramadan_start'         => '',
-		'ramadan_alt'           => '',
-		'ctx_own'               => '1',
-		'commons_featured'      => '1',
-		'ctx_sister'            => '1',
-		'ctx_own_max'           => '4',
-		'ctx_sister_max'        => '3',
-		'ctx_extra'             => '',
-		'ctx_extra_ms'          => '',
-		'ctx_exclude'           => '',
+		'verify_google'           => '',
+		'verify_bing'             => '',
+		'author_name'             => '',
+		'author_url'              => '',
+		'ramadan_year'            => '',
+		'ramadan_start'           => '',
+		'ramadan_alt'             => '',
+		'ctx_own'                 => '1',
+		'commons_featured'        => '1',
+		'ctx_sister'              => '1',
+		'ctx_own_max'             => '4',
+		'ctx_sister_max'          => '3',
+		'ctx_extra'               => '',
+		'ctx_extra_ms'            => '',
+		'ctx_exclude'             => '',
 	);
 }
 
@@ -111,7 +111,7 @@ function lq_current_role() {
 	}
 	$path   = trim( (string) wp_parse_url( isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '', PHP_URL_PATH ), '/' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	$base   = trim( (string) wp_parse_url( home_url( '/' ), PHP_URL_PATH ), '/' );
-	$path   = '' !== $base && 0 === strpos( $path, $base ) ? trim( substr( $path, strlen( $base ) ), '/' ) : $path;
+	$path   = '' !== $base && ( $path === $base || 0 === strpos( $path, $base . '/' ) ) ? trim( substr( $path, strlen( $base ) ), '/' ) : $path;
 	$prefix = lq_setting( 'secondary_slug' );
 	$lang   = isset( $_GET['lang'] ) ? sanitize_key( wp_unslash( $_GET['lang'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$role   = ( $prefix === $path || 0 === strpos( $path, $prefix . '/' ) || $prefix === $lang ) ? 'secondary' : 'primary';
@@ -258,10 +258,12 @@ function lq_page_map() {
 /**
  * Published guide pages for one menu set in the current language.
  *
- * Draft pages are skipped, so a page appears in menus only once published.
+ * Draft pages are skipped, so a page appears in menus only once published,
+ * unless $upcoming asks for them (the reading path lists them unlinked).
  *
- * @param string $set header, path, footer or sitemap (every page).
- * @return array[] Each item: id, url, title, short.
+ * @param string $set      header, path, footer or sitemap (every page).
+ * @param bool   $upcoming Also list pages not yet published.
+ * @return array[] Each item: id, url, title, short, upcoming.
  */
 function lq_menu_items( $set, $upcoming = false ) {
 	$role  = lq_current_role();
@@ -297,8 +299,13 @@ function lq_menu_items( $set, $upcoming = false ) {
  * @return int
  */
 function lq_word_count( $id ) {
+	// str_word_count() knows only unaccented ASCII letters and would split
+	// "Ṣaḥīḥ" or "ʿĀʾishah" into fragments; count Unicode words instead. A
+	// word starts with a letter or digit and may continue through letters,
+	// digits, combining marks, apostrophes and hyphens.
 	$text = wp_strip_all_tags( do_shortcode( (string) get_post_field( 'post_content', $id ) ) );
-	return (int) str_word_count( preg_replace( '/[^\\p{L}\\p{N}\\s\'-]/u', ' ', $text ) );
+	$hits = preg_match_all( '/[\p{L}\p{N}][\p{L}\p{M}\p{N}\'’ʾʿ-]*/u', $text );
+	return false === $hits ? 0 : (int) $hits;
 }
 
 /**

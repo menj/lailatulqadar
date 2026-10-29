@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.16
+Stable tag: 1.9.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
+
+= 1.9.17 =
+* The page registry (titles, addresses, menu labels and search descriptions) is a JSON data file. Nothing on the site changes.
 
 = 1.9.16 =
 * New posts and pages get addresses without "a", "an" or "the". Existing addresses are unchanged.

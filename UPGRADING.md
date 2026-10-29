@@ -2,6 +2,10 @@
 
 You can skip versions: upload the newest zip over any 1.9.x and open any admin screen as an administrator. Setup knows every version of each article the theme has shipped, so in one run it brings every unedited page up to date and lists pages you have edited under "Edited, not updated" on the Tools tab. The entries below say what each version changes on the site.
 
+## From 1.9.16 to 1.9.17
+
+Upload the new zip over 1.9.16 and open any admin screen as an administrator. Setup runs once and finds nothing to change: the page registry now comes from `inc/data/pages.json`, with the same titles, addresses and descriptions as before. If that file is missing or damaged, setup does not run and the Tools tab shows a warning instead of "Setup finished".
+
 ## From 1.9.15 to 1.9.16
 
 Upload the new zip over 1.9.15. No page changes and no setup work: existing addresses stay as they are. From now on, a new post or page published without a slug of its own gets an address without "a", "an" or "the".

@@ -951,6 +951,17 @@ function lq_render_notices() {
 	$report = get_transient( 'lailatulqadar_setup_report' );
 	if ( $report ) {
 		delete_transient( 'lailatulqadar_setup_report' );
+		if ( ! empty( $report['stopped'] ) ) {
+			// Setup refused to run: say so, never "Setup finished".
+			echo '<div class="lq-callout lq-callout--warn">';
+			foreach ( $report['errors'] as $error ) {
+				echo '<p>' . esc_html( $error ) . '</p>';
+			}
+			echo '</div>';
+			$report = null;
+		}
+	}
+	if ( $report ) {
 		$created = count( $report['created'] );
 		echo '<div class="lq-callout lq-callout--ok"><p>';
 		echo esc_html(

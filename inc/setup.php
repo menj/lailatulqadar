@@ -38,6 +38,9 @@ function lq_maybe_run_setup() {
 	if ( ! get_option( 'lailatulqadar_needs_setup' ) && LQ_VERSION === get_option( 'lailatulqadar_setup_version' ) ) {
 		return;
 	}
+	if ( ! lq_page_definitions() ) {
+		return; // inc/data/pages.json cannot be read (an update may still be unpacking): try on the next visit.
+	}
 	$report = lq_run_setup_locked();
 	if ( null === $report ) {
 		return; // Another request is running it; the flag stays for the next visit.
@@ -148,6 +151,14 @@ function lq_run_setup() {
 		'errors'    => array(),
 	);
 	$map = lq_page_map();
+
+	// Without the page definitions every guide page would look retired and
+	// go to the trash, so setup stops here instead.
+	if ( ! lq_page_definitions() ) {
+		$report['stopped']  = true;
+		$report['errors'][] = __( 'The page definitions (inc/data/pages.json) could not be read, so setup made no changes.', 'lailatulqadar' );
+		return $report;
+	}
 
 	foreach ( array( 'primary', 'secondary' ) as $role ) {
 		foreach ( array_keys( lq_page_definitions() ) as $key ) {

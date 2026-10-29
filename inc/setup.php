@@ -155,6 +155,7 @@ function lq_run_setup() {
 	// Without the page definitions every guide page would look retired and
 	// go to the trash, so setup stops here instead.
 	if ( ! lq_page_definitions() ) {
+		$report['stopped']  = true;
 		$report['errors'][] = __( 'The page definitions (inc/data/pages.json) could not be read, so setup made no changes.', 'lailatulqadar' );
 		return $report;
 	}

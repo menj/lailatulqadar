@@ -5,7 +5,7 @@ All notable changes to the Lailatulqadar theme are recorded here.
 ## 1.9.16 (2026-10-29)
 
 - Seed data is JSON throughout. The page registry moves out of `lq_page_definitions()` in `inc/helpers.php` into `inc/data/pages.json`, read with `json_decode()` and never executed. The decoded registry is identical to the old array, so nothing on a live site changes.
-- Setup does not run while `inc/data/pages.json` cannot be read: an empty registry would make every guide page look retired, and setup would trash them. The automatic run waits for the next visit, and a run from the Tools tab reports the error and changes nothing.
+- Setup does not run while `inc/data/pages.json` cannot be read: an empty registry would make every guide page look retired, and setup would trash them. The automatic run waits for the next visit, and a run from the Tools tab reports the error, as a warning in place of the "Setup finished" notice, and changes nothing.
 
 ## 1.9.15 (2026-10-29)
 

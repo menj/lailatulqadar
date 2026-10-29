@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.9.15. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.9.16. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -44,6 +44,7 @@ Version 1.9.15. This file records the architecture, stored data and binding deci
 | `inc/seo.php` | Title tag, meta description, editor box, SEO plugin detection |
 | `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and the sister sites |
 | `inc/data/network-links.json` | Shared phrase map of the seven-site network; identical in every theme, edit it in all seven together |
+| `inc/data/pages.json` | The page registry: per page key, the menu sets and, for each language role, title, slug, menu label, title tag, meta description and focus keyword. The order of the keys is the reading order. Data only, read with `json_decode()` |
 | `inc/data/contextual-links-ms.json` | Malay phrases for the Malay guide pages, keyed by page key |
 | `inc/setup.php` | Setup on activation, on update and on demand: page creation, publishing of shipped articles, content refresh, trashing of obsolete copies, draft renaming, SEO prefill |
 | `inc/data/seed-history.json` | md5 of every version of each article shipped in earlier releases (rebuilt from the git history of `content/`), so a page seeded before `_lq_seed_hash` existed is recognised as unedited. Data only, read with `json_decode()`. Add the old version's md5 here whenever an article changes |
@@ -103,7 +104,7 @@ Version 1.9.15. This file records the architecture, stored data and binding deci
 
 ## Page registry
 
-Keys, in reading order: `home`, `start`, `what`, `surah`, `when`, `last10`, `signs`, `worship`, `dua`, `planner`, `faq`, `sources`, `dilemma`, `about`, `sitemap`, `contact`. Titles, slugs, menu labels, title tags, meta descriptions, focus keywords and menu membership live in `lq_page_definitions()` in `inc/helpers.php`. Setup runs on the first admin visit (manage_options) after activation or a version change, never on a front-end request. It publishes the home and sitemap pages in both languages and every page whose article ships in `content/<lang>/<key>.json`; a page with no shipped article (About, Contact, a Malay page awaiting translation) stays a draft. When a shipped article changes, a page whose content and footnotes still match `_lq_seed_hash` (or, before the hash, an earlier shipped version in `inc/data/seed-history.json`) is replaced through `wp_update_post()`, which keeps a revision, and keeps its status; an edited page is never overwritten and is listed on the Tools tab with a button to replace it. Copies of guide pages the theme created (carrying `_lq_lang`) that the registry no longer points to go to the trash when they hold no text or only text the theme wrote; edited copies are kept and reported; pages without the marker are never touched. Menus list published pages only; the reading path also shows unpublished pages as "Coming soon". Malay pages sit beneath the Malay home at /ms/. Keyword targets per page: docs/seo.md.
+Keys, in reading order: `home`, `start`, `what`, `surah`, `when`, `last10`, `signs`, `worship`, `dua`, `planner`, `faq`, `sources`, `dilemma`, `about`, `sitemap`, `contact`. Titles, slugs, menu labels, title tags, meta descriptions, focus keywords and menu membership live in `inc/data/pages.json` (data only, read with `json_decode()` by `lq_page_definitions()` in `inc/helpers.php`); setup does not run while that file cannot be read, since every guide page would otherwise look retired. Setup runs on the first admin visit (manage_options) after activation or a version change, never on a front-end request. It publishes the home and sitemap pages in both languages and every page whose article ships in `content/<lang>/<key>.json`; a page with no shipped article (About, Contact, a Malay page awaiting translation) stays a draft. When a shipped article changes, a page whose content and footnotes still match `_lq_seed_hash` (or, before the hash, an earlier shipped version in `inc/data/seed-history.json`) is replaced through `wp_update_post()`, which keeps a revision, and keeps its status; an edited page is never overwritten and is listed on the Tools tab with a button to replace it. Copies of guide pages the theme created (carrying `_lq_lang`) that the registry no longer points to go to the trash when they hold no text or only text the theme wrote; edited copies are kept and reported; pages without the marker are never touched. Menus list published pages only; the reading path also shows unpublished pages as "Coming soon". Malay pages sit beneath the Malay home at /ms/. Keyword targets per page: docs/seo.md.
 
 ## Colour system
 

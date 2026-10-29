@@ -158,91 +158,20 @@ function lq_translation_of( $id ) {
  * belongs to: header, path (reading order) and footer. The order of the
  * entries is the reading order. Keyword targets: docs/seo.md.
  *
+ * The definitions are data in inc/data/pages.json, read with json_decode()
+ * and never executed. A file that is missing or not valid JSON gives an
+ * empty list, and setup does not run until it can be read.
+ *
  * @return array
  */
 function lq_page_definitions() {
-	return array(
-		'home' => array(
-			'sets'      => array(),
-			'primary'   => array( 'title' => 'Home', 'slug' => 'home', 'short' => 'Home', 'seo' => 'Laylat al-Qadr (Laylatul Qadr): Guide to the Night of Power', 'meta' => 'Laylat al-Qadr, the Night of Power, explained from the Qurʾān and sound hadith: dates, signs, prayer and duʿāʾ. Start reading.', 'focus' => 'laylatul qadr' ),
-			'secondary' => array( 'title' => 'Utama', 'slug' => 'ms', 'short' => 'Utama', 'seo' => 'Lailatulqadar: Panduan Malam Kemuliaan', 'meta' => 'Panduan Lailatulqadar berdasarkan al-Quran dan hadis sahih: tarikh, tanda-tanda, amalan dan doa. Mulakan pembacaan.', 'focus' => 'lailatulqadar' ),
-		),
-		'start' => array(
-			'sets'      => array( 'path' ),
-			'primary'   => array( 'title' => 'Start Here', 'slug' => 'start-here', 'short' => 'Start here', 'seo' => 'Start Here: Laylat al-Qadr for Newcomers', 'meta' => 'New to Laylat al-Qadr? A short introduction to the Night of Power and how to read this guide. Begin here.', 'focus' => 'laylatul qadr for beginners' ),
-			'secondary' => array( 'title' => 'Mula di Sini', 'slug' => 'mula-di-sini', 'short' => 'Mula di Sini', 'seo' => 'Mula di Sini: Pengenalan Ringkas Lailatulqadar', 'meta' => 'Pertama kali mengenali Lailatulqadar? Pengenalan ringkas tentang malam kemuliaan dan cara membaca panduan ini. Mula di sini.', 'focus' => 'lailatulqadar' ),
-		),
-		'what' => array(
-			'sets'      => array( 'header', 'path' ),
-			'primary'   => array( 'title' => 'What Is Laylat al-Qadr?', 'slug' => 'what-is-laylat-al-qadr', 'short' => 'What it is', 'seo' => 'What Is Laylat al-Qadr? Meaning of the Night of Power', 'meta' => 'What is Laylat al-Qadr? The meaning of qadr, why the night outweighs a thousand months, and what happens on it. Read more.', 'focus' => 'what is laylatul qadr' ),
-			'secondary' => array( 'title' => 'Apa Itu Lailatulqadar?', 'slug' => 'apa-itu-lailatulqadar', 'short' => 'Pengenalan', 'seo' => 'Apa Itu Lailatulqadar? Maksud dan Kelebihannya', 'meta' => 'Apa itu Lailatulqadar? Maksud qadar, kelebihan malam yang lebih baik daripada seribu bulan dan peristiwanya. Baca lanjut.', 'focus' => 'lailatulqadar' ),
-		),
-		'surah' => array(
-			'sets'      => array( 'header', 'path' ),
-			'primary'   => array( 'title' => 'Sūrat al-Qadr (Surah 97)', 'slug' => 'surah-al-qadr', 'short' => 'Surah', 'seo' => 'Surah al-Qadr (97): Arabic, Transliteration and Translation', 'meta' => 'Surah al-Qadr in Arabic with transliteration, English translation and a verse-by-verse explanation. Read the surah.', 'focus' => 'surah qadr' ),
-			'secondary' => array( 'title' => 'Surah al-Qadr', 'slug' => 'terjemahan-surah-al-qadr', 'short' => 'Surah', 'seo' => 'Surah al-Qadr: Teks Arab, Rumi dan Terjemahan', 'meta' => 'Surah al-Qadr dalam tulisan Arab, rumi dan terjemahan bahasa Melayu, beserta huraian setiap ayat. Baca surah ini.', 'focus' => 'surah lailatulqadar' ),
-		),
-		'when' => array(
-			'sets'      => array( 'header', 'path' ),
-			'primary'   => array( 'title' => 'When Is Laylat al-Qadr?', 'slug' => 'when-is-laylat-al-qadr', 'short' => 'When', 'seo' => 'When Is Laylat al-Qadr? The Odd Nights and [lq_ramadan] Dates', 'meta' => 'When is Laylat al-Qadr? The odd nights of the last ten, the case for the 27th, and expected [lq_ramadan] dates. Check the dates.', 'focus' => 'when is laylatul qadr' ),
-			'secondary' => array( 'title' => 'Bilakah Lailatulqadar?', 'slug' => 'bilakah-lailatulqadar', 'short' => 'Masa', 'seo' => 'Bilakah Lailatulqadar? Malam Ganjil dan Tarikh [lq_ramadan]', 'meta' => 'Bilakah Lailatulqadar? Malam-malam ganjil sepuluh terakhir, pandangan tentang malam ke-27 dan jangkaan tarikh [lq_ramadan]. Semak tarikh.', 'focus' => 'bilakah lailatulqadar' ),
-		),
-		'last10' => array(
-			'sets'      => array( 'path' ),
-			'primary'   => array( 'title' => 'The Last Ten Nights of Ramadan', 'slug' => 'last-ten-nights-of-ramadan', 'short' => 'Last ten', 'seo' => 'Last 10 Nights of Ramadan [lq_ramadan]: Dates, Iʿtikāf and Worship', 'meta' => 'The last 10 nights of Ramadan in [lq_ramadan]: expected dates, iʿtikāf, and how the Prophet spent them. See the full guide.', 'focus' => 'last 10 days of ramadan' ),
-			'secondary' => array( 'title' => 'Sepuluh Malam Terakhir Ramadan', 'slug' => 'sepuluh-malam-terakhir-ramadan', 'short' => '10 Malam', 'seo' => 'Sepuluh Malam Terakhir Ramadan [lq_ramadan]: Tarikh dan Iktikaf', 'meta' => 'Sepuluh malam terakhir Ramadan [lq_ramadan]: jangkaan tarikh, iktikaf dan cara Nabi SAW menghidupkannya. Baca panduan penuh.', 'focus' => 'sepuluh malam terakhir ramadan' ),
-		),
-		'signs' => array(
-			'sets'      => array( 'header', 'path' ),
-			'primary'   => array( 'title' => 'Signs of Laylat al-Qadr', 'slug' => 'signs-of-laylat-al-qadr', 'short' => 'Signs', 'seo' => 'Signs of Laylat al-Qadr: Moon, Sunrise and Rain in Hadith', 'meta' => 'The signs of Laylat al-Qadr in authentic hadith: the calm night, the moon, the rayless sunrise and rain. See the evidence.', 'focus' => 'laylatul qadr signs' ),
-			'secondary' => array( 'title' => 'Tanda-Tanda Lailatulqadar', 'slug' => 'tanda-tanda-lailatulqadar', 'short' => 'Tanda', 'seo' => 'Tanda-Tanda Lailatulqadar Menurut Hadis Sahih', 'meta' => 'Tanda-tanda Lailatulqadar dalam hadis sahih: malam yang tenang, bulan, matahari terbit tanpa sinar dan hujan. Lihat dalilnya.', 'focus' => 'tanda tanda lailatulqadar' ),
-		),
-		'worship' => array(
-			'sets'      => array( 'header', 'path' ),
-			'primary'   => array( 'title' => 'Prayer and Worship on Laylat al-Qadr', 'slug' => 'laylat-al-qadr-prayer', 'short' => 'Prayer', 'seo' => 'How to Pray on Laylat al-Qadr: Prayer, Qiyām and Worship', 'meta' => 'How to pray on Laylat al-Qadr: night prayer, qiyām al-layl, Qurʾān recitation and dhikr, step by step. Plan your night.', 'focus' => 'laylatul qadr prayer' ),
-			'secondary' => array( 'title' => 'Amalan Malam Lailatulqadar', 'slug' => 'amalan-malam-lailatulqadar', 'short' => 'Amalan', 'seo' => 'Amalan Malam Lailatulqadar: Solat, Qiamullail dan Zikir', 'meta' => 'Amalan malam Lailatulqadar: solat malam, qiamullail, bacaan al-Quran dan zikir, langkah demi langkah. Rancang malam anda.', 'focus' => 'amalan lailatulqadar' ),
-		),
-		'dua' => array(
-			'sets'      => array( 'header', 'path' ),
-			'primary'   => array( 'title' => 'Laylat al-Qadr Duʿāʾ', 'slug' => 'laylat-al-qadr-dua', 'short' => 'Duʿāʾ', 'seo' => 'Laylat al-Qadr Duʿāʾ (Laylatul Qadr Dua): Arabic and English', 'meta' => 'The duʿāʾ the Prophet taught for Laylat al-Qadr, in Arabic with transliteration and meaning, plus its source. Learn it.', 'focus' => 'laylatul qadr dua' ),
-			'secondary' => array( 'title' => 'Doa Lailatulqadar', 'slug' => 'doa-lailatulqadar', 'short' => 'Doa', 'seo' => 'Doa Lailatulqadar: Teks Arab, Rumi dan Maksud', 'meta' => 'Doa yang diajarkan Nabi SAW untuk Lailatulqadar dalam tulisan Arab, rumi dan maksud, beserta sumbernya. Hafaz doa ini.', 'focus' => 'doa lailatulqadar' ),
-		),
-		'planner' => array(
-			'sets'      => array( 'path' ),
-			'primary'   => array( 'title' => 'Night Planner', 'slug' => 'night-planner', 'short' => 'Planner', 'seo' => 'Laylat al-Qadr Night Planner: Last Third Times by City', 'meta' => 'Sunset, last third and dawn for each of the last ten nights of Ramadan in your city, with calendar reminders. Find your times.', 'focus' => 'laylatul qadr checklist' ),
-			'secondary' => array( 'title' => 'Perancang Malam', 'slug' => 'perancang-malam', 'short' => 'Perancang', 'seo' => 'Perancang Malam Lailatulqadar: Waktu Sepertiga Malam', 'meta' => 'Waktu Maghrib, sepertiga malam terakhir dan fajar bagi sepuluh malam terakhir Ramadan di bandar anda. Semak waktu anda.', 'focus' => 'amalan lailatulqadar' ),
-		),
-		'faq' => array(
-			'sets'      => array( 'path' ),
-			'primary'   => array( 'title' => 'Frequently Asked Questions', 'slug' => 'faq', 'short' => 'FAQ', 'seo' => 'Laylat al-Qadr FAQ: Menstruation, Time Zones and More', 'meta' => 'Answers on Laylat al-Qadr: worship during menstruation, different countries, how long the night lasts and more. Find answers.', 'focus' => 'laylatul qadr questions' ),
-			'secondary' => array( 'title' => 'Soalan Lazim', 'slug' => 'soalan-lazim', 'short' => 'Soalan Lazim', 'seo' => 'Soalan Lazim Lailatulqadar: Wanita Haid dan Zon Waktu', 'meta' => 'Jawapan tentang Lailatulqadar: amalan wanita haid, perbezaan negara, tempoh malam dan lain-lain. Cari jawapan anda.', 'focus' => 'lailatulqadar' ),
-		),
-		'sources' => array(
-			'sets'      => array( 'path', 'footer' ),
-			'primary'   => array( 'title' => 'Hadith and Sources', 'slug' => 'hadith-and-sources', 'short' => 'Sources', 'seo' => 'Hadith on Laylat al-Qadr: Authentic Narrations and Sources', 'meta' => 'Authentic hadith on Laylat al-Qadr with collection, number and grading, and the sources this guide relies on. Check sources.', 'focus' => 'laylatul qadr hadith' ),
-			'secondary' => array( 'title' => 'Hadis dan Sumber Rujukan', 'slug' => 'hadis-dan-sumber-rujukan', 'short' => 'Sumber', 'seo' => 'Hadis Lailatulqadar: Riwayat Sahih dan Sumber Rujukan', 'meta' => 'Hadis sahih tentang Lailatulqadar beserta kitab, nombor dan status, serta sumber rujukan panduan ini. Semak sumbernya.', 'focus' => 'lailatulqadar hadis' ),
-		),
-		'dilemma' => array(
-			'sets'      => array( 'path', 'footer' ),
-			'primary'   => array( 'title' => 'The Islamic Dilemma and the Qurʾān as Guardian', 'slug' => 'islamic-dilemma', 'short' => 'Islamic dilemma', 'seo' => 'Islamic Dilemma: What the Qurʾān Means by Confirming', 'meta' => 'The Islamic dilemma answered from the Qurʾān of the Night of Decree: what confirming and muhaymin mean. Read the answer.', 'focus' => 'islamic dilemma' ),
-			'secondary' => array( 'title' => 'Dilema Islam dan al-Quran sebagai Pengawas', 'slug' => 'dilema-islam', 'short' => 'Dilema Islam', 'seo' => 'Dilema Islam: Maksud al-Quran Membenarkan Kitab Terdahulu', 'meta' => 'Dilema Islam dijawab daripada al-Quran yang turun pada Lailatulqadar: maksud membenarkan dan muhaimin. Baca jawapannya.', 'focus' => 'dilema islam' ),
-		),
-		'about' => array(
-			'sets'      => array( 'footer' ),
-			'primary'   => array( 'title' => 'About', 'slug' => 'about', 'short' => 'About', 'seo' => 'About This Guide', 'meta' => 'Who writes this Laylat al-Qadr guide, how sources are checked, and how to report an error. Read about us.', 'focus' => '' ),
-			'secondary' => array( 'title' => 'Tentang Kami', 'slug' => 'tentang-kami', 'short' => 'Tentang Kami', 'seo' => 'Tentang Panduan Ini', 'meta' => 'Siapa penulis panduan Lailatulqadar ini, cara sumber disemak dan cara melaporkan kesilapan. Baca tentang kami.', 'focus' => '' ),
-		),
-		'sitemap' => array(
-			'sets'      => array( 'footer' ),
-			'primary'   => array( 'title' => 'Sitemap', 'slug' => 'sitemap', 'short' => 'Sitemap', 'seo' => 'Sitemap: Every Page of the Laylat al-Qadr Guide', 'meta' => 'Every page of the Laylat al-Qadr guide in one list, in English and Malay. Find the page you need.', 'focus' => '' ),
-			'secondary' => array( 'title' => 'Peta Laman', 'slug' => 'peta-laman', 'short' => 'Peta Laman', 'seo' => 'Peta Laman: Semua Halaman Panduan Lailatulqadar', 'meta' => 'Semua halaman panduan Lailatulqadar dalam satu senarai, dalam bahasa Melayu dan Inggeris. Cari halaman anda.', 'focus' => '' ),
-		),
-		'contact' => array(
-			'sets'      => array( 'footer' ),
-			'primary'   => array( 'title' => 'Contact', 'slug' => 'contact', 'short' => 'Contact', 'seo' => 'Contact', 'meta' => 'Send a correction, a question or a source for the Laylat al-Qadr guide. Contact the editor.', 'focus' => '' ),
-			'secondary' => array( 'title' => 'Hubungi Kami', 'slug' => 'hubungi-kami', 'short' => 'Hubungi Kami', 'seo' => 'Hubungi Kami', 'meta' => 'Hantar pembetulan, soalan atau sumber untuk panduan Lailatulqadar. Hubungi penyunting.', 'focus' => '' ),
-		),
-	);
+	static $defs = null;
+	if ( null === $defs ) {
+		$file = LQ_DIR . '/inc/data/pages.json';
+		$defs = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : null; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$defs = is_array( $defs ) ? $defs : array();
+	}
+	return $defs;
 }
 
 /**

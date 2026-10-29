@@ -8,7 +8,8 @@
             "7361920e544b742f0c9bc67271c2e271",
             "8b74fe0754c8958be6fd48a717024cc8",
             "944c07e896b8612f05953ba13f761732",
-            "df5bc09c64bd02c05e9ec30d0fb46061"
+            "df5bc09c64bd02c05e9ec30d0fb46061",
+            "e869ccfd7d414ba27a8bcf78570acd02"
         ],
         "faq": [
             "0036d677cafb2fc40c4112a91c342d13",
@@ -18,7 +19,8 @@
         "last10": [
             "144c0d44f329c2c3477d03bc53f3a442",
             "1fd0f5a12c484767d6d4fade28d72c8e",
-            "43b5866888af29aa1dd5c1bbcd9738aa"
+            "43b5866888af29aa1dd5c1bbcd9738aa",
+            "4b44e41274919b475157c06bfa40f3ec"
         ],
         "planner": [
             "188eb225fd14687ca2ce0f1117986979",
@@ -27,6 +29,7 @@
         "signs": [
             "12fdfc20c22bc274aa95119b23e6a316",
             "5d0468f01fae624dc63c86e35d780850",
+            "6cd466b26fbe8b52480dda6be6fc7a3c",
             "a2737e6f4007f1fc8963eb7be08878bf",
             "e4e381cfe462f958fac3411c13ac68fe",
             "f7ee11a35c365e5629ee672f50cc41ac"
@@ -35,6 +38,7 @@
             "107d872a7b6d02084f583e0e4ee01232",
             "2737998bb179353a23740e9af4fc7d1c",
             "4a00ffcc2d50286e6d479d0651e6e3e2",
+            "5a03fe0bfff413e90dac9ea945bd9034",
             "6bb863ef27199f24c1c2b726684185bc",
             "94f5fe7a13b62ebcb02353bbcb332f52",
             "97ec353c2d45e15c9b5d21804887a0cc",
@@ -45,7 +49,8 @@
         ],
         "start": [
             "57a33a582dfe9ce944da65249f1c1258",
-            "c66fc4af9388f297bc80df3a3d209432"
+            "c66fc4af9388f297bc80df3a3d209432",
+            "eb0f2522aa5ff9acdc9441e11e58fcca"
         ],
         "surah": [
             "1e30a261b0f6d0b45b59547e6aabc804",
@@ -66,7 +71,8 @@
             "4bd57a72edfd88fe079141ada607b3cb",
             "518be9f2a3bbf62d1a68aa6022306c70",
             "8a8fbb924806df1641b28f7f3c1f0a31",
-            "cedf3c1c3f9a8f3536664529b1bdbd1e"
+            "cedf3c1c3f9a8f3536664529b1bdbd1e",
+            "ebed01b7be98876849517019e763ac39"
         ],
         "worship": [
             "2a94f7be930d262e1120774fc5b4ae05",
@@ -80,7 +86,8 @@
         ],
         "dua": [
             "5c65ba3d8025916f64db45ec22a2c057",
-            "65c6ef076653c889f5d67e86b2bfa167"
+            "65c6ef076653c889f5d67e86b2bfa167",
+            "71f5ea1d94c64f24e6aa3640d7822861"
         ],
         "faq": [
             "602b9eb53e4310f17be525fe69864ff8",
@@ -89,13 +96,15 @@
         ],
         "last10": [
             "4a1d092b4304a404bf2699b044a358ed",
-            "74874e42f0032961b36be4c3dbb9e034"
+            "74874e42f0032961b36be4c3dbb9e034",
+            "c1e6d3f722852b7b9df769b5b52c8c87"
         ],
         "planner": [
             "cf6ffe325cec6fc1ef2ab23970aaa60f",
             "ec11e485cd0e5777ede68a965d16ea24"
         ],
         "signs": [
+            "41d2e31f119570d2f6ede110c49717da",
             "9171361bb937683a5bb01c2834d85e38",
             "db9618e3fb1ef380abf3ee15001f6b3b",
             "e19bfc100e0a5f7f463bbf95a8c2e1e6"
@@ -105,9 +114,11 @@
             "5ed7817b1db27f75db05430ec56c04f0",
             "ab26754b309194cfc52ac72a4f72a36f",
             "b88d403b2a3c1da475210f4f5a92a34e",
-            "d50d20a557773d3fa60b3d06321af2ae"
+            "d50d20a557773d3fa60b3d06321af2ae",
+            "f41b21a3e060528b04853364db7711d6"
         ],
         "start": [
+            "3e9628894979daa0bc85124809c9cd7a",
             "fab3f3b689bfb1f5fe9ec39d16d9778d"
         ],
         "surah": [
@@ -121,7 +132,8 @@
         ],
         "when": [
             "0911093b285956e8ff5c99141368259a",
-            "540d6133dbb02c3dd6a5b9f38b740e60"
+            "540d6133dbb02c3dd6a5b9f38b740e60",
+            "82da915fbd662ab42a8d22c9850294c8"
         ],
         "worship": [
             "b0d16d79a9dab1265be770a329cac05b",

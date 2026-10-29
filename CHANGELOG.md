@@ -2,6 +2,14 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.13 (2026-10-29)
+
+- Malay pages: 43 Arabic passages, Qurʾānic text among them, restored to the exact code points of the source text used on the English pages. The Malay build had applied Unicode NFC normalisation, which reorders shadda and vowel marks, merges alif with combining madda into U+0622 and turned non-breaking spaces before verse numbers into ordinary spaces. The text looked the same but no longer matched the KFGQPC orthography its notes cite.
+- Prayer and Worship: the Arabic of ʿĀʾishah's report on the eleven units (al-Bukhārī 1147) now runs to "then he would pray three", matching the translation beneath it (English and Malay).
+- Signs and Start Here: the summaries no longer say that most signs appear after the night; the clearest sign, the sun, is seen the next morning, while the moon and the rain were recognised during the night or at its end.
+- Hadith and Sources: table captions give both verification dates, 26 and 28 October 2026.
+- `inc/data/seed-history.json`: hashes of the 1.9.12 articles added.
+
 ## 1.9.12 (2026-10-29)
 
 - Article length: every article is now between 1,600 and 2,500 words of body text in English and in Malay (footnotes not counted). The Night Planner and Hadith and Sources are exempt; What Is and Prayer and Worship stay at their current length. Rule recorded in SSOT.md.

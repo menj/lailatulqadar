@@ -44,7 +44,7 @@ The Malay pages follow DBP spelling, so they compete in Indonesia on the shared 
 
 ## Rules
 
-- Title tags: 60 characters at most (agency template). Meta descriptions: 130 characters at most, ending with a call to action (house rule, stricter than the template's 140).
+- Title tags always read `<page title, keyword or description> | Lailatulqadar`, in both languages, and stay under 60 characters (59 at most) with the site name. The page part in `inc/data/pages.json` and in the Search appearance box is therefore 43 characters at most, counting `[lq_ramadan]` as its four-digit year; the theme adds " | Lailatulqadar" (`lq_compose_title()`), and on views with no title tag of its own (posts, search, archives, not found) builds the same form and cuts a long page part at a word. Meta descriptions: 130 characters at most, ending with a call to action (house rule, stricter than the template's 140).
 - Progress, content briefs and deadlines are tracked in `lailatulqadar.guide - SEO Work Progress (2026).xlsx`.
 - One H1 per page, carrying the page's primary keyword in the house spelling.
 - Dated pages (When Is, Last Ten Nights) take their year from `[lq_ramadan]`, so titles, descriptions and body roll over automatically the day after Eid.

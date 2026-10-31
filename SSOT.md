@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.9.17. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.9.18. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -81,9 +81,9 @@ Version 1.9.17. This file records the architecture, stored data and binding deci
 | `inc/data/images.json` | Credits for every Commons image, keyed by page key (file, Commons title, alt, caption, author, licence, licence deed, file page, widths, size). Data only, read with `json_decode()` |
 | `images/commons/` | The Commons images as WebP, `<key>-<n>-<width>.webp` at 640 and 1200 pixels (smaller originals are never enlarged), each under 200 KB |
 | `blocks/photo/` | Commons image block (`lailatulqadar/photo`, attributes `key` and `n`): one image of a page with caption and credit |
-| `blocks/image-credits/` | Lists every Commons image with author, licence and source (on the Sources page) |
+| `blocks/image-credits/` | Lists every image with author, licence and source (on the Sources page) |
 | `bin/check-content.py`, `.github/workflows/content.yml` | Checks that `content/` holds only `<lang>/<key>.json` seeds in the shape `lq_article_data()` accepts, with every footnote marker matched to its note; runs on pull requests that touch `content/` |
-| `bin/fetch-commons-images.py`, `bin/commons-images.json` | Chosen Commons files per page, and the script that checks each licence through the Commons API and writes the WebP files and `inc/data/images.json` |
+| `bin/fetch-commons-images.py`, `bin/commons-images.json` | Chosen images per page (Commons files by title; Pixabay and Pexels photos by source and id), and the script that reads each licence through the source's API and writes the WebP files and `inc/data/images.json`. Pixabay and Pexels need `PIXABAY_API_KEY` and `PEXELS_API_KEY` in the environment (repository secrets, which the images workflow passes only to a run started by hand, never to a pull_request run, since a pull request runs its own code); keys never go into the repository |
 
 ## Stored data
 
@@ -95,7 +95,7 @@ Version 1.9.17. This file records the architecture, stored data and binding deci
 | `lailatulqadar_needs_setup` | Set on activation, cleared once setup has run on an admin visit. Setup also runs when `lailatulqadar_setup_version` differs from `LQ_VERSION` |
 | Transient `lailatulqadar_setup_lock` | Held while setup runs (five minutes at most), so two requests never run it at once |
 | Transient `lailatulqadar_setup_report` | Result of the last setup run, shown once |
-| Post meta `_lq_seo_title`, `_lq_meta_description` | Per-page title tag and meta description |
+| Post meta `_lq_seo_title`, `_lq_meta_description` | Per-page title tag (the page part; the theme adds " \| Lailatulqadar") and meta description |
 | `lailatulqadar_settings['commons_featured']` | `1` or `0`: setup sets each page's lead Commons image as its featured image |
 | `lailatulqadar_commons_media` | Attachment IDs of the Commons images copied into the media library, keyed by image file base, so English and Malay pages share one attachment |
 | Post meta `_lq_lang`, `_lq_key` | Language and page key of a page setup created or adopted; the theme's ownership marker. Only pages carrying `_lq_lang` are ever trashed as obsolete copies |
@@ -107,6 +107,8 @@ Version 1.9.17. This file records the architecture, stored data and binding deci
 ## Page registry
 
 Keys, in reading order: `home`, `start`, `what`, `surah`, `when`, `last10`, `signs`, `worship`, `dua`, `planner`, `faq`, `sources`, `dilemma`, `about`, `sitemap`, `contact`. Titles, slugs, menu labels, title tags, meta descriptions, focus keywords and menu membership live in `inc/data/pages.json` (data only, read with `json_decode()` by `lq_page_definitions()` in `inc/helpers.php`); setup does not run while that file cannot be read, since every guide page would otherwise look retired. Setup runs on the first admin visit (manage_options) after activation or a version change, never on a front-end request. It publishes the home and sitemap pages in both languages and every page whose article ships in `content/<lang>/<key>.json`; a page with no shipped article (About, Contact) stays a draft. When a shipped article changes, a page whose content and footnotes still match `_lq_seed_hash` (or, before the hash, an earlier shipped version in `inc/data/seed-history.json`) is replaced through `wp_update_post()`, which keeps a revision, and keeps its status; an edited page is never overwritten and is listed on the Tools tab with a button to replace it. Copies of guide pages the theme created (carrying `_lq_lang`) that the registry no longer points to go to the trash when they hold no text or only text the theme wrote; edited copies are kept and reported; pages without the marker are never touched. Menus list published pages only; the reading path also shows unpublished pages as "Coming soon". Malay pages sit beneath the Malay home at /ms/. Keyword targets per page: docs/seo.md.
+
+Title tags always read `<page title, keyword or description> | Lailatulqadar` in both languages and stay under 60 characters with the site name (`LQ_TITLE_LIMIT` 59, `LQ_TITLE_SITE`, `LQ_TITLE_SEP` in `inc/seo.php`). The registry's `seo` value and the `_lq_seo_title` meta hold the page part, 43 characters at most with `[lq_ramadan]` counted as its year; the theme composes the whole tag (`lq_compose_title()`) and gives every other view the same form, cutting a long page part at a word. With Rank Math active, setup writes the whole tag into `rank_math_title`. Setup replaces a stored title tag only when it is empty, too long, or one the theme wrote in an earlier release (`inc/data/title-history.json`); an editor's title is never replaced.
 
 Addresses (slugs) never contain the words a, an or the; other small words (is, of, and, dan, di, itu) stay where the wording needs them. Existing addresses are not changed to meet this rule, so no redirects are needed. `inc/slugs.php` enforces it for addresses WordPress builds from a title (new posts and pages on first publish); a slug an editor types, a guide page's registry slug and any existing address are left as they are.
 
@@ -133,8 +135,10 @@ Breakpoints: phones to 600px, tablets 601 to 1024px, desktop above. Type is flui
 
 ## Images
 
-- Only Wikimedia Commons files under public domain, CC0, CC BY or CC BY-SA; `lq_images_data()` drops any other licence, and `bin/fetch-commons-images.py` refuses it, and any file tagged as a copyright violation or for deletion, after reading the file's own licence from the Commons API.
-- Every image shows its author, its licence linked to the deed, and a link to its file page on Wikimedia Commons, beneath the image (`lq_image_credit_html()`), and again in the credits list on the Sources page.
+- Three sources, each with its own licences (`lq_image_sources()`): Wikimedia Commons files under public domain, CC0, CC BY or CC BY-SA; Pixabay photos under the Pixabay Content License; Pexels photos under the Pexels License. `lq_images_data()` drops an image whose page address and licence do not belong to one source. `bin/fetch-commons-images.py` reads each licence from the source's API and refuses a Commons file tagged as a copyright violation or for deletion.
+- Every image shows its author, its licence linked to the deed or terms, and a link to its page on its source, beneath the image (`lq_image_credit_html()`), and again in the credits list on the Sources page. Pixabay and Pexels ask for no credit; the guide gives it anyway.
+- Stock photos (Pixabay, Pexels) are checked at full size before use: any Arabic shown must be real, legible and correctly identified in the caption, and a caption says only what the image shows. Staged props and generated-looking images are refused.
+- The folder `images/commons/`, the script and plan names and the `commons_featured` setting keep their first names for all three sources.
 - No depiction of the Prophet ﷺ or any prophet, nothing sectarian or polemical. Subjects: night skies, the crescent, mosques at night, prayer and iʿtikāf shown respectfully (from behind or at a distance where possible), Qurʾān manuscripts, lanterns, dawn.
 - No file used by a sister theme of the network (checked by file name, by author and subject, and by SHA-256).
 - Articles place images with `<!-- wp:lailatulqadar/photo {"key":"<key>","n":<n>} /-->`; image 1 is the lead, placed after the In brief box, eager and `fetchpriority="high"`; later images are lazy. Each carries `width`, `height`, `srcset` and `sizes`.

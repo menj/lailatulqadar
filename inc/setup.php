@@ -283,11 +283,13 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 		}
 	}
 
-	// Empty values, values over the limit, and the fixed-year defaults of
-	// earlier versions (with "2027" in place of [lq_ramadan]) take the
-	// registry default.
-	$title = (string) get_post_meta( $id, LQ_META_TITLE, true );
-	if ( '' === $title || mb_strlen( $title ) > LQ_TITLE_LIMIT || ( str_replace( '[lq_ramadan]', '2027', $def['seo'] ) === $title && $title !== $def['seo'] ) ) {
+	// Empty values, values over the limit, the fixed-year defaults of
+	// earlier versions (with "2027" in place of [lq_ramadan]) and any title
+	// tag the theme wrote in an earlier release take the registry default.
+	// The title tag holds the page part only; the theme adds " | Lailatulqadar".
+	$title   = (string) get_post_meta( $id, LQ_META_TITLE, true );
+	$history = lq_title_history();
+	if ( '' === $title || mb_strlen( lq_title_part( $title, false ) ) > lq_title_part_limit() || ( str_replace( '[lq_ramadan]', '2027', $def['seo'] ) === $title && $title !== $def['seo'] ) || ( $title !== $def['seo'] && in_array( $title, $history, true ) ) ) {
 		update_post_meta( $id, LQ_META_TITLE, $def['seo'] );
 	}
 	$desc = (string) get_post_meta( $id, LQ_META_DESCRIPTION, true );
@@ -304,7 +306,16 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 		foreach ( array( 'rank_math_title' => 'seo', 'rank_math_description' => 'meta' ) as $rm_key => $field ) {
 			$want    = str_replace( '[lq_ramadan]', '%lq_ramadan_year%', $def[ $field ] );
 			$current = (string) get_post_meta( $id, $rm_key, true );
-			$ours    = array_merge( $legacy, array( $def[ $field ], str_replace( '[lq_ramadan]', '2027', $def[ $field ] ) ) );
+			$ours    = array_merge( $legacy, array( $def[ $field ], $want, str_replace( '[lq_ramadan]', '2027', $def[ $field ] ) ) );
+			if ( 'seo' === $field ) {
+				// Rank Math prints this field as the whole title tag, so it
+				// carries the site name itself; earlier releases wrote the
+				// page part alone.
+				foreach ( $history as $old ) {
+					array_push( $ours, $old, str_replace( '[lq_ramadan]', '%lq_ramadan_year%', $old ), str_replace( '[lq_ramadan]', '2027', $old ) );
+				}
+				$want .= LQ_TITLE_SEP . LQ_TITLE_SITE;
+			}
 			if ( '' === $current || ( $current !== $want && in_array( $current, $ours, true ) ) ) {
 				update_post_meta( $id, $rm_key, $want );
 			}
@@ -313,6 +324,23 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 			update_post_meta( $id, 'rank_math_focus_keyword', $def['focus'] );
 		}
 	}
+}
+
+/**
+ * Every title tag the theme has written as a default in earlier releases,
+ * from inc/data/title-history.json, so setup can tell them from titles an
+ * editor wrote. Data only, read with json_decode().
+ *
+ * @return string[]
+ */
+function lq_title_history() {
+	static $list = null;
+	if ( null === $list ) {
+		$file = LQ_DIR . '/inc/data/title-history.json';
+		$data = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : array(); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$list = is_array( $data ) ? array_values( array_filter( $data, 'is_string' ) ) : array();
+	}
+	return $list;
 }
 
 /**

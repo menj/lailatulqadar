@@ -2,6 +2,13 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.9.18 (2026-10-31)
+
+- Title tags (`inc/seo.php`, `inc/setup.php`): every title tag now reads `<page title, keyword or description> | Lailatulqadar`, in both languages, and stays under 60 characters. The registry's title tags (`inc/data/pages.json`) were shortened to page parts of 43 characters at most (26 of 32 changed), keeping each page's focus keyword; the theme adds " | Lailatulqadar" (`lq_compose_title()`). Posts, search results, archives and the not-found page take the same form, with a long page part cut at a word and an ellipsis. With Rank Math active, setup writes the whole tag into Rank Math's title field. On existing sites setup replaces a stored title tag only when it is one the theme wrote earlier (`inc/data/title-history.json`, new), empty or too long; an editor's title is kept. The Search appearance box counts the page part against 43; the Search tab shows each whole title against 59. The title tag the theme prints is now escaped.
+- Images from Pixabay and Pexels (`inc/images.php`, `bin/fetch-commons-images.py`): beside Wikimedia Commons, the theme accepts Pixabay photos under the Pixabay Content License and Pexels photos under the Pexels License, each only from its own site (`lq_image_sources()`). The credit line names the source (Wikimedia Commons, Pixabay or Pexels) and links the image's page there and its licence terms. The fetch script reads a stock photo through the site's API with a key from the environment (`PIXABAY_API_KEY`, `PEXELS_API_KEY`); keys are never stored in the repository. The images workflow reads them from repository secrets and passes them only to a run started by hand (Actions > Images > Run workflow), never to a run triggered by a pull request, which runs the pull request's own code and could send the keys elsewhere.
+- Four new images, each checked at full size and against the images of the sister themes available (no reuse): The Islamic Dilemma and the Qurʾān as Guardian, which had none, gains an old handwritten Arabic book (Pexels, lead image and featured image) and a Muṣḥaf on a carved rehal (Pexels); Start Here gains reading stands by a mosque window (Pixabay); FAQ gains the Earth at night (Pixabay) beside its question on countries and time zones. Captions and alt text in English and Malay.
+- SSOT.md and `docs/seo.md` record the title rule and the image sources.
+
 ## 1.9.17 (2026-10-29)
 
 - Seed data is JSON throughout. The page registry moves out of `lq_page_definitions()` in `inc/helpers.php` into `inc/data/pages.json`, read with `json_decode()` and never executed. The decoded registry is identical to the old array, so nothing on a live site changes.

@@ -1,15 +1,18 @@
 <?php
 /**
- * Freely licensed Wikimedia Commons images for the guide pages.
+ * Freely licensed images for the guide pages, from Wikimedia Commons,
+ * Pixabay and Pexels.
  *
- * The images live in images/commons/ as WebP at two widths; their credits
- * live in inc/data/images.json, keyed by page key. Like the article files,
- * that file is data only: it is read with json_decode() and checked, never
- * included or executed. bin/fetch-commons-images.py writes both.
+ * The images live in images/commons/ (the folder keeps its first name for
+ * all three sources) as WebP at two widths; their credits live in
+ * inc/data/images.json, keyed by page key. Like the article files, that file
+ * is data only: it is read with json_decode() and checked, never included or
+ * executed. bin/fetch-commons-images.py writes both.
  *
  * Each image renders as a figure with its caption and a credit naming the
- * author, the licence (linked to its deed) and the source file page, as the
- * Commons licences require.
+ * author, the licence (linked to its deed or terms) and the source page, as
+ * the Commons licences require; Pixabay and Pexels ask for no credit, and
+ * the guide gives it anyway.
  *
  * @package Lailatulqadar
  */
@@ -17,12 +20,50 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Licences the theme accepts. Anything else in the data file is dropped.
+ * Sources the theme accepts, each with the start of its file-page address,
+ * its name for the credit line and the licences allowed from it. An image
+ * whose page or licence does not match one source is dropped.
  *
- * @return string[] Regular expressions matched against the licence name.
+ * @return array<string,array{prefix:string,name:string,licences:string[]}>
  */
-function lq_image_licences() {
-	return array( '/^CC0/i', '/^Public domain$/i', '/^PD\b/i', '/^CC BY(-SA)? \d\.\d/i' );
+function lq_image_sources() {
+	return array(
+		'commons' => array(
+			'prefix'   => 'https://commons.wikimedia.org/wiki/File:',
+			'name'     => 'Wikimedia Commons',
+			'licences' => array( '/^CC0/i', '/^Public domain$/i', '/^PD\b/i', '/^CC BY(-SA)? \d\.\d/i' ),
+		),
+		'pixabay' => array(
+			'prefix'   => 'https://pixabay.com/photos/',
+			'name'     => 'Pixabay',
+			'licences' => array( '/^Pixabay Content License$/' ),
+		),
+		'pexels'  => array(
+			'prefix'   => 'https://www.pexels.com/photo/',
+			'name'     => 'Pexels',
+			'licences' => array( '/^Pexels License$/' ),
+		),
+	);
+}
+
+/**
+ * The source an image comes from, judged by its page address and licence.
+ *
+ * @param array $image Image entry.
+ * @return string Source key, or an empty string when none matches.
+ */
+function lq_image_source_of( $image ) {
+	foreach ( lq_image_sources() as $key => $source ) {
+		if ( 0 !== strpos( $image['source'], $source['prefix'] ) ) {
+			continue;
+		}
+		foreach ( $source['licences'] as $pattern ) {
+			if ( preg_match( $pattern, $image['licence'] ) ) {
+				return $key;
+			}
+		}
+	}
+	return '';
 }
 
 /**
@@ -61,13 +102,11 @@ function lq_images_data() {
 			if ( ! preg_match( '/^[a-z0-9-]+$/', $image['file'] ) || empty( $image['widths'] ) || ! is_array( $image['widths'] ) ) {
 				continue;
 			}
-			$ok = false;
-			foreach ( lq_image_licences() as $pattern ) {
-				$ok = $ok || preg_match( $pattern, $image['licence'] );
-			}
-			if ( ! $ok || 0 !== strpos( $image['source'], 'https://commons.wikimedia.org/wiki/File:' ) ) {
+			$via = lq_image_source_of( $image );
+			if ( '' === $via ) {
 				continue;
 			}
+			$image['via']    = lq_image_sources()[ $via ]['name'];
 			$image['widths'] = array_values( array_filter( array_map( 'absint', $image['widths'] ) ) );
 			$image['width']  = isset( $image['width'] ) ? absint( $image['width'] ) : 0;
 			$image['height'] = isset( $image['height'] ) ? absint( $image['height'] ) : 0;
@@ -103,8 +142,9 @@ function lq_image_file( $image, $width, $base ) {
 }
 
 /**
- * The credit line: "Photo: Author, CC BY-SA 4.0, via Wikimedia Commons",
- * with the licence linked to its deed and the source to the file page.
+ * The credit line: "Image: Author, CC BY-SA 4.0, Wikimedia Commons", with
+ * the licence linked to its deed and the source named and linked to the
+ * image's own page there.
  *
  * @param array $image Image entry.
  * @return string Escaped HTML.
@@ -118,7 +158,7 @@ function lq_image_credit_html( $image ) {
 		/* translators: %s: author of the image. */
 		. '<span>' . esc_html( sprintf( 'secondary' === lq_current_role() ? 'Imej: %s' : __( 'Image: %s', 'lailatulqadar' ), $image['artist'] ) ) . '</span>'
 		. $licence
-		. '<a href="' . esc_url( $image['source'] ) . '" rel="noopener">' . esc_html__( 'Wikimedia Commons', 'lailatulqadar' ) . '</a>'
+		. '<a href="' . esc_url( $image['source'] ) . '" rel="noopener">' . esc_html( $image['via'] ) . '</a>'
 		. '</span>';
 }
 
@@ -129,8 +169,8 @@ function lq_image_credit_html( $image ) {
  * @return string
  */
 function lq_image_credit_text( $image ) {
-	/* translators: 1: author, 2: licence, 3: source page. */
-	return sprintf( __( 'Image: %1$s, %2$s, via Wikimedia Commons (%3$s)', 'lailatulqadar' ), $image['artist'], $image['licence'], $image['source'] );
+	/* translators: 1: author, 2: licence, 3: site the image comes from (Wikimedia Commons, Pixabay or Pexels), 4: source page. */
+	return sprintf( __( 'Image: %1$s, %2$s, via %3$s (%4$s)', 'lailatulqadar' ), $image['artist'], $image['licence'], $image['via'], $image['source'] );
 }
 
 /**

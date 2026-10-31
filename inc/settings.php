@@ -497,7 +497,7 @@ function lq_render_links_tab() {
 }
 
 /**
- * Images tab: Commons images and the featured-image switch.
+ * Images tab: the guide's images and the featured-image switch.
  */
 function lq_render_images_tab() {
 	$count = 0;
@@ -506,8 +506,8 @@ function lq_render_images_tab() {
 	}
 	?>
 	<section class="lq-section">
-		<h2><?php esc_html_e( 'Wikimedia Commons images', 'lailatulqadar' ); ?></h2>
-		<p class="lq-help"><?php esc_html_e( 'The guide pages carry freely licensed images from Wikimedia Commons (public domain, CC0, CC BY or CC BY-SA). Each is shown with its author, its licence linked to the licence deed, and a link to its file page, as the licences require. The images and their credits ship with the theme in images/commons/ and inc/data/images.json; bin/fetch-commons-images.py checks each licence against Commons and rebuilds both.', 'lailatulqadar' ); ?></p>
+		<h2><?php esc_html_e( 'Images', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help"><?php esc_html_e( 'The guide pages carry freely licensed images from Wikimedia Commons (public domain, CC0, CC BY or CC BY-SA), Pixabay and Pexels (each under its own licence). Each is shown with its author, its licence linked to the licence deed or terms, and a link to its page on its source. The images and their credits ship with the theme in images/commons/ and inc/data/images.json; bin/fetch-commons-images.py checks each licence against its source and rebuilds both.', 'lailatulqadar' ); ?></p>
 		<p class="lq-callout"><?php echo esc_html( sprintf( /* translators: %d: number of images. */ _n( '%d image is listed.', '%d images are listed.', $count, 'lailatulqadar' ), $count ) ); ?></p>
 		<div class="lq-field lq-field--check">
 			<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'commons_featured' ) ); ?>" value="0">
@@ -739,7 +739,7 @@ function lq_render_search_tab() {
 				echo esc_html(
 					sprintf(
 						/* translators: 1: title limit, 2: description limit */
-						__( 'Limits: %1$d characters for title tags, %2$d for meta descriptions. Edit each value in the Search appearance box on the page.', 'lailatulqadar' ),
+						__( 'Title tags read “title | Lailatulqadar” and run to %1$d characters at most, the site name included; meta descriptions to %2$d. Edit each value in the Search appearance box on the page.', 'lailatulqadar' ),
 						LQ_TITLE_LIMIT,
 						LQ_META_LIMIT
 					)
@@ -768,7 +768,7 @@ function lq_render_search_tab() {
 						?>
 						<tr>
 							<th scope="row"><a href="<?php echo esc_url( get_edit_post_link( $id ) ); ?>"><?php echo esc_html( get_the_title( $id ) ); ?></a></th>
-							<td><?php lq_render_seo_cell( $title, LQ_TITLE_LIMIT ); ?></td>
+							<td><?php lq_render_seo_cell( '' === $title ? '' : lq_compose_title( $title, false ), LQ_TITLE_LIMIT ); ?></td>
 							<td><?php lq_render_seo_cell( $desc, LQ_META_LIMIT ); ?></td>
 						</tr>
 					<?php endforeach; ?>

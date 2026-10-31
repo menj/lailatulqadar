@@ -1,8 +1,9 @@
 name: Images
 
-# Fetches any Commons image named in bin/commons-images.json that is not yet
-# in images/commons/, checking its licence through the Commons API, and
-# commits the WebP files and inc/data/images.json back to the branch.
+# Fetches any image named in bin/commons-images.json that is not yet in
+# images/commons/ (Wikimedia Commons, Pixabay or Pexels), checks its licence
+# through its source's API, and commits the WebP files and
+# inc/data/images.json back to the branch.
 # upload.wikimedia.org rate-limits busy addresses; a file it refuses is
 # simply tried again on the next run.
 
@@ -37,8 +38,13 @@ jobs:
           python -m pip install 'pillow>=11.3'
           python -c "from PIL import features; assert features.check('webp')"
 
-      - name: Fetch Commons images
-        run: python bin/fetch-commons-images.py || echo "Some Commons images are still pending; they will be tried again on the next run."
+      - name: Fetch images
+        # Pixabay and Pexels need API keys, kept as repository secrets; an
+        # image whose key is missing stays pending and is tried on a later run.
+        env:
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: python bin/fetch-commons-images.py || echo "Some images are still pending; they will be tried again on the next run."
 
       - name: Check sizes
         run: |

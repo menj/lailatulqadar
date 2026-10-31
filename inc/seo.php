@@ -14,8 +14,60 @@ defined( 'ABSPATH' ) || exit;
 
 const LQ_META_TITLE       = '_lq_seo_title';
 const LQ_META_DESCRIPTION = '_lq_meta_description';
-const LQ_TITLE_LIMIT      = 60;
+const LQ_TITLE_LIMIT      = 59; // Whole title tag, site name included: under 60 characters.
+const LQ_TITLE_SITE       = 'Lailatulqadar';
+const LQ_TITLE_SEP        = ' | ';
 const LQ_META_LIMIT       = 130;
+
+/**
+ * Most characters the page part of a title tag may take, leaving room for
+ * " | Lailatulqadar" inside LQ_TITLE_LIMIT.
+ *
+ * @return int
+ */
+function lq_title_part_limit() {
+	return LQ_TITLE_LIMIT - mb_strlen( LQ_TITLE_SEP . LQ_TITLE_SITE );
+}
+
+/**
+ * The page part of a title tag: shortcodes expanded, markup removed, any
+ * " | Lailatulqadar" already typed at the end dropped, and, when $shorten is
+ * set, cut at a word boundary with an ellipsis to fit lq_title_part_limit().
+ *
+ * @param string $text    Page title, keyword or description.
+ * @param bool   $shorten Whether to cut it to fit.
+ * @return string
+ */
+function lq_title_part( $text, $shorten = true ) {
+	$text   = trim( wp_strip_all_tags( do_shortcode( (string) $text ) ) );
+	$suffix = trim( LQ_TITLE_SEP ) . ' ' . LQ_TITLE_SITE;
+	if ( mb_strlen( $text ) > mb_strlen( $suffix ) && 0 === strcasecmp( mb_substr( $text, -mb_strlen( $suffix ) ), $suffix ) ) {
+		$text = trim( mb_substr( $text, 0, -mb_strlen( $suffix ) ) );
+	}
+	$max = lq_title_part_limit();
+	if ( ! $shorten || mb_strlen( $text ) <= $max ) {
+		return $text;
+	}
+	$cut   = mb_substr( $text, 0, $max - 1 );
+	$space = mb_strrpos( $cut, ' ' );
+	if ( false !== $space && $space > $max / 2 ) {
+		$cut = mb_substr( $cut, 0, $space );
+	}
+	return rtrim( $cut, " ,;:–-" ) . '…';
+}
+
+/**
+ * A whole title tag: "<page title, keyword or description> | Lailatulqadar",
+ * under 60 characters, or the site name alone when there is no page part.
+ *
+ * @param string $text    Page part.
+ * @param bool   $shorten Whether to cut the page part to fit.
+ * @return string
+ */
+function lq_compose_title( $text, $shorten = true ) {
+	$part = lq_title_part( $text, $shorten );
+	return '' === $part ? LQ_TITLE_SITE : $part . LQ_TITLE_SEP . LQ_TITLE_SITE;
+}
 
 /**
  * Name of an active SEO plugin, or an empty string.
@@ -61,7 +113,8 @@ function lq_register_seo_meta() {
 add_action( 'init', 'lq_register_seo_meta' );
 
 /**
- * Title tag override for pages that have one.
+ * Title tag for pages that have one: "<title tag> | Lailatulqadar". Other
+ * views take the same form through lq_document_title_parts().
  *
  * @param string $title Title WordPress would print.
  * @return string
@@ -71,9 +124,48 @@ function lq_document_title( $title ) {
 		return $title;
 	}
 	$custom = (string) get_post_meta( get_queried_object_id(), LQ_META_TITLE, true );
-	return '' !== $custom ? wp_strip_all_tags( do_shortcode( $custom ) ) : $title;
+	return '' !== $custom ? esc_html( lq_compose_title( $custom ) ) : $title;
 }
 add_filter( 'pre_get_document_title', 'lq_document_title' );
+
+/**
+ * Every other title tag (posts, pages without a title tag of their own,
+ * search, archives, not found) in the same form: the page part, cut to fit
+ * when it is long, then " | Lailatulqadar". Runs after the Malay search
+ * wording (lq_search_title_ms).
+ *
+ * @param array $parts Title parts: title, page, tagline, site.
+ * @return array
+ */
+function lq_document_title_parts( $parts ) {
+	if ( lq_seo_plugin() ) {
+		return $parts;
+	}
+	$title = isset( $parts['title'] ) ? (string) $parts['title'] : '';
+	if ( is_front_page() || $title === get_bloginfo( 'name' ) ) {
+		$title = '';
+	}
+	if ( ! empty( $parts['page'] ) && '' !== $title ) {
+		$title .= ' (' . $parts['page'] . ')';
+	}
+	$part = lq_title_part( $title );
+	return '' === $part ? array( 'title' => LQ_TITLE_SITE ) : array(
+		'title' => $part,
+		'site'  => LQ_TITLE_SITE,
+	);
+}
+add_filter( 'document_title_parts', 'lq_document_title_parts', 99 );
+
+/**
+ * The separator WordPress puts between title parts: a vertical bar.
+ *
+ * @param string $sep Separator.
+ * @return string
+ */
+function lq_document_title_separator( $sep ) {
+	return lq_seo_plugin() ? $sep : trim( LQ_TITLE_SEP );
+}
+add_filter( 'document_title_separator', 'lq_document_title_separator' );
 
 /**
  * Print the meta description on pages.
@@ -122,7 +214,7 @@ add_action( 'admin_enqueue_scripts', 'lq_seo_box_assets' );
 function lq_render_seo_box( $post ) {
 	wp_nonce_field( 'lq_seo_save', 'lq_seo_nonce' );
 	$fields = array(
-		LQ_META_TITLE       => array( __( 'Title tag', 'lailatulqadar' ), LQ_TITLE_LIMIT, 'input' ),
+		LQ_META_TITLE       => array( __( 'Title tag (the theme adds “ | Lailatulqadar”)', 'lailatulqadar' ), lq_title_part_limit(), 'input' ),
 		LQ_META_DESCRIPTION => array( __( 'Meta description', 'lailatulqadar' ), LQ_META_LIMIT, 'textarea' ),
 	);
 	echo '<div class="lq-seo">';
@@ -143,7 +235,7 @@ function lq_render_seo_box( $post ) {
 		);
 		echo '</div>';
 	}
-	echo '<p class="lq-seo__help">' . esc_html__( 'Leave the title tag empty to use the page title. The meta description should end with a call to action.', 'lailatulqadar' ) . '</p>';
+	echo '<p class="lq-seo__help">' . esc_html__( 'Leave the title tag empty to use the page title. Every title tag reads “title | Lailatulqadar” and stays under 60 characters; a longer one is cut at a word. The meta description should end with a call to action.', 'lailatulqadar' ) . '</p>';
 	echo '</div>';
 }
 

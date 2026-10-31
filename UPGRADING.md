@@ -4,7 +4,7 @@ You can skip versions: upload the newest zip over any 1.9.x and open any admin s
 
 ## From 1.9.17 to 1.9.18
 
-Upload the new zip over 1.9.17 and open any admin screen as an administrator. Setup refreshes Start Here, FAQ and The Islamic Dilemma in both languages, which gain images, and sets The Islamic Dilemma's lead image as its featured image. It also brings every title tag the theme wrote into the form "title | Lailatulqadar", under 60 characters; a title tag you have written yourself is kept, so check the Search tab for any that run over. With Rank Math active, setup updates Rank Math's title field in the same way, again keeping your own. To let the images workflow fetch Pixabay or Pexels photos added later, add the repository secrets `PIXABAY_API_KEY` and `PEXELS_API_KEY` (Settings > Secrets and variables > Actions).
+Upload the new zip over 1.9.17 and open any admin screen as an administrator. Setup refreshes Start Here, FAQ and The Islamic Dilemma in both languages, which gain images, and sets The Islamic Dilemma's lead image as its featured image. It also brings every title tag the theme wrote into the form "title | Lailatulqadar", under 60 characters; a title tag you have written yourself is kept, so check the Search tab for any that run over. With Rank Math active, setup updates Rank Math's title field in the same way, again keeping your own. To let the images workflow fetch Pixabay or Pexels photos added later, add the repository secrets `PIXABAY_API_KEY` and `PEXELS_API_KEY` (Settings > Secrets and variables > Actions), then start the workflow by hand on the branch that adds the photo (Actions > Images > Run workflow): for safety the keys never reach a run triggered by a pull request.
 
 ## From 1.9.16 to 1.9.17
 

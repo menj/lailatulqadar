@@ -83,7 +83,7 @@ Version 1.9.18. This file records the architecture, stored data and binding deci
 | `blocks/photo/` | Commons image block (`lailatulqadar/photo`, attributes `key` and `n`): one image of a page with caption and credit |
 | `blocks/image-credits/` | Lists every image with author, licence and source (on the Sources page) |
 | `bin/check-content.py`, `.github/workflows/content.yml` | Checks that `content/` holds only `<lang>/<key>.json` seeds in the shape `lq_article_data()` accepts, with every footnote marker matched to its note; runs on pull requests that touch `content/` |
-| `bin/fetch-commons-images.py`, `bin/commons-images.json` | Chosen images per page (Commons files by title; Pixabay and Pexels photos by source and id), and the script that reads each licence through the source's API and writes the WebP files and `inc/data/images.json`. Pixabay and Pexels need `PIXABAY_API_KEY` and `PEXELS_API_KEY` in the environment (GitHub secrets for the images workflow); keys never go into the repository |
+| `bin/fetch-commons-images.py`, `bin/commons-images.json` | Chosen images per page (Commons files by title; Pixabay and Pexels photos by source and id), and the script that reads each licence through the source's API and writes the WebP files and `inc/data/images.json`. Pixabay and Pexels need `PIXABAY_API_KEY` and `PEXELS_API_KEY` in the environment (repository secrets, which the images workflow passes only to a run started by hand, never to a pull_request run, since a pull request runs its own code); keys never go into the repository |
 
 ## Stored data
 

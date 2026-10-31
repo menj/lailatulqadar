@@ -39,11 +39,14 @@ jobs:
           python -c "from PIL import features; assert features.check('webp')"
 
       - name: Fetch images
-        # Pixabay and Pexels need API keys, kept as repository secrets; an
-        # image whose key is missing stays pending and is tried on a later run.
+        # Pixabay and Pexels need API keys, kept as repository secrets. They
+        # reach only a run started by hand (Actions > Images > Run workflow,
+        # on the branch), never a pull_request run: a pull request runs its
+        # own code, which could send the keys elsewhere. Without its key, a
+        # stock image stays pending; images already fetched are kept.
         env:
-          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ github.event_name == 'workflow_dispatch' && secrets.PIXABAY_API_KEY || '' }}
+          PEXELS_API_KEY: ${{ github.event_name == 'workflow_dispatch' && secrets.PEXELS_API_KEY || '' }}
         run: python bin/fetch-commons-images.py || echo "Some images are still pending; they will be tried again on the next run."
 
       - name: Check sizes

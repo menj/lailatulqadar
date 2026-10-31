@@ -148,14 +148,23 @@ def write(data):
         f.write('\n')
 
 
+def on_disk(records, key, base, title):
+    """The record for this image, if it exists and all its files are on disk."""
+    rec = next((x for x in records.get(key, []) if x.get('file') == base and x.get('title') == title), None)
+    if rec and rec.get('widths') and all(os.path.exists(os.path.join(OUT, '%s-%d.webp' % (base, w))) for w in rec['widths']):
+        return rec
+    return None
+
+
 def main():
     force = '--force' in sys.argv
     with open(os.path.join(ROOT, 'bin', 'commons-images.json'), encoding='utf-8') as f:
         plan = json.load(f)
-    data = {}
-    if os.path.exists(DATA) and not force:
+    previous = {}
+    if os.path.exists(DATA):
         with open(DATA, encoding='utf-8') as f:
-            data = json.load(f)
+            previous = json.load(f)
+    data = {} if force else previous
     os.makedirs(OUT, exist_ok=True)
     for items in plan.values():
         for item in items:
@@ -171,19 +180,28 @@ def main():
         result[key] = []
         for n, item in enumerate(items, 1):
             base = '%s-%d' % (key, n)
-            old = next((x for x in data.get(key, []) if x.get('file') == base and x.get('title') == item['title']), None)
-            if old and old.get('widths') and all(os.path.exists(os.path.join(OUT, '%s-%d.webp' % (base, w))) for w in old.get('widths', [])):
+            old = on_disk(data, key, base, item['title'])
+            if old:
                 result[key].append(old)
                 continue
+
+            def pending(reason):
+                # A failure that says nothing against the image (no key, a
+                # lookup or download that did not answer) keeps its previous
+                # record, even under --force, so the page does not lose it.
+                failed.append('%s (%s)' % (item['title'], reason))
+                kept = on_disk(previous, key, base, item['title'])
+                if kept:
+                    result[key].append(kept)
             if item.get('source') in STOCK:
                 got = stock(item)
                 if isinstance(got, str):
-                    failed.append('%s (%s)' % (item['title'], got))
+                    pending(got)
                     continue
                 artist, page_url, image_url = got
                 blob = get(image_url)
                 if blob is None:
-                    failed.append(item['title'] + ' (download)')
+                    pending('download')
                     continue
                 sizes = save(blob, base)
                 big = sizes[max(sizes)]
@@ -209,7 +227,7 @@ def main():
                 continue
             found = info.get(item['title'])
             if not found:
-                failed.append(item['title'] + ' (missing)')
+                pending('missing')
                 continue
             page, ii = found
             meta = ii['extmetadata']
@@ -220,7 +238,7 @@ def main():
                 continue
             blob = get(ii.get('thumburl') or ii['url'])
             if blob is None:
-                failed.append(item['title'] + ' (download)')
+                pending('download')
                 continue
             sizes = save(blob, base)
             big = sizes[max(sizes)]

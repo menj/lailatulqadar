@@ -1,0 +1,18 @@
+/* Lailatulqadar: Security tab. Uses the tokens of admin.css. */
+.lq-sec h2 { margin-top: 28px; }
+.lq-sec h2:first-of-type { margin-top: 0; }
+.lq-sec h3 { font-size: 12px; margin: 20px 0 8px; color: var(--lq-muted); text-transform: uppercase; letter-spacing: .05em; }
+.lq-sec-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0; }
+.lq-sec-form { margin: 0; }
+.lq-sec-status { color: var(--lq-muted); font-size: 13px; }
+.lq-sec-scroll { max-height: 420px; overflow: auto; border: 1px solid var(--lq-line); border-radius: 10px; background: var(--lq-panel); }
+.lq-sec-scroll--tall { max-height: 560px; }
+.lq-sec-table { border: 0; }
+.lq-sec-table td, .lq-sec-table th { vertical-align: top; }
+.lq-sec-links { display: flex; gap: 10px; margin-top: 4px; font-size: 12px; }
+.lq-sec-reason { display: inline-block; margin: 0 4px 4px 0; padding: 1px 10px; border-radius: 999px; background: color-mix(in srgb, var(--lq-warn) 12%, transparent); color: var(--lq-warn); font-size: 11px; line-height: 18px; }
+.lq-sec-list { margin: 8px 0 12px 18px; list-style: disc; }
+.lq-sec-list li { margin: 2px 0; }
+@media (max-width: 782px) {
+	.lq-sec-bar { flex-direction: column; align-items: stretch; }
+}

@@ -2,6 +2,22 @@
 
 You can skip versions: upload the newest zip over any 1.9.x and open any admin screen as an administrator. Setup knows every version of each article the theme has shipped, so in one run it brings every unedited page up to date and lists pages you have edited under "Edited, not updated" on the Tools tab. The entries below say what each version changes on the site.
 
+## From 1.9.18 to 1.11.0
+
+Upload the new zip over 1.9.18 and open any admin screen as an administrator. Setup refreshes the Night Planner and The Last Ten Nights (English) unless edited. The Security tab (Appearance > Theme Options > Security) is on by default: XML-RPC, application passwords and REST writes from outside the browser stop at once. Writing in the editor, Rank Math and everything visitors do are unchanged.
+
+After the October 2026 attack on the sister site, the owner checklist:
+
+1. Change the password of every administrator to a long random one used nowhere else, then Log Out Everywhere Else (Users > Profile), or press "Log out all sessions" on the Security tab.
+2. Create a new administrator whose name is not the site name, log in as it, and delete the old account, attributing its content to the new one.
+3. Press "Revoke all application passwords".
+4. Check Plugins for anything not installed by you (auto-posting, AI writers, remote management) and remove it. Check Users for unknown accounts.
+5. Run the spam scan, select the results, move them to the trash, then delete the empty spam categories.
+6. Purge any page cache, then resubmit the sitemap in Google Search Console.
+7. Nothing to do at the server: on Apache the theme writes a "Block xmlrpc.php" section into .htaccess itself, repairs it hourly from the admin, and removes it when XML-RPC is switched back on or the site moves to a theme outside the sister themes. Jetpack needs XML-RPC; if Jetpack is ever used, switch "Turn off XML-RPC" off.
+
+If a lock breaks a tool you rely on, `define( 'LQ_SECURITY_LOCK', false );` in wp-config.php turns the three locks off without changing the settings.
+
 ## From 1.9.17 to 1.9.18
 
 Upload the new zip over 1.9.17 and open any admin screen as an administrator. Setup refreshes Start Here, FAQ and The Islamic Dilemma in both languages, which gain images, and sets The Islamic Dilemma's lead image as its featured image. It also brings every title tag the theme wrote into the form "title | Lailatulqadar", under 60 characters; a title tag you have written yourself is kept, so check the Search tab for any that run over. With Rank Math active, setup updates Rank Math's title field in the same way, again keeping your own. To let the images workflow fetch Pixabay or Pexels photos added later, add the repository secrets `PIXABAY_API_KEY` and `PEXELS_API_KEY` (Settings > Secrets and variables > Actions), then start the workflow by hand on the branch that adds the photo (Actions > Images > Run workflow): for safety the keys never reach a run triggered by a pull request.

@@ -231,7 +231,7 @@ function lq_render_seo_box( $post ) {
 		printf(
 			'<p class="lq-seo__count" data-lq-count-for="%1$s">%2$s</p>',
 			esc_attr( $id ),
-			esc_html( sprintf( /* translators: 1: characters used, 2: limit */ __( '%1$d of %2$d characters', 'lailatulqadar' ), mb_strlen( $value ), (int) $field[1] ) )
+			esc_html( sprintf( /* translators: 1: characters used, 2: limit */ __( '%1$d of %2$d characters', 'lailatulqadar' ), mb_strlen( lq_title_part( $value, false ) ), (int) $field[1] ) )
 		);
 		echo '</div>';
 	}

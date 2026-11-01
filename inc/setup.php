@@ -288,7 +288,7 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 	// tag the theme wrote in an earlier release take the registry default.
 	// The title tag holds the page part only; the theme adds " | Lailatulqadar".
 	$title   = (string) get_post_meta( $id, LQ_META_TITLE, true );
-	$history = lq_title_history();
+	$history = lq_title_history( $key, $role );
 	if ( '' === $title || mb_strlen( lq_title_part( $title, false ) ) > lq_title_part_limit() || ( str_replace( '[lq_ramadan]', '2027', $def['seo'] ) === $title && $title !== $def['seo'] ) || ( $title !== $def['seo'] && in_array( $title, $history, true ) ) ) {
 		update_post_meta( $id, LQ_META_TITLE, $def['seo'] );
 	}
@@ -327,20 +327,25 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 }
 
 /**
- * Every title tag the theme has written as a default in earlier releases,
- * from inc/data/title-history.json, so setup can tell them from titles an
- * editor wrote. Data only, read with json_decode().
+ * The title tags the theme wrote as this page's default in earlier
+ * releases, from inc/data/title-history.json (page key => role => titles),
+ * so setup can tell them from titles an editor wrote. Only this page's own
+ * defaults count: an editor's title that happens to match another page's
+ * old default is kept. Data only, read with json_decode().
  *
+ * @param string $key  Page key.
+ * @param string $role primary or secondary.
  * @return string[]
  */
-function lq_title_history() {
-	static $list = null;
-	if ( null === $list ) {
+function lq_title_history( $key, $role ) {
+	static $data = null;
+	if ( null === $data ) {
 		$file = LQ_DIR . '/inc/data/title-history.json';
 		$data = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : array(); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-		$list = is_array( $data ) ? array_values( array_filter( $data, 'is_string' ) ) : array();
+		$data = is_array( $data ) ? $data : array();
 	}
-	return $list;
+	$list = isset( $data[ $key ][ $role ] ) && is_array( $data[ $key ][ $role ] ) ? $data[ $key ][ $role ] : array();
+	return array_values( array_filter( $list, 'is_string' ) );
 }
 
 /**

@@ -30,16 +30,22 @@ function lq_title_part_limit() {
 }
 
 /**
- * The page part of a title tag: shortcodes expanded, markup removed, any
- * " | Lailatulqadar" already typed at the end dropped, and, when $shorten is
- * set, cut at a word boundary with an ellipsis to fit lq_title_part_limit().
+ * The page part of a title tag: markup removed, any " | Lailatulqadar"
+ * already typed at the end dropped, and, when $shorten is set, cut at a word
+ * boundary with an ellipsis to fit lq_title_part_limit(). Shortcodes are
+ * expanded only when $expand is set, for title tags editors store (where
+ * [lq_ramadan] gives the year); never for post titles or search terms, which
+ * would let anyone who can write a title, or any visitor who searches, run a
+ * shortcode.
  *
  * @param string $text    Page title, keyword or description.
  * @param bool   $shorten Whether to cut it to fit.
+ * @param bool   $expand  Whether to expand shortcodes.
  * @return string
  */
-function lq_title_part( $text, $shorten = true ) {
-	$text   = trim( wp_strip_all_tags( do_shortcode( (string) $text ) ) );
+function lq_title_part( $text, $shorten = true, $expand = true ) {
+	$text   = (string) $text;
+	$text   = trim( wp_strip_all_tags( $expand ? do_shortcode( $text ) : $text ) );
 	$suffix = trim( LQ_TITLE_SEP ) . ' ' . LQ_TITLE_SITE;
 	if ( mb_strlen( $text ) > mb_strlen( $suffix ) && 0 === strcasecmp( mb_substr( $text, -mb_strlen( $suffix ) ), $suffix ) ) {
 		$text = trim( mb_substr( $text, 0, -mb_strlen( $suffix ) ) );
@@ -148,7 +154,7 @@ function lq_document_title_parts( $parts ) {
 	if ( ! empty( $parts['page'] ) && '' !== $title ) {
 		$title .= ' (' . $parts['page'] . ')';
 	}
-	$part = lq_title_part( $title );
+	$part = lq_title_part( $title, true, false );
 	return '' === $part ? array( 'title' => LQ_TITLE_SITE ) : array(
 		'title' => $part,
 		'site'  => LQ_TITLE_SITE,

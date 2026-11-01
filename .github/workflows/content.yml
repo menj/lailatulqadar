@@ -1,18 +1,21 @@
 name: Content
 
 # Every article seed must be content/<lang>/<key>.json in the shape setup
-# accepts (see bin/check-content.py); anything else fails the check.
+# accepts, and the page registry (inc/data/pages.json) must be complete and
+# keep the title and slug rules (see bin/check-content.py).
 
 on:
   pull_request:
     paths:
       - 'content/**'
+      - 'inc/data/pages.json'
       - 'bin/check-content.py'
       - '.github/workflows/content.yml'
   push:
     branches: [main]
     paths:
       - 'content/**'
+      - 'inc/data/pages.json'
   workflow_dispatch:
 
 permissions:

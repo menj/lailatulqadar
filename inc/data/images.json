@@ -19,6 +19,25 @@
 			],
 			"width": 1200,
 			"height": 844
+		},
+		{
+			"file": "start-2",
+			"title": "pixabay:5224977",
+			"lead": false,
+			"alt": "Wooden reading stands (rehal) on a teal carpet beneath a mosque window, one of them holding a closed book",
+			"caption": "Reading stands by a mosque window: read the guide in order, a page at a time.",
+			"alt_ms": "Rehal kayu di atas permaidani hijau kebiruan di bawah tingkap masjid, salah satunya memegang sebuah buku yang tertutup",
+			"caption_ms": "Rehal di tepi tingkap masjid: bacalah panduan ini mengikut susunan, satu halaman demi satu halaman.",
+			"artist": "kolaoltion",
+			"licence": "Pixabay Content License",
+			"licence_url": "https://pixabay.com/service/license-summary/",
+			"source": "https://pixabay.com/photos/mosque-quran-reading-window-light-5224977/",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 675
 		}
 	],
 	"what": [
@@ -375,6 +394,25 @@
 			],
 			"width": 1200,
 			"height": 712
+		},
+		{
+			"file": "faq-2",
+			"title": "pixabay:74015",
+			"lead": false,
+			"alt": "A map of the Earth at night, with the lights of cities across every continent",
+			"caption": "Night reaches each country in its own hours, and each keeps the nights from its own start of Ramadan.",
+			"alt_ms": "Peta Bumi pada waktu malam, dengan cahaya bandar di setiap benua",
+			"caption_ms": "Malam tiba di setiap negara pada waktunya sendiri, dan setiap negara menghidupkan malam-malam itu mengikut permulaan Ramadannya sendiri.",
+			"artist": "WikiImages",
+			"licence": "Pixabay Content License",
+			"licence_url": "https://pixabay.com/service/license-summary/",
+			"source": "https://pixabay.com/photos/earth-world-lighting-night-globe-74015/",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 600
 		}
 	],
 	"sources": [
@@ -417,6 +455,46 @@
 			],
 			"width": 1200,
 			"height": 835
+		}
+	],
+	"dilemma": [
+		{
+			"file": "dilemma-1",
+			"title": "pexels:36306963",
+			"lead": true,
+			"alt": "An old handwritten Arabic book with a worn leather cover, open on a stand against a dark background",
+			"caption": "An old handwritten Arabic book: the dilemma turns on which texts were kept, and how they came down.",
+			"alt_ms": "Sebuah buku Arab tulisan tangan yang lama dengan kulit yang lusuh, terbuka di atas penyangga berlatarkan warna gelap",
+			"caption_ms": "Sebuah buku Arab tulisan tangan yang lama: dilema ini berkisar pada teks yang mana dipelihara, dan bagaimana teks itu sampai kepada kita.",
+			"artist": "burcubyzt_85",
+			"licence": "Pexels License",
+			"licence_url": "https://www.pexels.com/license/",
+			"source": "https://www.pexels.com/photo/ancient-manuscript-with-arabic-script-displayed-open-36306963/",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 960
+		},
+		{
+			"file": "dilemma-2",
+			"title": "pexels:28823658",
+			"lead": false,
+			"alt": "A closed Muṣḥaf with a black and gold cover on a carved wooden reading stand (rehal), on a green mosque carpet",
+			"caption": "The Muṣḥaf, the written Qurʾān, on a carved reading stand (rehal).",
+			"alt_ms": "Mushaf berkulit hitam dan emas yang tertutup di atas rehal kayu berukir, pada permaidani masjid berwarna hijau",
+			"caption_ms": "Mushaf, iaitu al-Quran yang bertulis, di atas rehal kayu berukir.",
+			"artist": "Defrino Maasy",
+			"licence": "Pexels License",
+			"licence_url": "https://www.pexels.com/license/",
+			"source": "https://www.pexels.com/photo/quran-on-wooden-rehal-in-mosque-interior-28823658/",
+			"widths": [
+				640,
+				1200
+			],
+			"width": 1200,
+			"height": 797
 		}
 	]
 }

@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Fetches the guide pages' Wikimedia Commons images and their credits.
+"""Fetches the guide pages' images and their credits, from Wikimedia
+Commons, Pixabay and Pexels.
 
-bin/commons-images.json names, for each page key, the Commons files chosen
-for it, in order (the first is the lead image), with alt text and caption.
+bin/commons-images.json (named for its first source) lists, for each page
+key, the images chosen for it, in order (the first is the lead image), with
+alt text and caption. A Commons entry names its file ("title"); a Pixabay or
+Pexels entry gives "source" ("pixabay" or "pexels") and the photo's "id".
 An entry may give "artist" where the file page names none (museum
 scans). For each file this script asks the Commons API for its own licence
 metadata (action=query&prop=imageinfo&iiprop=url|extmetadata|size), and
@@ -10,6 +13,12 @@ refuses it unless:
 
   - the licence is public domain, CC0, CC BY or CC BY-SA;
   - the file is not tagged as a copyright violation or up for deletion.
+
+A Pixabay or Pexels photo is read through that site's API, which needs a
+key in the environment: PIXABAY_API_KEY or PEXELS_API_KEY. Never put a key
+in a file in the repository. Without its key, an entry is reported as
+pending and the rest still run. Its licence is the site's own (Pixabay
+Content License, Pexels License), recorded with a link to the terms.
 
 It then downloads a 1200-pixel copy, saves it as WebP at 1200 and 640
 pixels wide in images/commons/ (each under 200 KB), and writes the author,
@@ -55,10 +64,10 @@ LICENCE = re.compile(r'^(public domain|pd\b|cc0|cc[ -]by(-sa)? \d\.\d)', re.I)
 BAD_CATS = re.compile(r'copyright violation|deletion requests|copyvio|speedy deletion', re.I)
 
 
-def get(url):
+def get(url, headers=None):
     for attempt in range(8):
         try:
-            return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60).read()
+            return urllib.request.urlopen(urllib.request.Request(url, headers=dict(UA, **(headers or {}))), timeout=60).read()
         except urllib.error.HTTPError as e:
             if e.code in (400, 404, 410):
                 return None  # permanent: retrying only delays the run
@@ -91,6 +100,32 @@ def lookup(titles):
     return out
 
 
+STOCK = {
+    'pixabay': ('PIXABAY_API_KEY', 'Pixabay Content License', 'https://pixabay.com/service/license-summary/'),
+    'pexels': ('PEXELS_API_KEY', 'Pexels License', 'https://www.pexels.com/license/'),
+}
+
+
+def stock(item):
+    """Return (artist, page, image url) for a Pixabay or Pexels entry, or a reason it cannot be read."""
+    source, pid = item['source'], int(item['id'])
+    key = os.environ.get(STOCK[source][0], '')
+    if not key:
+        return 'no %s in the environment' % STOCK[source][0]
+    if source == 'pixabay':
+        raw = get('https://pixabay.com/api/?' + urllib.parse.urlencode({'key': key, 'id': pid}))
+        hits = json.loads(raw).get('hits', []) if raw else []
+        if not hits:
+            return 'not found'
+        hit = hits[0]
+        return hit['user'], hit['pageURL'], hit['largeImageURL']
+    raw = get('https://api.pexels.com/v1/photos/%d' % pid, {'Authorization': key})
+    if not raw:
+        return 'not found'
+    photo = json.loads(raw)
+    return photo['photographer'], photo['url'], photo['src']['original'] + '?auto=compress&cs=tinysrgb&w=%d' % max(WIDTHS)
+
+
 def save(blob, base):
     image = Image.open(io.BytesIO(blob)).convert('RGB')
     sizes = {}
@@ -113,16 +148,29 @@ def write(data):
         f.write('\n')
 
 
+def on_disk(records, key, base, title):
+    """The record for this image, if it exists and all its files are on disk."""
+    rec = next((x for x in records.get(key, []) if x.get('file') == base and x.get('title') == title), None)
+    if rec and rec.get('widths') and all(os.path.exists(os.path.join(OUT, '%s-%d.webp' % (base, w))) for w in rec['widths']):
+        return rec
+    return None
+
+
 def main():
     force = '--force' in sys.argv
     with open(os.path.join(ROOT, 'bin', 'commons-images.json'), encoding='utf-8') as f:
         plan = json.load(f)
-    data = {}
-    if os.path.exists(DATA) and not force:
+    previous = {}
+    if os.path.exists(DATA):
         with open(DATA, encoding='utf-8') as f:
-            data = json.load(f)
+            previous = json.load(f)
+    data = {} if force else previous
     os.makedirs(OUT, exist_ok=True)
-    titles = [item['title'] for items in plan.values() for item in items]
+    for items in plan.values():
+        for item in items:
+            if item.get('source') in STOCK:
+                item['title'] = '%s:%s' % (item['source'], item['id'])
+    titles = [item['title'] for items in plan.values() for item in items if item.get('source') not in STOCK]
     info = {}
     for i in range(0, len(titles), 50):
         info.update(lookup(titles[i:i + 50]))
@@ -132,13 +180,54 @@ def main():
         result[key] = []
         for n, item in enumerate(items, 1):
             base = '%s-%d' % (key, n)
-            old = next((x for x in data.get(key, []) if x.get('file') == base and x.get('title') == item['title']), None)
-            if old and old.get('widths') and all(os.path.exists(os.path.join(OUT, '%s-%d.webp' % (base, w))) for w in old.get('widths', [])):
+            old = on_disk(data, key, base, item['title'])
+            if old:
                 result[key].append(old)
+                continue
+
+            def pending(reason):
+                # A failure that says nothing against the image (no key, a
+                # lookup or download that did not answer) keeps its previous
+                # record, even under --force, so the page does not lose it.
+                failed.append('%s (%s)' % (item['title'], reason))
+                kept = on_disk(previous, key, base, item['title'])
+                if kept:
+                    result[key].append(kept)
+            if item.get('source') in STOCK:
+                got = stock(item)
+                if isinstance(got, str):
+                    pending(got)
+                    continue
+                artist, page_url, image_url = got
+                blob = get(image_url)
+                if blob is None:
+                    pending('download')
+                    continue
+                sizes = save(blob, base)
+                big = sizes[max(sizes)]
+                result[key].append({
+                    'file': base,
+                    'title': item['title'],
+                    'lead': n == 1,
+                    'alt': item['alt'],
+                    'caption': item.get('caption', ''),
+                    'alt_ms': item.get('alt_ms', ''),
+                    'caption_ms': item.get('caption_ms', ''),
+                    'artist': (item.get('artist') or artist)[:120],
+                    'licence': STOCK[item['source']][1],
+                    'licence_url': STOCK[item['source']][2],
+                    'source': page_url,
+                    'widths': sorted(sizes),
+                    'width': big[0],
+                    'height': big[1],
+                })
+                print('ok', base, item['title'], flush=True)
+                write(dict(data, **result))
+                time.sleep(2)
                 continue
             found = info.get(item['title'])
             if not found:
-                failed.append(item['title'] + ' (missing)')
+                pending('missing')
                 continue
             page, ii = found
             meta = ii['extmetadata']
@@ -149,7 +238,7 @@ def main():
                 continue
             blob = get(ii.get('thumburl') or ii['url'])
             if blob is None:
-                failed.append(item['title'] + ' (download)')
+                pending('download')
                 continue
             sizes = save(blob, base)
             big = sizes[max(sizes)]

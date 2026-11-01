@@ -2,25 +2,125 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
-## 1.10.1 (2026-11-01)
+## 1.11.0 (2026-11-01)
 
 - Security: refused XML-RPC requests, forged Jetpack claims and failed logins are now counted with one small atomic row per event and day (`lq_sec_tally()`), folded into `lq_security_counts` once a day by `lq_sec_counts()`, instead of rewriting the thirty-day counts option on every request under attack.
-
-## 1.10.0 (2026-10-27)
-
 - New Security tab (Appearance > Theme Options > Security), ported from the Abrahamic theme 2.87.0 after the October 2026 attack on the sister site abrahamic-religions.com: XML-RPC password guessing from 701 rotating addresses under forged "Jetpack by WordPress.com" user agents, a correct password found, then a casino spam post every 18 to 20 minutes through `wp.newPost` under the owner's own account. Code in `inc/security.php` and `inc/security-detector.php`, loaded on every request; `js/security.js` and `css/security.css` load on the Security tab only.
 - Remote publishing, all on by default (`sec_xmlrpc_off`, `sec_app_passwords_off`, `sec_rest_lock`): XML-RPC answers 403 and is counted per day, not logged per request; on Apache a "Block xmlrpc.php" section (the marker shared by the sister themes) is kept in .htaccess and removed when the switch is off or the site moves to a theme outside the network. Application passwords are off. A REST write by a logged-in user must come from a cookie session with a valid `wp_rest` nonce; the block editor, the media modal and Rank Math pass, and anonymous requests and all reads are unchanged. The theme registers no REST routes, AJAX actions for visitors or front-end forms of its own, so nothing it does is affected. Passwords sent through XML-RPC are refused even when XML-RPC is switched back on, with an admin notice. Failed logins are counted by account name.
 - Spam gate (`sec_spam_gate`): a post or page that reads as gambling spam, or is published from outside the editor (XML-RPC, REST with an application password), is saved as Pending and logged. Pages the theme seeds are exempt: those carrying `_lq_lang`, `_lq_key` or `_lq_seed_hash`, and a page setup is creating whose title and slug are in `lq_page_definitions()`. The gate and the scan look at posts and pages only; the theme has no custom post types.
 - Clean-up: a batch scan (100 at a time) and a trash tool that never deletes permanently; 410 Gone for trashed spam (`sec_gone`); spam categories deleted on request only (the theme seeds no categories); buttons to revoke every application password and log out every session; reports (attacks per day, accounts being guessed, posts per day, burst publishing, guide pages with gambling links) and the security log.
 - Emergency switch: `define( 'LQ_SECURITY_LOCK', false );` in wp-config.php turns the three remote-publishing locks off without changing the settings.
 - `tests/security-detector-test.php` (run `php tests/security-detector-test.php`) scores every article in `content/`, every page title, slug, SEO title and description, every pattern, template and part and the image credits: all score 0, as do religious and historical words such as Bethlehem, Bethel, alphabet, bet and Beth in the Hebrew letters, stake, review, bonus and slot. Every attack sample flags. Brand names match as whole words only.
-- No content or slugs changed; `inc/data/network-links.json` and `inc/data/seed-history.json` are unchanged.
-
-## 1.9.7 (2026-10-27)
-
 - Night Planner (English): new section "A checklist for each night", which hangs the step-by-step plan from Prayer and Worship on the planner's three times (sunset, the last third, dawn). The When Is and FAQ pages already promised that the planner "turns this into a checklist"; the page now carries one. No new facts: every step is taken from the Prayer and Worship page.
 - The Last Ten Nights of Ramadan (English): one sentence in the introduction on counting the last ten days with their nights, each night beginning at sunset before its day (as set out in When Is Laylat al-Qadr?).
-- Both pages were unedited on existing sites if they still match `_lq_seed_hash` or `inc/data/seed-history.json`, so setup refreshes them; the previous versions were already recorded in `inc/data/seed-history.json` (rebuilt with `bin/build-seed-history.php` and merged with the existing hashes; no new entries).
+- Both pages were unedited on existing sites if they still match `_lq_seed_hash` or `inc/data/seed-history.json`, so setup refreshes them; the previous versions were already recorded in `inc/data/seed-history.json` (rebuilt with `bin/build-seed-history.php` and merged with the existing hashes).
+- Merged with 1.9.18: the Last Ten Nights sentence is re-applied to the 1.9.18 text; `inc/data/seed-history.json` rebuilt (union); `tests/security-detector-test.php` defines `LQ_DIR`, which `lq_page_definitions()` now needs to read `inc/data/pages.json`.
+
+## 1.9.18 (2026-10-31)
+
+- Title tags (`inc/seo.php`, `inc/setup.php`): every title tag now reads `<page title, keyword or description> | Lailatulqadar`, in both languages, and stays under 60 characters. The registry's title tags (`inc/data/pages.json`) were shortened to page parts of 43 characters at most (26 of 32 changed), keeping each page's focus keyword; the theme adds " | Lailatulqadar" (`lq_compose_title()`). Posts, search results, archives and the not-found page take the same form, with a long page part cut at a word and an ellipsis. With Rank Math active, setup writes the whole tag into Rank Math's title field. On existing sites setup replaces a stored title tag only when it is one the theme wrote as that page's default earlier (`inc/data/title-history.json`, new, keyed by page and language), empty or too long; an editor's title is kept. The Search appearance box counts the page part against 43, with `[lq_ramadan]` counted as its four-digit year; the Search tab shows each whole title against 59. The title tag the theme prints is now escaped. Shortcodes are expanded only in stored title tags (for `[lq_ramadan]`), never in post titles or search terms, so a visitor's search cannot run a shortcode in the page title.
+- Registry check (`bin/check-content.py`, Content workflow): `inc/data/pages.json` must give every page both language roles with all their fields, unique slugs without a, an or the, title-tag page parts of 43 characters at most and meta descriptions of 130 at most. A malformed registry, which would break setup, menus and the settings screens, now fails before it is merged.
+- Images from Pixabay and Pexels (`inc/images.php`, `bin/fetch-commons-images.py`): beside Wikimedia Commons, the theme accepts Pixabay photos under the Pixabay Content License and Pexels photos under the Pexels License, each only from its own site (`lq_image_sources()`). The credit line names the source (Wikimedia Commons, Pixabay or Pexels) and links the image's page there and its licence terms. The fetch script reads a stock photo through the site's API with a key from the environment (`PIXABAY_API_KEY`, `PEXELS_API_KEY`); keys are never stored in the repository. The images workflow reads them from repository secrets and passes them only to a run started by hand (Actions > Images > Run workflow), never to a run triggered by a pull request, which runs the pull request's own code and could send the keys elsewhere.
+- Four new images, each checked at full size and against the images of the sister themes available (no reuse): The Islamic Dilemma and the Qurʾān as Guardian, which had none, gains an old handwritten Arabic book (Pexels, lead image and featured image) and a Muṣḥaf on a carved rehal (Pexels); Start Here gains reading stands by a mosque window (Pixabay); FAQ gains the Earth at night (Pixabay) beside its question on countries and time zones. Captions and alt text in English and Malay.
+- SSOT.md and `docs/seo.md` record the title rule and the image sources.
+
+## 1.9.17 (2026-10-29)
+
+- Seed data is JSON throughout. The page registry moves out of `lq_page_definitions()` in `inc/helpers.php` into `inc/data/pages.json`, read with `json_decode()` and never executed. The decoded registry is identical to the old array, so nothing on a live site changes.
+- Setup does not run while `inc/data/pages.json` cannot be read: an empty registry would make every guide page look retired, and setup would trash them. The automatic run waits for the next visit, and a run from the Tools tab reports the error, as a warning in place of the "Setup finished" notice, and changes nothing.
+
+## 1.9.16 (2026-10-29)
+
+- Addresses without "a", "an" or "the" (`inc/slugs.php`, new): when WordPress builds an address from a title, on a post's or page's first publish, the words a, an and the are left out ("The Night of Decree" becomes `night-of-decree`). Other small words (is, of, and, dan) stay. A slug an editor types, the slugs setup gives the guide pages and every existing address are left as they are, so no address changes and no redirect is needed. If a title has nothing but those words, its address keeps them. The words come from the filter `lq_slug_stopwords`. Rule recorded in SSOT.md.
+- None of the 30 guide-page addresses contained a, an or the, so none changed.
+- Seed files: all 24 article seeds were already `content/<lang>/<key>.json` and all pass `lq_article_data()`. `bin/check-content.py` (new) applies the same rules (only `<lang>/<key>.json` files, valid JSON of the expected shape, every footnote marker matched to its note), and the Content workflow (`.github/workflows/content.yml`, new) runs it on pull requests that touch `content/`, so a seed setup would skip fails before it is merged. Documented in `docs/content.md`, which also gives the current seed-history command.
+- SSOT.md: the seed-history row describes `bin/build-seed-history.php` as it now works (it adds to the file and never drops a hash); the page registry no longer mentions Malay pages awaiting translation.
+
+## 1.9.15 (2026-10-29)
+
+- The Islamic Dilemma and the Qurʾān as Guardian (`dilemma`, English) names the two parts of the argument "the first claim" and "the second claim", the term the sister sites use. The 1.9.14 text is already in `inc/data/seed-history.json`, so an unedited page takes the new wording on this version change.
+- `FARUQI.md` sets out the Faruqian core, al-tawḥīd as al-Fārūqī set it out in *Al Tawhid: Its Implications for Thought and Life*, which every site in the network rests on. `CLAUDE.md` points contributors to it first.
+
+## 1.9.14 (2026-10-29)
+
+Code review fixes; no content changes.
+
+- Setup lock (`inc/setup.php`): the lock is now a single `INSERT IGNORE` into the options table, as WordPress's upgrader lock is. The transient lock read and then wrote, so two admin requests arriving together could both run setup. A lock older than five minutes is taken over.
+- Word counts on the Tools tab (`lq_word_count()`): counted with Unicode word matching. `str_word_count()` knows only unaccented ASCII letters and split words such as "Ṣaḥīḥ" and "ʿĀʾishah" into fragments.
+- Language detection on a site in a subdirectory (`lq_current_role()`): the base path is removed only at a path boundary, so `/blog` no longer matches `/blogger/...`.
+- Calendar export (`js/night-window.js`): lines longer than 75 octets are folded as RFC 5545 requires, counting UTF-8 octets and never splitting a character.
+- Login screen (`inc/login.php`): accent colours are validated with `sanitize_hex_color()` and fall back to the defaults, as on the front end; the scheme class is passed through `sanitize_html_class()`.
+- Breadcrumbs (`inc/schema.php`): a term link that comes back as `WP_Error` is no longer placed in the trail. `lq_page_key_for_id()` now calls `lq_page_key_of()` instead of duplicating it; an always-true check is gone.
+- Draft links (`inc/draft-links.php`): the fragment is cut with `explode()`; `strtok()` skipped a leading "#" and read an in-page anchor as an address.
+- Parent theme (`inc/parent.php`): `glob()` returning false no longer reaches `foreach`.
+- Tools tab (`inc/settings.php`): "Replace with the shipped version" stops with a message when the page is not a guide page, instead of reporting an empty setup run; the Run setup help no longer says Malay pages await translation; translator comments sit before each string they describe.
+- Search appearance box (`js/meta-box.js`): the live count keeps the translated wording ("12 of 60 characters") instead of replacing it with "12 / 60".
+- `bin/build-seed-history.php`: keeps the hashes already in `inc/data/seed-history.json` and adds the new ones, so a version that left the git history is never dropped; with no argument it uses the theme's own folder. The usage line says to write to a new file, since redirecting onto the file truncates it before it is read.
+- `bin/fetch-commons-images.py`: a 400, 404 or 410 is not retried (eight retries with growing waits held a permanent error for about nine minutes); the User-Agent carries the theme version from `style.css`; files are opened with `with`.
+- Images workflow: skipped for pull requests from forks, which it can neither check out nor push to.
+- Docblocks and alignment: `lq_menu_items()` documents `$upcoming`; the hreflang, block registration, editor script and content-filter comments describe what the code does; aligned assignments in the settings defaults, image data, SEO plugin map and guide menu.
+
+## 1.9.13 (2026-10-29)
+
+- Malay pages: 43 Arabic passages, Qurʾānic text among them, restored to the exact code points of the source text used on the English pages. The Malay build had applied Unicode NFC normalisation, which reorders shadda and vowel marks, merges alif with combining madda into U+0622 and turned non-breaking spaces before verse numbers into ordinary spaces. The text looked the same but no longer matched the KFGQPC orthography its notes cite.
+- Prayer and Worship: the Arabic of ʿĀʾishah's report on the eleven units (al-Bukhārī 1147) now runs to "then he would pray three", matching the translation beneath it (English and Malay).
+- Signs and Start Here: the summaries no longer say that most signs appear after the night; the clearest sign, the sun, is seen the next morning, while the moon and the rain were recognised during the night or at its end.
+- Hadith and Sources: table captions give both verification dates, 26 and 28 October 2026.
+- `inc/data/seed-history.json`: hashes of the 1.9.12 articles added.
+
+## 1.9.12 (2026-10-29)
+
+- Article length: every article is now between 1,600 and 2,500 words of body text in English and in Malay (footnotes not counted). The Night Planner and Hadith and Sources are exempt; What Is and Prayer and Worship stay at their current length. Rule recorded in SSOT.md.
+- New material, all read on shamela.ws (English and Malay):
+  - Start Here: "The night at a glance" (table), "Preparing before the last ten" (table), "If you cannot keep every night" (al-Bukhārī 2996), and four questions: why the date is unknown (al-Bukhārī 2023), whether Arabic is needed, the 15th of Shaʿbān, and starting late (al-Bukhārī 2015).
+  - The Last Ten Nights: "All of the night, or most of it?" and "Waking the household" (Ibn Rajab; al-Tirmidhī 795 and al-Bukhārī 1127, both verified); Ibn Rajab on forgiveness at the end of the month, with the Musnad report given as his citation only.
+  - Duʿāʾ: "Pardon and the forgiveness of sins" (Ibn Rajab on minor and major sins, Ibn al-Mundhir, repentance; his reflection on Sūrat Yūsuf 12:88 and 12:92).
+  - Signs: Ibn Rajab's two statements on the calm of the night (Ubayy without a chain; Anas with a chain he calls weak), and a table row for the stars-and-dogs report. Hadith and Sources updated to match.
+  - When: Ibn Kathīr on whether the night is fixed or moves.
+- `inc/data/seed-history.json`: hashes of the 1.9.11 articles added.
+
+## 1.9.11 (2026-10-28)
+
+- Every shamela.ws link with an Arabic page title is followed by a translation of that title in parentheses: English on English pages, Malay on Malay pages (volume, page, book and edition, chapter). 288 links across all articles; the rule is recorded in SSOT.md.
+- New material from Ibn Kathīr's *Tafsīr al-Qurʾān al-ʿAẓīm* (ed. al-Salāmah, vol. 8, pp. 441–450), read on shamela.ws (English and Malay):
+  - Surah al-Qadr, verse 3: what "better than a thousand months" measures (Mujāhid, Qatādah, al-Shāfiʿī; Ibn Jarīr's choice, which Ibn Kathīr calls correct); the story of the Israelite warrior, given as Mujāhid's unattributed report; the report that the thousand months are the Umayyad reign (al-Tirmidhī 3350, verified on shamela.ws), with al-Tirmidhī's, al-Albānī's, al-Mizzī's and Ibn Kathīr's judgements.
+  - Surah al-Qadr, verse 4: Ibn Kathīr's two explanations of the Spirit (Jibrīl, or a distinct kind of angel), replacing the statement that no other reading was needed.
+  - Surah al-Qadr, new question: the word "hiya" as the 27th word.
+  - What Is, new question: whether earlier communities had the night (Ibn Kathīr's two views).
+  - What Is: the four Ibn Kathīr notes that cited the abridged English edition now also link the Arabic pages.
+  - Hadith and Sources: held-back reports traced through Ibn Kathīr (angels outnumbering the pebbles; the mild night and weak sun; no star thrown), each still marked as not yet verified in its collection; the Umayyad report added as weak; Ibn Kathīr added to "Commentaries consulted".
+  - Signs: the mild-night sign traced to its reports, still unverified.
+- `inc/data/seed-history.json`: hashes of the 1.9.10 articles added.
+
+## 1.9.10 (2026-10-28)
+
+- Hadith and Sources (English and Malay): the hadith tables now cover every report in the Laylat al-Qadr chapters of Ṣaḥīḥ al-Bukhārī (nos. 2014–2024) and Ṣaḥīḥ Muslim (nos. 1165–1170). Six rows were added, each with a footnote linking the shamela.ws page where it was checked and the sunnah.com entry: al-Bukhārī 2018 (Abū Saʿīd: the move to the last ten and the rain on the 21st night), 2019 (ʿĀʾishah: “Seek it”, the shortened chain of no. 2017) and 2022 (Ibn ʿAbbās: “when nine have passed or seven remain”, with his “seek it on the twenty-fourth”); Muslim 1165 (Ibn ʿUmar: the Companions' dreams agreeing on the last seven), 1167 (Abū Saʿīd, as al-Bukhārī 2018) and 1169 (ʿĀʾishah: seek it in the last ten).
+- `inc/data/seed-history.json`: hashes of the 1.9.9 articles added.
+
+## 1.9.9 (2026-10-28)
+
+- Citations: all 52 hadith numbers the guide cites (al-Bukhari, Muslim, al-Tirmidhi, Abu Dawud, Ibn Majah, al-Nasa'i) were located on shamela.ws at the cited number and the key wording checked. Footnotes that cited only sunnah.com now also link the shamela.ws page. Link text is the linked page's title instead of a bare address (shamela.ws: the Arabic page title; sunnah.com: collection and number; Quran.com API and Britannica named). English and Malay.
+- New material from three commentaries read on shamela.ws (English and Malay):
+  - When Is Laylat al-Qadr?: "What the scholars concluded about the date": Ibn Hajar's survey of more than forty positions, five of them in a table, and his conclusion (an odd night of the last ten that moves; the 21st or 23rd for the Shafi'is, the 27th for the majority); al-Nawawi on the agreement that the night continues, and al-Qadi 'Iyad on what "taken up" means; Zayd ibn Thabit and the 17th night, with Ahmad's remark, from Ibn Rajab.
+  - Prayer and Worship: "How the early generations kept these nights" from Ibn Rajab (bathing, perfume and best clothes on the hoped-for nights; Sufyan al-Thawri on supplication; Sa'id ibn al-Musayyib and al-Shafi'i on 'Isha' and Fajr in congregation; striving by day as well).
+  - Signs: al-Qadi 'Iyad's two explanations of the sun without rays; "Signs, wonders and steadfastness" (Ibn Hajar, al-Tabari, Ibn al-Munayyir). The sea-water report is traced (Ibn Rajab, through Abu al-Shaykh): an observation of the 17th night by a servant of 'Uthman ibn Abi al-'As, not a saying of the Prophet.
+  - Du'a: Ibn Rajab on why pardon is asked for at the end of the effort.
+  - Hadith and Sources: "Commentaries consulted"; the sea-water row updated.
+- Correction: pages that said recognising the night is no condition of its reward (FAQ, What Is, Signs, Prayer and Worship, Sources) now give both scholarly views as Ibn Hajar records them: al-Tabari and others held that the reward is gained without anything being made known; most scholars, reading Muslim's "and he coincides with it", held that the promised reward is for one to whom the night is made known, without denying reward to every sincere seeker.
+- "Tightening the waist-wrapper" (What Is, Last Ten Nights) now gives both explanations, with Ibn Rajab's preference for withdrawing from his wives.
+- What Is: Malik's report without a chain (balagh) on the shorter lives of this community, via Ibn Rajab.
+- Malay Night Planner: the two Commons photos, as on the English page.
+- `inc/data/seed-history.json`: hashes of the 1.9.8 and link-title versions added, so unedited pages take the new text.
+
+## 1.9.8 (2026-10-28)
+
+- Malay translations of all eleven articles in `content/ms/`: Mula di Sini, Apa Itu Lailatulqadar?, Surah al-Qadr, Bilakah Lailatulqadar?, Sepuluh Malam Terakhir Ramadan, Tanda-Tanda Lailatulqadar, Amalan Malam Lailatulqadar, Doa Lailatulqadar, Soalan Lazim, Hadis dan Sumber Rujukan, and Dilema Islam dan al-Quran sebagai Pengawas (until now a Malay draft). With the existing Perancang Malam, every Malay guide page now ships an article, so setup seeds and publishes them all beneath /ms/ on the next admin visit and the Malay reading path has no "Akan datang" entries left. Each article keeps the block structure, Arabic text, footnotes, internal `{{url:key}}` links and `[lq_ramadan]` shortcodes of its English original; footnote IDs are new. Spelling and grammar follow Pedoman Umum Ejaan Bahasa Melayu and Tatabahasa Dewan (rules recorded in SSOT.md, Editorial decisions). Links to sister sites, which are in English, are marked as such.
+- Commons images on Malay pages: `inc/data/images.json` and `bin/commons-images.json` carry `alt_ms` and `caption_ms`, which `lq_image_figure()` uses on Malay pages (falling back to English); the credit label reads "Imej". `bin/fetch-commons-images.py` passes the two fields through. The image credits list on Hadis dan Sumber Rujukan uses Malay page titles and alt text.
+- `inc/data/contextual-links-ms.json`: "dilema Islam" links to the Malay Islamic dilemma page.
+
+## 1.9.7 (2026-10-28)
+
+- Upgrade fix (`inc/setup.php`): pages seeded by 1.9.0, before `_lq_seed_hash` existed, were reported as "Edited, not updated" although nobody had changed them, so they stayed drafts ("Coming soon" in the reading path) and never took newer content. When 1.9.0 seeded a page, links to guide pages that were still drafts were written as WordPress's draft address, `/?page_id=N`, which the comparison with `inc/data/seed-history.json` did not recognise. `lq_article_link_urls()` now also returns that address, so `lq_unresolve_article_links()` turns it back into `{{url:key}}` and those pages match their shipped version. Seen on a 1.9.0 site upgraded to 1.9.6: The Last Ten Nights of Ramadan, Signs of Laylat al-Qadr and Laylat al-Qadr Duʿāʾ. Setup reruns on the version change, so affected sites are corrected on the next admin visit.
 
 ## 1.9.6 (2026-10-26)
 

@@ -164,8 +164,8 @@ function lq_sanitize_settings( $input ) {
 			case 'verify_google':
 			case 'verify_bing':
 				// Accept the bare code or the whole meta tag pasted from the tool.
-				if ( preg_match( '/content=["\']([^"\']+)["\']/', (string) $value, $lq_m ) ) {
-					$value = $lq_m[1];
+				if ( preg_match( '/content=["\']([^"\']+)["\']/', (string) $value, $m ) ) {
+					$value = $m[1];
 				}
 				$value = preg_replace( '/[^A-Za-z0-9_\-]/', '', (string) $value );
 				break;
@@ -512,7 +512,7 @@ function lq_render_links_tab() {
 }
 
 /**
- * Images tab: Commons images and the featured-image switch.
+ * Images tab: the guide's images and the featured-image switch.
  */
 function lq_render_images_tab() {
 	$count = 0;
@@ -521,8 +521,8 @@ function lq_render_images_tab() {
 	}
 	?>
 	<section class="lq-section">
-		<h2><?php esc_html_e( 'Wikimedia Commons images', 'lailatulqadar' ); ?></h2>
-		<p class="lq-help"><?php esc_html_e( 'The guide pages carry freely licensed images from Wikimedia Commons (public domain, CC0, CC BY or CC BY-SA). Each is shown with its author, its licence linked to the licence deed, and a link to its file page, as the licences require. The images and their credits ship with the theme in images/commons/ and inc/data/images.json; bin/fetch-commons-images.py checks each licence against Commons and rebuilds both.', 'lailatulqadar' ); ?></p>
+		<h2><?php esc_html_e( 'Images', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help"><?php esc_html_e( 'The guide pages carry freely licensed images from Wikimedia Commons (public domain, CC0, CC BY or CC BY-SA), Pixabay and Pexels (each under its own licence). Each is shown with its author, its licence linked to the licence deed or terms, and a link to its page on its source. The images and their credits ship with the theme in images/commons/ and inc/data/images.json; bin/fetch-commons-images.py checks each licence against its source and rebuilds both.', 'lailatulqadar' ); ?></p>
 		<p class="lq-callout"><?php echo esc_html( sprintf( /* translators: %d: number of images. */ _n( '%d image is listed.', '%d images are listed.', $count, 'lailatulqadar' ), $count ) ); ?></p>
 		<div class="lq-field lq-field--check">
 			<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'commons_featured' ) ); ?>" value="0">
@@ -754,7 +754,7 @@ function lq_render_search_tab() {
 				echo esc_html(
 					sprintf(
 						/* translators: 1: title limit, 2: description limit */
-						__( 'Limits: %1$d characters for title tags, %2$d for meta descriptions. Edit each value in the Search appearance box on the page.', 'lailatulqadar' ),
+						__( 'Title tags read “title | Lailatulqadar” and run to %1$d characters at most, the site name included; meta descriptions to %2$d. Edit each value in the Search appearance box on the page.', 'lailatulqadar' ),
 						LQ_TITLE_LIMIT,
 						LQ_META_LIMIT
 					)
@@ -783,7 +783,7 @@ function lq_render_search_tab() {
 						?>
 						<tr>
 							<th scope="row"><a href="<?php echo esc_url( get_edit_post_link( $id ) ); ?>"><?php echo esc_html( get_the_title( $id ) ); ?></a></th>
-							<td><?php lq_render_seo_cell( $title, LQ_TITLE_LIMIT ); ?></td>
+							<td><?php lq_render_seo_cell( '' === $title ? '' : lq_compose_title( $title, false ), LQ_TITLE_LIMIT ); ?></td>
 							<td><?php lq_render_seo_cell( $desc, LQ_META_LIMIT ); ?></td>
 						</tr>
 					<?php endforeach; ?>
@@ -939,7 +939,7 @@ function lq_render_tools_tab() {
 
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Run setup', 'lailatulqadar' ); ?></h2>
-		<p class="lq-help"><?php esc_html_e( 'Setup runs by itself on the first admin visit after the theme is activated or updated; this button runs it again. It creates any missing guide pages in both languages, places the Malay pages beneath the Malay home at /ms/, pairs each page with its translation and sets the front page. Every page whose article ships with the theme is filled and published; pages with no article yet (About, Contact, Malay pages awaiting translation) stay drafts. When the theme ships a new version of an article, a page nobody has edited takes it (WordPress keeps the old text as a revision); a page an editor has changed is never overwritten and is listed under "Edited, not updated". Obsolete copies of guide pages left by earlier setups go to the trash; pages the theme did not create are never touched. Featured images an editor chose are kept. Empty title tags and meta descriptions are filled from the keyword plan.', 'lailatulqadar' ); ?></p>
+		<p class="lq-help"><?php esc_html_e( 'Setup runs by itself on the first admin visit after the theme is activated or updated; this button runs it again. It creates any missing guide pages in both languages, places the Malay pages beneath the Malay home at /ms/, pairs each page with its translation and sets the front page. Every page whose article ships with the theme is filled and published; pages with no article (About and Contact) stay drafts. When the theme ships a new version of an article, a page nobody has edited takes it (WordPress keeps the old text as a revision); a page an editor has changed is never overwritten and is listed under "Edited, not updated". Obsolete copies of guide pages left by earlier setups go to the trash; pages the theme did not create are never touched. Featured images an editor chose are kept. Empty title tags and meta descriptions are filled from the keyword plan.', 'lailatulqadar' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="lq_run_setup">
 			<?php wp_nonce_field( 'lq_run_setup' ); ?>
@@ -966,6 +966,17 @@ function lq_render_notices() {
 	$report = get_transient( 'lailatulqadar_setup_report' );
 	if ( $report ) {
 		delete_transient( 'lailatulqadar_setup_report' );
+		if ( ! empty( $report['stopped'] ) ) {
+			// Setup refused to run: say so, never "Setup finished".
+			echo '<div class="lq-callout lq-callout--warn">';
+			foreach ( $report['errors'] as $error ) {
+				echo '<p>' . esc_html( $error ) . '</p>';
+			}
+			echo '</div>';
+			$report = null;
+		}
+	}
+	if ( $report ) {
 		$created = count( $report['created'] );
 		echo '<div class="lq-callout lq-callout--ok"><p>';
 		echo esc_html(
@@ -979,16 +990,21 @@ function lq_render_notices() {
 		);
 		echo '</p>';
 		$lists = array(
+			/* translators: %s: list of page titles */
 			'seeded'    => __( 'Filled with the shipped article: %s.', 'lailatulqadar' ),
+			/* translators: %s: list of page titles */
 			'published' => __( 'Published: %s.', 'lailatulqadar' ),
+			/* translators: %s: list of page titles */
 			'refreshed' => __( 'Updated to the new shipped version (the old text is kept as a revision): %s.', 'lailatulqadar' ),
+			/* translators: %s: list of page titles */
 			'edited'    => __( 'Edited by an editor, so not updated: %s.', 'lailatulqadar' ),
+			/* translators: %s: list of page titles */
 			'trashed'   => __( 'Obsolete copies moved to the trash: %s.', 'lailatulqadar' ),
+			/* translators: %s: list of page titles */
 			'kept'      => __( 'Older copies kept because they have been edited: %s.', 'lailatulqadar' ),
 		);
 		foreach ( $lists as $list => $message ) {
 			if ( ! empty( $report[ $list ] ) ) {
-				/* translators: %s: list of page titles */
 				echo '<p>' . esc_html( sprintf( $message, implode( ', ', $report[ $list ] ) ) ) . '</p>';
 			}
 		}
@@ -1056,12 +1072,17 @@ function lq_handle_replace_shipped() {
 		'kept'      => array(),
 		'errors'    => array(),
 	);
+	$found = false;
 	foreach ( lq_page_map() as $role => $ids ) {
 		$key = array_search( $id, array_map( 'intval', (array) $ids ), true );
 		if ( $id && false !== $key ) {
 			lq_seed_content( $id, (string) $key, (string) $role, $report, true );
+			$found = true;
 			break;
 		}
+	}
+	if ( ! $found ) {
+		wp_die( esc_html__( 'That page is not one of the guide pages, so there is no shipped version to replace it with.', 'lailatulqadar' ) );
 	}
 	set_transient( 'lailatulqadar_setup_report', $report, MINUTE_IN_SECONDS * 10 );
 	wp_safe_redirect( admin_url( 'themes.php?page=lailatulqadar&tab=tools' ) );

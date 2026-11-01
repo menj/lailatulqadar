@@ -1,6 +1,8 @@
 /**
- * Lailatulqadar editor registration for the two dynamic blocks.
- * Both render on the server; the editor shows a live server render.
+ * Lailatulqadar editor registration for the theme's dynamic blocks.
+ * They render on the server; the editor shows a live server render or,
+ * where that would mislead (scheme toggle, breadcrumbs, night window), a
+ * placeholder.
  */
 ( function ( wp ) {
 	'use strict';

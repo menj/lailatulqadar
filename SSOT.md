@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.10.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.11.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -18,6 +18,7 @@ Version 1.10.0. This file records the architecture, stored data and binding deci
 
 - English display form: **Laylat al-Qadr**. Malay display form: **Lailatulqadar**, capitalised in all positions (Pedoman Umum Ejaan Bahasa Melayu, huruf besar, rule 8).
 - Malay page titles capitalise every word except particles such as *di* and *dan*, and both halves of a reduplicated word (rules 11 and 12).
+- Malay copy follows Pedoman Umum Ejaan Bahasa Melayu and Tatabahasa Dewan (3rd ed.). Fixed forms: *Surah al-Qadr* (never *Sūrat*), *al-Quran* (*Al-Quran* only at the start of a sentence), *Rasulullah SAW*, pronouns for Allah capitalised and hyphenated (*-Nya*, *-Mu*, *Engkau*), names without diacritics in running text (Abu Hurairah, Aisyah, Ibnu Abbas, at-Tirmizi). Titles of works in footnotes keep the transliteration of the English notes; "VERIFIED" is *Disahkan*, NOT_FOUND is *TIDAK DITEMUI*.
 - Spelling variants belong in schema `alternateName` and the FAQ, never rotated through body copy. Exception adopted in 1.1.0 on the keyword evidence ("laylatul qadr" 4,400 US searches a month against 1,300 for "laylat al qadr"): the home and Duʿāʾ title tags carry "(Laylatul Qadr)", and the English front-page introduction names that spelling once.
 - Audience: mixed. English at the site root, Malay under `/ms/`.
 - Arabic terms carry transliteration and translation on first use.
@@ -46,9 +47,11 @@ Version 1.10.0. This file records the architecture, stored data and binding deci
 | `inc/seo.php` | Title tag, meta description, editor box, SEO plugin detection |
 | `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and the sister sites |
 | `inc/data/network-links.json` | Shared phrase map of the seven-site network; identical in every theme, edit it in all seven together |
+| `inc/data/pages.json` | The page registry: per page key, the menu sets and, for each language role, title, slug, menu label, title tag, meta description and focus keyword. The order of the keys is the reading order. Data only, read with `json_decode()` |
 | `inc/data/contextual-links-ms.json` | Malay phrases for the Malay guide pages, keyed by page key |
 | `inc/setup.php` | Setup on activation, on update and on demand: page creation, publishing of shipped articles, content refresh, trashing of obsolete copies, draft renaming, SEO prefill |
-| `inc/data/seed-history.json` | md5 of every version of each article shipped in earlier releases (rebuilt from the git history of `content/`), so a page seeded before `_lq_seed_hash` existed is recognised as unedited. Data only, read with `json_decode()`. Add the old version's md5 here whenever an article changes |
+| `inc/slugs.php` | Addresses WordPress builds from a title leave out the words a, an and the |
+| `inc/data/seed-history.json` | md5 of every version of each article shipped in earlier releases, so a page seeded before `_lq_seed_hash` existed is recognised as unedited. Data only, read with `json_decode()`. Whenever an article changes, run `php bin/build-seed-history.php > inc/data/seed-history.json.new` and move the new file into place: the script adds the versions in the git history of `content/` to the hashes already in the file and never drops one |
 | `inc/settings.php` | Tabbed settings screen and Tools handlers (admin only) |
 | `blocks/guide-menu/` | Header links, numbered reading path, footer |
 | `blocks/language-switcher/` | Link to the same page in the other language |
@@ -81,8 +84,9 @@ Version 1.10.0. This file records the architecture, stored data and binding deci
 | `inc/data/images.json` | Credits for every Commons image, keyed by page key (file, Commons title, alt, caption, author, licence, licence deed, file page, widths, size). Data only, read with `json_decode()` |
 | `images/commons/` | The Commons images as WebP, `<key>-<n>-<width>.webp` at 640 and 1200 pixels (smaller originals are never enlarged), each under 200 KB |
 | `blocks/photo/` | Commons image block (`lailatulqadar/photo`, attributes `key` and `n`): one image of a page with caption and credit |
-| `blocks/image-credits/` | Lists every Commons image with author, licence and source (on the Sources page) |
-| `bin/fetch-commons-images.py`, `bin/commons-images.json` | Chosen Commons files per page, and the script that checks each licence through the Commons API and writes the WebP files and `inc/data/images.json` |
+| `blocks/image-credits/` | Lists every image with author, licence and source (on the Sources page) |
+| `bin/check-content.py`, `.github/workflows/content.yml` | Checks that `content/` holds only `<lang>/<key>.json` seeds in the shape `lq_article_data()` accepts, with every footnote marker matched to its note, and that `inc/data/pages.json` gives every page both roles with all their fields, unique slugs without a, an or the, title-tag page parts of 43 characters at most and meta descriptions of 130 at most; runs on pull requests that touch `content/` or `inc/data/pages.json` |
+| `bin/fetch-commons-images.py`, `bin/commons-images.json` | Chosen images per page (Commons files by title; Pixabay and Pexels photos by source and id), and the script that reads each licence through the source's API and writes the WebP files and `inc/data/images.json`. Pixabay and Pexels need `PIXABAY_API_KEY` and `PEXELS_API_KEY` in the environment (repository secrets, which the images workflow passes only to a run started by hand, never to a pull_request run, since a pull request runs its own code); keys never go into the repository |
 
 ## Stored data
 
@@ -94,7 +98,7 @@ Version 1.10.0. This file records the architecture, stored data and binding deci
 | `lailatulqadar_needs_setup` | Set on activation, cleared once setup has run on an admin visit. Setup also runs when `lailatulqadar_setup_version` differs from `LQ_VERSION` |
 | Transient `lailatulqadar_setup_lock` | Held while setup runs (five minutes at most), so two requests never run it at once |
 | Transient `lailatulqadar_setup_report` | Result of the last setup run, shown once |
-| Post meta `_lq_seo_title`, `_lq_meta_description` | Per-page title tag and meta description |
+| Post meta `_lq_seo_title`, `_lq_meta_description` | Per-page title tag (the page part; the theme adds " \| Lailatulqadar") and meta description |
 | `lailatulqadar_settings['commons_featured']` | `1` or `0`: setup sets each page's lead Commons image as its featured image |
 | `lailatulqadar_commons_media` | Attachment IDs of the Commons images copied into the media library, keyed by image file base, so English and Malay pages share one attachment |
 | Post meta `_lq_lang`, `_lq_key` | Language and page key of a page setup created or adopted; the theme's ownership marker. Only pages carrying `_lq_lang` are ever trashed as obsolete copies |
@@ -107,7 +111,11 @@ Version 1.10.0. This file records the architecture, stored data and binding deci
 
 ## Page registry
 
-Keys, in reading order: `home`, `start`, `what`, `surah`, `when`, `last10`, `signs`, `worship`, `dua`, `planner`, `faq`, `sources`, `dilemma`, `about`, `sitemap`, `contact`. Titles, slugs, menu labels, title tags, meta descriptions, focus keywords and menu membership live in `lq_page_definitions()` in `inc/helpers.php`. Setup runs on the first admin visit (manage_options) after activation or a version change, never on a front-end request. It publishes the home and sitemap pages in both languages and every page whose article ships in `content/<lang>/<key>.json`; a page with no shipped article (About, Contact, a Malay page awaiting translation) stays a draft. When a shipped article changes, a page whose content and footnotes still match `_lq_seed_hash` (or, before the hash, an earlier shipped version in `inc/data/seed-history.json`) is replaced through `wp_update_post()`, which keeps a revision, and keeps its status; an edited page is never overwritten and is listed on the Tools tab with a button to replace it. Copies of guide pages the theme created (carrying `_lq_lang`) that the registry no longer points to go to the trash when they hold no text or only text the theme wrote; edited copies are kept and reported; pages without the marker are never touched. Menus list published pages only; the reading path also shows unpublished pages as "Coming soon". Malay pages sit beneath the Malay home at /ms/. Keyword targets per page: docs/seo.md.
+Keys, in reading order: `home`, `start`, `what`, `surah`, `when`, `last10`, `signs`, `worship`, `dua`, `planner`, `faq`, `sources`, `dilemma`, `about`, `sitemap`, `contact`. Titles, slugs, menu labels, title tags, meta descriptions, focus keywords and menu membership live in `inc/data/pages.json` (data only, read with `json_decode()` by `lq_page_definitions()` in `inc/helpers.php`); setup does not run while that file cannot be read, since every guide page would otherwise look retired. Setup runs on the first admin visit (manage_options) after activation or a version change, never on a front-end request. It publishes the home and sitemap pages in both languages and every page whose article ships in `content/<lang>/<key>.json`; a page with no shipped article (About, Contact) stays a draft. When a shipped article changes, a page whose content and footnotes still match `_lq_seed_hash` (or, before the hash, an earlier shipped version in `inc/data/seed-history.json`) is replaced through `wp_update_post()`, which keeps a revision, and keeps its status; an edited page is never overwritten and is listed on the Tools tab with a button to replace it. Copies of guide pages the theme created (carrying `_lq_lang`) that the registry no longer points to go to the trash when they hold no text or only text the theme wrote; edited copies are kept and reported; pages without the marker are never touched. Menus list published pages only; the reading path also shows unpublished pages as "Coming soon". Malay pages sit beneath the Malay home at /ms/. Keyword targets per page: docs/seo.md.
+
+Title tags always read `<page title, keyword or description> | Lailatulqadar` in both languages and stay under 60 characters with the site name (`LQ_TITLE_LIMIT` 59, `LQ_TITLE_SITE`, `LQ_TITLE_SEP` in `inc/seo.php`). The registry's `seo` value and the `_lq_seo_title` meta hold the page part, 43 characters at most with `[lq_ramadan]` counted as its year; the theme composes the whole tag (`lq_compose_title()`) and gives every other view the same form, cutting a long page part at a word. With Rank Math active, setup writes the whole tag into `rank_math_title`. Setup replaces a stored title tag only when it is empty, too long, or one the theme wrote as that page's default in an earlier release (`inc/data/title-history.json`, keyed by page and language); an editor's title is never replaced unless it runs over the limit.
+
+Addresses (slugs) never contain the words a, an or the; other small words (is, of, and, dan, di, itu) stay where the wording needs them. Existing addresses are not changed to meet this rule, so no redirects are needed. `inc/slugs.php` enforces it for addresses WordPress builds from a title (new posts and pages on first publish); a slug an editor types, a guide page's registry slug and any existing address are left as they are.
 
 ## Colour system
 
@@ -132,8 +140,10 @@ Breakpoints: phones to 600px, tablets 601 to 1024px, desktop above. Type is flui
 
 ## Images
 
-- Only Wikimedia Commons files under public domain, CC0, CC BY or CC BY-SA; `lq_images_data()` drops any other licence, and `bin/fetch-commons-images.py` refuses it, and any file tagged as a copyright violation or for deletion, after reading the file's own licence from the Commons API.
-- Every image shows its author, its licence linked to the deed, and a link to its file page on Wikimedia Commons, beneath the image (`lq_image_credit_html()`), and again in the credits list on the Sources page.
+- Three sources, each with its own licences (`lq_image_sources()`): Wikimedia Commons files under public domain, CC0, CC BY or CC BY-SA; Pixabay photos under the Pixabay Content License; Pexels photos under the Pexels License. `lq_images_data()` drops an image whose page address and licence do not belong to one source. `bin/fetch-commons-images.py` reads each licence from the source's API and refuses a Commons file tagged as a copyright violation or for deletion.
+- Every image shows its author, its licence linked to the deed or terms, and a link to its page on its source, beneath the image (`lq_image_credit_html()`), and again in the credits list on the Sources page. Pixabay and Pexels ask for no credit; the guide gives it anyway.
+- Stock photos (Pixabay, Pexels) are checked at full size before use: any Arabic shown must be real, legible and correctly identified in the caption, and a caption says only what the image shows. Staged props and generated-looking images are refused.
+- The folder `images/commons/`, the script and plan names and the `commons_featured` setting keep their first names for all three sources.
 - No depiction of the Prophet ﷺ or any prophet, nothing sectarian or polemical. Subjects: night skies, the crescent, mosques at night, prayer and iʿtikāf shown respectfully (from behind or at a distance where possible), Qurʾān manuscripts, lanterns, dawn.
 - No file used by a sister theme of the network (checked by file name, by author and subject, and by SHA-256).
 - Articles place images with `<!-- wp:lailatulqadar/photo {"key":"<key>","n":<n>} /-->`; image 1 is the lead, placed after the In brief box, eager and `fetchpriority="high"`; later images are lazy. Each carries `width`, `height`, `srcset` and `sizes`.
@@ -150,7 +160,7 @@ Breakpoints: phones to 600px, tablets 601 to 1024px, desktop above. Type is flui
 | Fallback only | Noto Naskh Arabic | Behind Arslan | Downloads only if Arslan lacks a glyph |
 | Interface | System sans-serif | Menus, footer, captions | |
 
-Article rules: at least 1,200 words; an In brief box, tables and at least one illustration; titles of works appear only in footnotes; every hadith VERIFIED on sunnah.com (and shamela.ws) before inclusion, NOT_FOUND items held back. Where gradings differ, al-Albānī's takes precedence; other gradings, such as Dār al-Salām's, are shown beside it.
+Article rules: 1,600 to 2,500 words of body text in each language (footnotes not counted); the Night Planner (a tool page) and Hadith and Sources (a reference page) are exempt, and What Is and Prayer and Worship, which are longer, are kept at their length by the owner's decision; an In brief box, tables and at least one illustration; titles of works appear only in footnotes; every hadith VERIFIED on shamela.ws (and sunnah.com) before inclusion, NOT_FOUND items held back. Links to sources use the linked page's title as their text, never a bare address: a shamela.ws page shows its Arabic title (volume, page, book and chapter, without "المكتبة الشاملة"), with `lang="ar" dir="rtl"`, followed outside the link by a translation of that title in parentheses, in the page's language (English pages in English, Malay pages in Malay); a sunnah.com link shows the collection and number that open its title ("Sahih al-Bukhari 2014"). Classical commentaries (Ibn Ḥajar, al-Nawawī, Ibn Rajab, Ibn Kathīr) are cited as their authors' views, read on shamela.ws ("Read on …"); reports they mention are not presented as verified hadith, and practices of the early generations are labelled as theirs, not as sayings of the Prophet ﷺ. Arabic text is copied code point for code point from its source and never Unicode-normalised (NFC reorders marks and merges alif with madda, which breaks the KFGQPC orthography); a Malay page carries the same Arabic as its English page. Where gradings differ, al-Albānī's takes precedence; other gradings, such as Dār al-Salām's, are shown beside it.
 
 Binding rules: Qurʾānic text is always taken verbatim from a verified source and set in the KFGQPC face; it is never retyped, and no other typeface may render it. Hadith and other Arabic never use the KFGQPC face, so the two are always visually distinct. Rejected owner-supplied fonts: Sabon Next LT (Monotype desktop licence does not cover web embedding; lacks ḥ, ṭ, ḍ, ẓ, ʿ, ʾ), Dubidam Arabic (free for personal use only), Special Elite (typewriter display face; lacks the dot-below letters and ʿ ʾ).
 
@@ -172,7 +182,7 @@ General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Ima
 | 1.7.x | Remaining English articles, then Malay translations |
 | 1.8.0 | Parent-theme compatibility with Twenty Twenty-Five 1.5 (done) |
 | 1.9.0 | Built-in English and Malay; Polylang removed (done) |
-| 1.9.x | Malay translations of the articles |
+| 1.9.8 | Malay translations of the articles (done) |
 | 1.10.0 | Duʿāʾ, evidence and Qurʾān verse blocks, glossary; November to mid-December 2026 |
 | 1.11.0 | Performance pass and pre-season SEO review; by 15 January 2027 |
 

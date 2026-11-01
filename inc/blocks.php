@@ -1,6 +1,8 @@
 <?php
 /**
- * Dynamic theme blocks: guide menu and language switcher.
+ * Dynamic theme blocks (guide menu, night window, odd nights, breadcrumbs,
+ * scheme toggle, logo mark, language switcher, photo and image credits) and
+ * the Arabic paragraph styles.
  *
  * @package Lailatulqadar
  */
@@ -8,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Register the editor script and the two dynamic blocks.
+ * Register the editor script, the night window assets and the dynamic blocks.
  */
 function lq_register_blocks() {
 	wp_register_script(

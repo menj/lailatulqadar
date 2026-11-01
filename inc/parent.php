@@ -54,7 +54,7 @@ function lq_hide_parent_variations( $response, $server, $request ) {
 	$dir   = get_stylesheet_directory() . '/styles';
 	if ( is_dir( $dir ) ) {
 		$titles = array();
-		foreach ( glob( $dir . '/*.json' ) as $file ) {
+		foreach ( glob( $dir . '/*.json' ) ?: array() as $file ) {
 			$data = wp_json_file_decode( $file, array( 'associative' => true ) );
 			if ( is_array( $data ) ) {
 				$titles[] = isset( $data['title'] ) ? $data['title'] : basename( $file, '.json' );

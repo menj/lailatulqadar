@@ -64,7 +64,9 @@ function lq_unlink_unpublished_pages( $content ) {
 	$out = preg_replace_callback(
 		'#<a\s[^>]*\bhref=(["\'])([^"\']*)\1[^>]*>(.*?)</a>#is',
 		static function ( $m ) use ( $urls ) {
-			$href = untrailingslashit( html_entity_decode( strtok( $m[2], '#' ), ENT_QUOTES, 'UTF-8' ) );
+			// The address without its fragment; strtok() would skip a leading
+			// "#" and read an in-page anchor as an address.
+			$href = untrailingslashit( html_entity_decode( explode( '#', $m[2], 2 )[0], ENT_QUOTES, 'UTF-8' ) );
 			return isset( $urls[ $href ] ) ? $m[3] : $m[0];
 		},
 		$content

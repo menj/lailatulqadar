@@ -16,7 +16,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * hreflang code for a role, from the Languages tab.
+ * hreflang code for a role: en for English, ms-MY for Malay.
  *
  * @param string $role primary or secondary.
  * @return string

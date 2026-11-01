@@ -9,13 +9,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$lq_set   = isset( $attributes['set'] ) && in_array( $attributes['set'], array( 'header', 'path', 'footer', 'sitemap' ), true ) ? $attributes['set'] : 'header';
+$lq_set = isset( $attributes['set'] ) && in_array( $attributes['set'], array( 'header', 'path', 'footer', 'sitemap' ), true ) ? $attributes['set'] : 'header';
 // The reading path also lists pages still in preparation, as plain text,
 // so the full plan shows from the start (filter lq_path_show_upcoming).
 $lq_upcoming = 'path' === $lq_set && apply_filters( 'lq_path_show_upcoming', true );
 $lq_items    = lq_menu_items( $lq_set, $lq_upcoming );
 $lq_soon     = 'secondary' === lq_current_role() ? 'Akan datang' : 'Coming soon';
-$lq_wrap  = get_block_wrapper_attributes( array( 'class' => 'lq-menu lq-menu--' . $lq_set ) );
+$lq_wrap     = get_block_wrapper_attributes( array( 'class' => 'lq-menu lq-menu--' . $lq_set ) );
 
 if ( 'footer' === $lq_set ) {
 	$lq_note = lq_setting( 'secondary' === lq_current_role() ? 'footer_note_secondary' : 'footer_note_primary' );

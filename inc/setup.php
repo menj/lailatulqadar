@@ -38,6 +38,9 @@ function lq_maybe_run_setup() {
 	if ( ! get_option( 'lailatulqadar_needs_setup' ) && LQ_VERSION === get_option( 'lailatulqadar_setup_version' ) ) {
 		return;
 	}
+	if ( ! lq_page_definitions() ) {
+		return; // inc/data/pages.json cannot be read (an update may still be unpacking): try on the next visit.
+	}
 	$report = lq_run_setup_locked();
 	if ( null === $report ) {
 		return; // Another request is running it; the flag stays for the next visit.
@@ -50,17 +53,29 @@ add_action( 'admin_init', 'lq_maybe_run_setup' );
 /**
  * Run setup under a lock, so two requests never run it at once.
  *
+ * The lock is one INSERT IGNORE into the options table, as WordPress's own
+ * upgrader lock does: the database lets only one request insert the row, so
+ * two requests that arrive together cannot both take it. A lock older than
+ * five minutes belongs to a run that died and is taken over.
+ *
  * @return array|null The report, or null when another run holds the lock.
  */
 function lq_run_setup_locked() {
-	if ( get_transient( 'lailatulqadar_setup_lock' ) ) {
-		return null;
+	global $wpdb;
+	$lock = 'lailatulqadar_setup_lock';
+	$now  = time();
+	$got  = $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO `$wpdb->options` ( `option_name`, `option_value`, `autoload` ) VALUES ( %s, %s, 'off' ) /* LOCK */", $lock, $now ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	if ( ! $got ) {
+		$since = (int) $wpdb->get_var( $wpdb->prepare( "SELECT `option_value` FROM `$wpdb->options` WHERE `option_name` = %s", $lock ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		if ( $since > $now - 5 * MINUTE_IN_SECONDS ) {
+			return null;
+		}
+		update_option( $lock, $now, false );
 	}
-	set_transient( 'lailatulqadar_setup_lock', 1, MINUTE_IN_SECONDS * 5 );
 	try {
 		return lq_run_setup();
 	} finally {
-		delete_transient( 'lailatulqadar_setup_lock' );
+		delete_option( $lock );
 	}
 }
 
@@ -136,6 +151,14 @@ function lq_run_setup() {
 		'errors'    => array(),
 	);
 	$map = lq_page_map();
+
+	// Without the page definitions every guide page would look retired and
+	// go to the trash, so setup stops here instead.
+	if ( ! lq_page_definitions() ) {
+		$report['stopped']  = true;
+		$report['errors'][] = __( 'The page definitions (inc/data/pages.json) could not be read, so setup made no changes.', 'lailatulqadar' );
+		return $report;
+	}
 
 	foreach ( array( 'primary', 'secondary' ) as $role ) {
 		foreach ( array_keys( lq_page_definitions() ) as $key ) {
@@ -260,15 +283,17 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 		}
 	}
 
-	// Empty values, values over the limit, and the fixed-year defaults of
-	// earlier versions (with "2027" in place of [lq_ramadan]) take the
-	// registry default.
-	$title = (string) get_post_meta( $id, LQ_META_TITLE, true );
-	if ( '' === $title || mb_strlen( $title ) > LQ_TITLE_LIMIT || str_replace( '[lq_ramadan]', '2027', $def['seo'] ) === $title && $title !== $def['seo'] ) {
+	// Empty values, values over the limit, the fixed-year defaults of
+	// earlier versions (with "2027" in place of [lq_ramadan]) and any title
+	// tag the theme wrote in an earlier release take the registry default.
+	// The title tag holds the page part only; the theme adds " | Lailatulqadar".
+	$title   = (string) get_post_meta( $id, LQ_META_TITLE, true );
+	$history = lq_title_history( $key, $role );
+	if ( '' === $title || mb_strlen( lq_title_part( $title, false ) ) > lq_title_part_limit() || ( str_replace( '[lq_ramadan]', '2027', $def['seo'] ) === $title && $title !== $def['seo'] ) || ( $title !== $def['seo'] && in_array( $title, $history, true ) ) ) {
 		update_post_meta( $id, LQ_META_TITLE, $def['seo'] );
 	}
 	$desc = (string) get_post_meta( $id, LQ_META_DESCRIPTION, true );
-	if ( '' === $desc || mb_strlen( $desc ) > LQ_META_LIMIT || str_replace( '[lq_ramadan]', '2027', $def['meta'] ) === $desc && $desc !== $def['meta'] ) {
+	if ( '' === $desc || mb_strlen( $desc ) > LQ_META_LIMIT || ( str_replace( '[lq_ramadan]', '2027', $def['meta'] ) === $desc && $desc !== $def['meta'] ) ) {
 		update_post_meta( $id, LQ_META_DESCRIPTION, $def['meta'] );
 	}
 
@@ -281,7 +306,16 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 		foreach ( array( 'rank_math_title' => 'seo', 'rank_math_description' => 'meta' ) as $rm_key => $field ) {
 			$want    = str_replace( '[lq_ramadan]', '%lq_ramadan_year%', $def[ $field ] );
 			$current = (string) get_post_meta( $id, $rm_key, true );
-			$ours    = array_merge( $legacy, array( $def[ $field ], str_replace( '[lq_ramadan]', '2027', $def[ $field ] ) ) );
+			$ours    = array_merge( $legacy, array( $def[ $field ], $want, str_replace( '[lq_ramadan]', '2027', $def[ $field ] ) ) );
+			if ( 'seo' === $field ) {
+				// Rank Math prints this field as the whole title tag, so it
+				// carries the site name itself; earlier releases wrote the
+				// page part alone.
+				foreach ( $history as $old ) {
+					array_push( $ours, $old, str_replace( '[lq_ramadan]', '%lq_ramadan_year%', $old ), str_replace( '[lq_ramadan]', '2027', $old ) );
+				}
+				$want .= LQ_TITLE_SEP . LQ_TITLE_SITE;
+			}
 			if ( '' === $current || ( $current !== $want && in_array( $current, $ours, true ) ) ) {
 				update_post_meta( $id, $rm_key, $want );
 			}
@@ -290,6 +324,28 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 			update_post_meta( $id, 'rank_math_focus_keyword', $def['focus'] );
 		}
 	}
+}
+
+/**
+ * The title tags the theme wrote as this page's default in earlier
+ * releases, from inc/data/title-history.json (page key => role => titles),
+ * so setup can tell them from titles an editor wrote. Only this page's own
+ * defaults count: an editor's title that happens to match another page's
+ * old default is kept. Data only, read with json_decode().
+ *
+ * @param string $key  Page key.
+ * @param string $role primary or secondary.
+ * @return string[]
+ */
+function lq_title_history( $key, $role ) {
+	static $data = null;
+	if ( null === $data ) {
+		$file = LQ_DIR . '/inc/data/title-history.json';
+		$data = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : array(); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$data = is_array( $data ) ? $data : array();
+	}
+	$list = isset( $data[ $key ][ $role ] ) && is_array( $data[ $key ][ $role ] ) ? $data[ $key ][ $role ] : array();
+	return array_values( array_filter( $list, 'is_string' ) );
 }
 
 /**
@@ -360,7 +416,6 @@ function lq_article_data( $lang, $key ) {
 	);
 }
 
-
 /**
  * Content normalised for comparison: line endings unified, outer space
  * trimmed, as setup compares content elsewhere.
@@ -405,12 +460,13 @@ function lq_page_footnotes( $id ) {
 }
 
 /**
- * The address a {{url:key}} token resolves to, and the fallback address
- * used before the page exists.
+ * The address a {{url:key}} token resolves to, the fallback address used
+ * before the page exists, and the ?page_id= address WordPress gives a
+ * draft (what a link to a page that was still a draft was written as).
  *
  * @param string $key  Page key in the token.
  * @param string $role primary or secondary.
- * @return string[] Resolved address first, then the fallback.
+ * @return string[] Resolved address first, then the others.
  */
 function lq_article_link_urls( $key, $role ) {
 	$defs = lq_page_definitions();
@@ -422,7 +478,7 @@ function lq_article_link_urls( $key, $role ) {
 	$fallback = home_url( '/' . $prefix . $slug );
 	$map      = lq_page_map();
 	if ( ! empty( $map[ $role ][ $key ] ) && get_post( (int) $map[ $role ][ $key ] ) ) {
-		return array( get_permalink( (int) $map[ $role ][ $key ] ), $fallback );
+		return array( get_permalink( (int) $map[ $role ][ $key ] ), $fallback, home_url( '/?page_id=' . (int) $map[ $role ][ $key ] ) );
 	}
 	return array( $fallback, $fallback );
 }

@@ -425,7 +425,7 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 		}
 		if ( '<' === $piece[0] ) {
 			if ( preg_match( '#^<(/?)([a-zA-Z][a-zA-Z0-9-]*)#', $piece, $m ) ) {
-				$tag = strtolower( $m[2] );
+				$tag      = strtolower( $m[2] );
 				$is_block = 'p' === $tag || 'li' === $tag || 'dd' === $tag;
 				if ( '/' === $m[1] ) {
 					for ( $i = count( $open ) - 1; $i >= 0; $i-- ) {
@@ -480,8 +480,9 @@ function lq_ctx_enabled_for( $post ) {
  * the_content filter. Block templates render Post Content outside the
  * classic loop, so the guard checks the main query and the queried page
  * rather than in_the_loop(). Priority 25: after do_blocks (9), wptexturize
- * and wpautop (10), shortcodes (11) and image tags (12), so the text is in
- * its final form; the theme has no other content filter.
+ * and wpautop (10), shortcodes (11), image tags (12) and the theme's own
+ * unlinking of draft pages (20, inc/draft-links.php), so the text is in its
+ * final form.
  *
  * @param string $content Rendered content.
  * @return string

@@ -202,9 +202,9 @@ function lq_nw_strings( $role ) {
  */
 function lq_nw_config() {
 	$role   = lq_current_role();
+	$ms     = 'secondary' === $role;
 	$cities = array();
 	foreach ( lq_nw_cities() as $id => $c ) {
-		$ms       = 'secondary' === $role;
 		$cities[] = array(
 			'id'      => $id,
 			'name'    => $ms ? $c[1] : $c[0],

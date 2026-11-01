@@ -9,6 +9,7 @@
 
 define( 'LQ_SECURITY_TEST', true );
 define( 'ABSPATH', __DIR__ . '/' );
+define( 'LQ_DIR', dirname( __DIR__ ) ); // lq_page_definitions() reads inc/data/pages.json from here.
 require dirname( __DIR__ ) . '/inc/security-detector.php';
 
 // helpers.php holds lq_page_definitions(); stub the one call it makes on load.

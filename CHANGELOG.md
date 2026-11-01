@@ -2,6 +2,10 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.10.1 (2026-11-01)
+
+- Security: refused XML-RPC requests, forged Jetpack claims and failed logins are now counted with one small atomic row per event and day (`lq_sec_tally()`), folded into `lq_security_counts` once a day by `lq_sec_counts()`, instead of rewriting the thirty-day counts option on every request under attack.
+
 ## 1.10.0 (2026-10-27)
 
 - New Security tab (Appearance > Theme Options > Security), ported from the Abrahamic theme 2.87.0 after the October 2026 attack on the sister site abrahamic-religions.com: XML-RPC password guessing from 701 rotating addresses under forged "Jetpack by WordPress.com" user agents, a correct password found, then a casino spam post every 18 to 20 minutes through `wp.newPost` under the owner's own account. Code in `inc/security.php` and `inc/security-detector.php`, loaded on every request; `js/security.js` and `css/security.css` load on the Security tab only.

@@ -70,9 +70,9 @@ function lq_sec_xmlrpc() {
 	if ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) {
 		// Counted, not logged one by one: the October 2026 attack sent over
 		// 17,000 requests in twelve days from 701 addresses.
-		lq_sec_count( 'xmlrpc' );
+		lq_sec_tally( 'xmlrpc' );
 		if ( lq_sec_fake_jetpack() ) {
-			lq_sec_count( 'fake-jetpack' );
+			lq_sec_tally( 'fake-jetpack' );
 		}
 		status_header( 403 );
 		header( 'Content-Type: text/plain; charset=utf-8' );
@@ -289,6 +289,62 @@ function lq_sec_count( $key ) {
 }
 
 /**
+ * Cheap counter for events that can arrive thousands of times a day, such as
+ * refused XML-RPC requests: one atomic upsert on a small, non-autoloaded row
+ * for today (lq_security_tally_{key}_{Ymd}). lq_sec_counts() folds past days
+ * into LQ_SEC_COUNTS once a day.
+ *
+ * @param string $key Event key.
+ */
+function lq_sec_tally( $key ) {
+	global $wpdb;
+	$name = 'lq_security_tally_' . sanitize_key( $key ) . '_' . gmdate( 'Ymd' );
+	$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, '1', 'off') ON DUPLICATE KEY UPDATE option_value = option_value + 1", $name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+}
+
+/**
+ * Counts for display: LQ_SEC_COUNTS plus the tally rows. Past days' rows are
+ * folded into LQ_SEC_COUNTS and deleted; today's row is added but kept.
+ *
+ * @return array date => array key => count, newest first.
+ */
+function lq_sec_counts() {
+	global $wpdb;
+	$counts = get_option( LQ_SEC_COUNTS, array() );
+	$counts = is_array( $counts ) ? $counts : array();
+	$rows   = $wpdb->get_results( "SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE 'lq\\_security\\_tally\\_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	$today  = gmdate( 'Ymd' );
+	$live   = array();
+	$done   = array();
+	foreach ( (array) $rows as $row ) {
+		if ( ! preg_match( '/^lq_security_tally_([a-z0-9_-]+)_(\d{8})$/', $row->option_name, $m ) ) {
+			continue;
+		}
+		$day = substr( $m[2], 0, 4 ) . '-' . substr( $m[2], 4, 2 ) . '-' . substr( $m[2], 6, 2 );
+		if ( $m[2] === $today ) {
+			$live[ $m[1] ] = (int) $row->option_value;
+			continue;
+		}
+		$counts[ $day ][ $m[1] ] = ( isset( $counts[ $day ][ $m[1] ] ) ? (int) $counts[ $day ][ $m[1] ] : 0 ) + (int) $row->option_value;
+		$done[]                  = $row->option_name;
+	}
+	krsort( $counts );
+	$counts = array_slice( $counts, 0, 30, true );
+	if ( $done ) {
+		update_option( LQ_SEC_COUNTS, $counts, false );
+		foreach ( $done as $name ) {
+			delete_option( $name );
+		}
+	}
+	$day = gmdate( 'Y-m-d' );
+	foreach ( $live as $key => $n ) {
+		$counts[ $day ][ $key ] = ( isset( $counts[ $day ][ $key ] ) ? (int) $counts[ $day ][ $key ] : 0 ) + $n;
+	}
+	krsort( $counts );
+	return $counts;
+}
+
+/**
  * Whether the request claims to come from Jetpack or WordPress.com while the
  * Jetpack plugin is not active. Real Jetpack traffic only reaches sites that
  * run Jetpack, so on this site the claim is forged.
@@ -353,7 +409,7 @@ add_filter( 'authenticate', 'lq_sec_refuse_remote_password', 100 );
  * @param string $login Account name or email tried.
  */
 function lq_sec_failed_login( $login ) {
-	lq_sec_count( 'failed-login' );
+	lq_sec_tally( 'failed-login' );
 	$login  = sanitize_user( (string) $login, true );
 	$failed = get_option( LQ_SEC_FAILED, array() );
 	$failed = is_array( $failed ) ? $failed : array();
@@ -396,7 +452,7 @@ function lq_sec_attack_notice() {
 			$hit[] = sprintf( '%s (%d, %d)', $name, (int) $row['n'], count( (array) $row['ips'] ) );
 		}
 	}
-	$counts = get_option( LQ_SEC_COUNTS, array() );
+	$counts = lq_sec_counts();
 	$today  = isset( $counts[ gmdate( 'Y-m-d' ) ]['remote-password'] ) ? (int) $counts[ gmdate( 'Y-m-d' ) ]['remote-password'] : 0;
 	if ( ! $hit && ! $today ) {
 		return;
@@ -1221,9 +1277,7 @@ function lq_sec_render_tools() {
 
 		<h2><?php esc_html_e( 'Attacks seen', 'lailatulqadar' ); ?></h2>
 		<?php
-		$counts = get_option( LQ_SEC_COUNTS, array() );
-		$counts = is_array( $counts ) ? $counts : array();
-		krsort( $counts );
+		$counts = lq_sec_counts();
 		$labels = array(
 			'xmlrpc'          => __( 'XML-RPC requests refused', 'lailatulqadar' ),
 			'fake-jetpack'    => __( 'of them posing as Jetpack', 'lailatulqadar' ),

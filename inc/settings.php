@@ -1076,7 +1076,9 @@ function lq_handle_replace_shipped() {
 	foreach ( lq_page_map() as $role => $ids ) {
 		$key = array_search( $id, array_map( 'intval', (array) $ids ), true );
 		if ( $id && false !== $key ) {
+			$GLOBALS['lq_seeding'] = true;
 			lq_seed_content( $id, (string) $key, (string) $role, $report, true );
+			$GLOBALS['lq_seeding'] = false;
 			$found = true;
 			break;
 		}

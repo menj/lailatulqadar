@@ -2,6 +2,16 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.11.1 (2026-11-01)
+
+- Security, spam gate: a post is exempt only when it carries the theme's seed markers (`_lq_seed_hash`, `_lq_key`, `_lq_lang`) or the request is the theme's own seeding run (`$GLOBALS['lq_seeding']`, set by `lq_run_setup_locked()` and the Tools tab's replace button). A title and slug from `lq_page_definitions()` no longer exempt a new post, so a remote caller cannot copy a guide page's title and slug, or reuse a deleted one. Content created through WP-CLI now counts as published from outside the editor. Private posts are logged as flagged but no longer changed to Pending.
+- Security, detector: every pattern carries the `i` and `u` flags, so uppercase Cyrillic is caught without mbstring. `tests/security-detector-test.php` fails when `inc/data/pages.json`, `inc/data/images.json` or a content file is missing or invalid JSON, and checks an uppercase Cyrillic sample.
+- Security, counts: past days' tally rows are folded by subtracting the value read and deleting the row only when nothing is left, so an increment that lands in between is kept. The report shows 30 days, today included.
+- Security, failed logins: rows older than 24 hours are left out of the notice and the report, and an account's count starts again once its first failure is more than 24 hours old.
+- Security, .htaccess: the state is recorded as written only when `insert_with_markers()` succeeds, otherwise as unavailable.
+- Security, 410 Gone: trashed spam reached as `/?p=ID` also answers 410.
+- Security tab: the "Move selected to Trash" button stays disabled while a scan or a trash run is going, whatever the checkboxes say.
+
 ## 1.11.0 (2026-11-01)
 
 - Security: refused XML-RPC requests, forged Jetpack claims and failed logins are now counted with one small atomic row per event and day (`lq_sec_tally()`), folded into `lq_security_counts` once a day by `lq_sec_counts()`, instead of rewriting the thirty-day counts option on every request under attack.

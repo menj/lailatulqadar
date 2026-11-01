@@ -54,6 +54,9 @@
 	var table = document.getElementById( 'lq-sec-results' );
 	var all = document.getElementById( 'lq-sec-all' );
 	var tbody = table ? table.querySelector( 'tbody' ) : null;
+	// True while a scan or a trash run is going: the trash button stays off
+	// whatever the checkboxes say, until the run finishes.
+	var busy = false;
 
 	function boxes() {
 		return tbody ? Array.prototype.slice.call( tbody.querySelectorAll( 'input[type="checkbox"]' ) ) : [];
@@ -63,7 +66,7 @@
 		var picked = boxes().filter( function ( b ) {
 			return b.checked;
 		} );
-		trashBtn.disabled = ! picked.length;
+		trashBtn.disabled = busy || ! picked.length;
 		if ( all ) {
 			all.checked = picked.length > 0 && picked.length === boxes().length;
 		}
@@ -127,6 +130,7 @@
 			table.hidden = true;
 			scanBtn.disabled = true;
 			trashBtn.disabled = true;
+			busy = true;
 
 			function step( offset ) {
 				post( 'lq_sec_scan', { offset: offset } )
@@ -139,6 +143,7 @@
 						if ( data.done ) {
 							status.textContent = found ? format( i18n.done, data.next, found ) : i18n.none;
 							scanBtn.disabled = false;
+							busy = false;
 							refresh();
 							return;
 						}
@@ -148,6 +153,8 @@
 					.catch( function ( err ) {
 						status.textContent = err.message;
 						scanBtn.disabled = false;
+						busy = false;
+						refresh();
 					} );
 			}
 			step( 0 );
@@ -175,7 +182,7 @@
 				.map( function ( b ) {
 					return b.value;
 				} );
-			if ( ! ids.length || ! window.confirm( i18n.confirmTrash ) ) {
+			if ( busy || ! ids.length || ! window.confirm( i18n.confirmTrash ) ) {
 				return;
 			}
 			var total = ids.length;
@@ -183,12 +190,14 @@
 			var skipped = 0;
 			trashBtn.disabled = true;
 			scanBtn.disabled = true;
+			busy = true;
 
 			function step() {
 				var chunk = ids.splice( 0, 100 );
 				if ( ! chunk.length ) {
 					status.textContent = format( i18n.trashed, moved, skipped );
 					scanBtn.disabled = false;
+					busy = false;
 					refresh();
 					return;
 				}
@@ -208,6 +217,7 @@
 					.catch( function ( err ) {
 						status.textContent = err.message;
 						scanBtn.disabled = false;
+						busy = false;
 						refresh();
 					} );
 			}

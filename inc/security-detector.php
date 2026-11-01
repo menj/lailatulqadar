@@ -18,7 +18,8 @@ if ( ! defined( 'LQ_SPAM_THRESHOLD' ) ) {
 
 /**
  * Weighted patterns: label => array( regex, weight ). Every regex runs on
- * lower-case text with the u flag; \b keeps "bet" out of Bethlehem, Bethel,
+ * lower-cased text with the i and u flags, so a match never depends on
+ * mbstring (strtolower() leaves capital Cyrillic as it is); \b keeps "bet" out of Bethlehem, Bethel,
  * alphabet, between and better.
  *
  * @return array
@@ -45,16 +46,16 @@ function lq_spam_patterns() {
 	);
 	$patterns = array(
 		// Strong: one is enough.
-		'casino'          => array( '/(?<![\p{L}])(casino|casinos|cassino|cassinos|kasyno|kasyna|kasynie|kazino|kasino|kasinos|казино|казіно|kumarhane)/u', 3 ),
-		'gambling brand'  => array( '/(?<![\p{L}\d])(' . implode( '|', $quoted ) . ')(?![\p{L}])/u', 3 ),
-		'betting words'   => array( '/(sportwetten|wettanbieter|wettquoten|wettbüro|sportsbook|bookmaker|buchmacher|bukmacher|apuestas|apostas(?![\p{L}])|scommess[ae]|stávkov|stavkov|stavková|bahis|taruhan|букмекер|ставк[аиуеой]|ставок|tipsport|glücksspiel|gluecksspiel|igralne avtomate|igralnih avtomatov|oyunlarında)/u', 3 ),
-		'gambling phrase' => array( '/\b(free spins?|freispiele|darmowe spiny|bonus codes?|promo codes?|no deposit|ohne einzahlung|bez depozytu|sweepstakes casinos?|sweepstakes|crash[- ]games?|live dealers?|live casino|live-casino|live-roulette|online gambling|slot machines?|slot gacor|judi online|judi slot|judi bola|welcome bonus|cashback bonus|wagering requirements?|bankroll)\b/u', 3 ),
-		'probe title'     => array( '/^\s*(connection check\b.*|cl-probe\S*|probe|test post|test)\s*$/u', 5 ),
+		'casino'          => array( '/(?<![\p{L}])(casino|casinos|cassino|cassinos|kasyno|kasyna|kasynie|kazino|kasino|kasinos|казино|казіно|kumarhane)/iu', 3 ),
+		'gambling brand'  => array( '/(?<![\p{L}\d])(' . implode( '|', $quoted ) . ')(?![\p{L}])/iu', 3 ),
+		'betting words'   => array( '/(sportwetten|wettanbieter|wettquoten|wettbüro|sportsbook|bookmaker|buchmacher|bukmacher|apuestas|apostas(?![\p{L}])|scommess[ae]|stávkov|stavkov|stavková|bahis|taruhan|букмекер|ставк[аиуеой]|ставок|tipsport|glücksspiel|gluecksspiel|igralne avtomate|igralnih avtomatov|oyunlarında)/iu', 3 ),
+		'gambling phrase' => array( '/\b(free spins?|freispiele|darmowe spiny|bonus codes?|promo codes?|no deposit|ohne einzahlung|bez depozytu|sweepstakes casinos?|sweepstakes|crash[- ]games?|live dealers?|live casino|live-casino|live-roulette|online gambling|slot machines?|slot gacor|judi online|judi slot|judi bola|welcome bonus|cashback bonus|wagering requirements?|bankroll)\b/iu', 3 ),
+		'probe title'     => array( '/^\s*(connection check\b.*|cl-probe\S*|probe|test post|test)\s*$/iu', 5 ),
 		// Weak: they count only together with another match.
-		'betting'         => array( '/\b(betting|bettor|bets|wett(en|e|tipps)?)\b/u', 2 ),
-		'bet'             => array( '/\bbet\b/u', 1 ),
-		'casino games'    => array( '/\b(roulette|blackjack|baccarat|poker|jackpots?|slots?|spins|payout|rtp)\b/u', 1 ),
-		'odds'            => array( '/\b(odds|wager|wagers)\b/u', 1 ),
+		'betting'         => array( '/\b(betting|bettor|bets|wett(en|e|tipps)?)\b/iu', 2 ),
+		'bet'             => array( '/\bbet\b/iu', 1 ),
+		'casino games'    => array( '/\b(roulette|blackjack|baccarat|poker|jackpots?|slots?|spins|payout|rtp)\b/iu', 1 ),
+		'odds'            => array( '/\b(odds|wager|wagers)\b/iu', 1 ),
 	);
 	return $patterns;
 }
@@ -65,7 +66,7 @@ function lq_spam_patterns() {
  * @return string
  */
 function lq_spam_link_pattern() {
-	return '/(casino|cassino|kasyno|kazino|casinò|1xbet|pinup|pin-up|mostbet|melbet|betify|pusulabet|vavada|1win|bet365|betway|sportsbook|sportwetten|bahis|slot|poker|stake\.com|coolbet|bodog|starda|crownplay|surfplay|spinjo|spybet|sportaza)/u';
+	return '/(casino|cassino|kasyno|kazino|casinò|1xbet|pinup|pin-up|mostbet|melbet|betify|pusulabet|vavada|1win|bet365|betway|sportsbook|sportwetten|bahis|slot|poker|stake\.com|coolbet|bodog|starda|crownplay|surfplay|spinjo|spybet|sportaza)/iu';
 }
 
 /**
@@ -76,7 +77,7 @@ function lq_spam_link_pattern() {
  */
 function lq_spam_normalise( $text ) {
 	$text = html_entity_decode( strip_tags( (string) $text ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
-	$text = preg_replace( '/\s+/u', ' ', $text );
+	$text = preg_replace( '/\s+/iu', ' ', $text );
 	return function_exists( 'mb_strtolower' ) ? mb_strtolower( $text, 'UTF-8' ) : strtolower( $text );
 }
 

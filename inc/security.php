@@ -146,12 +146,14 @@ function lq_sec_sync_htaccess( $force = false ) {
 	}
 	$want    = lq_sec_on( 'sec_xmlrpc_off' );
 	$current = function_exists( 'extract_from_markers' ) ? extract_from_markers( $file, 'Block xmlrpc.php' ) : array();
+	$ok      = true;
 	if ( $want && $current !== lq_sec_htaccess_lines() ) {
-		insert_with_markers( $file, 'Block xmlrpc.php', lq_sec_htaccess_lines() );
+		$ok = true === insert_with_markers( $file, 'Block xmlrpc.php', lq_sec_htaccess_lines() );
 	} elseif ( ! $want && $current ) {
 		insert_with_markers( $file, 'Block xmlrpc.php', array() );
 	}
-	update_option( 'lq_security_htaccess', $want ? 'written' : 'off', false );
+	// 'written' only when the block is really in the file.
+	update_option( 'lq_security_htaccess', $want ? ( $ok ? 'written' : 'unavailable' ) : 'off', false );
 }
 add_action( 'admin_init', 'lq_sec_sync_htaccess' );
 add_action( 'after_switch_theme', function () { lq_sec_sync_htaccess( true ); } );
@@ -326,14 +328,19 @@ function lq_sec_counts() {
 			continue;
 		}
 		$counts[ $day ][ $m[1] ] = ( isset( $counts[ $day ][ $m[1] ] ) ? (int) $counts[ $day ][ $m[1] ] : 0 ) + (int) $row->option_value;
-		$done[]                  = $row->option_name;
+		$done[ $row->option_name ] = (int) $row->option_value;
 	}
 	krsort( $counts );
 	$counts = array_slice( $counts, 0, 30, true );
 	if ( $done ) {
 		update_option( LQ_SEC_COUNTS, $counts, false );
-		foreach ( $done as $name ) {
-			delete_option( $name );
+		foreach ( $done as $name => $n ) {
+			// Take away only the value read, then drop the row if nothing is
+			// left: an increment that lands in between stays in the row and is
+			// folded next time.
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->options} SET option_value = option_value - %d WHERE option_name = %s", $n, $name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name = %s AND option_value + 0 <= 0", $name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			wp_cache_delete( $name, 'options' );
 		}
 	}
 	$day = gmdate( 'Y-m-d' );
@@ -341,7 +348,8 @@ function lq_sec_counts() {
 		$counts[ $day ][ $key ] = ( isset( $counts[ $day ][ $key ] ) ? (int) $counts[ $day ][ $key ] : 0 ) + $n;
 	}
 	krsort( $counts );
-	return $counts;
+	// Thirty days, today included.
+	return array_slice( $counts, 0, 30, true );
 }
 
 /**
@@ -360,13 +368,17 @@ function lq_sec_fake_jetpack() {
 }
 
 /**
- * Whether this request is a remote, non-browser call: XML-RPC, or REST with
- * an application password or other header login.
+ * Whether this request is a remote, non-browser call: XML-RPC, REST with an
+ * application password or other header login, or WP-CLI. The theme's own
+ * seeding run is never remote (see lq_sec_is_seeded()).
  *
  * @return bool
  */
 function lq_sec_is_remote() {
 	if ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) {
+		return true;
+	}
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		return true;
 	}
 	if ( defined( 'REST_REQUEST' ) && REST_REQUEST && is_user_logged_in() ) {
@@ -411,14 +423,8 @@ add_filter( 'authenticate', 'lq_sec_refuse_remote_password', 100 );
 function lq_sec_failed_login( $login ) {
 	lq_sec_tally( 'failed-login' );
 	$login  = sanitize_user( (string) $login, true );
-	$failed = get_option( LQ_SEC_FAILED, array() );
-	$failed = is_array( $failed ) ? $failed : array();
+	$failed = lq_sec_failed_recent();
 	$now    = time();
-	foreach ( $failed as $name => $row ) {
-		if ( $now - (int) $row['last'] > DAY_IN_SECONDS ) {
-			unset( $failed[ $name ] );
-		}
-	}
 	if ( '' === $login ) {
 		$login = '(empty)';
 	}
@@ -426,6 +432,10 @@ function lq_sec_failed_login( $login ) {
 		return;
 	}
 	$row = isset( $failed[ $login ] ) ? $failed[ $login ] : array( 'n' => 0, 'first' => $now, 'last' => $now, 'ips' => array() );
+	if ( $now - (int) $row['first'] > DAY_IN_SECONDS ) {
+		// The count covers 24 hours only: start again once the first failure is older.
+		$row = array( 'n' => 0, 'first' => $now, 'last' => $now, 'ips' => array() );
+	}
 	$row['n']++;
 	$row['last'] = $now;
 	$ip          = lq_sec_ip();
@@ -438,6 +448,24 @@ function lq_sec_failed_login( $login ) {
 add_action( 'wp_login_failed', 'lq_sec_failed_login' );
 
 /**
+ * Failed-login rows whose last failure is within the past 24 hours. Older
+ * rows are left out on every read, not only pruned on the next failure.
+ *
+ * @return array account => row
+ */
+function lq_sec_failed_recent() {
+	$failed = get_option( LQ_SEC_FAILED, array() );
+	$failed = is_array( $failed ) ? $failed : array();
+	$now    = time();
+	foreach ( $failed as $name => $row ) {
+		if ( ! is_array( $row ) || $now - (int) ( isset( $row['last'] ) ? $row['last'] : 0 ) > DAY_IN_SECONDS || $now - (int) ( isset( $row['first'] ) ? $row['first'] : 0 ) > DAY_IN_SECONDS ) {
+			unset( $failed[ $name ] );
+		}
+	}
+	return $failed;
+}
+
+/**
  * Admin notice when an existing account is being guessed at: ten or more
  * failures in a day, or a correct password refused on the remote route.
  */
@@ -445,7 +473,7 @@ function lq_sec_attack_notice() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
-	$failed = get_option( LQ_SEC_FAILED, array() );
+	$failed = lq_sec_failed_recent();
 	$hit    = array();
 	foreach ( (array) $failed as $name => $row ) {
 		if ( (int) $row['n'] >= 10 && ( username_exists( $name ) || email_exists( $name ) ) ) {
@@ -534,17 +562,20 @@ function lq_sec_log( $entry ) {
 }
 
 /**
- * Whether a post is content the theme seeds itself. Setup marks every guide
- * page it creates or adopts with _lq_lang and _lq_key, and every page it fills
- * with _lq_seed_hash. A page not yet saved (setup creating it) is matched by
- * its title and slug in lq_page_definitions().
+ * Whether a post is content the theme seeds itself: it already carries the
+ * seed markers setup writes (_lq_seed_hash, _lq_key, _lq_lang), or this
+ * request is the theme's own seeding run (lq_run_setup_locked() and the
+ * Tools tab's replace button set $GLOBALS['lq_seeding']). A submitted title
+ * or slug alone never exempts a post, so a remote caller cannot pass the gate
+ * by copying a guide page's title and slug, or by reusing a deleted one.
  *
- * @param int    $post_id Post ID, 0 for a new post.
- * @param string $title   Title.
- * @param string $slug    Slug.
+ * @param int $post_id Post ID, 0 for a new post.
  * @return bool
  */
-function lq_sec_is_seeded( $post_id, $title = '', $slug = '' ) {
+function lq_sec_is_seeded( $post_id ) {
+	if ( ! empty( $GLOBALS['lq_seeding'] ) ) {
+		return true;
+	}
 	if ( $post_id ) {
 		foreach ( array( '_lq_seed_hash', '_lq_key', '_lq_lang' ) as $meta ) {
 			if ( '' !== (string) get_post_meta( $post_id, $meta, true ) ) {
@@ -552,20 +583,7 @@ function lq_sec_is_seeded( $post_id, $title = '', $slug = '' ) {
 			}
 		}
 	}
-	static $index = null;
-	if ( null === $index ) {
-		$index = array();
-		if ( function_exists( 'lq_page_definitions' ) ) {
-			foreach ( lq_page_definitions() as $def ) {
-				foreach ( array( 'primary', 'secondary' ) as $role ) {
-					if ( isset( $def[ $role ]['title'], $def[ $role ]['slug'] ) ) {
-						$index[ $def[ $role ]['title'] . '|' . $def[ $role ]['slug'] ] = true;
-					}
-				}
-			}
-		}
-	}
-	return isset( $index[ $title . '|' . $slug ] );
+	return false;
 }
 
 /**
@@ -590,11 +608,12 @@ function lq_sec_gate( $data, $postarr ) {
 	if ( ! lq_sec_on( 'sec_spam_gate' ) || ! in_array( $data['post_type'], lq_sec_types(), true ) ) {
 		return $data;
 	}
-	$public = in_array( $data['post_status'], array( 'publish', 'future', 'private' ), true );
+	// Private posts are never public, so they are not held (only logged).
+	$public = in_array( $data['post_status'], array( 'publish', 'future' ), true );
 	$id     = isset( $postarr['ID'] ) ? (int) $postarr['ID'] : 0;
 	$title  = wp_unslash( $data['post_title'] );
 	$slug   = $data['post_name'];
-	if ( lq_sec_is_seeded( $id, $title, $slug ) ) {
+	if ( lq_sec_is_seeded( $id ) ) {
 		return $data;
 	}
 	$verdict = lq_spam_score( $title, $slug, wp_unslash( $data['post_content'] ) );
@@ -610,7 +629,7 @@ function lq_sec_gate( $data, $postarr ) {
 		$data['post_status'] = 'pending';
 	}
 	$GLOBALS['lq_sec_held'] = array(
-		'event'   => $public ? 'held' : 'flagged-draft',
+		'event'   => $public ? 'held' : 'flagged',
 		'title'   => $title,
 		'reasons' => $verdict['reasons'],
 	);
@@ -670,6 +689,7 @@ function lq_sec_remember_gone( $post ) {
 			$gone[ $path ] = (int) $post->ID;
 		}
 	}
+	$gone[ '?p=' . (int) $post->ID ] = (int) $post->ID;
 	if ( $post->post_name ) {
 		$gone[ strtolower( rawurldecode( $post->post_name ) ) ] = (int) $post->ID;
 	}
@@ -692,7 +712,9 @@ function lq_sec_send_gone() {
 	$uri  = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 	$path = lq_sec_path( $uri );
 	$last = basename( $path );
-	if ( isset( $gone[ $path ] ) || ( '' !== $last && isset( $gone[ $last ] ) && false === strpos( $path, '/' ) ) ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read only.
+	$pid = isset( $_GET['p'] ) ? absint( $_GET['p'] ) : 0;
+	if ( ( $pid && isset( $gone[ '?p=' . $pid ] ) ) || isset( $gone[ $path ] ) || ( '' !== $last && isset( $gone[ $last ] ) && false === strpos( $path, '/' ) ) ) {
 		status_header( 410 );
 		nocache_headers();
 		header( 'X-Robots-Tag: noindex', true );
@@ -873,7 +895,7 @@ function lq_sec_ajax_scan() {
 	);
 	$rows = array();
 	foreach ( $query->posts as $post ) {
-		if ( lq_sec_is_seeded( $post->ID, $post->post_title, $post->post_name ) ) {
+		if ( lq_sec_is_seeded( $post->ID ) ) {
 			continue;
 		}
 		$verdict = lq_spam_score( $post->post_title, $post->post_name, $post->post_content );
@@ -918,7 +940,7 @@ function lq_sec_ajax_trash() {
 	$skipped = array();
 	foreach ( array_filter( $ids ) as $id ) {
 		$post = get_post( $id );
-		if ( ! $post || ! in_array( $post->post_type, lq_sec_types(), true ) || 'trash' === $post->post_status || ! current_user_can( 'delete_post', $id ) || lq_sec_is_seeded( $id, $post->post_title, $post->post_name ) ) {
+		if ( ! $post || ! in_array( $post->post_type, lq_sec_types(), true ) || 'trash' === $post->post_status || ! current_user_can( 'delete_post', $id ) || lq_sec_is_seeded( $id ) ) {
 			$skipped[] = $id;
 			continue;
 		}
@@ -1303,8 +1325,7 @@ function lq_sec_render_tools() {
 		<h3><?php esc_html_e( 'Accounts being guessed, last 24 hours', 'lailatulqadar' ); ?></h3>
 		<p class="lq-help"><?php esc_html_e( 'Attackers change address on every try, so failures are counted by account name. An account of yours in this list should get a new, long password, and ideally a new name that is not the site name.', 'lailatulqadar' ); ?></p>
 		<?php
-		$failed = get_option( LQ_SEC_FAILED, array() );
-		$failed = is_array( $failed ) ? $failed : array();
+		$failed = lq_sec_failed_recent();
 		uasort(
 			$failed,
 			function ( $x, $y ) {

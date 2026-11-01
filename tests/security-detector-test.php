@@ -23,6 +23,30 @@ $n    = 0;
 $root = dirname( __DIR__ );
 
 /**
+ * Read and decode a JSON file the test expects; a missing or invalid file
+ * fails the run instead of being skipped.
+ */
+$load = function ( $file ) use ( &$fail ) {
+	$data = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : null;
+	if ( ! is_array( $data ) ) {
+		++$fail;
+		echo 'MISSING OR INVALID JSON: ' . $file . "\n";
+		return array();
+	}
+	return $data;
+};
+$load( $root . '/inc/data/pages.json' );
+if ( ! lq_page_definitions() ) {
+	++$fail;
+	echo "NO PAGE DEFINITIONS: inc/data/pages.json\n";
+}
+$articles = glob( $root . '/content/*/*.json' );
+if ( ! $articles ) {
+	++$fail;
+	echo "NO CONTENT FILES: content/*/*.json\n";
+}
+
+/**
  * Score one seeded item and report any match at all.
  */
 $check = function ( $label, $title, $slug, $content ) use ( &$fail, &$n ) {
@@ -34,8 +58,8 @@ $check = function ( $label, $title, $slug, $content ) use ( &$fail, &$n ) {
 	}
 };
 
-foreach ( glob( $root . '/content/*/*.json' ) as $file ) {
-	$data = json_decode( file_get_contents( $file ), true );
+foreach ( (array) $articles as $file ) {
+	$data = $load( $file );
 	$text = isset( $data['content'] ) ? $data['content'] : '';
 	if ( ! empty( $data['footnotes'] ) ) {
 		$text .= ' ' . wp_json_like( $data['footnotes'] );
@@ -51,7 +75,7 @@ foreach ( lq_page_definitions() as $key => $def ) {
 foreach ( glob( $root . '/{patterns/*.php,templates/*.html,parts/*.html}', GLOB_BRACE ) as $file ) {
 	$check( substr( $file, strlen( $root ) + 1 ), '', '', preg_replace( '/<\?php.*?\?>/s', ' ', file_get_contents( $file ) ) );
 }
-$images = json_decode( file_get_contents( $root . '/inc/data/images.json' ), true );
+$images = $load( $root . '/inc/data/images.json' );
 $check( 'inc/data/images.json', '', '', wp_json_like( $images ) );
 echo "Seeded items checked: $n\n";
 
@@ -129,6 +153,7 @@ $spam = array(
 	array( 'Vegas Stars', '' ),
 	array( 'Surge Casino', '' ),
 	array( '1win', '' ),
+	array( 'КАЗИНО ВАВАДА', '' ),
 );
 foreach ( $spam as $s ) {
 	$r = lq_spam_score( $s[0], $s[1], '' );

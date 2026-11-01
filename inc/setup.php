@@ -72,9 +72,13 @@ function lq_run_setup_locked() {
 		}
 		update_option( $lock, $now, false );
 	}
+	// Marks this request as the theme's own seeding run, so the spam gate
+	// (lq_sec_is_seeded()) lets the guide pages it creates through.
+	$GLOBALS['lq_seeding'] = true;
 	try {
 		return lq_run_setup();
 	} finally {
+		$GLOBALS['lq_seeding'] = false;
 		delete_option( $lock );
 	}
 }

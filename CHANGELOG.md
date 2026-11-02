@@ -2,6 +2,11 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.11.2 (2026-11-02)
+
+- Content, English: the articles now follow the owner's writing style. In `last10`, `signs` and `sources`, 6 sentences and table cells that denied one reading before giving another now state the claim alone; the observation of the 17th night still reads as a later person's, with no saying of the Prophet ﷺ in it. "Offers a" (`last10`) and "highlight" (`planner`, and the chart titles in `start` and `when`) give way to plain verbs. Quotations, translations, facts, citations and footnote numbers are unchanged. The Malay articles are untouched.
+- `inc/data/seed-history.json` rebuilt with `bin/build-seed-history.php`, so pages seeded from 1.11.1 and earlier still count as unedited and take the new text when setup runs for 1.11.2.
+
 ## 1.11.1 (2026-11-01)
 
 - Security, spam gate: a post is exempt only when it carries the theme's seed markers (`_lq_seed_hash`, `_lq_key`, `_lq_lang`) or the request is the theme's own seeding run (`$GLOBALS['lq_seeding']`, set by `lq_run_setup_locked()` and the Tools tab's replace button). A title and slug from `lq_page_definitions()` no longer exempt a new post, so a remote caller cannot copy a guide page's title and slug, or reuse a deleted one. Content created through WP-CLI now counts as published from outside the editor. Private posts are logged as flagged but no longer changed to Pending.

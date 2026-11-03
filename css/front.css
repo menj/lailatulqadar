@@ -645,6 +645,26 @@ ul.lq-menu--sitemap li {
 	color: var(--wp--preset--color--accent-4);
 }
 
+/* Qur'an references: the owner's retro open book (images/book-open.webp) before the sura and verse. Decoration only; still under reduced motion. */
+.lq-verse cite::before,
+.lq-ayah cite::before {
+	content: "";
+	display: inline-block;
+	width: 37px;
+	height: 30px;
+	margin-right: 0.5rem;
+	vertical-align: middle;
+	background: url(../images/book-open.webp) center / contain no-repeat;
+	image-rendering: pixelated;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.lq-verse cite::before,
+	.lq-ayah cite::before {
+		background-image: url(../images/book-open-static.webp);
+	}
+}
+
 .wp-block-footnotes {
 	margin-top: var(--wp--preset--spacing--60);
 	padding-top: 1rem;

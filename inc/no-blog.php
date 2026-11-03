@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) || exit;
 
 define( 'LQ_BLOG_RETIRED_OPTION', 'lailatulqadar_blog_retired' );
 define( 'LQ_BLOG_RETIRED_VERSION', '1.15.0' );
+define( 'LQ_FORMER_POSTS_PAGE_OPTION', 'lailatulqadar_former_posts_page' );
 
 /**
  * Template slugs that served posts and are no longer offered.
@@ -77,7 +78,41 @@ function lq_is_retired_view() {
 	if ( is_home() && ! is_front_page() ) {
 		return true;
 	}
+	if ( lq_is_former_posts_page() ) {
+		return true;
+	}
 	return is_singular( 'post' ) || is_date() || is_author() || is_category() || is_tag() || is_post_type_archive( 'post' );
+}
+
+/**
+ * Whether the request is the page that was the posts page before the
+ * migration. Its address stays in search results and links, so it goes
+ * home with the rest of the blog. A guide page is never treated so.
+ *
+ * @return bool
+ */
+function lq_is_former_posts_page() {
+	$id = (int) get_option( LQ_FORMER_POSTS_PAGE_OPTION, 0 );
+	if ( ! $id || ! is_page( $id ) ) {
+		return false;
+	}
+	foreach ( lq_page_map() as $pages ) {
+		if ( in_array( $id, array_map( 'intval', (array) $pages ), true ) ) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * Whether the request address lies under the Malay prefix (/ms/).
+ *
+ * @return bool
+ */
+function lq_path_is_secondary() {
+	$prefix = trim( (string) lq_setting( 'secondary_slug' ), '/' );
+	$path   = trim( (string) wp_parse_url( isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '', PHP_URL_PATH ), '/' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	return '' !== $prefix && ( $prefix === $path || 0 === strpos( $path, $prefix . '/' ) );
 }
 
 /**
@@ -101,7 +136,16 @@ function lq_language_home_url( $role ) {
  * @return string
  */
 function lq_retired_target() {
-	$role = is_singular( 'post' ) ? lq_role_of( get_queried_object_id() ) : lq_current_role();
+	if ( is_singular() ) {
+		// The post's own mark first (_lq_lang, or a place beneath the Malay
+		// home), then the address: a post without a mark under /ms/ is Malay.
+		$role = lq_role_of( get_queried_object_id() );
+		if ( 'primary' === $role && lq_path_is_secondary() ) {
+			$role = 'secondary';
+		}
+	} else {
+		$role = lq_current_role();
+	}
 	return lq_language_home_url( $role );
 }
 
@@ -169,7 +213,10 @@ function lq_migrate_retire_blog() {
 	if ( version_compare( (string) get_option( LQ_BLOG_RETIRED_OPTION, '0' ), LQ_BLOG_RETIRED_VERSION, '>=' ) ) {
 		return false;
 	}
-	if ( (int) get_option( 'page_for_posts' ) ) {
+	$posts_page = (int) get_option( 'page_for_posts' );
+	if ( $posts_page ) {
+		// Keep the page and its content; record it so its address redirects.
+		update_option( LQ_FORMER_POSTS_PAGE_OPTION, $posts_page, false );
 		update_option( 'page_for_posts', 0 );
 	}
 	if ( 'posts' === get_option( 'show_on_front' ) ) {

@@ -30,7 +30,7 @@ function lq_v( $k ) {
 function is_feed() { return lq_v( 'feed' ); }
 function is_home() { return lq_v( 'home' ); }
 function is_front_page() { return lq_v( 'front' ); }
-function is_singular( $t = '' ) { return lq_v( 'single_' . $t ); }
+function is_singular( $t = '' ) { return '' === $t ? lq_v( 'single_post' ) || lq_v( 'single_page' ) : lq_v( 'single_' . $t ); }
 function is_date() { return lq_v( 'date' ); }
 function is_author() { return lq_v( 'author' ); }
 function is_category() { return lq_v( 'category' ); }
@@ -39,9 +39,14 @@ function is_post_type_archive( $t ) { return lq_v( 'pta' ); }
 function is_admin() { return false; }
 function is_404() { return lq_v( '404' ); }
 function get_queried_object_id() { return 5; }
+function is_page( $id ) { return lq_v( 'page_' . $id ); }
+function lq_setting( $k ) { return 'ms'; }
+function wp_parse_url( $u, $c ) { return parse_url( $u, $c ); }
+function wp_unslash( $v ) { return $v; }
 function lq_role_of( $id ) { return empty( $GLOBALS['v']['ms'] ) ? 'primary' : 'secondary'; }
+function lq_test_map() { return array( 'primary' => array( 'home' => 1 ), 'secondary' => array( 'home' => 9 ) ); }
 function lq_current_role() { return empty( $GLOBALS['v']['ms'] ) ? 'primary' : 'secondary'; }
-function lq_page_map() { return array( 'secondary' => array( 'home' => 9 ) ); }
+function lq_page_map() { return lq_test_map(); }
 function get_post_status( $id ) { return 'publish'; }
 function get_permalink( $id ) { return 'https://lailatulqadar.test/ms/'; }
 function home_url( $p ) { return 'https://lailatulqadar.test' . $p; }
@@ -100,11 +105,18 @@ $cases = array(
 	'feed'           => array( array( 'feed' => 1 ), $en ),
 	'front page'     => array( array( 'home' => 1, 'front' => 1 ), null ),
 	'guide page'     => array( array( 'single_page' => 1 ), null ),
+	'unmarked post under /ms/' => array( array( 'single_post' => 1, 'uri' => '/ms/catatan-lama/' ), $ms ),
+	'unmarked post elsewhere'  => array( array( 'single_post' => 1, 'uri' => '/mse/' ), $en ),
+	'former posts page'        => array( array( 'single_page' => 1, 'page_42' => 1, 'fpp' => 42 ), $en ),
+	'former Malay posts page'  => array( array( 'single_page' => 1, 'page_42' => 1, 'fpp' => 42, 'ms' => 1 ), $ms ),
+	'guide page once posts page' => array( array( 'single_page' => 1, 'page_1' => 1, 'fpp' => 1 ), null ),
 	'not found'      => array( array( '404' => 1, 'single_post' => 1 ), null ),
 );
 foreach ( $cases as $name => $c ) {
 	$GLOBALS['v']    = $c[0];
 	$GLOBALS['sent'] = null;
+	$GLOBALS['opts'] = isset( $c[0]['fpp'] ) ? array( 'lailatulqadar_former_posts_page' => $c[0]['fpp'] ) : array();
+	$_SERVER['REQUEST_URI'] = isset( $c[0]['uri'] ) ? $c[0]['uri'] : '/';
 	try {
 		lq_redirect_retired_views();
 	} catch ( LQ_Test_Exit $e ) {
@@ -122,6 +134,7 @@ $GLOBALS['opts'] = array( 'page_for_posts' => 42, 'show_on_front' => 'posts' );
 $GLOBALS['meta'] = array( 42 => 'home', 43 => 'page-no-title', 44 => 'archive' );
 check( true === lq_migrate_retire_blog(), 'migration did not run' );
 check( 0 === $GLOBALS['opts']['page_for_posts'] && 'page' === $GLOBALS['opts']['show_on_front'], 'posts page still set' );
+check( 42 === $GLOBALS['opts']['lailatulqadar_former_posts_page'], 'former posts page not recorded' );
 check( array( 43 => 'page-no-title' ) === $GLOBALS['meta'], 'page templates: ' . json_encode( $GLOBALS['meta'] ) );
 $GLOBALS['opts']['page_for_posts'] = 7;
 check( false === lq_migrate_retire_blog() && 7 === $GLOBALS['opts']['page_for_posts'], 'migration ran twice' );

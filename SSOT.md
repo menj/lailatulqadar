@@ -174,6 +174,8 @@ On 3 November 2026 the owner decided that lailatulqadar.guide has no blog. The s
 
 - The theme ships no template for posts. `home`, `archive`, `single`, `single-post`, `date`, `author`, `category` and `tag` are dropped from the editor and from the template hierarchy, the parent's copies and Site Editor copies with them (`lq_drop_retired_templates()`).
 - The blog home, single posts, the date, author, category and tag archives and every feed answer 301 to the home page of their language: the Malay home at /ms/ for a Malay post or an address under /ms/, the front page for everything else. The 410 for trashed spam stays as it was, since that address is a 404 first.
+- A page that was the posts page keeps its content. The migration records its ID in `lailatulqadar_former_posts_page`, and its address answers 301 to the home page of its language. A guide page is never redirected this way.
+- A post with no language mark is Malay when its address lies under /ms/.
 - Posts are out of the core sitemap, the image sitemap and the Rank Math sitemap (with categories and tags). The head carries no feed links.
 - The admin keeps its Posts menu. Nobody should write a post; one written anyway is never shown.
 

@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.11.2
+Stable tag: 1.12.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,12 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
+
+= 1.12.0 =
+* Title tags keep the form "page title | Lailatulqadar", under 60 characters, with Rank Math active too.
+* Posts and archives get a meta description, and archives a canonical link.
+* Every Article in the structured data has an image: the featured image, else the lead photograph, else the site mark.
+* New image sitemap at /image-sitemap.xml, named in robots.txt.
 
 = 1.11.2 =
 * English articles: 6 sentences and table cells that set up a claim by denying another now state the claim, and 4 uses of banned verbs are replaced with plain ones. Facts, citations and quotations are unchanged.

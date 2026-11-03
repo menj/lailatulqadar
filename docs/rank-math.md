@@ -6,7 +6,7 @@ Rank Math is the site's SEO plugin. When it is active, the theme hands over ever
 
 | Area | With Rank Math active | Theme-only (no SEO plugin) |
 |---|---|---|
-| Title tag | Rank Math | Theme (`_lq_seo_title`) |
+| Title tag | Rank Math, held by the theme to "page part \| Lailatulqadar" under 60 characters | Theme (`_lq_seo_title`) |
 | Meta description | Rank Math | Theme (`_lq_meta_description`) |
 | Robots meta, canonical, Open Graph, Twitter cards | Rank Math | WordPress core (robots, canonical) |
 | Structured data (JSON-LD) | Rank Math | Theme (Organization, WebSite, WebPage, BreadcrumbList, Article, ProfilePage) |

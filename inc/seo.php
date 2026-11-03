@@ -337,3 +337,162 @@ function lq_page_excerpt( $excerpt, $post ) {
 	return $excerpt;
 }
 add_filter( 'get_the_excerpt', 'lq_page_excerpt', 20, 2 );
+
+/**
+ * Title tags under Rank Math: the same "<page part> | Lailatulqadar" form,
+ * under 60 characters. Rank Math's own text is kept as the page part; any
+ * site name it adds at the end, with whatever separator, is replaced by the
+ * theme's, and a long page part is cut at a word. Runs after
+ * lq_expand_seo_shortcodes(), so [lq_ramadan] is already a year.
+ *
+ * @param string $title Title from Rank Math.
+ * @return string
+ */
+function lq_rank_math_title( $title ) {
+	if ( ! is_string( $title ) ) {
+		return $title;
+	}
+	$text  = trim( html_entity_decode( wp_strip_all_tags( $title ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+	$names = array_unique( array( LQ_TITLE_SITE, trim( html_entity_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) ) );
+	$seps  = array( '-', '–', '—', '|', '·', ':', '»', '•', '~', '/' );
+	$own   = lq_rank_math_separator();
+	if ( '' !== $own ) {
+		$seps[] = $own;
+	}
+	$seps = implode( '|', array_map( 'lq_preg_quote_slash', array_unique( $seps ) ) );
+	foreach ( $names as $name ) {
+		if ( '' === $name ) {
+			continue;
+		}
+		if ( 0 === strcasecmp( $text, $name ) ) {
+			return LQ_TITLE_SITE;
+		}
+		$text = trim( (string) preg_replace( '/\s*(?:' . $seps . ')\s*' . preg_quote( $name, '/' ) . '\s*$/iu', '', $text ) );
+	}
+	return lq_compose_title( $text, true );
+}
+add_filter( 'rank_math/frontend/title', 'lq_rank_math_title', 30 );
+
+/**
+ * The title separator set in Rank Math (Titles & Meta), decoded, or an empty
+ * string when Rank Math has none.
+ *
+ * @return string
+ */
+function lq_rank_math_separator() {
+	$sep = '';
+	if ( class_exists( 'RankMath\\Helper' ) && method_exists( 'RankMath\\Helper', 'get_settings' ) ) {
+		$sep = (string) \RankMath\Helper::get_settings( 'titles.title_separator' );
+	} else {
+		$opts = get_option( 'rank-math-options-titles' );
+		$sep  = is_array( $opts ) && isset( $opts['title_separator'] ) ? (string) $opts['title_separator'] : '';
+	}
+	return trim( html_entity_decode( $sep, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+}
+
+/**
+ * preg_quote() with "/" as the delimiter, for array_map().
+ *
+ * @param string $text Text.
+ * @return string
+ */
+function lq_preg_quote_slash( $text ) {
+	return preg_quote( $text, '/' );
+}
+
+/**
+ * Text cut to the meta description limit at a word boundary.
+ *
+ * @param string $text Text.
+ * @return string
+ */
+function lq_meta_trim( $text ) {
+	$text = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( strip_shortcodes( (string) $text ) ) ) );
+	if ( mb_strlen( $text ) <= LQ_META_LIMIT ) {
+		return $text;
+	}
+	$cut   = mb_substr( $text, 0, LQ_META_LIMIT - 1 );
+	$space = mb_strrpos( $cut, ' ' );
+	if ( false !== $space ) {
+		$cut = mb_substr( $cut, 0, $space );
+	}
+	return rtrim( $cut, " ,;:–-" ) . '…';
+}
+
+/**
+ * Meta description for views with no stored one: a post's excerpt, an
+ * archive's term description, or the posts page's own description.
+ *
+ * @return string
+ */
+function lq_fallback_description() {
+	if ( is_singular( 'post' ) ) {
+		$post = get_queried_object();
+		$text = '' !== trim( (string) $post->post_excerpt ) ? $post->post_excerpt : wp_trim_words( wp_strip_all_tags( strip_shortcodes( $post->post_content ) ), 40, '' );
+		return lq_meta_trim( $text );
+	}
+	if ( is_category() || is_tag() || is_tax() ) {
+		return lq_meta_trim( term_description() );
+	}
+	if ( is_home() && (int) get_option( 'page_for_posts' ) ) {
+		return lq_meta_trim( do_shortcode( (string) get_post_meta( (int) get_option( 'page_for_posts' ), LQ_META_DESCRIPTION, true ) ) );
+	}
+	return '';
+}
+
+/**
+ * Print the fallback description on posts and archives.
+ */
+function lq_meta_description_fallback() {
+	if ( lq_seo_plugin() || is_page() ) {
+		return;
+	}
+	$description = lq_fallback_description();
+	if ( '' !== $description ) {
+		printf( '<meta name="description" content="%s">' . "\n", esc_attr( $description ) );
+	}
+}
+add_action( 'wp_head', 'lq_meta_description_fallback', 1 );
+
+/**
+ * Canonical address of an archive view, page number included. WordPress
+ * prints one for single posts and pages only.
+ *
+ * @return string Empty when the view has none.
+ */
+function lq_archive_canonical() {
+	if ( is_category() || is_tag() || is_tax() ) {
+		$base = get_term_link( get_queried_object() );
+	} elseif ( is_post_type_archive() ) {
+		$base = get_post_type_archive_link( (string) get_query_var( 'post_type' ) );
+	} elseif ( is_home() && ! is_front_page() ) {
+		$blog = (int) get_option( 'page_for_posts' );
+		$base = $blog ? get_permalink( $blog ) : home_url( '/' );
+	} else {
+		return '';
+	}
+	if ( ! $base || is_wp_error( $base ) ) {
+		return '';
+	}
+	$paged = (int) get_query_var( 'paged' );
+	if ( $paged > 1 ) {
+		$base = get_option( 'permalink_structure' )
+			? user_trailingslashit( trailingslashit( $base ) . 'page/' . $paged )
+			: add_query_arg( 'paged', $paged, $base );
+	}
+	return $base;
+}
+
+/**
+ * Print the archive canonical link.
+ */
+function lq_print_archive_canonical() {
+	if ( lq_seo_plugin() || is_singular() ) {
+		return;
+	}
+	$url = lq_archive_canonical();
+	if ( '' !== $url ) {
+		printf( '<link rel="canonical" href="%s">' . "\n", esc_url( $url ) );
+	}
+}
+add_action( 'wp_head', 'lq_print_archive_canonical', 2 );

@@ -85,7 +85,8 @@ function lq_article_keys() {
 
 /**
  * Image for an Article node: the featured image, else the lead photograph
- * of the page (inc/data/images.json) at its largest size, else the site mark.
+ * of the page (inc/data/images.json) at its largest size, else the first
+ * photograph placed with a lailatulqadar/photo block, else the site mark.
  *
  * @param int    $id  Post ID.
  * @param string $key Registry key, or an empty string.
@@ -108,6 +109,11 @@ function lq_article_image_url( $id, $key ) {
 			}
 		}
 		return lq_image_file( $lead, max( $lead['widths'] ), LQ_URI );
+	}
+	$post   = get_post( $id );
+	$blocks = ( $post && function_exists( 'lq_photo_block_images' ) ) ? lq_photo_block_images( $post ) : array();
+	if ( $blocks ) {
+		return lq_image_file( $blocks[0], max( $blocks[0]['widths'] ), LQ_URI );
 	}
 	return LQ_URI . '/images/lailatulqadar-mark-512.png';
 }

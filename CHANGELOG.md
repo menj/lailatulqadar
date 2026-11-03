@@ -6,11 +6,11 @@ All notable changes to the Lailatulqadar theme are recorded here.
 
 Brings the theme in line with Google's SEO Starter Guide and its list of supported structured data features.
 
-- Titles under Rank Math: `lq_rank_math_title()` runs on `rank_math/frontend/title` after the `[lq_ramadan]` expansion. It keeps Rank Math's text as the page part, swaps any site name and separator at the end for " | Lailatulqadar", and cuts a long page part at a word, so every title stays under 60 characters.
+- Titles under Rank Math: `lq_rank_math_title()` runs on `rank_math/frontend/title` after the `[lq_ramadan]` expansion. It keeps Rank Math's text as the page part, swaps any site name and separator at the end for " | Lailatulqadar", and cuts a long page part at a word, so every title stays under 60 characters. The separator set in Rank Math is read from its settings (`lq_rank_math_separator()`), so a custom one such as "/" is stripped too.
 - Meta descriptions on posts (the excerpt, else the first 40 words) and on category, tag and term archives (the term description), cut at a word to 130 characters. Pages keep their stored description.
 - Canonical link on term, post-type and posts-page archives, page number included. WordPress already prints one on single posts and pages.
-- Article structured data always has an image. A page with no featured image takes its lead photograph from `inc/data/images.json` at the largest width, and any other post takes the site mark.
-- Image sitemap at `/image-sitemap.xml` (`inc/image-sitemap.php`): every published page and post with its featured image and the photographs in its `lailatulqadar/photo` blocks. robots.txt names it. It stands down while an SEO plugin is active.
+- Article structured data always has an image. A page with no featured image takes its lead photograph from `inc/data/images.json` at the largest width, and any other post takes the first photograph of its `lailatulqadar/photo` blocks, else the site mark.
+- Image sitemap at `/image-sitemap.xml` (`inc/image-sitemap.php`): every published page and post with its featured image and the photographs in its `lailatulqadar/photo` blocks, resolved as the block renders them: a block with an empty key takes the page's own. Posts are read in batches of 200, so none is dropped. robots.txt names it. It stands down while an SEO plugin is active.
 - No article changed, so `inc/data/seed-history.json` is unchanged. Setup runs once for the new version.
 
 ## 1.11.2 (2026-11-02)

@@ -25,30 +25,51 @@ function lq_image_sitemap_images( $post ) {
 	if ( $thumb ) {
 		$images[] = (string) wp_get_attachment_url( $thumb );
 	}
-	$own = lq_page_key_of( $post->ID );
-	foreach ( parse_blocks( (string) $post->post_content ) as $block ) {
-		lq_image_sitemap_walk( $block, $own, $images );
+	foreach ( lq_photo_block_images( $post ) as $image ) {
+		if ( file_exists( lq_image_file( $image, max( $image['widths'] ), LQ_DIR ) ) ) {
+			$images[] = lq_image_file( $image, max( $image['widths'] ), LQ_URI );
+		}
 	}
 	return array_values( array_unique( array_filter( $images ) ) );
 }
 
 /**
+ * Image entries of the lailatulqadar/photo blocks in a post, nested ones
+ * included, resolved as blocks/photo/render.php does: the block's key, or
+ * the post's own registry key when the block's is empty.
+ *
+ * @param WP_Post $post Post or page.
+ * @return array[] Entries from inc/data/images.json.
+ */
+function lq_photo_block_images( $post ) {
+	$images = array();
+	$own    = lq_page_key_of( $post->ID );
+	foreach ( parse_blocks( (string) $post->post_content ) as $block ) {
+		lq_photo_block_walk( $block, $own, $images );
+	}
+	return $images;
+}
+
+/**
  * Collect photo blocks, nested ones included.
  *
- * @param array    $block  Parsed block.
- * @param string   $own    Registry key of the post.
- * @param string[] $images Collected addresses.
+ * @param array   $block  Parsed block.
+ * @param string  $own    Registry key of the post.
+ * @param array[] $images Collected image entries.
  */
-function lq_image_sitemap_walk( $block, $own, &$images ) {
+function lq_photo_block_walk( $block, $own, &$images ) {
 	if ( 'lailatulqadar/photo' === $block['blockName'] ) {
-		$key   = isset( $block['attrs']['key'] ) ? sanitize_key( $block['attrs']['key'] ) : $own;
+		$key = isset( $block['attrs']['key'] ) ? sanitize_key( $block['attrs']['key'] ) : '';
+		if ( '' === $key ) {
+			$key = $own;
+		}
 		$image = '' !== $key ? lq_image( $key, max( 1, (int) ( $block['attrs']['n'] ?? 1 ) ) ) : null;
-		if ( $image && file_exists( lq_image_file( $image, max( $image['widths'] ), LQ_DIR ) ) ) {
-			$images[] = lq_image_file( $image, max( $image['widths'] ), LQ_URI );
+		if ( $image ) {
+			$images[] = $image;
 		}
 	}
 	foreach ( (array) $block['innerBlocks'] as $inner ) {
-		lq_image_sitemap_walk( $inner, $own, $images );
+		lq_photo_block_walk( $inner, $own, $images );
 	}
 }
 
@@ -58,16 +79,25 @@ function lq_image_sitemap_walk( $block, $own, &$images ) {
  * @return string
  */
 function lq_image_sitemap_xml() {
-	$posts = get_posts(
-		array(
-			'post_type'      => array( 'page', 'post' ),
-			'post_status'    => 'publish',
-			'posts_per_page' => 1000,
-			'has_password'   => false,
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		)
-	);
+	$posts = array();
+	$paged = 1;
+	do {
+		// Batches of 200, so every post is listed without one unbounded query.
+		$batch = get_posts(
+			array(
+				'post_type'      => array( 'page', 'post' ),
+				'post_status'    => 'publish',
+				'posts_per_page' => 200,
+				'paged'          => $paged,
+				'has_password'   => false,
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+				'no_found_rows'  => true,
+			)
+		);
+		$posts = array_merge( $posts, $batch );
+		++$paged;
+	} while ( count( $batch ) === 200 );
 	$xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
 		. '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
 	foreach ( $posts as $post ) {

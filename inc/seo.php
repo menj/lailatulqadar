@@ -353,7 +353,13 @@ function lq_rank_math_title( $title ) {
 		return $title;
 	}
 	$text  = trim( html_entity_decode( wp_strip_all_tags( $title ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
-	$names = array_unique( array( LQ_TITLE_SITE, wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES ) ) );
+	$names = array_unique( array( LQ_TITLE_SITE, trim( html_entity_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) ) );
+	$seps  = array( '-', '–', '—', '|', '·', ':', '»', '•', '~', '/' );
+	$own   = lq_rank_math_separator();
+	if ( '' !== $own ) {
+		$seps[] = $own;
+	}
+	$seps = implode( '|', array_map( 'lq_preg_quote_slash', array_unique( $seps ) ) );
 	foreach ( $names as $name ) {
 		if ( '' === $name ) {
 			continue;
@@ -361,11 +367,38 @@ function lq_rank_math_title( $title ) {
 		if ( 0 === strcasecmp( $text, $name ) ) {
 			return LQ_TITLE_SITE;
 		}
-		$text = trim( (string) preg_replace( '/\s*[-–—|·:»•~]\s*' . preg_quote( $name, '/' ) . '\s*$/iu', '', $text ) );
+		$text = trim( (string) preg_replace( '/\s*(?:' . $seps . ')\s*' . preg_quote( $name, '/' ) . '\s*$/iu', '', $text ) );
 	}
 	return lq_compose_title( $text, true );
 }
 add_filter( 'rank_math/frontend/title', 'lq_rank_math_title', 30 );
+
+/**
+ * The title separator set in Rank Math (Titles & Meta), decoded, or an empty
+ * string when Rank Math has none.
+ *
+ * @return string
+ */
+function lq_rank_math_separator() {
+	$sep = '';
+	if ( class_exists( 'RankMath\\Helper' ) && method_exists( 'RankMath\\Helper', 'get_settings' ) ) {
+		$sep = (string) \RankMath\Helper::get_settings( 'titles.title_separator' );
+	} else {
+		$opts = get_option( 'rank-math-options-titles' );
+		$sep  = is_array( $opts ) && isset( $opts['title_separator'] ) ? (string) $opts['title_separator'] : '';
+	}
+	return trim( html_entity_decode( $sep, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+}
+
+/**
+ * preg_quote() with "/" as the delimiter, for array_map().
+ *
+ * @param string $text Text.
+ * @return string
+ */
+function lq_preg_quote_slash( $text ) {
+	return preg_quote( $text, '/' );
+}
 
 /**
  * Text cut to the meta description limit at a word boundary.

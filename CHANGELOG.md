@@ -2,6 +2,11 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.12.1 (2026-11-03)
+
+- `inc/data/network-links.json` takes the new addresses on the sister sites. On 3 November 2026 the owner ruled that no address on the network carries a verse number, a count or a year, and each site answers its old addresses with a 301. Best of Islam drops the counts from its article addresses, murtadd.org moves its Qur'an 4:34 rebuttal to `/rebuttals/quran-wife-beating-verse-in-context/`, and the Abrahamic Religions, Compelling Evidence and injil.help paths follow their earlier renames. The file is the same in all seven themes again.
+- No address on this site carries a digit, so none moves.
+
 ## 1.12.0 (2026-11-03)
 
 Brings the theme in line with Google's SEO Starter Guide and its list of supported structured data features.

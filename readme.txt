@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.12.0
+Stable tag: 1.12.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
+
+= 1.12.1 =
+* Links to the sister sites follow their new addresses, which carry no verse numbers, counts or years.
 
 = 1.12.0 =
 * Title tags keep the form "page title | Lailatulqadar", under 60 characters, with Rank Math active too.

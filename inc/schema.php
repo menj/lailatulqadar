@@ -365,7 +365,7 @@ function lq_schema_graph() {
 	}
 
 	// Captioned tables.
-	foreach ( lq_sc_tables( $content ) as $i => $table ) {
+	foreach ( lq_sc_tables( lq_schema_table_markup( $content ) ) as $i => $table ) {
 		if ( '' === $table['caption'] ) {
 			continue;
 		}
@@ -776,6 +776,36 @@ function lq_schema_quotations( $content, $url, $role, $lang, $note_html, $main_i
 		'top'   => $top,
 		'nodes' => array_merge( $nodes, array_values( $works ) ),
 	);
+}
+
+/**
+ * Markup to read tables from: the stored content plus the rendered output
+ * of each odd-nights block, whose captioned table exists only once the
+ * block renders.
+ *
+ * @param string $content Block markup.
+ * @return string
+ */
+function lq_schema_table_markup( $content ) {
+	$html = (string) $content;
+	if ( ! function_exists( 'render_block' ) ) {
+		return $html;
+	}
+	foreach ( lq_sc_blocks( $content ) as $block ) {
+		if ( 'odd-nights' !== $block[0] ) {
+			continue;
+		}
+		$html .= render_block(
+			array(
+				'blockName'    => 'lailatulqadar/odd-nights',
+				'attrs'        => $block[1],
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			)
+		);
+	}
+	return $html;
 }
 
 /**

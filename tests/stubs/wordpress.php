@@ -217,3 +217,20 @@ function absint( $n ) {
 	return abs( (int) $n );
 }
 define( 'DAY_IN_SECONDS', 86400 );
+function esc_html( $s ) {
+	return htmlspecialchars( (string) $s, ENT_QUOTES, 'UTF-8' );
+}
+function get_block_wrapper_attributes( $extra = array() ) {
+	// A style after class, as WordPress prints it for a block with spacing set.
+	return 'class="' . esc_html( $extra['class'] ?? '' ) . ' wp-block-lailatulqadar-odd-nights" style="margin-top:1rem" id="odd-nights"';
+}
+function render_block( $block ) {
+	$file = LQ_DIR . '/blocks/' . substr( $block['blockName'], strlen( 'lailatulqadar/' ) ) . '/render.php';
+	if ( ! is_file( $file ) ) {
+		return '';
+	}
+	$attributes = $block['attrs'];
+	ob_start();
+	include $file;
+	return (string) ob_get_clean();
+}

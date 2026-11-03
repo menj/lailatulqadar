@@ -191,7 +191,7 @@ function lq_test_check( $graph, $key, $role, $rank_math, $vocab ) {
 		'worship' => array( 'HowTo', 'Table', 'Quotation' ),
 		'start'   => array( 'HowTo', 'ImageObject' ),
 		'when'    => array( 'Event', 'ItemList', 'Table' ),
-		'last10'  => array( 'Event', 'ItemList' ),
+		'last10'  => array( 'Event', 'ItemList', 'Table' ),
 		'planner' => array( 'Event' ),
 		'surah'   => array( 'Quotation', 'Chapter', 'Book' ),
 		'what'    => array( 'Quotation', 'Book', 'CreativeWork', 'ImageObject' ),
@@ -201,6 +201,19 @@ function lq_test_check( $graph, $key, $role, $rank_math, $vocab ) {
 	foreach ( isset( $expect[ $key ] ) ? $expect[ $key ] : array() as $type ) {
 		if ( empty( $types[ $type ] ) ) {
 			$errors[] = "expected a $type node";
+		}
+	}
+	// The odd-nights block renders its table later; its caption must still
+	// reach a Table node.
+	if ( in_array( $key, array( 'when', 'last10' ), true ) ) {
+		$odd = false;
+		foreach ( $graph as $node ) {
+			if ( isset( $node['@type'], $node['name'] ) && 'Table' === $node['@type'] && preg_match( '/^(Dates follow|Tarikh mengikut)/u', $node['name'] ) ) {
+				$odd = true;
+			}
+		}
+		if ( ! $odd ) {
+			$errors[] = 'expected a Table node for the odd-nights table';
 		}
 	}
 	foreach ( array( 'WPHeader', 'WPFooter', 'SiteNavigationElement' ) as $type ) {

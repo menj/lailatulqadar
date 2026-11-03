@@ -123,7 +123,8 @@ function lq_sc_howto( $content ) {
  * @return array[] Each: caption, columns (header cell texts).
  */
 function lq_sc_tables( $content ) {
-	preg_match_all( '#<figure class="wp-block-table[^"]*">(.*?)</figure>#su', (string) $content, $m );
+	// Attribute order varies: a style or id may come before or after class.
+	preg_match_all( '#<figure\b(?=[^>]*\sclass="(?:[^"]*\s)?wp-block-table[\s"])[^>]*>(.*?)</figure>#su', (string) $content, $m );
 	$out = array();
 	foreach ( $m[1] as $table ) {
 		$caption = preg_match( '#<figcaption[^>]*>(.*?)</figcaption>#su', $table, $c ) ? lq_sc_text( $c[1] ) : '';

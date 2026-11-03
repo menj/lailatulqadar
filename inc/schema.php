@@ -84,6 +84,35 @@ function lq_article_keys() {
 }
 
 /**
+ * Image for an Article node: the featured image, else the lead photograph
+ * of the page (inc/data/images.json) at its largest size, else the site mark.
+ *
+ * @param int    $id  Post ID.
+ * @param string $key Registry key, or an empty string.
+ * @return string Address.
+ */
+function lq_article_image_url( $id, $key ) {
+	if ( has_post_thumbnail( $id ) ) {
+		$url = get_the_post_thumbnail_url( $id, 'full' );
+		if ( $url ) {
+			return $url;
+		}
+	}
+	$data = '' !== $key ? lq_images_data() : array();
+	if ( ! empty( $data[ $key ] ) ) {
+		$lead = $data[ $key ][0];
+		foreach ( $data[ $key ] as $image ) {
+			if ( $image['lead'] ) {
+				$lead = $image;
+				break;
+			}
+		}
+		return lq_image_file( $lead, max( $lead['widths'] ), LQ_URI );
+	}
+	return LQ_URI . '/images/lailatulqadar-mark-512.png';
+}
+
+/**
  * Build the JSON-LD graph for the current request.
  *
  * @return array
@@ -211,9 +240,9 @@ function lq_schema_graph() {
 		if ( $desc ) {
 			$article['description'] = $desc;
 		}
-		if ( has_post_thumbnail( $id ) ) {
-			$article['image'] = array( get_the_post_thumbnail_url( $id, 'full' ) );
-		}
+		// Google asks for an image on every Article: the featured image, else
+		// the page's lead photograph, else the site mark.
+		$article['image'] = array( lq_article_image_url( $id, $key ) );
 		$graph[] = $article;
 	}
 

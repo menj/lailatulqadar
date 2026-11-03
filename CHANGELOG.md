@@ -2,6 +2,27 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.13.0 (2026-11-03)
+
+On 3 November 2026 the owner ruled that the site keeps every schema.org type that describes a page, whether Google shows a rich result for it or not. A type goes on a page only when what it describes is on that page.
+
+- Rank Math: `lq_rank_math_json_ld()` runs on `rank_math/json_ld` at priority 99 and folds the theme's nodes into Rank Math's graph (`lq_sc_merge_graph()`). A node whose `@id` Rank Math already has fills only the properties Rank Math left empty. The theme's WebSite, publisher, WebPage, breadcrumb and Article join Rank Math's nodes of the same kind, and every reference follows them, so `#article` becomes Rank Math's `#richSnippet`. Before this release the theme printed nothing under Rank Math and its nodes were lost. Under any other SEO plugin it still stands aside.
+- New `inc/schema-content.php` reads the stored block markup, and only the classes the articles and blocks set: question headings, numbered step lists, table captions, `lq-verse` and `lq-hadith-card` figures, `lq-figure` diagrams, the "In brief" box, photo blocks and the core footnotes.
+- FAQPage: a page with three or more H2 questions, each with its answer, adds FAQPage to its WebPage with every Question in `mainEntity`. Today that is the FAQ in both languages, 17 questions each.
+- HowTo: an ordered list under an H2 whose items each open with a bold step name. The start page ("If you only have a few minutes") and the worship page ("A step-by-step plan for one night") qualify.
+- Event: a page that shows a Ramadan date (a dated `[lq_ramadan]`, the odd-nights table or the night window) gets the month as an Event, with the dates of the Umm al-Qura table or the settings override and the day-later start in its description. The odd-nights table adds an ItemList of the five odd nights as Events, from the evening each begins. The night window adds the last ten nights. No location is given, since the pages show none.
+- Images: every photograph a page places is an ImageObject with its address, size, caption, alt text, credit line, creator, licence deed, source page and copyright holder (left out for public domain and CC0). The page's lead photograph is `primaryImageOfPage` and `representativeOfPage`, and the Article's image when no featured image is set. SVG diagrams are ImageObjects created by the site.
+- Footnotes that name a source (a link, a number, volume, page or edition) are the Article's `citation`, each a CreativeWork. Commentary notes are left out.
+- Scripture: each verse is a Quotation of the Arabic text, part of its surah (Chapter) of the Qurʾān (Book). Each hadith card is a Quotation, part of its collection with its number when the card's footnote gives them, and its grading as a PropertyValue when the note states one. The translation shown beneath is a second Quotation with `translationOfWork`.
+- Tables with a caption are Table nodes, with the header cells as `about`.
+- `lq_sc_tables()` finds a table figure wherever `class` sits among its attributes. Before the fix a `style` or `id` after `class` hid the figure, and its caption was lost.
+- The odd-nights table exists only once its block renders, since the stored content holds a block comment. `lq_schema_table_markup()` adds the block's rendered output before the tables are read, so the table and its caption on the when and last-ten-nights pages become a Table node. The test stubs now render the block, with a `style` and an `id` after `class`, and the test expects that Table on both pages in both languages.
+- Page frame: WPHeader, WPFooter, and a SiteNavigationElement for the guide menu and the footer menu with each link. The WebSite has a SearchAction (Malay searches keep `lang=ms`). Search and archive views are SearchResultsPage and CollectionPage. The contact page is a ContactPage; About is AboutPage as well as ProfilePage. `speakable` names the page title and the "In brief" box.
+- Article details: word count, abstract (the "In brief" box), free access, copyright year and holder as the footer shows them, access modes and accessibility features, section and keywords on posts.
+- Translations: an English article has `workTranslation` pointing to the Malay article, and the Malay one `translationOfWork` back.
+- New `tests/schema-graph-test.php` renders all 32 pages, with and without a sample Rank Math graph, against stubs in `tests/stubs/wordpress.php`. It checks that the JSON parses, every `@id` is unique, every reference resolves, required properties are there, the expected nodes appear and nowhere else, and the merged graph has one WebSite, WebPage and Article. Set `LQ_SCHEMA_VOCAB` to the schema.org vocabulary file to check every type and property against it.
+- No article changed, so `inc/data/seed-history.json` is unchanged.
+
 ## 1.12.1 (2026-11-03)
 
 - `inc/data/network-links.json` takes the new addresses on the sister sites. On 3 November 2026 the owner ruled that no address on the network carries a verse number, a count or a year, and each site answers its old addresses with a 301. Best of Islam drops the counts from its article addresses, murtadd.org moves its Qur'an 4:34 rebuttal to `/rebuttals/quran-wife-beating-verse-in-context/`, and the Abrahamic Religions, Compelling Evidence and injil.help paths follow their earlier renames. The file is the same in all seven themes again.

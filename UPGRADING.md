@@ -2,6 +2,10 @@
 
 You can skip versions: upload the newest zip over any 1.9.x and open any admin screen as an administrator. Setup knows every version of each article the theme has shipped, so in one run it brings every unedited page up to date and lists pages you have edited under "Edited, not updated" on the Tools tab. The entries below say what each version changes on the site.
 
+## To 1.15.0
+
+Upload the zip and open any admin screen as an administrator. Setup clears the posts page and any post template a page carries, once. Post addresses and feeds then send visitors to the home page of their language. Resubmit the sitemap in Google Search Console afterwards.
+
 ## From 1.9.18 to 1.11.0
 
 Upload the new zip over 1.9.18 and open any admin screen as an administrator. Setup refreshes the Night Planner and The Last Ten Nights (English) unless edited. The Security tab (Appearance > Theme Options > Security) is on by default: XML-RPC, application passwords and REST writes from outside the browser stop at once. Writing in the editor, Rank Math and everything visitors do are unchanged.

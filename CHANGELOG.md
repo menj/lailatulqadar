@@ -2,6 +2,19 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.15.0 (2026-11-03)
+
+On 3 November 2026 the owner decided that the site has no blog. Posts are retired.
+
+- Removed `templates/home.html`, `archive.html` and `single.html` and the `lailatulqadar/blog-title` pattern. `templates/index.html` now shows a title and content, as `page.html` does, so the fallback view no longer lists posts.
+- New `inc/no-blog.php`. It drops the post templates from the editor and the template hierarchy, so the parent's blog home and Site Editor copies are gone too.
+- The blog home, single posts, date, author, category and tag archives and all feeds answer 301 to the language home (/ms/ for Malay). Feed links are gone from the head.
+- Posts leave the core sitemap, the image sitemap and the Rank Math sitemap; Rank Math also drops categories and tags.
+- Setup runs a one-time migration (`lailatulqadar_blog_retired`, version 1.15.0). It clears the posts page and removes any post template a page was given. A second run does nothing. The page that was the posts page keeps its content; its ID goes into `lailatulqadar_former_posts_page`, and its address answers 301 to its language home.
+- A post with no language mark under /ms/ goes to the Malay home.
+- New `tests/no-blog-test.php` checks the removed files, the template filter, every redirect, the sitemap filters and the migration.
+- The 410 for trashed spam and the admin menu are unchanged. No article changed, so `inc/data/seed-history.json` is unchanged.
+
 ## 1.14.0 (2026-11-03)
 
 - Each Qur'an reference under a verse (`.lq-verse cite`) and under the front-page ayah (`.lq-ayah cite`) opens with the owner's pixel book (`images/book-open.webp`, styled in `css/front.css`). Each is animated WebP drawn at its own pixel size, for decoration only; the link text is unchanged. Readers who ask for reduced motion see a still first frame.

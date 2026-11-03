@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.14.0' );
+define( 'LQ_VERSION', '1.15.0' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 
@@ -25,6 +25,7 @@ require_once LQ_DIR . '/inc/draft-links.php';
 require_once LQ_DIR . '/inc/schema-content.php';
 require_once LQ_DIR . '/inc/schema.php';
 require_once LQ_DIR . '/inc/image-sitemap.php';
+require_once LQ_DIR . '/inc/no-blog.php';
 require_once LQ_DIR . '/inc/login.php';
 require_once LQ_DIR . '/inc/security.php';
 require_once LQ_DIR . '/inc/setup.php';

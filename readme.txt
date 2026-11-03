@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.12.1
+Stable tag: 1.13.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,12 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 Setup saves guide pages as drafts. A page joins the menus when it is published.
 
 == Changelog ==
+
+= 1.13.0 =
+* With Rank Math active, the theme's structured data joins Rank Math's graph. A page still has one graph.
+* FAQPage on the FAQ, HowTo where a page shows numbered steps, Event for the Ramadan dates and odd nights a page shows.
+* Photographs carry their credit, licence and source; footnotes become citations; tables, verses and hadith, menus, header and footer are marked up.
+* English and Malay articles point to each other as translations.
 
 = 1.12.1 =
 * Links to the sister sites follow their new addresses, which carry no verse numbers, counts or years.

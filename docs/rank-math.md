@@ -9,7 +9,7 @@ Rank Math is the site's SEO plugin. When it is active, the theme hands over ever
 | Title tag | Rank Math, held by the theme to "page part \| Lailatulqadar" under 60 characters | Theme (`_lq_seo_title`) |
 | Meta description | Rank Math | Theme (`_lq_meta_description`) |
 | Robots meta, canonical, Open Graph, Twitter cards | Rank Math | WordPress core (robots, canonical) |
-| Structured data (JSON-LD) | Rank Math | Theme (Organization, WebSite, WebPage, BreadcrumbList, Article, ProfilePage) |
+| Structured data (JSON-LD) | Rank Math's graph, with the theme's nodes merged in through `rank_math/json_ld` | Theme (the full graph, docs/google-guidelines.md) |
 | Breadcrumb trail on the page | Rank Math's trail when its breadcrumbs are on; otherwise the theme's plain trail with no structured data | Theme |
 | XML sitemap | Rank Math (`/sitemap_index.xml`; the WordPress sitemap redirects to it) | WordPress core, trimmed to pages |
 | Search Console and Bing verification | Rank Math (General Settings > Webmaster Tools) | Theme (Search tab) |
@@ -28,7 +28,7 @@ Dated wording uses two Rank Math variables the theme registers, so the year roll
 ## Recommended Rank Math settings
 
 - **General Settings > Breadcrumbs:** on. Separator ›. Home label "Home"; the Malay breadcrumb label follows Rank Math's own setting, so keep "Home" or set a bilingual label.
-- **Titles & Meta > Global > Schema:** leave FAQ and HowTo unused; Google no longer supports them.
+- **Titles & Meta > Global > Schema:** leave Rank Math's FAQ and HowTo blocks unused. The theme marks the FAQ page and the numbered steps itself, from what the page shows, and a second copy would repeat them.
 - **Titles & Meta > Pages:** schema type Article for the ten guide articles; WebPage (or none) for the front page, HTML sitemap, contact and planner pages.
 - **Titles & Meta > Local SEO / Knowledge Graph:** Organization; name as the site title; logo `wp-content/themes/lailatulqadar/images/lailatulqadar-mark-512.png` (or your own); author details on the About page.
 - **Sitemap Settings:** include pages; exclude posts, categories, tags and authors while the site has no blog.

@@ -28,26 +28,29 @@ Parts of the 2010 guide no longer apply: the Open Directory Project closed in 20
 
 ## Structured data
 
-Of the types Google lists as supported, three fit a guide site. The theme emits them as one JSON-LD graph per page:
+On 3 November 2026 the owner ruled that the site keeps every schema.org type that describes a page, whether Google lists it as a rich result or not. Each page gets one JSON-LD graph, and a type goes in only when what it describes is on the page.
 
-| Type | Where | Notes |
+| Type | Where | Source |
 |---|---|---|
-| Organization | Every page | Name, URL and logo: the Site Icon when set, otherwise the theme's 512 × 512 mark |
-| Breadcrumb | Every page except the front page | Home, then the page, in the page's language |
-| Article | The ten guide articles | Headline, description, dates, author (Person), publisher, language; image from the featured image when one is set |
-| Profile page | The About page, both languages | From 1.7.3: about the named author (General tab), or the organisation when none is named |
+| Organization, WebSite with SearchAction | Every page | Site name, Site Icon or the 512 × 512 mark, the search form |
+| WPHeader, SiteNavigationElement, WPFooter | Every page | The header guide menu and the footer menu, with each link |
+| WebPage, BreadcrumbList | Every page except the front page has a breadcrumb | Title, description, language, lead photograph, `speakable` for the title and the "In brief" box |
+| SearchResultsPage, CollectionPage | Search and archive views | The breadcrumb trail |
+| Article | The ten guide articles and posts | Headline, dates, author, publisher, word count, abstract, citations, image, translation link |
+| ProfilePage, AboutPage | About | The named author, else the organisation |
+| ContactPage | Contact | |
+| FAQPage, Question, Answer | Pages with three or more H2 questions: the FAQ | The heading and the text below it |
+| HowTo, HowToStep | Ordered lists whose items open with a bold step name: start, worship | The list as shown |
+| Event, ItemList | Pages that show Ramadan dates: when, last10, planner | `inc/ramadan.php`, the dates the page prints |
+| ImageObject | Every photograph and SVG diagram placed | `inc/data/images.json`: credit, licence, source |
+| Quotation, Chapter, Book, PropertyValue | Verses and hadith cards | The Arabic text, the translation shown, the footnote's collection, number and grading |
+| CreativeWork | Footnotes that name a source | The core footnotes |
+| Table | Captioned tables | Caption and header cells |
 
-WebSite and WebPage nodes connect them. Types not used, and why:
+With Rank Math active, the theme adds these to Rank Math's graph through `rank_math/json_ld` and prints nothing itself. Under another SEO plugin the theme prints no structured data and leaves the XML sitemap alone.
 
-- **FAQPage and HowTo:** absent from Google's June 2026 list of supported features, so they would produce no rich result. The FAQ page stays a normal article.
-- **Q&A:** meant for pages where users submit answers to one question.
-- **Event:** meant for events people attend at a place and time; the night is a religious observance without a venue.
-- **Speakable:** limited to news content.
-- **Image metadata and Image Sitemap:** the site's illustrations are inline SVG drawn by the theme, which Google Images does not index as image files. Revisit if photographs are added.
-- **Video:** no video content.
+The Events carry no location, because the pages name none, so Google shows no event result for them. The owner keeps them for the dates they record.
 
-Checked on the test site (1.7.3): every page has one H1, a canonical link and hreflang alternates; images all carry alt text; the missing-page test returned 404; search results carry noindex.
-
-When Yoast, Rank Math or another SEO plugin is active, the theme prints no structured data and leaves the XML sitemap alone, so nothing is duplicated.
+`php tests/schema-graph-test.php` checks the graph of every page in both languages.
 
 Test each template with Google's Rich Results Test after launch.

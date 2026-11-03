@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.12.1. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.13.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -42,7 +42,9 @@ Version 1.12.1. This file records the architecture, stored data and binding deci
 | `js/security.js`, `css/security.css` | Security tab script and styles |
 | `tests/security-detector-test.php` | Detector self-test against every shipped article, page definition and pattern, and the attack samples |
 | `js/vendor/adhan.min.js` | adhan 4.4.6 prayer-time library (MIT) |
-| `inc/schema.php` | JSON-LD graph (Organization, WebSite, WebPage, BreadcrumbList, Article, ProfilePage on About), breadcrumb trail, XML sitemap trimming. Every Article carries an image: featured image, else the lead photograph from `inc/data/images.json`, else the site mark |
+| `inc/schema.php` | JSON-LD graph, breadcrumb trail, XML sitemap trimming, Rank Math merge (`lq_rank_math_json_ld()` on `rank_math/json_ld`). Every Article carries an image: featured image, else the lead photograph from `inc/data/images.json`, else the site mark |
+| `inc/schema-content.php` | Readers for what a page shows (questions, steps, tables, verses, hadith, diagrams, footnotes, photo blocks) and the graph merge. No WordPress calls |
+| `tests/schema-graph-test.php`, `tests/stubs/wordpress.php` | Graph self-test over every page in both languages, with and without Rank Math. Run `php tests/schema-graph-test.php` |
 | `inc/image-sitemap.php` | Image sitemap at /image-sitemap.xml (featured images and photo blocks of every published page and post), named in robots.txt; off while an SEO plugin is active |
 | `blocks/breadcrumbs/` | Visible breadcrumbs above the page title |
 | `inc/seo.php` | Title tag (also under Rank Math), meta description (stored on pages; excerpt on posts, term description on archives), canonical link on archives, editor box, SEO plugin detection |
@@ -189,9 +191,9 @@ General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Ima
 
 Parent theme: Twenty Twenty-Five, tested with 1.5 (docs/parent-theme.md).
 
-SEO plugin: Rank Math. While it is active, the theme defers on titles, descriptions, robots, canonical, social tags, structured data, breadcrumbs (when Rank Math's are on), the XML sitemap and verification codes (docs/rank-math.md). Theme-only output remains as the fallback when no SEO plugin is active.
+SEO plugin: Rank Math. While it is active, the theme defers on titles, descriptions, robots, canonical, social tags, breadcrumbs (when Rank Math's are on), the XML sitemap and verification codes, and adds its structured data to Rank Math's graph (docs/rank-math.md). Theme-only output remains as the fallback when no SEO plugin is active.
 
-Structured data uses only types on Google's supported list (docs/google-guidelines.md): Organization, Breadcrumb, Article, Profile page. FAQPage and HowTo are excluded.
+Structured data: the owner keeps every schema.org type that describes a page, Google rich result or not, and never drops one (decision of 3 November 2026). A type goes on a page only when what it describes is shown there. One graph per page: with Rank Math active the theme merges into Rank Math's graph through `rank_math/json_ld` and never prints a second one; `@id` values are the page address plus a fragment. FAQPage goes where questions and answers are shown, HowTo where numbered steps are shown. The types in use are listed in docs/google-guidelines.md.
 
 Dates: never write a Gregorian year or date of Ramadan into content, titles or descriptions. Use `[lq_ramadan]` or the Odd nights dates block. Every Gregorian date shown to readers carries its Hijri equivalent (English "27 Ramadan 1448 AH", Malay "27 Ramadan 1448 H"; Shawwal is Syawal in Malay). The Umm al-Qura table runs to 1473 AH (2051); extend it before then.
 

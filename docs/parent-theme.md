@@ -18,7 +18,7 @@ Lailatulqadar is a child of Twenty Twenty-Five and is tested against version 1.5
 
 | Parent feature | What the child does | Why |
 |---|---|---|
-| Templates: front page, page, page without title, single, archive, search, home, index, 404; header and footer parts | Own versions of every one | So every view carries the child's design; before 1.8.0 the parent's `home.html` and `page-no-title.html` still applied |
+| Templates: front page, page, page without title, search, index, 404 (no post templates since 1.15.0); header and footer parts | Own versions of every one | So every view carries the child's design; before 1.8.0 the parent's `home.html` and `page-no-title.html` still applied |
 | Fonts Manrope and Fira Code | Not loaded; body text uses EB Garamond and code blocks use the child's monospace stack | The child's font list replaces the parent's |
 | Style variations (Evening, Noon, Dusk and five more), colour palettes and typography presets | Hidden from the Site Editor's Styles panel | Each replaces the child's palette or fonts, and the typography presets point at font files the child does not load. The filter `lq_allow_parent_variations` restores them |
 | `twentytwentyfive_enqueue_styles()` | Replaced by a child version | The parent's version stamps its stylesheet with the active theme's version, which in a child theme is the child's; the child's version uses the parent's number, so browsers refresh the parent stylesheet only when the parent changes |

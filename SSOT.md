@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.14.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.15.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -45,7 +45,7 @@ Version 1.14.0. This file records the architecture, stored data and binding deci
 | `inc/schema.php` | JSON-LD graph, breadcrumb trail, XML sitemap trimming, Rank Math merge (`lq_rank_math_json_ld()` on `rank_math/json_ld`). Every Article carries an image: featured image, else the lead photograph from `inc/data/images.json`, else the site mark |
 | `inc/schema-content.php` | Readers for what a page shows (questions, steps, tables, verses, hadith, diagrams, footnotes, photo blocks) and the graph merge. No WordPress calls |
 | `tests/schema-graph-test.php`, `tests/stubs/wordpress.php` | Graph self-test over every page in both languages, with and without Rank Math. Run `php tests/schema-graph-test.php` |
-| `inc/image-sitemap.php` | Image sitemap at /image-sitemap.xml (featured images and photo blocks of every published page and post), named in robots.txt; off while an SEO plugin is active |
+| `inc/image-sitemap.php` | Image sitemap at /image-sitemap.xml (featured images and photo blocks of every published page), named in robots.txt; off while an SEO plugin is active |
 | `blocks/breadcrumbs/` | Visible breadcrumbs above the page title |
 | `inc/seo.php` | Title tag (also under Rank Math), meta description (stored on pages; excerpt on posts, term description on archives), canonical link on archives, editor box, SEO plugin detection |
 | `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and the sister sites |
@@ -64,8 +64,8 @@ Version 1.14.0. This file records the architecture, stored data and binding deci
 | `js/scheme.js` | Head script for the visitor light/dark switch |
 | `inc/languages.php` | Two languages without a plugin: page language, translation pairing, hreflang, html lang, Malay site name, Malay search |
 | `inc/parent.php` | Parent stylesheet versioning; parent style variations held back |
-| `templates/single.html`, `archive.html`, `search.html`, `index.html`, `home.html`, `page-no-title.html` | Post, archive, search and blog-index views in the theme design |
-| `patterns/blog-title.php` | Posts index heading |
+| `templates/search.html`, `index.html`, `page-no-title.html` | Search results, the fallback view (title and content, as a page) and the page without a title |
+| `inc/no-blog.php`, `tests/no-blog-test.php` | The retired blog: drops the post templates, sends post views and feeds to the language home with a 301, keeps posts out of the sitemaps, and runs the one-time migration. Run `php tests/no-blog-test.php` |
 | `patterns/no-results.php` | Bilingual message for empty archives and searches |
 | `inc/login.php`, `css/login.css` | Login screen styling, brand block, title, favicon |
 | `blocks/logo-mark/` | Header logo lockup: lantern alone, and Arabic calligraphy (full mark with crescent and star on the login screen and larger icons) |
@@ -98,6 +98,7 @@ Version 1.14.0. This file records the architecture, stored data and binding deci
 | `lailatulqadar_settings` | Array: `primary_slug`, `secondary_slug`, `primary_label`, `secondary_label`, `footer_note_primary`, `footer_note_secondary`, `scheme` (`night`, `dawn`, `auto`), `scheme_toggle` (`show`, `hide`), `accent_night`, `accent_dawn`, `calligraphy_id`, `login_tagline_primary`, `login_tagline_secondary`, `login_note_primary`, `login_note_secondary`, `verify_google`, `verify_bing`, `author_name`, `author_url`, `ramadan_year`, `ramadan_start`, `ramadan_alt` (optional override for one year; empty means automatic), `ctx_own`, `ctx_sister` (`1` or `0`), `ctx_own_max` (0 to 15), `ctx_sister_max` (0 to 10), `ctx_extra`, `ctx_extra_ms`, `ctx_exclude`, `sec_xmlrpc_off`, `sec_app_passwords_off`, `sec_rest_lock`, `sec_spam_gate`, `sec_gone` (`1` or `0`, all `1` by default) |
 | `lailatulqadar_pages` | Page IDs keyed by role (`primary`, `secondary`) then page key |
 | `lailatulqadar_setup_version` | Theme version that last ran setup |
+| `lailatulqadar_blog_retired` | Version of the blog migration that has run (`1.15.0`). Setup runs it once: it clears the posts page and any post template a page was given |
 | `lailatulqadar_needs_setup` | Set on activation, cleared once setup has run on an admin visit. Setup also runs when `lailatulqadar_setup_version` differs from `LQ_VERSION` |
 | Transient `lailatulqadar_setup_lock` | Held while setup runs (five minutes at most), so two requests never run it at once |
 | Transient `lailatulqadar_setup_report` | Result of the last setup run, shown once |
@@ -166,6 +167,15 @@ Breakpoints: phones to 600px, tablets 601 to 1024px, desktop above. Type is flui
 Article rules: 1,600 to 2,500 words of body text in each language (footnotes not counted); the Night Planner (a tool page) and Hadith and Sources (a reference page) are exempt, and What Is and Prayer and Worship, which are longer, are kept at their length by the owner's decision; an In brief box, tables and at least one illustration; titles of works appear only in footnotes; every hadith VERIFIED on shamela.ws (and sunnah.com) before inclusion, NOT_FOUND items held back. Links to sources use the linked page's title as their text, never a bare address: a shamela.ws page shows its Arabic title (volume, page, book and chapter, without "المكتبة الشاملة"), with `lang="ar" dir="rtl"`, followed outside the link by a translation of that title in parentheses, in the page's language (English pages in English, Malay pages in Malay); a sunnah.com link shows the collection and number that open its title ("Sahih al-Bukhari 2014"). Classical commentaries (Ibn Ḥajar, al-Nawawī, Ibn Rajab, Ibn Kathīr) are cited as their authors' views, read on shamela.ws ("Read on …"); reports they mention are not presented as verified hadith, and practices of the early generations are labelled as theirs, not as sayings of the Prophet ﷺ. Arabic text is copied code point for code point from its source and never Unicode-normalised (NFC reorders marks and merges alif with madda, which breaks the KFGQPC orthography); a Malay page carries the same Arabic as its English page. Where gradings differ, al-Albānī's takes precedence; other gradings, such as Dār al-Salām's, are shown beside it.
 
 Binding rules: Qurʾānic text is always taken verbatim from a verified source and set in the KFGQPC face; it is never retyped, and no other typeface may render it. Hadith and other Arabic never use the KFGQPC face, so the two are always visually distinct. Rejected owner-supplied fonts: Sabon Next LT (Monotype desktop licence does not cover web embedding; lacks ḥ, ṭ, ḍ, ẓ, ʿ, ʾ), Dubidam Arabic (free for personal use only), Special Elite (typewriter display face; lacks the dot-below letters and ʿ ʾ).
+
+## No blog
+
+On 3 November 2026 the owner decided that lailatulqadar.guide has no blog. The site is the fixed guide in English and Malay, and posts are retired.
+
+- The theme ships no template for posts. `home`, `archive`, `single`, `single-post`, `date`, `author`, `category` and `tag` are dropped from the editor and from the template hierarchy, the parent's copies and Site Editor copies with them (`lq_drop_retired_templates()`).
+- The blog home, single posts, the date, author, category and tag archives and every feed answer 301 to the home page of their language: the Malay home at /ms/ for a Malay post or an address under /ms/, the front page for everything else. The 410 for trashed spam stays as it was, since that address is a 404 first.
+- Posts are out of the core sitemap, the image sitemap and the Rank Math sitemap (with categories and tags). The head carries no feed links.
+- The admin keeps its Posts menu. Nobody should write a post; one written anyway is never shown.
 
 ## Settings tabs
 

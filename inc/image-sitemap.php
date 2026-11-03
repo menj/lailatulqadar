@@ -85,7 +85,7 @@ function lq_image_sitemap_xml() {
 		// Batches of 200, so every post is listed without one unbounded query.
 		$batch = get_posts(
 			array(
-				'post_type'      => array( 'page', 'post' ),
+				'post_type'      => 'page',
 				'post_status'    => 'publish',
 				'posts_per_page' => 200,
 				'paged'          => $paged,

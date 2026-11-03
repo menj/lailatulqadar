@@ -193,6 +193,8 @@ function lq_run_setup() {
 		update_option( 'page_on_front', (int) $map['primary']['home'] );
 	}
 
+	lq_migrate_retire_blog();
+
 	update_option( 'lailatulqadar_setup_version', LQ_VERSION, false );
 
 	return $report;

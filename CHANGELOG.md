@@ -2,6 +2,10 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.14.0 (2026-11-03)
+
+- Each Qur'an reference under a verse (`.lq-verse cite`) opens with the owner's pixel book (`images/book-open.webp`, styled in `css/front.css`). Each is animated WebP drawn at its own pixel size, for decoration only; the link text is unchanged. Readers who ask for reduced motion see a still first frame.
+
 ## 1.13.0 (2026-11-03)
 
 On 3 November 2026 the owner ruled that the site keeps every schema.org type that describes a page, whether Google shows a rich result for it or not. A type goes on a page only when what it describes is on that page.

@@ -646,7 +646,8 @@ ul.lq-menu--sitemap li {
 }
 
 /* Qur'an references: the owner's retro open book (images/book-open.webp) before the sura and verse. Decoration only; still under reduced motion. */
-.lq-verse cite::before {
+.lq-verse cite::before,
+.lq-ayah cite::before {
 	content: "";
 	display: inline-block;
 	width: 37px;
@@ -658,7 +659,8 @@ ul.lq-menu--sitemap li {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.lq-verse cite::before {
+	.lq-verse cite::before,
+	.lq-ayah cite::before {
 		background-image: url(../images/book-open-static.webp);
 	}
 }

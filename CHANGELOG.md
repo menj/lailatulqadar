@@ -4,7 +4,7 @@ All notable changes to the Lailatulqadar theme are recorded here.
 
 ## 1.14.0 (2026-11-03)
 
-- Each Qur'an reference under a verse (`.lq-verse cite`) opens with the owner's pixel book (`images/book-open.webp`, styled in `css/front.css`). Each is animated WebP drawn at its own pixel size, for decoration only; the link text is unchanged. Readers who ask for reduced motion see a still first frame.
+- Each Qur'an reference under a verse (`.lq-verse cite`) and under the front-page ayah (`.lq-ayah cite`) opens with the owner's pixel book (`images/book-open.webp`, styled in `css/front.css`). Each is animated WebP drawn at its own pixel size, for decoration only; the link text is unchanged. Readers who ask for reduced motion see a still first frame.
 
 ## 1.13.0 (2026-11-03)
 

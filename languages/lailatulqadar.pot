@@ -2,7 +2,7 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Lailatulqadar 1.16.0\n"
+"Project-Id-Version: Lailatulqadar 1.17.0\n"
 "Report-Msgid-Bugs-To: https://lailatulqadar.guide\n"
 "Last-Translator: Mohd Elfie Nieshaem Juferi\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1442,4 +1442,144 @@ msgstr ""
 #: theme.json
 msgctxt "Custom template name"
 msgid "Language home page"
+msgstr ""
+
+#: inc/unlist.php:237
+msgid "Unlisted"
+msgstr ""
+
+#: inc/unlist.php:244
+msgid "Unlist this post"
+msgstr ""
+
+#: inc/unlist.php:246
+msgid "Hidden from the home page, archives, feeds, search, sitemaps and related links, and marked noindex. Anyone with the URL can still open it."
+msgstr ""
+
+#: inc/unlist.php:310
+msgid "Yes"
+msgstr ""
+
+#: inc/unlist.php:326
+msgid "No change"
+msgstr ""
+
+#: inc/unlist.php:327
+msgid "Unlist"
+msgstr ""
+
+#: inc/unlist.php:328
+msgid "List"
+msgstr ""
+
+#: inc/social-icons.php:81
+msgid "Our profiles"
+msgstr ""
+
+#: inc/social-icons.php:84
+msgid "%s profile"
+msgstr ""
+
+#: inc/social-icons.php:119
+msgid "Social icons"
+msgstr ""
+
+#: inc/social-icons.php:120
+msgid "Links to the site profiles set in Theme Options."
+msgstr ""
+
+#: inc/search-permalinks.php:116
+msgid "Search base"
+msgstr ""
+
+#: inc/search-permalinks.php:125
+msgid "Search results open at /search-base/term/. Also set in Theme Options, Reading and sharing."
+msgstr ""
+
+#: inc/settings.php:62
+msgid "Reading and sharing"
+msgstr ""
+
+#: inc/settings.php:339
+msgid "Open the %s tab"
+msgstr ""
+
+#: inc/settings.php:824
+msgid "Reading progress bar"
+msgstr ""
+
+#: inc/settings.php:825
+msgid "A thin bar that fills as the reader scrolls through a page. Screen readers skip it, since it only repeats the scroll position. It never shows on the language homes, and it turns itself off while the Reading Progress Bar plugin is active."
+msgstr ""
+
+#: inc/settings.php:827
+msgid "Show the reading progress bar"
+msgstr ""
+
+#: inc/settings.php:830
+msgid "Bar colour"
+msgstr ""
+
+#: inc/settings.php:845
+msgid "Leave empty to follow the accent of the night or dawn scheme."
+msgstr ""
+
+#: inc/settings.php:847
+msgid "Bar height in pixels (2 to 8)"
+msgstr ""
+
+#: inc/settings.php:850
+msgid "Position"
+msgstr ""
+
+#: inc/settings.php:854
+msgid "Top of the window"
+msgstr ""
+
+#: inc/settings.php:855
+msgid "Bottom of the window"
+msgstr ""
+
+#: inc/settings.php:858
+msgid "At the top, the bar sits below the admin bar for logged-in users."
+msgstr ""
+
+#: inc/settings.php:862
+msgid "Show on"
+msgstr ""
+
+#: inc/settings.php:875
+msgid "One icon for each profile with an address, in the footer and wherever the Social icons block, pattern or [lailatulqadar_social_icons] shortcode is placed. With no address filled in, nothing prints. Labels follow the page language."
+msgstr ""
+
+#: inc/settings.php:877
+msgid "Show the icons in the footer"
+msgstr ""
+
+#: inc/settings.php:879
+msgid "The link carries rel=\"me\", so Mastodon can verify the site."
+msgstr ""
+
+#: inc/settings.php:885
+msgid "Search addresses"
+msgstr ""
+
+#: inc/settings.php:886
+msgid "Searches move from /?s=term to /search/term/ with a permanent redirect. An empty search is left alone, paged results keep their page, and a Malay search keeps ?lang=ms. The base can also be changed in Settings > Permalinks. The theme leaves this to the Pretty Search Permalinks plugin while it is active."
+msgstr ""
+
+#: inc/settings.php:888
+msgid "Use search addresses of the form /search/term/"
+msgstr ""
+
+#: inc/settings.php:889
+msgid "Letters, numbers and hyphens."
+msgstr ""
+
+#: inc/settings.php:894
+msgid "Unlisted pages"
+msgstr ""
+
+#: inc/settings.php:895
+msgid "Tick Unlist this post in the Unlisted box of the page editor, or use Quick Edit or Bulk Edit in the page list. An unlisted page keeps its address but leaves search, the sitemaps, page lists and the REST lists, and carries noindex. The guide menus and the reading path follow the page registry and are not changed."
 msgstr ""

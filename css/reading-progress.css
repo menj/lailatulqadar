@@ -1,0 +1,39 @@
+/* Reading progress bar (inc/reading-progress.php). Mobile first. The
+   colour follows the scheme accent unless one is set in Theme Options. */
+.lq-rpb {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	z-index: 99990;
+	height: var(--lq-rpb-height, 3px);
+	pointer-events: none;
+	background: transparent;
+}
+.lq-rpb--bottom {
+	top: auto;
+	bottom: 0;
+	bottom: env(safe-area-inset-bottom, 0);
+}
+.lq-rpb__fill {
+	height: 100%;
+	background: var(--lq-rpb-color, var(--wp--preset--color--accent-1));
+	transform: scaleX(0);
+	transform-origin: left center;
+	transition: transform 0.1s linear;
+}
+[dir="rtl"] .lq-rpb__fill { transform-origin: right center; }
+/* Clear of the admin bar: 46px tall up to 782px, 32px above. */
+.admin-bar .lq-rpb--top { top: 46px; }
+@media (min-width: 783px) {
+	.admin-bar .lq-rpb--top { top: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.lq-rpb__fill { transition: none; }
+}
+@media (forced-colors: active) {
+	.lq-rpb__fill { background: Highlight; }
+}
+@media print {
+	.lq-rpb { display: none; }
+}

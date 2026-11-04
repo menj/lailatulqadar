@@ -3,7 +3,7 @@
  * Settings screen: Appearance > Theme Options, organised in tabs.
  *
  * Tabs: General, Languages, Colours, Ramadan Dates, Login, Search,
- * Contextual links, Images, Security, Tools.
+ * Contextual links, Images, Reading and sharing, Security, Tools.
  *
  * @package Lailatulqadar
  */
@@ -56,6 +56,20 @@ function lq_settings_tabs() {
 			'icon'   => 'format-image',
 			'label'  => __( 'Images', 'lailatulqadar' ),
 			'fields' => array( 'commons_featured' ),
+		),
+		'reading'   => array(
+			'icon'   => 'share',
+			'label'  => __( 'Reading and sharing', 'lailatulqadar' ),
+			'fields' => array_merge(
+				array( 'rpb_enabled', 'rpb_color', 'rpb_height', 'rpb_position', 'rpb_types', 'social_footer' ),
+				array_map(
+					static function ( $k ) {
+						return 'social_' . $k;
+					},
+					array_keys( lailatulqadar_social_networks() )
+				),
+				array( 'pretty_search', 'search_base' )
+			),
 		),
 		'security'  => array(
 			'icon'   => 'shield',
@@ -211,6 +225,36 @@ function lq_sanitize_settings( $input ) {
 			case 'author_url':
 				$value = esc_url_raw( $value );
 				break;
+			case 'social_x':
+			case 'social_facebook':
+			case 'social_youtube':
+			case 'social_instagram':
+			case 'social_tiktok':
+			case 'social_threads':
+			case 'social_bluesky':
+			case 'social_mastodon':
+			case 'social_telegram':
+			case 'social_whatsapp':
+				$value = esc_url_raw( trim( (string) $value ), array( 'http', 'https' ) );
+				break;
+			case 'rpb_color':
+				$value = (string) sanitize_hex_color( $value );
+				break;
+			case 'rpb_height':
+				$value = (string) max( 2, min( 8, (int) $value ) );
+				break;
+			case 'rpb_position':
+				$value = 'bottom' === $value ? 'bottom' : 'top';
+				break;
+			case 'rpb_types':
+				// Scalar strings only: a nested array or object in the post is dropped.
+				$list  = is_array( $value ) ? $value : ( is_string( $value ) ? explode( ',', $value ) : array() );
+				$list  = array_filter( $list, 'is_string' );
+				$value = implode( ',', array_values( array_intersect( array_map( 'sanitize_key', $list ), lailatulqadar_rpb_available_types() ) ) );
+				break;
+			case 'search_base':
+				$value = lailatulqadar_search_clean_base( $value );
+				break;
 			case 'footer_note_primary':
 			case 'footer_note_secondary':
 				$value = sanitize_textarea_field( $value );
@@ -228,6 +272,9 @@ function lq_sanitize_settings( $input ) {
 			case 'sec_rest_lock':
 			case 'sec_spam_gate':
 			case 'sec_gone':
+			case 'rpb_enabled':
+			case 'social_footer':
+			case 'pretty_search':
 				$value = '1' === (string) $value ? '1' : '0';
 				break;
 			case 'ctx_own_max':
@@ -240,7 +287,7 @@ function lq_sanitize_settings( $input ) {
 				$value = sanitize_text_field( $value );
 		}
 
-		$is_optional    = in_array( $key, array( 'footer_note_primary', 'footer_note_secondary', 'login_tagline_primary', 'login_tagline_secondary', 'login_note_primary', 'login_note_secondary', 'verify_google', 'verify_bing', 'author_name', 'author_url', 'ramadan_year', 'ramadan_start', 'ramadan_alt', 'ctx_extra', 'ctx_extra_ms', 'ctx_exclude' ), true );
+		$is_optional    = in_array( $key, array( 'footer_note_primary', 'footer_note_secondary', 'login_tagline_primary', 'login_tagline_secondary', 'login_note_primary', 'login_note_secondary', 'verify_google', 'verify_bing', 'author_name', 'author_url', 'ramadan_year', 'ramadan_start', 'ramadan_alt', 'ctx_extra', 'ctx_extra_ms', 'ctx_exclude', 'rpb_color', 'rpb_types' ), true ) || ( 0 === strpos( $key, 'social_' ) && 'social_footer' !== $key );
 		$stored[ $key ] = ( '' === $value || null === $value ) && ! $is_optional ? $defaults[ $key ] : $value;
 	}
 
@@ -343,7 +390,7 @@ function lailatulqadar_render_panel( $slug ) {
 		if ( 'search' === $slug ) {
 			lq_render_verification_fields();
 		} else {
-			call_user_func( 'lq_render_' . $slug . '_tab' );
+			call_user_func( function_exists( 'lailatulqadar_render_' . $slug . '_tab' ) ? 'lailatulqadar_render_' . $slug . '_tab' : 'lq_render_' . $slug . '_tab' );
 		}
 		?>
 		<div class="lq-form__foot">
@@ -763,6 +810,92 @@ function lq_render_links_tab() {
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Pages without links', 'lailatulqadar' ); ?></h2>
 		<?php lailatulqadar_textarea_row( 'ctx_exclude', 'lq-ctx-exclude', __( 'Page slugs that never receive contextual links, one per line', 'lailatulqadar' ), '', array( 'class' => 'code' ) ); ?>
+	</section>
+	<?php
+}
+
+/**
+ * Reading and sharing tab: reading progress bar, social icons, search URLs.
+ * The unlisted switch lives on each page, in the editor sidebar.
+ *
+ * @since 1.17.0
+ */
+function lailatulqadar_render_reading_tab() {
+	$types = lailatulqadar_rpb_types();
+	?>
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Reading progress bar', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help"><?php esc_html_e( 'A thin bar that fills as the reader scrolls through a page. Screen readers skip it, since it only repeats the scroll position. It never shows on the language homes, and it turns itself off while the Reading Progress Bar plugin is active.', 'lailatulqadar' ); ?></p>
+		<?php
+		lailatulqadar_toggle_row( 'rpb_enabled', 'lq-rpb-enabled', __( 'Show the reading progress bar', 'lailatulqadar' ) );
+		lailatulqadar_row(
+			'lq-rpb-color',
+			__( 'Bar colour', 'lailatulqadar' ),
+			static function ( $help_id ) {
+				echo '<input' . lailatulqadar_attrs( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by lailatulqadar_attrs().
+					array(
+						'type'               => 'text',
+						'id'                 => 'lq-rpb-color',
+						'class'              => 'lq-color-input',
+						'name'               => lq_field_name( 'rpb_color' ),
+						'value'              => lq_setting( 'rpb_color' ),
+						'data-default-color' => '',
+						'data-lq-preview'    => 'rpb',
+						'aria-describedby'   => $help_id ? $help_id : null,
+					)
+				) . '>';
+			},
+			__( 'Leave empty to follow the accent of the night or dawn scheme.', 'lailatulqadar' )
+		);
+		lailatulqadar_range_row( 'rpb_height', 'lq-rpb-height', __( 'Bar height in pixels (2 to 8)', 'lailatulqadar' ), 2, 8 );
+		lailatulqadar_row(
+			'lq-rpb-position',
+			__( 'Position', 'lailatulqadar' ),
+			static function ( $help_id ) {
+				$value = lq_setting( 'rpb_position' );
+				echo '<select' . lailatulqadar_attrs( array( 'id' => 'lq-rpb-position', 'name' => lq_field_name( 'rpb_position' ), 'aria-describedby' => $help_id ? $help_id : null ) ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by lailatulqadar_attrs().
+				echo '<option value="top"' . selected( $value, 'top', false ) . '>' . esc_html__( 'Top of the window', 'lailatulqadar' ) . '</option>';
+				echo '<option value="bottom"' . selected( $value, 'bottom', false ) . '>' . esc_html__( 'Bottom of the window', 'lailatulqadar' ) . '</option>';
+				echo '</select>';
+			},
+			__( 'At the top, the bar sits below the admin bar for logged-in users.', 'lailatulqadar' )
+		);
+		?>
+		<div class="lq-row">
+			<div class="lq-row__label"><label id="lq-rpb-types-label"><?php esc_html_e( 'Show on', 'lailatulqadar' ); ?></label></div>
+			<div class="lq-row__control" role="group" aria-labelledby="lq-rpb-types-label">
+				<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'rpb_types' ) ); ?>[]" value="">
+				<?php foreach ( lailatulqadar_rpb_available_types() as $type ) : ?>
+					<?php $obj = get_post_type_object( $type ); ?>
+					<label class="lq-check"><input type="checkbox" name="<?php echo esc_attr( lq_field_name( 'rpb_types' ) ); ?>[]" value="<?php echo esc_attr( $type ); ?>" <?php checked( in_array( $type, $types, true ) ); ?>> <?php echo esc_html( $obj ? $obj->labels->name : $type ); ?></label><br>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</section>
+
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Social icons', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help"><?php esc_html_e( 'One icon for each profile with an address, in the footer and wherever the Social icons block, pattern or [lailatulqadar_social_icons] shortcode is placed. With no address filled in, nothing prints. Labels follow the page language.', 'lailatulqadar' ); ?></p>
+		<?php
+		lailatulqadar_toggle_row( 'social_footer', 'lq-social-footer', __( 'Show the icons in the footer', 'lailatulqadar' ) );
+		foreach ( lailatulqadar_social_networks() as $key => $label ) {
+			lailatulqadar_input_row( 'social_' . $key, 'lq-social-' . $key, $label, 'mastodon' === $key ? __( 'The link carries rel="me", so Mastodon can verify the site.', 'lailatulqadar' ) : '', array( 'type' => 'url', 'placeholder' => 'https://' ) );
+		}
+		?>
+	</section>
+
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Search addresses', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help"><?php esc_html_e( 'Searches move from /?s=term to /search/term/ with a permanent redirect. An empty search is left alone, paged results keep their page, and a Malay search keeps ?lang=ms. The base can also be changed in Settings > Permalinks. The theme leaves this to the Pretty Search Permalinks plugin while it is active.', 'lailatulqadar' ); ?></p>
+		<?php
+		lailatulqadar_toggle_row( 'pretty_search', 'lq-pretty-search', __( 'Use search addresses of the form /search/term/', 'lailatulqadar' ) );
+		lailatulqadar_input_row( 'search_base', 'lq-search-base', __( 'Search base', 'lailatulqadar' ), __( 'Lowercase letters, digits, hyphens and underscores. A language prefix or a guide page slug is refused, and the base falls back to search.', 'lailatulqadar' ), array( 'class' => 'regular-text code' ) );
+		?>
+	</section>
+
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Unlisted pages', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help"><?php esc_html_e( 'Tick Unlist this post in the Unlisted box of the page editor, or use Quick Edit or Bulk Edit in the page list. An unlisted page keeps its address but leaves search, the sitemaps, page lists and the REST lists, and carries noindex. The guide menus and the reading path follow the page registry and are not changed.', 'lailatulqadar' ); ?></p>
 	</section>
 	<?php
 }

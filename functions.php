@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.16.0' );
+define( 'LQ_VERSION', '1.17.0' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 
@@ -30,6 +30,10 @@ require_once LQ_DIR . '/inc/login.php';
 require_once LQ_DIR . '/inc/security.php';
 require_once LQ_DIR . '/inc/setup.php';
 require_once LQ_DIR . '/inc/slugs.php';
+require_once LQ_DIR . '/inc/social-icons.php';
+require_once LQ_DIR . '/inc/reading-progress.php';
+require_once LQ_DIR . '/inc/unlist.php';
+require_once LQ_DIR . '/inc/search-permalinks.php';
 
 if ( is_admin() ) {
 	require_once LQ_DIR . '/inc/settings.php';

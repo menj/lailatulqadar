@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.16.0
+Stable tag: 1.17.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,7 @@ The site has no blog. Post addresses and feeds send visitors to the home page of
 * A perpetual Ramadan calendar from the Umm al-Qura table up to 1473 AH, with the `[lq_ramadan]` shortcode.
 * Title tags in the form "page title | Lailatulqadar" under 60 characters, meta descriptions, structured data, an XML and an image sitemap. With Rank Math active the theme hands over and joins its graph.
 * Contextual links to other guide pages and to the sister sites of the network.
+* Social profile icons, a reading progress bar, unlisted pages and search addresses of the form /search/term/.
 * A Security tab that closes XML-RPC, application passwords and REST writes from outside the browser, holds gambling spam as Pending and offers a spam scan.
 
 == Usage ==
@@ -40,6 +41,7 @@ Open Appearance > Theme Options. Each tab saves only its own fields. Most tabs s
 * Search: every title tag and meta description with its length, and the Google and Bing verification codes.
 * Contextual links: switches and sliders for links to this site and to the sister sites, extra phrases and pages left without links.
 * Images: whether setup sets each page's lead image as its featured image.
+* Reading and sharing: the reading progress bar, the social profile addresses and the search address base.
 * Security: the five security switches, the spam scan, password and session tools, and the reports and log.
 * Tools: page states, publishing written drafts, Run setup and Reset settings.
 
@@ -78,10 +80,19 @@ Administrators (the manage_options capability). The page holds the security swit
 
 == Upgrade Notice ==
 
+= 1.17.0 =
+Four plugin features are built in. Once the new Reading and sharing tab is set, deactivate Reading Progress Bar, Unlist Posts & Pages and Pretty Search Permalinks; until then the theme leaves those jobs to them.
+
 = 1.16.0 =
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.17.0 =
+* Social icons for the site profiles in the footer, with a block, a pattern and a shortcode for anywhere else.
+* A reading progress bar on single pages, with its colour, height, position and post types in Theme Options.
+* Unlist a page from its editor sidebar, Quick Edit or Bulk Edit. It keeps its address, leaves search, the sitemaps and page lists, and carries noindex.
+* Searches move to /search/term/ with a permanent redirect. The base can be changed in Theme Options or Settings > Permalinks.
 
 = 1.16.0 =
 * Theme Options rebuilt as cards with keyboard tabs, toggle switches, sliders and colour pickers. Every option and behaviour is unchanged.
@@ -257,6 +268,7 @@ EB Garamond, Copyright 2017 The EB Garamond Project Authors. SIL Open Font Licen
 Arslan Wessam A and B, by Arslan (Dev-Point.com). No licence text is included in the font files. See fonts/arslan-wessam/NOTICE.txt.
 Noto Naskh Arabic, Copyright 2022 The Noto Project Authors. SIL Open Font License 1.1. See fonts/noto-naskh-arabic/OFL.txt.
 adhan 4.4.6 (prayer-time calculation), Copyright 2016 Batoul Apps. MIT License. See js/vendor/adhan-LICENSE.txt. js/vendor/adhan.js is the unminified source of js/vendor/adhan.min.js, both from the adhan 4.4.6 npm package (lib/bundles/adhan.umd.js and adhan.umd.min.js).
+Social icons in images/social (X, Facebook, YouTube, Instagram, TikTok, Threads, Bluesky, Mastodon, Telegram, WhatsApp): Minimalist Social Icons Pack 2.8, GPL. These ten come from CC0 sources; the pack's two CC BY 4.0 icons are not bundled. The brand marks belong to their owners.
 KFGQPC HAFS Uthmanic Script, Copyright 2010 King Fahd Glorious Quran Printing Complex. Free to use, copy and distribute; the file must not be modified. Served as a WOFF2 conversion of the original TTF by the owner's decision of 2026-10-26, accepting that restriction. See fonts/kfgqpc/LICENSE.txt.
 Theme images: the logo mark, favicon, touch icon and 512px logo (images/) are original artwork made for the theme; the pixel book (images/book-open.webp) was supplied by the site owner. Both are distributed with the theme under the GNU GPL v2 or later.
 Photographs in images/commons/ come from Wikimedia Commons, Pixabay and Pexels under the licences listed per file in inc/data/images.json, and are credited beneath each image and on the Sources page.

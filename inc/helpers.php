@@ -53,6 +53,25 @@ function lq_default_settings() {
 		'sec_rest_lock'           => '1',
 		'sec_spam_gate'           => '1',
 		'sec_gone'                => '1',
+		// Reading and sharing tab (1.17.0).
+		'rpb_enabled'             => '1',
+		'rpb_color'               => '',
+		'rpb_height'              => '3',
+		'rpb_position'            => 'top',
+		'rpb_types'               => 'page',
+		'social_footer'           => '1',
+		'social_x'                => '',
+		'social_facebook'         => '',
+		'social_youtube'          => '',
+		'social_instagram'        => '',
+		'social_tiktok'           => '',
+		'social_threads'          => '',
+		'social_bluesky'          => '',
+		'social_mastodon'         => '',
+		'social_telegram'         => '',
+		'social_whatsapp'         => '',
+		'pretty_search'           => '1',
+		'search_base'             => 'search',
 	);
 }
 
@@ -118,7 +137,7 @@ function lq_current_role() {
 	$base   = trim( (string) wp_parse_url( home_url( '/' ), PHP_URL_PATH ), '/' );
 	$path   = '' !== $base && ( $path === $base || 0 === strpos( $path, $base . '/' ) ) ? trim( substr( $path, strlen( $base ) ), '/' ) : $path;
 	$prefix = lq_setting( 'secondary_slug' );
-	$lang   = isset( $_GET['lang'] ) ? sanitize_key( wp_unslash( $_GET['lang'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$lang   = isset( $_GET['lang'] ) && is_string( $_GET['lang'] ) ? sanitize_key( wp_unslash( $_GET['lang'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$role   = ( $prefix === $path || 0 === strpos( $path, $prefix . '/' ) || $prefix === $lang ) ? 'secondary' : 'primary';
 	return $role;
 }

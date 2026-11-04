@@ -1015,6 +1015,23 @@ function lq_schema_one_author( $graph ) {
 		return $node;
 	};
 	$graph = $walk( $graph );
+
+	// Any other reference to a dropped Person points to the author.
+	$relink = function ( $n ) use ( &$relink, $old, $id ) {
+		if ( ! is_array( $n ) ) {
+			return $n;
+		}
+		if ( 1 === count( $n ) && isset( $n['@id'] ) && isset( $old[ (string) $n['@id'] ] ) ) {
+			return array( '@id' => $id );
+		}
+		foreach ( $n as $k => $v ) {
+			if ( is_array( $v ) ) {
+				$n[ $k ] = $relink( $v );
+			}
+		}
+		return $n;
+	};
+	$graph = $relink( $graph );
 	$extra = array();
 	$out   = array();
 	foreach ( $graph as $key => $node ) {

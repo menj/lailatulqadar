@@ -46,7 +46,7 @@ $lq_caption = $lq_ms
 ?>
 <figure <?php echo get_block_wrapper_attributes( array( 'class' => 'wp-block-table lq-table' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<table>
-		<thead><tr><?php foreach ( $lq_head as $lq_h ) : ?><th><?php echo esc_html( $lq_h ); ?></th><?php endforeach; ?></tr></thead>
+		<thead><tr><?php foreach ( $lq_head as $lq_h ) : ?><th scope="col"><?php echo esc_html( $lq_h ); ?></th><?php endforeach; ?></tr></thead>
 		<tbody>
 			<?php foreach ( $lq_rows as $lq_row ) : ?>
 				<tr><?php foreach ( $lq_row as $lq_c ) : ?><td><?php echo esc_html( $lq_c ); ?></td><?php endforeach; ?></tr>

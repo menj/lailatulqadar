@@ -12,6 +12,7 @@ Error pages for the moments WordPress cannot build a page, and a fuller 404 page
 - `inc/error-page-html.php` builds the pages: the night ground and gold of the guide, the lantern mark inline, EB Garamond, a Malay line under the English (`lang="ms"`), and a light version for a light system setting. Inline style and no WordPress function, so a page shows with the theme half uploaded or the database down. Titles read `<page> | Lailatulqadar`.
 - `errors/403.html`, `500.html`, `502.html` and `503.html`, built by `bin/build-error-pages.php`, for the web server's `ErrorDocument` lines, which the Tools tab lists.
 - The 404 template has a search field (`lq-search-form lq-404__search`) above the guide menu, and the 404 page sends `noindex, follow` (`lailatulqadar_404_robots()`).
+- The titles of guide pages not yet published ("Coming soon" in the guide menu, which the 404 page lists) reached 4.39:1 on the night ground at 75 per cent opacity. They are at 85 per cent, above 4.5:1.
 - `tests/error-pages-test.php` checks the statuses, headers and wording, runs each file without WordPress, checks the installer against foreign and outdated files, and compares `errors/` with the builder.
 
 ## 1.17.0 (2026-11-04)

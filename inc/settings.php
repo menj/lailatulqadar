@@ -18,42 +18,52 @@ defined( 'ABSPATH' ) || exit;
 function lq_settings_tabs() {
 	return array(
 		'general'   => array(
+			'icon'   => 'admin-generic',
 			'label'  => __( 'General', 'lailatulqadar' ),
 			'fields' => array( 'calligraphy_id', 'footer_note_primary', 'footer_note_secondary', 'author_name', 'author_url' ),
 		),
 		'languages' => array(
+			'icon'   => 'translation',
 			'label'  => __( 'Languages', 'lailatulqadar' ),
 			'fields' => array( 'primary_slug', 'secondary_slug', 'primary_label', 'secondary_label', 'site_name_secondary' ),
 		),
 		'colours'   => array(
+			'icon'   => 'art',
 			'label'  => __( 'Colours', 'lailatulqadar' ),
 			'fields' => array( 'scheme', 'scheme_toggle', 'accent_night', 'accent_dawn' ),
 		),
 		'dates'     => array(
+			'icon'   => 'calendar-alt',
 			'label'  => __( 'Ramadan Dates', 'lailatulqadar' ),
 			'fields' => array( 'ramadan_year', 'ramadan_start', 'ramadan_alt' ),
 		),
 		'login'     => array(
+			'icon'   => 'admin-users',
 			'label'  => __( 'Login', 'lailatulqadar' ),
 			'fields' => array( 'login_tagline_primary', 'login_tagline_secondary', 'login_note_primary', 'login_note_secondary' ),
 		),
 		'search'    => array(
+			'icon'   => 'search',
 			'label'  => __( 'Search', 'lailatulqadar' ),
 			'fields' => array( 'verify_google', 'verify_bing' ),
 		),
 		'links'     => array(
+			'icon'   => 'admin-links',
 			'label'  => __( 'Contextual links', 'lailatulqadar' ),
 			'fields' => array( 'ctx_own', 'ctx_sister', 'ctx_own_max', 'ctx_sister_max', 'ctx_extra', 'ctx_extra_ms', 'ctx_exclude' ),
 		),
 		'images'    => array(
+			'icon'   => 'format-image',
 			'label'  => __( 'Images', 'lailatulqadar' ),
 			'fields' => array( 'commons_featured' ),
 		),
 		'security'  => array(
+			'icon'   => 'shield',
 			'label'  => __( 'Security', 'lailatulqadar' ),
 			'fields' => array( 'sec_xmlrpc_off', 'sec_app_passwords_off', 'sec_rest_lock', 'sec_spam_gate', 'sec_gone' ),
 		),
 		'tools'     => array(
+			'icon'   => 'admin-tools',
 			'label'  => __( 'Tools', 'lailatulqadar' ),
 			'fields' => array(),
 		),
@@ -87,18 +97,37 @@ function lq_settings_menu() {
 		'lailatulqadar',
 		'lq_render_settings'
 	);
-	add_action( 'admin_print_styles-' . $hook, 'lq_admin_assets' );
+	if ( $hook ) {
+		$GLOBALS['lailatulqadar_options_hook'] = $hook;
+	}
 }
 add_action( 'admin_menu', 'lq_settings_menu' );
 
 /**
- * Settings screen assets.
+ * Enqueue the Theme Options assets on that screen only, by its hook suffix.
+ *
+ * @param string $hook_suffix Current admin screen.
+ */
+function lailatulqadar_options_enqueue( $hook_suffix ) {
+	if ( empty( $GLOBALS['lailatulqadar_options_hook'] ) || $GLOBALS['lailatulqadar_options_hook'] !== $hook_suffix ) {
+		return;
+	}
+	lq_admin_assets();
+}
+add_action( 'admin_enqueue_scripts', 'lailatulqadar_options_enqueue' );
+
+/**
+ * Settings screen assets. The Security tab's script and styles load only
+ * while that tab is open, since only then is its panel rendered.
  */
 function lq_admin_assets() {
-	wp_enqueue_style( 'lailatulqadar-admin', LQ_URI . '/css/admin.css', array(), LQ_VERSION );
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+	$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'general';
+	wp_enqueue_style( 'wp-color-picker' );
+	wp_enqueue_style( 'lailatulqadar-admin', LQ_URI . '/css/admin.css', array( 'wp-color-picker', 'dashicons' ), LQ_VERSION );
 	wp_enqueue_media();
-	wp_enqueue_script( 'lailatulqadar-admin', LQ_URI . '/js/admin.js', array(), LQ_VERSION, true );
-	if ( isset( $_GET['tab'] ) && 'security' === sanitize_key( wp_unslash( $_GET['tab'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	wp_enqueue_script( 'lailatulqadar-admin', LQ_URI . '/js/admin.js', array( 'jquery', 'wp-color-picker' ), LQ_VERSION, true );
+	if ( 'security' === $tab ) {
 		lq_sec_assets();
 	}
 }
@@ -137,7 +166,13 @@ function lq_sanitize_settings( $input ) {
 	$defaults = lq_default_settings();
 
 	foreach ( $tabs[ $tab ]['fields'] as $key ) {
-		$value = isset( $input[ $key ] ) ? wp_unslash( $input[ $key ] ) : '';
+		// A field the tab did not render keeps its stored value: with an SEO
+		// plugin active the Search tab prints no verification inputs, and
+		// saving it must not clear the codes. Toggles always post a value.
+		if ( ! array_key_exists( $key, $input ) ) {
+			continue;
+		}
+		$value = wp_unslash( $input[ $key ] );
 
 		switch ( $key ) {
 			case 'primary_slug':
@@ -213,7 +248,9 @@ function lq_sanitize_settings( $input ) {
 }
 
 /**
- * Render the settings screen.
+ * Render the settings screen: a header, a tab list and one panel per tab.
+ * Every panel is on the page and the script switches between them without
+ * a reload; without the script, each tab is a link that opens its panel.
  */
 function lq_render_settings() {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -227,49 +264,126 @@ function lq_render_settings() {
 	?>
 	<div class="wrap lq-admin">
 		<header class="lq-admin__head">
-			<h1><?php esc_html_e( 'Theme Options', 'lailatulqadar' ); ?></h1>
-			<p class="lq-admin__version"><?php echo esc_html( sprintf( /* translators: %s: version */ __( 'Version %s', 'lailatulqadar' ), LQ_VERSION ) ); ?></p>
+			<span class="lq-admin__icon dashicons dashicons-admin-appearance" aria-hidden="true"></span>
+			<div class="lq-admin__titles">
+				<h1><?php esc_html_e( 'Theme Options', 'lailatulqadar' ); ?></h1>
+				<p class="lq-admin__lede"><?php esc_html_e( 'Settings for the Lailatulqadar guide in English and Malay. Each tab saves only its own fields.', 'lailatulqadar' ); ?></p>
+			</div>
+			<span class="lq-admin__version"><?php echo esc_html( sprintf( /* translators: %s: version */ __( 'Version %s', 'lailatulqadar' ), LQ_VERSION ) ); ?></span>
 		</header>
+		<hr class="wp-header-end">
 
 		<?php lq_render_notices(); ?>
 
-		<nav class="lq-tabs" aria-label="<?php esc_attr_e( 'Settings sections', 'lailatulqadar' ); ?>">
+		<div class="lq-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Settings sections', 'lailatulqadar' ); ?>">
 			<?php foreach ( $tabs as $slug => $tab ) : ?>
-				<a class="lq-tabs__tab" href="<?php echo esc_url( add_query_arg( 'tab', $slug, $base ) ); ?>"<?php echo $slug === $current ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $tab['label'] ); ?></a>
+				<a class="lq-tabs__tab<?php echo $slug === $current ? ' is-active' : ''; ?>" role="tab" id="<?php echo esc_attr( 'lq-tab-' . $slug ); ?>" href="<?php echo esc_url( add_query_arg( 'tab', $slug, $base ) ); ?>" aria-controls="<?php echo esc_attr( 'lq-panel-' . $slug ); ?>" aria-selected="<?php echo $slug === $current ? 'true' : 'false'; ?>" data-tab="<?php echo esc_attr( $slug ); ?>">
+					<span class="dashicons <?php echo esc_attr( 'dashicons-' . $tab['icon'] ); ?>" aria-hidden="true"></span>
+					<span class="lq-tabs__label"><?php echo esc_html( $tab['label'] ); ?></span>
+				</a>
 			<?php endforeach; ?>
-		</nav>
-
-		<div class="lq-panel">
-			<?php
-			if ( 'tools' === $current ) {
-				lq_render_tools_tab();
-			} elseif ( 'search' === $current ) {
-				lq_render_search_tab();
-				?>
-				<form method="post" action="options.php">
-					<?php settings_fields( 'lailatulqadar_settings' ); ?>
-					<input type="hidden" name="<?php echo esc_attr( LQ_OPTION ); ?>[_tab]" value="search">
-					<?php lq_render_verification_fields(); ?>
-					<?php submit_button( __( 'Save changes', 'lailatulqadar' ) ); ?>
-				</form>
-				<?php
-			} else {
-				?>
-				<form method="post" action="options.php">
-					<?php settings_fields( 'lailatulqadar_settings' ); ?>
-					<input type="hidden" name="<?php echo esc_attr( LQ_OPTION ); ?>[_tab]" value="<?php echo esc_attr( $current ); ?>">
-					<?php call_user_func( 'lq_render_' . $current . '_tab' ); ?>
-					<?php submit_button( __( 'Save changes', 'lailatulqadar' ) ); ?>
-				</form>
-				<?php
-				if ( 'security' === $current ) {
-					lq_sec_render_tools();
-				}
-			}
-			?>
 		</div>
+
+		<?php foreach ( $tabs as $slug => $tab ) : ?>
+			<?php $deferred = $slug !== $current && lailatulqadar_tab_is_heavy( $slug ); ?>
+			<div class="lq-panel" role="tabpanel" id="<?php echo esc_attr( 'lq-panel-' . $slug ); ?>" aria-labelledby="<?php echo esc_attr( 'lq-tab-' . $slug ); ?>" tabindex="0"<?php echo $slug === $current ? '' : ' hidden'; ?><?php echo $deferred ? ' data-lq-reload' : ''; ?>>
+				<?php
+				if ( $deferred ) {
+					printf(
+						'<p class="lq-section"><a href="%1$s">%2$s</a></p>',
+						esc_url( add_query_arg( 'tab', $slug, $base ) ),
+						esc_html( sprintf( /* translators: %s: tab name */ __( 'Open the %s tab', 'lailatulqadar' ), $tab['label'] ) )
+					);
+				} else {
+					lailatulqadar_render_panel( $slug );
+				}
+				?>
+			</div>
+		<?php endforeach; ?>
+
+		<footer class="lq-admin__foot">
+			<a href="<?php echo esc_url( LQ_URI . '/docs/settings.md' ); ?>"><?php esc_html_e( 'Settings reference', 'lailatulqadar' ); ?></a>
+			<a href="<?php echo esc_url( LQ_URI . '/readme.txt' ); ?>"><?php esc_html_e( 'Theme readme', 'lailatulqadar' ); ?></a>
+			<a href="<?php echo esc_url( 'https://menj.me' ); ?>" rel="noopener"><?php esc_html_e( 'Support', 'lailatulqadar' ); ?></a>
+		</footer>
 	</div>
 	<?php
+}
+
+/**
+ * Tabs whose panels run report queries (the Security reports and log, the
+ * Tools page states and word counts, the Search table of every page's meta,
+ * the General page table). They render only when they are the open tab; the
+ * other panels hold a link, and the script loads the tab with a full reload.
+ *
+ * @param string $slug Tab key.
+ * @return bool
+ */
+function lailatulqadar_tab_is_heavy( $slug ) {
+	return in_array( $slug, array( 'general', 'search', 'security', 'tools' ), true );
+}
+
+/**
+ * One tab's panel: its settings form, or the Tools actions.
+ *
+ * @param string $slug Tab key.
+ */
+function lailatulqadar_render_panel( $slug ) {
+	if ( 'tools' === $slug ) {
+		lq_render_tools_tab();
+		return;
+	}
+	if ( 'search' === $slug ) {
+		lq_render_search_tab();
+	}
+	?>
+	<form method="post" action="options.php" class="lq-form">
+		<?php lailatulqadar_settings_fields( $slug ); ?>
+		<?php
+		if ( 'search' === $slug ) {
+			lq_render_verification_fields();
+		} else {
+			call_user_func( 'lq_render_' . $slug . '_tab' );
+		}
+		?>
+		<div class="lq-form__foot">
+			<?php submit_button( __( 'Save changes', 'lailatulqadar' ), 'primary', 'submit', false, array( 'id' => 'lq-save-' . $slug ) ); ?>
+		</div>
+	</form>
+	<?php
+	if ( 'security' === $slug ) {
+		lq_sec_render_tools();
+	}
+}
+
+/**
+ * The hidden fields settings_fields() prints, without its fixed element IDs
+ * (every panel has a form, so they would repeat) and with a referer that
+ * brings the browser back to this tab after saving.
+ *
+ * @param string $slug Tab key.
+ */
+function lailatulqadar_settings_fields( $slug ) {
+	?>
+	<input type="hidden" name="option_page" value="lailatulqadar_settings">
+	<input type="hidden" name="action" value="update">
+	<input type="hidden" name="<?php echo esc_attr( LQ_OPTION ); ?>[_tab]" value="<?php echo esc_attr( $slug ); ?>">
+	<?php
+	lailatulqadar_nonce_field( 'lailatulqadar_settings-options' );
+
+	printf(
+		'<input type="hidden" name="_wp_http_referer" value="%s">',
+		esc_attr( wp_make_link_relative( add_query_arg( 'tab', $slug, admin_url( 'themes.php?page=lailatulqadar' ) ) ) )
+	);
+}
+
+/**
+ * A nonce field without an element ID, so several forms can share a page.
+ *
+ * @param string $action Nonce action.
+ */
+function lailatulqadar_nonce_field( $action ) {
+	printf( '<input type="hidden" name="_wpnonce" value="%s">', esc_attr( wp_create_nonce( $action ) ) );
 }
 
 /**
@@ -283,6 +397,180 @@ function lq_field_name( $key ) {
 }
 
 /**
+ * HTML attributes from an array, escaped. A value of true prints the
+ * attribute alone; false and null leave it out.
+ *
+ * @param array $attrs Attributes.
+ * @return string
+ */
+function lailatulqadar_attrs( $attrs ) {
+	$out = '';
+	foreach ( $attrs as $name => $value ) {
+		if ( false === $value || null === $value ) {
+			continue;
+		}
+		$out .= true === $value ? ' ' . esc_attr( $name ) : sprintf( ' %s="%s"', esc_attr( $name ), esc_attr( (string) $value ) );
+	}
+	return $out;
+}
+
+/**
+ * One field row: label and help on the left, the control on the right
+ * (stacked on small screens).
+ *
+ * @param string   $id      Control ID.
+ * @param string   $label   Label text.
+ * @param callable $control Prints the control; receives the help ID or ''.
+ * @param string   $help    Help text, optional.
+ * @param string   $class   Extra row class, optional.
+ */
+function lailatulqadar_row( $id, $label, $control, $help = '', $class = '' ) {
+	$help_id = '' === $help ? '' : $id . '-help';
+	?>
+	<div class="lq-row<?php echo $class ? ' ' . esc_attr( $class ) : ''; ?>">
+		<div class="lq-row__label">
+			<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $label ); ?></label>
+			<?php if ( $help_id ) : ?>
+				<p class="lq-help" id="<?php echo esc_attr( $help_id ); ?>"><?php echo esc_html( $help ); ?></p>
+			<?php endif; ?>
+		</div>
+		<div class="lq-row__control">
+			<?php call_user_func( $control, $help_id ); ?>
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * A text-like input row bound to a setting.
+ *
+ * @param string $key   Setting key.
+ * @param string $id    Control ID.
+ * @param string $label Label.
+ * @param string $help  Help text.
+ * @param array  $attrs Extra attributes (type, placeholder, lang, class).
+ */
+function lailatulqadar_input_row( $key, $id, $label, $help = '', $attrs = array() ) {
+	lailatulqadar_row(
+		$id,
+		$label,
+		static function ( $help_id ) use ( $key, $id, $attrs ) {
+			$attrs = array_merge(
+				array(
+					'type'             => 'text',
+					'class'            => 'regular-text',
+					'id'               => $id,
+					'name'             => lq_field_name( $key ),
+					'value'            => lq_setting( $key ),
+					'aria-describedby' => $help_id ? $help_id : null,
+				),
+				$attrs
+			);
+			echo '<input' . lailatulqadar_attrs( $attrs ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- lailatulqadar_attrs() escapes.
+		},
+		$help
+	);
+}
+
+/**
+ * A textarea row bound to a setting.
+ *
+ * @param string $key   Setting key.
+ * @param string $id    Control ID.
+ * @param string $label Label.
+ * @param string $help  Help text.
+ * @param array  $attrs Extra attributes (rows, class, lang, placeholder).
+ */
+function lailatulqadar_textarea_row( $key, $id, $label, $help = '', $attrs = array() ) {
+	lailatulqadar_row(
+		$id,
+		$label,
+		static function ( $help_id ) use ( $key, $id, $attrs ) {
+			$attrs = array_merge(
+				array(
+					'id'               => $id,
+					'name'             => lq_field_name( $key ),
+					'rows'             => 3,
+					'aria-describedby' => $help_id ? $help_id : null,
+				),
+				$attrs
+			);
+			echo '<textarea' . lailatulqadar_attrs( $attrs ) . '>' . esc_textarea( lq_setting( $key ) ) . '</textarea>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- lailatulqadar_attrs() escapes.
+		},
+		$help
+	);
+}
+
+/**
+ * A toggle switch row for a two-valued setting. A hidden field carries the
+ * off value, so an unticked switch still saves.
+ *
+ * @param string $key   Setting key.
+ * @param string $id    Control ID.
+ * @param string $label Label.
+ * @param string $help  Help text.
+ * @param string $on    Stored value when on.
+ * @param string $off   Stored value when off.
+ */
+function lailatulqadar_toggle_row( $key, $id, $label, $help = '', $on = '1', $off = '0' ) {
+	lailatulqadar_row(
+		$id,
+		$label,
+		static function ( $help_id ) use ( $key, $id, $on, $off ) {
+			$name = lq_field_name( $key );
+			echo '<input' . lailatulqadar_attrs( array( 'type' => 'hidden', 'name' => $name, 'value' => $off ) ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by lailatulqadar_attrs().
+			echo '<span class="lq-toggle"><input' . lailatulqadar_attrs( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by lailatulqadar_attrs().
+				array(
+					'type'             => 'checkbox',
+					'role'             => 'switch',
+					'id'               => $id,
+					'name'             => $name,
+					'value'            => $on,
+					'checked'          => (string) lq_setting( $key ) === (string) $on,
+					'aria-describedby' => $help_id ? $help_id : null,
+				)
+			) . '><span class="lq-toggle__track" aria-hidden="true"></span></span>';
+		},
+		$help,
+		'lq-row--toggle'
+	);
+}
+
+/**
+ * A range slider row with its value shown beside it.
+ *
+ * @param string $key   Setting key.
+ * @param string $id    Control ID.
+ * @param string $label Label.
+ * @param int    $min   Lowest value.
+ * @param int    $max   Highest value.
+ * @param string $help  Help text.
+ */
+function lailatulqadar_range_row( $key, $id, $label, $min, $max, $help = '' ) {
+	lailatulqadar_row(
+		$id,
+		$label,
+		static function ( $help_id ) use ( $key, $id, $min, $max ) {
+			$value = (int) lq_setting( $key );
+			echo '<span class="lq-range"><input' . lailatulqadar_attrs( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by lailatulqadar_attrs().
+				array(
+					'type'             => 'range',
+					'id'               => $id,
+					'name'             => lq_field_name( $key ),
+					'min'              => $min,
+					'max'              => $max,
+					'step'             => 1,
+					'value'            => $value,
+					'aria-describedby' => $help_id ? $help_id : null,
+					'data-lq-output'   => $id . '-value',
+				)
+			) . '><output class="lq-range__value" id="' . esc_attr( $id . '-value' ) . '" for="' . esc_attr( $id ) . '">' . esc_html( (string) $value ) . '</output></span>';
+		},
+		$help
+	);
+}
+
+/**
  * General tab.
  */
 function lq_render_general_tab() {
@@ -293,7 +581,7 @@ function lq_render_general_tab() {
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Logo calligraphy', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'The Arabic calligraphy of ليلة القدر shown beside the lamp in the header and on the login screen. Choose a transparent PNG from the Media Library (or an SVG, if the site allows SVG uploads); the theme recolours it to the scheme\'s gold. With no image chosen, the words are typeset in Arslan Wessam B. Use only artwork you are licensed to use.', 'lailatulqadar' ); ?></p>
-		<div class="lq-media" data-lq-media>
+		<div class="lq-media" data-lq-media role="group" aria-label="<?php esc_attr_e( 'Logo calligraphy', 'lailatulqadar' ); ?>">
 			<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'calligraphy_id' ) ); ?>" value="<?php echo esc_attr( $cid ? (string) $cid : '' ); ?>" data-lq-media-id>
 			<div class="lq-media__preview" data-lq-media-preview<?php echo $curl ? '' : ' hidden'; ?>>
 				<img src="<?php echo esc_url( $curl ); ?>" alt="">
@@ -308,14 +596,10 @@ function lq_render_general_tab() {
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Footer note', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'A short line shown in the footer above the copyright. Leave empty to hide it.', 'lailatulqadar' ); ?></p>
-		<div class="lq-field">
-			<label for="lq-note-primary"><?php echo esc_html( lq_setting( 'primary_label' ) ); ?></label>
-			<textarea id="lq-note-primary" name="<?php echo esc_attr( lq_field_name( 'footer_note_primary' ) ); ?>" rows="2"><?php echo esc_textarea( lq_setting( 'footer_note_primary' ) ); ?></textarea>
-		</div>
-		<div class="lq-field">
-			<label for="lq-note-secondary"><?php echo esc_html( lq_setting( 'secondary_label' ) ); ?></label>
-			<textarea id="lq-note-secondary" name="<?php echo esc_attr( lq_field_name( 'footer_note_secondary' ) ); ?>" rows="2" lang="ms"><?php echo esc_textarea( lq_setting( 'footer_note_secondary' ) ); ?></textarea>
-		</div>
+		<?php
+		lailatulqadar_textarea_row( 'footer_note_primary', 'lq-note-primary', lq_setting( 'primary_label' ), '', array( 'rows' => 2 ) );
+		lailatulqadar_textarea_row( 'footer_note_secondary', 'lq-note-secondary', lq_setting( 'secondary_label' ), '', array( 'rows' => 2, 'lang' => 'ms' ) );
+		?>
 	</section>
 
 	<section class="lq-section">
@@ -324,21 +608,16 @@ function lq_render_general_tab() {
 		<?php if ( lq_seo_plugin() ) : ?>
 			<p class="lq-callout lq-callout--warn"><?php echo esc_html( sprintf( /* translators: %s: SEO plugin name */ __( '%s is active and outputs the structured data, so these fields are not used. Set the author and publisher in the plugin.', 'lailatulqadar' ), lq_seo_plugin() ) ); ?></p>
 		<?php endif; ?>
-		<div class="lq-grid">
-			<div class="lq-field">
-				<label for="lq-author-name"><?php esc_html_e( 'Author name', 'lailatulqadar' ); ?></label>
-				<input id="lq-author-name" type="text" name="<?php echo esc_attr( lq_field_name( 'author_name' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'author_name' ) ); ?>">
-			</div>
-			<div class="lq-field">
-				<label for="lq-author-url"><?php esc_html_e( 'Author profile URL', 'lailatulqadar' ); ?></label>
-				<input id="lq-author-url" type="url" name="<?php echo esc_attr( lq_field_name( 'author_url' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'author_url' ) ); ?>">
-			</div>
-		</div>
+		<?php
+		lailatulqadar_input_row( 'author_name', 'lq-author-name', __( 'Author name', 'lailatulqadar' ) );
+		lailatulqadar_input_row( 'author_url', 'lq-author-url', __( 'Author profile URL', 'lailatulqadar' ), '', array( 'type' => 'url' ) );
+		?>
 	</section>
 
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Guide pages', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'Pages appear in the site menus once published. Drafts stay hidden.', 'lailatulqadar' ); ?></p>
+		<div class="lq-table-wrap">
 		<table class="lq-pages">
 			<thead>
 				<tr>
@@ -358,6 +637,7 @@ function lq_render_general_tab() {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		</div>
 	</section>
 	<?php
 }
@@ -406,27 +686,19 @@ function lq_render_languages_tab() {
 		<?php endif; ?>
 	</section>
 
-	<section class="lq-section lq-grid">
-		<div>
-			<h2><?php esc_html_e( 'English', 'lailatulqadar' ); ?></h2>
-			<div class="lq-field">
-				<label for="lq-primary-label"><?php esc_html_e( 'Switcher label', 'lailatulqadar' ); ?></label>
-				<input id="lq-primary-label" type="text" name="<?php echo esc_attr( lq_field_name( 'primary_label' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'primary_label' ) ); ?>">
-			</div>
-			<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'primary_slug' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'primary_slug' ) ); ?>">
-		</div>
-		<div>
-			<h2><?php esc_html_e( 'Malay', 'lailatulqadar' ); ?></h2>
-			<div class="lq-field">
-				<label for="lq-secondary-label"><?php esc_html_e( 'Switcher label', 'lailatulqadar' ); ?></label>
-				<input id="lq-secondary-label" type="text" name="<?php echo esc_attr( lq_field_name( 'secondary_label' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'secondary_label' ) ); ?>" lang="ms">
-			</div>
-			<div class="lq-field">
-				<label for="lq-site-name-secondary"><?php esc_html_e( 'Site name on Malay pages', 'lailatulqadar' ); ?></label>
-				<input id="lq-site-name-secondary" type="text" name="<?php echo esc_attr( lq_field_name( 'site_name_secondary' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'site_name_secondary' ) ); ?>" lang="ms">
-			</div>
-			<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'secondary_slug' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'secondary_slug' ) ); ?>">
-		</div>
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'English', 'lailatulqadar' ); ?></h2>
+		<?php lailatulqadar_input_row( 'primary_label', 'lq-primary-label', __( 'Switcher label', 'lailatulqadar' ) ); ?>
+		<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'primary_slug' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'primary_slug' ) ); ?>">
+	</section>
+
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Malay', 'lailatulqadar' ); ?></h2>
+		<?php
+		lailatulqadar_input_row( 'secondary_label', 'lq-secondary-label', __( 'Switcher label', 'lailatulqadar' ), '', array( 'lang' => 'ms' ) );
+		lailatulqadar_input_row( 'site_name_secondary', 'lq-site-name-secondary', __( 'Site name on Malay pages', 'lailatulqadar' ), '', array( 'lang' => 'ms' ) );
+		?>
+		<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'secondary_slug' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'secondary_slug' ) ); ?>">
 	</section>
 	<?php
 }
@@ -463,50 +735,34 @@ function lq_render_links_tab() {
 		</p>
 	</section>
 
-	<section class="lq-section lq-grid">
-		<div>
-			<h2><?php esc_html_e( 'This site', 'lailatulqadar' ); ?></h2>
-			<div class="lq-field lq-field--check">
-				<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'ctx_own' ) ); ?>" value="0">
-				<label><input type="checkbox" name="<?php echo esc_attr( lq_field_name( 'ctx_own' ) ); ?>" value="1" <?php checked( lq_setting( 'ctx_own' ), '1' ); ?>> <?php esc_html_e( 'Link to other guide pages on this site', 'lailatulqadar' ); ?></label>
-			</div>
-			<div class="lq-field">
-				<label for="lq-ctx-own-max"><?php esc_html_e( 'Links of this kind on one page, at most (0 to 15)', 'lailatulqadar' ); ?></label>
-				<input id="lq-ctx-own-max" class="small-text" type="number" min="0" max="15" name="<?php echo esc_attr( lq_field_name( 'ctx_own_max' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'ctx_own_max' ) ); ?>">
-			</div>
-		</div>
-		<div>
-			<h2><?php esc_html_e( 'Sister sites', 'lailatulqadar' ); ?></h2>
-			<div class="lq-field lq-field--check">
-				<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'ctx_sister' ) ); ?>" value="0">
-				<label><input type="checkbox" name="<?php echo esc_attr( lq_field_name( 'ctx_sister' ) ); ?>" value="1" <?php checked( lq_setting( 'ctx_sister' ), '1' ); ?>> <?php esc_html_e( 'Link to pages on the sister sites (English pages only)', 'lailatulqadar' ); ?></label>
-			</div>
-			<div class="lq-field">
-				<label for="lq-ctx-sister-max"><?php esc_html_e( 'Links of this kind on one page, at most (0 to 10)', 'lailatulqadar' ); ?></label>
-				<input id="lq-ctx-sister-max" class="small-text" type="number" min="0" max="10" name="<?php echo esc_attr( lq_field_name( 'ctx_sister_max' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'ctx_sister_max' ) ); ?>">
-			</div>
-		</div>
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'This site', 'lailatulqadar' ); ?></h2>
+		<?php
+		lailatulqadar_toggle_row( 'ctx_own', 'lq-ctx-own', __( 'Link to other guide pages on this site', 'lailatulqadar' ) );
+		lailatulqadar_range_row( 'ctx_own_max', 'lq-ctx-own-max', __( 'Links of this kind on one page, at most (0 to 15)', 'lailatulqadar' ), 0, 15 );
+		?>
+	</section>
+
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Sister sites', 'lailatulqadar' ); ?></h2>
+		<?php
+		lailatulqadar_toggle_row( 'ctx_sister', 'lq-ctx-sister', __( 'Link to pages on the sister sites (English pages only)', 'lailatulqadar' ) );
+		lailatulqadar_range_row( 'ctx_sister_max', 'lq-ctx-sister-max', __( 'Links of this kind on one page, at most (0 to 10)', 'lailatulqadar' ), 0, 10 );
+		?>
 	</section>
 
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Extra phrases', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'One per line: phrase | address. An address beginning with / is a page on this site; a full address must be on this site or a sister site, and any other address is ignored. These lines are read before the shared map, so a phrase listed here takes its address from here.', 'lailatulqadar' ); ?></p>
-		<div class="lq-field">
-			<label for="lq-ctx-extra"><?php esc_html_e( 'English pages', 'lailatulqadar' ); ?></label>
-			<textarea id="lq-ctx-extra" class="code" name="<?php echo esc_attr( lq_field_name( 'ctx_extra' ) ); ?>" rows="5" placeholder="night vigil | /laylat-al-qadr-prayer/"><?php echo esc_textarea( lq_setting( 'ctx_extra' ) ); ?></textarea>
-		</div>
-		<div class="lq-field">
-			<label for="lq-ctx-extra-ms"><?php esc_html_e( 'Malay pages (addresses on this site only)', 'lailatulqadar' ); ?></label>
-			<textarea id="lq-ctx-extra-ms" class="code" name="<?php echo esc_attr( lq_field_name( 'ctx_extra_ms' ) ); ?>" rows="4" lang="ms" placeholder="malam kemuliaan | /ms/apa-itu-lailatulqadar/"><?php echo esc_textarea( lq_setting( 'ctx_extra_ms' ) ); ?></textarea>
-		</div>
+		<?php
+		lailatulqadar_textarea_row( 'ctx_extra', 'lq-ctx-extra', __( 'English pages', 'lailatulqadar' ), '', array( 'class' => 'code', 'rows' => 5, 'placeholder' => 'night vigil | /laylat-al-qadr-prayer/' ) );
+		lailatulqadar_textarea_row( 'ctx_extra_ms', 'lq-ctx-extra-ms', __( 'Malay pages (addresses on this site only)', 'lailatulqadar' ), '', array( 'class' => 'code', 'rows' => 4, 'lang' => 'ms', 'placeholder' => 'malam kemuliaan | /ms/apa-itu-lailatulqadar/' ) );
+		?>
 	</section>
 
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Pages without links', 'lailatulqadar' ); ?></h2>
-		<div class="lq-field">
-			<label for="lq-ctx-exclude"><?php esc_html_e( 'Page slugs that never receive contextual links, one per line', 'lailatulqadar' ); ?></label>
-			<textarea id="lq-ctx-exclude" class="code" name="<?php echo esc_attr( lq_field_name( 'ctx_exclude' ) ); ?>" rows="3"><?php echo esc_textarea( lq_setting( 'ctx_exclude' ) ); ?></textarea>
-		</div>
+		<?php lailatulqadar_textarea_row( 'ctx_exclude', 'lq-ctx-exclude', __( 'Page slugs that never receive contextual links, one per line', 'lailatulqadar' ), '', array( 'class' => 'code' ) ); ?>
 	</section>
 	<?php
 }
@@ -524,11 +780,7 @@ function lq_render_images_tab() {
 		<h2><?php esc_html_e( 'Images', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'The guide pages carry freely licensed images from Wikimedia Commons (public domain, CC0, CC BY or CC BY-SA), Pixabay and Pexels (each under its own licence). Each is shown with its author, its licence linked to the licence deed or terms, and a link to its page on its source. The images and their credits ship with the theme in images/commons/ and inc/data/images.json; bin/fetch-commons-images.py checks each licence against its source and rebuilds both.', 'lailatulqadar' ); ?></p>
 		<p class="lq-callout"><?php echo esc_html( sprintf( /* translators: %d: number of images. */ _n( '%d image is listed.', '%d images are listed.', $count, 'lailatulqadar' ), $count ) ); ?></p>
-		<div class="lq-field lq-field--check">
-			<input type="hidden" name="<?php echo esc_attr( lq_field_name( 'commons_featured' ) ); ?>" value="0">
-			<label><input type="checkbox" name="<?php echo esc_attr( lq_field_name( 'commons_featured' ) ); ?>" value="1" <?php checked( lq_setting( 'commons_featured' ), '1' ); ?>> <?php esc_html_e( 'When setup runs, set each page\'s lead image as its featured image', 'lailatulqadar' ); ?></label>
-		</div>
-		<p class="lq-help"><?php esc_html_e( 'A featured image an editor has chosen is never replaced, and one an editor has removed is not put back.', 'lailatulqadar' ); ?></p>
+		<?php lailatulqadar_toggle_row( 'commons_featured', 'lq-commons-featured', __( 'When setup runs, set each page\'s lead image as its featured image', 'lailatulqadar' ), __( 'A featured image an editor has chosen is never replaced, and one an editor has removed is not put back.', 'lailatulqadar' ) ); ?>
 	</section>
 	<?php
 }
@@ -549,8 +801,8 @@ function lq_render_colours_tab() {
 		<fieldset class="lq-schemes">
 			<legend class="screen-reader-text"><?php esc_html_e( 'Colour scheme', 'lailatulqadar' ); ?></legend>
 			<?php foreach ( $options as $value => $label ) : ?>
-				<label class="lq-scheme lq-scheme--<?php echo esc_attr( $value ); ?>">
-					<input type="radio" name="<?php echo esc_attr( lq_field_name( 'scheme' ) ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php checked( $scheme, $value ); ?>>
+				<label class="lq-scheme lq-scheme--<?php echo esc_attr( $value ); ?>" for="<?php echo esc_attr( 'lq-scheme-' . $value ); ?>">
+					<input type="radio" id="<?php echo esc_attr( 'lq-scheme-' . $value ); ?>" name="<?php echo esc_attr( lq_field_name( 'scheme' ) ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php checked( $scheme, $value ); ?>>
 					<span class="lq-scheme__swatch" aria-hidden="true"></span>
 					<span class="lq-scheme__label"><?php echo esc_html( $label ); ?></span>
 				</label>
@@ -560,34 +812,40 @@ function lq_render_colours_tab() {
 
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Visitor switch', 'lailatulqadar' ); ?></h2>
-		<div class="lq-field">
-			<label for="lq-scheme-toggle"><?php esc_html_e( 'Light and dark switch in the header', 'lailatulqadar' ); ?></label>
-			<select id="lq-scheme-toggle" name="<?php echo esc_attr( lq_field_name( 'scheme_toggle' ) ); ?>">
-				<option value="show" <?php selected( lq_setting( 'scheme_toggle' ), 'show' ); ?>><?php esc_html_e( 'Show: visitors can switch; their choice is remembered in their browser', 'lailatulqadar' ); ?></option>
-				<option value="hide" <?php selected( lq_setting( 'scheme_toggle' ), 'hide' ); ?>><?php esc_html_e( 'Hide: everyone sees the scheme chosen above', 'lailatulqadar' ); ?></option>
-			</select>
-		</div>
+		<?php
+		lailatulqadar_toggle_row(
+			'scheme_toggle',
+			'lq-scheme-toggle',
+			__( 'Light and dark switch in the header', 'lailatulqadar' ),
+			__( 'On: visitors can switch, and their choice is remembered in their browser. Off: everyone sees the scheme chosen above.', 'lailatulqadar' ),
+			'show',
+			'hide'
+		);
+		?>
 		<p class="lq-help"><?php esc_html_e( 'The scheme chosen above is what first-time visitors see. A visitor who uses the switch keeps their choice on later visits.', 'lailatulqadar' ); ?></p>
 	</section>
 
-	<section class="lq-section lq-grid">
-		<div class="lq-field">
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Accent colours', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help" id="lq-accent-help"><?php esc_html_e( 'Accents carry the Arabic verse, links and buttons. Keep a contrast ratio of at least 4.5:1 against the background: light accents for night, dark accents for dawn.', 'lailatulqadar' ); ?></p>
+		<div class="lq-colours">
+		<div class="lq-colour">
 			<label for="lq-accent-night"><?php esc_html_e( 'Night accent', 'lailatulqadar' ); ?></label>
-			<input id="lq-accent-night" type="color" data-lq-preview="night" name="<?php echo esc_attr( lq_field_name( 'accent_night' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'accent_night' ) ); ?>">
+			<input id="lq-accent-night" type="text" class="lq-color-input" data-default-color="#c9a85c" data-lq-preview="night" aria-describedby="lq-accent-help" name="<?php echo esc_attr( lq_field_name( 'accent_night' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'accent_night' ) ); ?>">
 			<div class="lq-preview lq-preview--night" data-lq-preview-target="night">
 				<span class="lq-preview__ayah" lang="ar" dir="rtl">لَيۡلَةُ ٱلۡقَدۡرِ</span>
 				<span class="lq-preview__link"><?php esc_html_e( 'Link colour', 'lailatulqadar' ); ?></span>
 			</div>
 		</div>
-		<div class="lq-field">
+		<div class="lq-colour">
 			<label for="lq-accent-dawn"><?php esc_html_e( 'Dawn accent', 'lailatulqadar' ); ?></label>
-			<input id="lq-accent-dawn" type="color" data-lq-preview="dawn" name="<?php echo esc_attr( lq_field_name( 'accent_dawn' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'accent_dawn' ) ); ?>">
+			<input id="lq-accent-dawn" type="text" class="lq-color-input" data-default-color="#7a5a14" data-lq-preview="dawn" aria-describedby="lq-accent-help" name="<?php echo esc_attr( lq_field_name( 'accent_dawn' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'accent_dawn' ) ); ?>">
 			<div class="lq-preview lq-preview--dawn" data-lq-preview-target="dawn">
 				<span class="lq-preview__ayah" lang="ar" dir="rtl">لَيۡلَةُ ٱلۡقَدۡرِ</span>
 				<span class="lq-preview__link"><?php esc_html_e( 'Link colour', 'lailatulqadar' ); ?></span>
 			</div>
 		</div>
-		<p class="lq-help lq-grid__full"><?php esc_html_e( 'Accents carry the Arabic verse, links and buttons. Keep a contrast ratio of at least 4.5:1 against the background: light accents for night, dark accents for dawn.', 'lailatulqadar' ); ?></p>
+		</div>
 	</section>
 	<?php
 }
@@ -602,6 +860,7 @@ function lq_render_dates_tab() {
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Automatic dates', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'The site takes the dates of Ramadan from the Umm al-Qura calendar for every year up to 1473 AH (2051), and offers visitors the following day as an alternative start for countries that rely on local sighting. Articles, title tags and the night window switch to the next Ramadan the day after Eid, with no yearly update.', 'lailatulqadar' ); ?></p>
+		<div class="lq-table-wrap">
 		<table class="lq-pages">
 			<thead>
 				<tr>
@@ -629,26 +888,18 @@ function lq_render_dates_tab() {
 				<?php endfor; ?>
 			</tbody>
 		</table>
+		</div>
 		<p class="lq-help"><?php esc_html_e( 'The first row is the Ramadan the site currently shows. An asterisk marks a year with an override.', 'lailatulqadar' ); ?></p>
 	</section>
 
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Override one year (optional)', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'Use this only when an official announcement differs from the Umm al-Qura date. Leave the fields empty to use the automatic dates.', 'lailatulqadar' ); ?></p>
-		<div class="lq-grid">
-			<div class="lq-field">
-				<label for="lq-ramadan-year"><?php esc_html_e( 'Hijri year', 'lailatulqadar' ); ?></label>
-				<input id="lq-ramadan-year" type="text" class="small-text" placeholder="<?php echo esc_attr( $current ? (string) $current['hijri'] : '' ); ?>" name="<?php echo esc_attr( lq_field_name( 'ramadan_year' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'ramadan_year' ) ); ?>">
-			</div>
-			<div class="lq-field">
-				<label for="lq-ramadan-start"><?php esc_html_e( '1 Ramadan', 'lailatulqadar' ); ?></label>
-				<input id="lq-ramadan-start" type="date" name="<?php echo esc_attr( lq_field_name( 'ramadan_start' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'ramadan_start' ) ); ?>">
-			</div>
-			<div class="lq-field">
-				<label for="lq-ramadan-alt"><?php esc_html_e( 'Alternative 1 Ramadan', 'lailatulqadar' ); ?></label>
-				<input id="lq-ramadan-alt" type="date" name="<?php echo esc_attr( lq_field_name( 'ramadan_alt' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'ramadan_alt' ) ); ?>">
-			</div>
-		</div>
+		<?php
+		lailatulqadar_input_row( 'ramadan_year', 'lq-ramadan-year', __( 'Hijri year', 'lailatulqadar' ), '', array( 'class' => 'small-text', 'inputmode' => 'numeric', 'placeholder' => $current ? (string) $current['hijri'] : '' ) );
+		lailatulqadar_input_row( 'ramadan_start', 'lq-ramadan-start', __( '1 Ramadan', 'lailatulqadar' ), '', array( 'type' => 'date', 'class' => null ) );
+		lailatulqadar_input_row( 'ramadan_alt', 'lq-ramadan-alt', __( 'Alternative 1 Ramadan', 'lailatulqadar' ), '', array( 'type' => 'date', 'class' => null ) );
+		?>
 	</section>
 	<?php
 }
@@ -661,24 +912,12 @@ function lq_render_login_tab() {
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Login screen', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'The login screen follows the theme: logo mark, site name, colour scheme and accent colours. The tagline and note below appear under the site name, in the language the visitor logs in with. Leave the tagline empty to use the default; leave the note empty to show none.', 'lailatulqadar' ); ?></p>
-		<div class="lq-grid">
-			<div class="lq-field">
-				<label for="lq-login-tagline-primary"><?php esc_html_e( 'Tagline (English)', 'lailatulqadar' ); ?></label>
-				<input id="lq-login-tagline-primary" type="text" class="regular-text" placeholder="A guide to Laylat al-Qadr from the Qurʾān and sound hadith." name="<?php echo esc_attr( lq_field_name( 'login_tagline_primary' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'login_tagline_primary' ) ); ?>">
-			</div>
-			<div class="lq-field">
-				<label for="lq-login-tagline-secondary"><?php esc_html_e( 'Tagline (Malay)', 'lailatulqadar' ); ?></label>
-				<input id="lq-login-tagline-secondary" type="text" class="regular-text" placeholder="Panduan Lailatulqadar berdasarkan al-Quran dan hadis sahih." name="<?php echo esc_attr( lq_field_name( 'login_tagline_secondary' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'login_tagline_secondary' ) ); ?>">
-			</div>
-			<div class="lq-field">
-				<label for="lq-login-note-primary"><?php esc_html_e( 'Note (English)', 'lailatulqadar' ); ?></label>
-				<input id="lq-login-note-primary" type="text" class="regular-text" placeholder="Editors only" name="<?php echo esc_attr( lq_field_name( 'login_note_primary' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'login_note_primary' ) ); ?>">
-			</div>
-			<div class="lq-field">
-				<label for="lq-login-note-secondary"><?php esc_html_e( 'Note (Malay)', 'lailatulqadar' ); ?></label>
-				<input id="lq-login-note-secondary" type="text" class="regular-text" placeholder="Untuk penyunting sahaja" name="<?php echo esc_attr( lq_field_name( 'login_note_secondary' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'login_note_secondary' ) ); ?>">
-			</div>
-		</div>
+		<?php
+		lailatulqadar_input_row( 'login_tagline_primary', 'lq-login-tagline-primary', __( 'Tagline (English)', 'lailatulqadar' ), '', array( 'placeholder' => 'A guide to Laylat al-Qadr from the Qurʾān and sound hadith.' ) );
+		lailatulqadar_input_row( 'login_tagline_secondary', 'lq-login-tagline-secondary', __( 'Tagline (Malay)', 'lailatulqadar' ), '', array( 'lang' => 'ms', 'placeholder' => 'Panduan Lailatulqadar berdasarkan al-Quran dan hadis sahih.' ) );
+		lailatulqadar_input_row( 'login_note_primary', 'lq-login-note-primary', __( 'Note (English)', 'lailatulqadar' ), '', array( 'placeholder' => 'Editors only' ) );
+		lailatulqadar_input_row( 'login_note_secondary', 'lq-login-note-secondary', __( 'Note (Malay)', 'lailatulqadar' ), '', array( 'lang' => 'ms', 'placeholder' => 'Untuk penyunting sahaja' ) );
+		?>
 		<p><a class="button" href="<?php echo esc_url( wp_login_url() ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Preview the login screen', 'lailatulqadar' ); ?></a></p>
 		<p class="lq-help"><?php esc_html_e( 'The preview opens in a new tab; log out there, or use a private window, to see the screen as visitors do.', 'lailatulqadar' ); ?></p>
 	</section>
@@ -713,16 +952,10 @@ function lq_render_verification_fields() {
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Webmaster tools verification', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'Paste the HTML-tag verification code from Google Search Console or Bing Webmaster Tools, either the code alone or the whole meta tag. The theme prints it on the front page; remove it only after verifying another way.', 'lailatulqadar' ); ?></p>
-		<div class="lq-grid">
-			<div class="lq-field">
-				<label for="lq-verify-google"><?php esc_html_e( 'Google Search Console', 'lailatulqadar' ); ?></label>
-				<input id="lq-verify-google" type="text" name="<?php echo esc_attr( lq_field_name( 'verify_google' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'verify_google' ) ); ?>">
-			</div>
-			<div class="lq-field">
-				<label for="lq-verify-bing"><?php esc_html_e( 'Bing Webmaster Tools', 'lailatulqadar' ); ?></label>
-				<input id="lq-verify-bing" type="text" name="<?php echo esc_attr( lq_field_name( 'verify_bing' ) ); ?>" value="<?php echo esc_attr( lq_setting( 'verify_bing' ) ); ?>">
-			</div>
-		</div>
+		<?php
+		lailatulqadar_input_row( 'verify_google', 'lq-verify-google', __( 'Google Search Console', 'lailatulqadar' ) );
+		lailatulqadar_input_row( 'verify_bing', 'lq-verify-bing', __( 'Bing Webmaster Tools', 'lailatulqadar' ) );
+		?>
 	</section>
 	<?php
 }
@@ -762,6 +995,7 @@ function lq_render_search_tab() {
 				?>
 			</p>
 		<?php endif; ?>
+		<div class="lq-table-wrap">
 		<table class="lq-pages lq-seo-table">
 			<thead>
 				<tr>
@@ -790,6 +1024,7 @@ function lq_render_search_tab() {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		</div>
 	</section>
 	<?php
 }
@@ -837,6 +1072,7 @@ function lq_render_tools_tab() {
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Guide pages', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'Menus, the reading path, the HTML sitemap and search engines see published pages only. Pages still in preparation appear in the reading path as "Coming soon", without a link.', 'lailatulqadar' ); ?></p>
+		<div class="lq-table-wrap">
 		<table class="lq-pages">
 			<thead>
 				<tr>
@@ -863,10 +1099,11 @@ function lq_render_tools_tab() {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		</div>
 		<div class="lq-actions">
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="lq_publish_ready">
-				<?php wp_nonce_field( 'lq_publish_ready' ); ?>
+				<?php lailatulqadar_nonce_field( 'lq_publish_ready' ); ?>
 				<?php
 				submit_button(
 					/* translators: %d: number of drafts ready to publish */
@@ -874,13 +1111,13 @@ function lq_render_tools_tab() {
 					'primary',
 					'submit',
 					false,
-					empty( $counts['ready'] ) ? array( 'disabled' => 'disabled' ) : array( 'data-lq-confirm' => __( 'Publish every written draft listed as ready? Check each one in the editor first.', 'lailatulqadar' ) )
+					empty( $counts['ready'] ) ? array( 'id' => 'lq-publish-ready', 'disabled' => 'disabled' ) : array( 'id' => 'lq-publish-ready', 'data-lq-confirm' => __( 'Publish every written draft listed as ready? Check each one in the editor first.', 'lailatulqadar' ) )
 				);
 				?>
 			</form>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="lq_unpublish_empty">
-				<?php wp_nonce_field( 'lq_unpublish_empty' ); ?>
+				<?php lailatulqadar_nonce_field( 'lq_unpublish_empty' ); ?>
 				<?php
 				submit_button(
 					/* translators: %d: number of published pages with little text */
@@ -888,7 +1125,7 @@ function lq_render_tools_tab() {
 					'secondary',
 					'submit',
 					false,
-					empty( $counts['empty-live'] ) ? array( 'disabled' => 'disabled' ) : array()
+					empty( $counts['empty-live'] ) ? array( 'id' => 'lq-unpublish-empty', 'disabled' => 'disabled' ) : array( 'id' => 'lq-unpublish-empty' )
 				);
 				?>
 			</form>
@@ -926,8 +1163,8 @@ function lq_render_tools_tab() {
 								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 									<input type="hidden" name="action" value="lq_replace_shipped">
 									<input type="hidden" name="page_id" value="<?php echo esc_attr( $row['id'] ); ?>">
-									<?php wp_nonce_field( 'lq_replace_shipped_' . $row['id'] ); ?>
-									<?php submit_button( __( 'Replace with the shipped version', 'lailatulqadar' ), 'secondary', 'submit', false, array( 'data-lq-confirm' => __( 'Replace this page with the version shipped with the theme? The edited text stays in its revisions.', 'lailatulqadar' ) ) ); ?>
+									<?php lailatulqadar_nonce_field( 'lq_replace_shipped_' . $row['id'] ); ?>
+									<?php submit_button( __( 'Replace with the shipped version', 'lailatulqadar' ), 'secondary', 'submit', false, array( 'id' => 'lq-replace-' . $row['id'], 'data-lq-confirm' => __( 'Replace this page with the version shipped with the theme? The edited text stays in its revisions.', 'lailatulqadar' ) ) ); ?>
 								</form>
 							</td>
 						</tr>
@@ -942,8 +1179,8 @@ function lq_render_tools_tab() {
 		<p class="lq-help"><?php esc_html_e( 'Setup runs by itself on the first admin visit after the theme is activated or updated; this button runs it again. It creates any missing guide pages in both languages, places the Malay pages beneath the Malay home at /ms/, pairs each page with its translation and sets the front page. Every page whose article ships with the theme is filled and published; pages with no article (About and Contact) stay drafts. When the theme ships a new version of an article, a page nobody has edited takes it (WordPress keeps the old text as a revision); a page an editor has changed is never overwritten and is listed under "Edited, not updated". Obsolete copies of guide pages left by earlier setups go to the trash; pages the theme did not create are never touched. Featured images an editor chose are kept. Empty title tags and meta descriptions are filled from the keyword plan.', 'lailatulqadar' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="lq_run_setup">
-			<?php wp_nonce_field( 'lq_run_setup' ); ?>
-			<?php submit_button( __( 'Run setup', 'lailatulqadar' ), 'primary', 'submit', false ); ?>
+			<?php lailatulqadar_nonce_field( 'lq_run_setup' ); ?>
+			<?php submit_button( __( 'Run setup', 'lailatulqadar' ), 'primary', 'submit', false, array( 'id' => 'lq-run-setup' ) ); ?>
 		</form>
 	</section>
 
@@ -952,8 +1189,8 @@ function lq_render_tools_tab() {
 		<p class="lq-help"><?php esc_html_e( 'Restores every setting on this screen to its default. Pages and content are not touched.', 'lailatulqadar' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="lq_reset_settings">
-			<?php wp_nonce_field( 'lq_reset_settings' ); ?>
-			<?php submit_button( __( 'Reset settings', 'lailatulqadar' ), 'secondary', 'submit', false, array( 'data-lq-confirm' => __( 'Reset every Lailatulqadar setting to its default?', 'lailatulqadar' ) ) ); ?>
+			<?php lailatulqadar_nonce_field( 'lq_reset_settings' ); ?>
+			<?php submit_button( __( 'Reset settings', 'lailatulqadar' ), 'secondary', 'submit', false, array( 'id' => 'lq-reset-settings', 'data-lq-confirm' => __( 'Reset every Lailatulqadar setting to its default?', 'lailatulqadar' ) ) ); ?>
 		</form>
 	</section>
 	<?php
@@ -968,18 +1205,17 @@ function lq_render_notices() {
 		delete_transient( 'lailatulqadar_setup_report' );
 		if ( ! empty( $report['stopped'] ) ) {
 			// Setup refused to run: say so, never "Setup finished".
-			echo '<div class="lq-callout lq-callout--warn">';
+			$html = '';
 			foreach ( $report['errors'] as $error ) {
-				echo '<p>' . esc_html( $error ) . '</p>';
+				$html .= '<p>' . esc_html( $error ) . '</p>';
 			}
-			echo '</div>';
+			lailatulqadar_notice( $html, 'warning' );
 			$report = null;
 		}
 	}
 	if ( $report ) {
 		$created = count( $report['created'] );
-		echo '<div class="lq-callout lq-callout--ok"><p>';
-		echo esc_html(
+		$html    = '<p>' . esc_html(
 			sprintf(
 				/* translators: 1: pages created, 2: pages reused, 3: drafts renamed */
 				__( 'Setup finished. %1$d pages created, %2$d existing pages reused, %3$d untouched drafts renamed.', 'lailatulqadar' ),
@@ -987,8 +1223,7 @@ function lq_render_notices() {
 				count( $report['reused'] ),
 				isset( $report['renamed'] ) ? count( $report['renamed'] ) : 0
 			)
-		);
-		echo '</p>';
+		) . '</p>';
 		$lists = array(
 			/* translators: %s: list of page titles */
 			'seeded'    => __( 'Filled with the shipped article: %s.', 'lailatulqadar' ),
@@ -1005,13 +1240,13 @@ function lq_render_notices() {
 		);
 		foreach ( $lists as $list => $message ) {
 			if ( ! empty( $report[ $list ] ) ) {
-				echo '<p>' . esc_html( sprintf( $message, implode( ', ', $report[ $list ] ) ) ) . '</p>';
+				$html .= '<p>' . esc_html( sprintf( $message, implode( ', ', $report[ $list ] ) ) ) . '</p>';
 			}
 		}
 		foreach ( $report['errors'] as $error ) {
-			echo '<p>' . esc_html( $error ) . '</p>';
+			$html .= '<p>' . esc_html( $error ) . '</p>';
 		}
-		echo '</div>';
+		lailatulqadar_notice( $html, $report['errors'] ? 'warning' : 'success' );
 	}
 
 	$status = get_transient( 'lailatulqadar_status_report' );
@@ -1022,16 +1257,33 @@ function lq_render_notices() {
 			? __( 'Published: %s.', 'lailatulqadar' )
 			/* translators: %s: list of page titles */
 			: __( 'Returned to draft: %s.', 'lailatulqadar' );
-		echo '<div class="lq-callout lq-callout--ok"><p>' . esc_html( $status['pages'] ? sprintf( $message, implode( ', ', $status['pages'] ) ) : __( 'No pages needed changing.', 'lailatulqadar' ) ) . '</p></div>';
+		lailatulqadar_notice( '<p>' . esc_html( $status['pages'] ? sprintf( $message, implode( ', ', $status['pages'] ) ) : __( 'No pages needed changing.', 'lailatulqadar' ) ) . '</p>' );
 	}
 
 	if ( isset( $_GET['lq-reset'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		echo '<div class="lq-callout lq-callout--ok"><p>' . esc_html__( 'Settings reset to their defaults.', 'lailatulqadar' ) . '</p></div>';
+		lailatulqadar_notice( '<p>' . esc_html__( 'Settings reset to their defaults.', 'lailatulqadar' ) . '</p>' );
 	}
 
 	if ( isset( $_GET['settings-updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		echo '<div class="lq-callout lq-callout--ok"><p>' . esc_html__( 'Changes saved.', 'lailatulqadar' ) . '</p></div>';
+		lailatulqadar_notice( '<p>' . esc_html__( 'Changes saved.', 'lailatulqadar' ) . '</p>' );
 	}
+}
+
+/**
+ * A dismissible notice through the core notice API.
+ *
+ * @param string $html Escaped paragraphs.
+ * @param string $type success, warning, error or info.
+ */
+function lailatulqadar_notice( $html, $type = 'success' ) {
+	wp_admin_notice(
+		$html,
+		array(
+			'type'           => $type,
+			'dismissible'    => true,
+			'paragraph_wrap' => false,
+		)
+	);
 }
 
 /**
@@ -1159,11 +1411,13 @@ function lq_setup_admin_notice() {
 	if ( ! $screen || 'appearance_page_lailatulqadar' === $screen->id || ! get_transient( 'lailatulqadar_setup_report' ) ) {
 		return;
 	}
-	printf(
-		'<div class="notice notice-success"><p>%1$s <a href="%2$s">%3$s</a></p></div>',
-		esc_html__( 'Lailatulqadar has created the guide pages.', 'lailatulqadar' ),
-		esc_url( admin_url( 'themes.php?page=lailatulqadar' ) ),
-		esc_html__( 'Review the setup report', 'lailatulqadar' )
+	lailatulqadar_notice(
+		sprintf(
+			'<p>%1$s <a href="%2$s">%3$s</a></p>',
+			esc_html__( 'Lailatulqadar has created the guide pages.', 'lailatulqadar' ),
+			esc_url( admin_url( 'themes.php?page=lailatulqadar&tab=tools' ) ),
+			esc_html__( 'Review the setup report', 'lailatulqadar' )
+		)
 	);
 }
 add_action( 'admin_notices', 'lq_setup_admin_notice' );

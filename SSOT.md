@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.15.1. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.16.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -41,7 +41,7 @@ Version 1.15.1. This file records the architecture, stored data and binding deci
 | `inc/security.php`, `inc/security-detector.php` | Security tab: remote-publishing locks, spam gate, scan and trash tool, 410 Gone, reports and log. The detector is plain PHP |
 | `js/security.js`, `css/security.css` | Security tab script and styles |
 | `tests/security-detector-test.php` | Detector self-test against every shipped article, page definition and pattern, and the attack samples |
-| `js/vendor/adhan.min.js` | adhan 4.4.6 prayer-time library (MIT) |
+| `js/vendor/adhan.min.js`, `js/vendor/adhan.js` | adhan 4.4.6 prayer-time library (MIT); `adhan.js` is its unminified source, loaded when `SCRIPT_DEBUG` is on |
 | `inc/schema.php` | JSON-LD graph, breadcrumb trail, XML sitemap trimming, Rank Math merge (`lq_rank_math_json_ld()` on `rank_math/json_ld`). Every Article carries an image: featured image, else the lead photograph from `inc/data/images.json`, else the site mark |
 | `inc/schema-content.php` | Readers for what a page shows (questions, steps, tables, verses, hadith, diagrams, footnotes, photo blocks) and the graph merge. No WordPress calls |
 | `tests/schema-graph-test.php`, `tests/stubs/wordpress.php` | Graph self-test over every page in both languages, with and without Rank Math. Run `php tests/schema-graph-test.php` |
@@ -55,11 +55,11 @@ Version 1.15.1. This file records the architecture, stored data and binding deci
 | `inc/setup.php` | Setup on activation, on update and on demand: page creation, publishing of shipped articles, content refresh, trashing of obsolete copies, draft renaming, SEO prefill |
 | `inc/slugs.php` | Addresses WordPress builds from a title leave out the words a, an and the |
 | `inc/data/seed-history.json` | md5 of every version of each article shipped in earlier releases, so a page seeded before `_lq_seed_hash` existed is recognised as unedited. Data only, read with `json_decode()`. Whenever an article changes, run `php bin/build-seed-history.php > inc/data/seed-history.json.new` and move the new file into place: the script adds the versions in the git history of `content/` to the hashes already in the file and never drops one |
-| `inc/settings.php` | Tabbed settings screen and Tools handlers (admin only) |
+| `inc/settings.php` | Tabbed settings screen and Tools handlers (admin only): card layout, ARIA tabs switched without a reload, toggle, slider and colour-picker rows (`lailatulqadar_*_row()`), assets enqueued by hook suffix |
 | `blocks/guide-menu/` | Header links, numbered reading path, footer |
 | `blocks/language-switcher/` | Link to the same page in the other language |
 | `css/front.css` | Front end, including dawn and auto schemes |
-| `css/admin.css` | Settings screen |
+| `css/admin.css` | Settings screen (cards, tabs, toggles, sliders, colour grid; stacks at 782px) |
 | `css/editor.css` | Editor-only adjustments (the editor also loads `front.css`) |
 | `js/scheme.js` | Head script for the visitor light/dark switch |
 | `inc/languages.php` | Two languages without a plugin: page language, translation pairing, hreflang, html lang, Malay site name, Malay search |
@@ -71,7 +71,7 @@ Version 1.15.1. This file records the architecture, stored data and binding deci
 | `blocks/logo-mark/` | Header logo lockup: lantern alone, and Arabic calligraphy (full mark with crescent and star on the login screen and larger icons) |
 | `images/` | Default favicon (SVG, 32px PNG), touch icon, 512px logo for structured data |
 | `blocks/scheme-toggle/` | Light and dark switch button |
-| `js/admin.js` | Accent preview and confirmation prompts |
+| `js/admin.js` | Settings tabs and keys, slider values, wp-color-picker with the accent preview, media chooser, confirmation prompts |
 | `js/meta-box.js` | Character counts in the Search appearance box |
 | `css/meta-box.css` | Search appearance box |
 | `js/editor-blocks.js` | Editor registration for the two dynamic blocks |
@@ -182,6 +182,8 @@ On 3 November 2026 the owner decided that lailatulqadar.guide has no blog. The s
 ## Settings tabs
 
 General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Images, Security, Tools.
+
+The screen needs `manage_options`, kept in 1.16.0 in place of `edit_theme_options` because it holds the security switches and setup. New PHP functions since 1.16.0 take the prefix `lailatulqadar_`; existing `lq_` functions, option keys, handles, block names and shortcodes keep their names. `git archive` leaves out `.github`, `bin`, `tests`, `CLAUDE.md` and the git files (`.gitattributes`).
 
 ## Roadmap
 

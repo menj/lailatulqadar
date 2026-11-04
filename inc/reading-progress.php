@@ -32,7 +32,8 @@ function lailatulqadar_rpb_available_types() {
  * @return string[]
  */
 function lailatulqadar_rpb_types() {
-	return array_values( array_filter( array_map( 'sanitize_key', explode( ',', (string) lq_setting( 'rpb_types' ) ) ) ) );
+	$raw = lq_setting( 'rpb_types' );
+	return is_string( $raw ) ? array_values( array_filter( array_map( 'sanitize_key', explode( ',', $raw ) ) ) ) : array();
 }
 
 /**

@@ -247,10 +247,13 @@ function lq_sanitize_settings( $input ) {
 				$value = 'bottom' === $value ? 'bottom' : 'top';
 				break;
 			case 'rpb_types':
-				$value = implode( ',', array_values( array_intersect( array_map( 'sanitize_key', (array) $value ), lailatulqadar_rpb_available_types() ) ) );
+				// Scalar strings only: a nested array or object in the post is dropped.
+				$list  = is_array( $value ) ? $value : ( is_string( $value ) ? explode( ',', $value ) : array() );
+				$list  = array_filter( $list, 'is_string' );
+				$value = implode( ',', array_values( array_intersect( array_map( 'sanitize_key', $list ), lailatulqadar_rpb_available_types() ) ) );
 				break;
 			case 'search_base':
-				$value = sanitize_title( (string) $value );
+				$value = lailatulqadar_search_clean_base( $value );
 				break;
 			case 'footer_note_primary':
 			case 'footer_note_secondary':
@@ -886,7 +889,7 @@ function lailatulqadar_render_reading_tab() {
 		<p class="lq-help"><?php esc_html_e( 'Searches move from /?s=term to /search/term/ with a permanent redirect. An empty search is left alone, paged results keep their page, and a Malay search keeps ?lang=ms. The base can also be changed in Settings > Permalinks. The theme leaves this to the Pretty Search Permalinks plugin while it is active.', 'lailatulqadar' ); ?></p>
 		<?php
 		lailatulqadar_toggle_row( 'pretty_search', 'lq-pretty-search', __( 'Use search addresses of the form /search/term/', 'lailatulqadar' ) );
-		lailatulqadar_input_row( 'search_base', 'lq-search-base', __( 'Search base', 'lailatulqadar' ), __( 'Letters, numbers and hyphens.', 'lailatulqadar' ), array( 'class' => 'regular-text code' ) );
+		lailatulqadar_input_row( 'search_base', 'lq-search-base', __( 'Search base', 'lailatulqadar' ), __( 'Lowercase letters, digits, hyphens and underscores. A language prefix or a guide page slug is refused, and the base falls back to search.', 'lailatulqadar' ), array( 'class' => 'regular-text code' ) );
 		?>
 	</section>
 

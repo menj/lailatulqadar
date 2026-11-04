@@ -93,6 +93,8 @@ function lq_image_sitemap_xml() {
 				'orderby'        => 'ID',
 				'order'          => 'ASC',
 				'no_found_rows'  => true,
+				// Unlisted pages (inc/unlist.php), also while the plugin is active.
+				'post__not_in'   => function_exists( 'lailatulqadar_unlist_sitemap_ids' ) ? lailatulqadar_unlist_sitemap_ids() : array(),
 			)
 		);
 		$posts = array_merge( $posts, $batch );

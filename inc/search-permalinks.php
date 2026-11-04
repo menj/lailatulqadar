@@ -7,8 +7,8 @@
  * allowed, in Settings > Permalinks. Differences from the plugin: terms are
  * encoded with rawurlencode(), so a space is %20; an empty search is never
  * redirected; the redirect is a 301; ?paged=2 keeps its page
- * (/search/term/page/2/); and ?lang=ms stays on the address, so a Malay
- * search stays in Malay. Rewrite rules are flushed once per theme version.
+ * (/search/term/page/2/); and every other argument stays on the address,
+ * ?lang=ms included, so a Malay search stays in Malay. Rewrite rules are flushed once per theme version.
  * The theme steps aside while the plugin is active.
  *
  * @package Lailatulqadar
@@ -27,15 +27,47 @@ function lailatulqadar_pretty_search_active() {
 }
 
 /**
+ * Slugs a search base may not take: the language prefixes, every guide page
+ * slug in the registry and the paths WordPress and the theme route.
+ *
+ * @return string[]
+ */
+function lailatulqadar_search_reserved_bases() {
+	$reserved = array( 'page', 'feed', 'comments', 'wp-json', 'wp-admin', 'wp-content', 'wp-includes', 'wp-sitemap', 'image-sitemap', 'category', 'tag', 'author', 'embed', 'trackback', 'sitemap', lq_setting( 'primary_slug' ), lq_setting( 'secondary_slug' ) );
+	if ( function_exists( 'lq_page_definitions' ) ) {
+		foreach ( lq_page_definitions() as $def ) {
+			foreach ( array( 'primary', 'secondary' ) as $role ) {
+				if ( isset( $def[ $role ]['slug'] ) && is_string( $def[ $role ]['slug'] ) ) {
+					$reserved[] = $def[ $role ]['slug'];
+				}
+			}
+		}
+	}
+	return array_values( array_filter( array_map( 'strval', (array) apply_filters( 'lailatulqadar_search_reserved_bases', $reserved ) ) ) );
+}
+
+/**
+ * A usable base from raw input: sanitize_key() (lowercase letters, digits,
+ * hyphens and underscores) and never a reserved slug; '' otherwise.
+ *
+ * @param mixed $raw Raw value.
+ * @return string
+ */
+function lailatulqadar_search_clean_base( $raw ) {
+	$base = sanitize_key( is_scalar( $raw ) ? (string) $raw : '' );
+	return ( '' === $base || in_array( $base, lailatulqadar_search_reserved_bases(), true ) ) ? '' : $base;
+}
+
+/**
  * The search base. A base saved by the plugin is used while the theme
  * setting is still the default.
  *
  * @return string
  */
 function lailatulqadar_search_base() {
-	$base = sanitize_title( (string) lq_setting( 'search_base' ) );
+	$base = lailatulqadar_search_clean_base( lq_setting( 'search_base' ) );
 	if ( 'search' === $base || '' === $base ) {
-		$legacy = sanitize_title( (string) get_option( 'wpseosearch_base', '' ) );
+		$legacy = lailatulqadar_search_clean_base( get_option( 'wpseosearch_base', '' ) );
 		$base   = '' !== $legacy ? $legacy : 'search';
 	}
 	return $base;
@@ -72,9 +104,12 @@ function lailatulqadar_pretty_search_redirect() {
 	}
 	$paged = max( 1, (int) get_query_var( 'paged' ) );
 	$url   = home_url( '/' . $base . '/' . rawurlencode( $term ) . '/' . ( $paged > 1 ? 'page/' . $paged . '/' : '' ) );
-	$lang  = isset( $_GET['lang'] ) ? sanitize_key( wp_unslash( $_GET['lang'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- language hint only.
-	if ( '' !== $lang && lq_setting( 'secondary_slug' ) === $lang ) {
-		$url = add_query_arg( 'lang', $lang, $url );
+	// Every other argument stays: ?lang=ms keeps a Malay search in Malay, and
+	// arrays such as post_type[] survive.
+	$args = wp_unslash( $_GET ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- carried over to the new address, encoded below.
+	unset( $args['s'], $args['paged'] );
+	if ( $args ) {
+		$url .= '?' . http_build_query( $args, '', '&', PHP_QUERY_RFC3986 );
 	}
 	wp_safe_redirect( $url, 301 );
 	exit;
@@ -86,11 +121,41 @@ add_action( 'template_redirect', 'lailatulqadar_pretty_search_redirect', 5 );
  * Never on an ordinary load.
  */
 function lailatulqadar_search_maybe_flush() {
+	global $wp_rewrite;
 	$want = LQ_VERSION . '|' . ( lailatulqadar_pretty_search_active() ? lailatulqadar_search_base() : '' );
-	if ( get_option( 'lailatulqadar_rewrite_version' ) !== $want ) {
-		update_option( 'lailatulqadar_rewrite_version', $want );
-		flush_rewrite_rules( false );
+	if ( get_option( 'lailatulqadar_rewrite_version' ) === $want ) {
+		return;
 	}
+	// Plain permalinks keep no rules, so there is nothing to wait for.
+	if ( ! ( $wp_rewrite instanceof WP_Rewrite ) || ! $wp_rewrite->using_permalinks() ) {
+		update_option( 'lailatulqadar_rewrite_version', $want );
+		return;
+	}
+	flush_rewrite_rules( false );
+	// The marker is written only once the rules hold the search rule, so a
+	// flush that failed is tried again on the next request.
+	if ( lailatulqadar_search_rules_ready() ) {
+		update_option( 'lailatulqadar_rewrite_version', $want );
+	}
+}
+
+/**
+ * Whether the stored rules contain the search rule for the current base, or
+ * pretty search is off and needs none.
+ *
+ * @return bool
+ */
+function lailatulqadar_search_rules_ready() {
+	if ( ! lailatulqadar_pretty_search_active() ) {
+		return true;
+	}
+	$prefix = lailatulqadar_search_base() . '/(.+)';
+	foreach ( array_keys( (array) get_option( 'rewrite_rules', array() ) ) as $rule ) {
+		if ( 0 === strpos( (string) $rule, $prefix ) ) {
+			return true;
+		}
+	}
+	return false;
 }
 add_action( 'init', 'lailatulqadar_search_maybe_flush', 99 );
 
@@ -104,7 +169,7 @@ function lailatulqadar_search_permalink_settings() {
 	}
 	if ( isset( $_POST['lailatulqadar_search_base'] ) ) {
 		check_admin_referer( 'update-permalink' );
-		$base   = sanitize_title( wp_unslash( $_POST['lailatulqadar_search_base'] ) );
+		$base   = lailatulqadar_search_clean_base( wp_unslash( $_POST['lailatulqadar_search_base'] ) );
 		$stored = wp_parse_args( (array) get_option( LQ_OPTION, array() ), lq_default_settings() );
 		// Saved as the Reading and sharing tab would save it, so the
 		// settings sanitiser merges this one key into the stored array.
@@ -122,5 +187,5 @@ add_action( 'load-options-permalink.php', 'lailatulqadar_search_permalink_settin
  */
 function lailatulqadar_search_permalink_input() {
 	echo '<input type="text" name="lailatulqadar_search_base" id="lailatulqadar_search_base" class="regular-text code" value="' . esc_attr( lailatulqadar_search_base() ) . '">';
-	echo '<p class="description">' . esc_html__( 'Search results open at /search-base/term/. Also set in Theme Options, Reading and sharing.', 'lailatulqadar' ) . '</p>';
+	echo '<p class="description">' . esc_html__( 'Search results open at /search-base/term/. Lowercase letters, digits, hyphens and underscores; a language prefix or a guide page slug is refused. Also set in Theme Options, Reading and sharing.', 'lailatulqadar' ) . '</p>';
 }

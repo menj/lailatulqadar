@@ -39,5 +39,12 @@
 
 	window.addEventListener( 'scroll', request, { passive: true } );
 	window.addEventListener( 'resize', request, { passive: true } );
+	// Images, fonts and late content change the page height: recompute then too.
+	if ( typeof ResizeObserver === 'function' ) {
+		new ResizeObserver( request ).observe( document.body );
+		if ( target && target !== document.body ) {
+			new ResizeObserver( request ).observe( target );
+		}
+	}
 	paint();
 }() );

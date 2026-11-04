@@ -23,6 +23,20 @@ function wp_parse_url( $u ) { return parse_url( $u ); }
 function trailingslashit( $s ) { return rtrim( $s, '/' ) . '/'; }
 function is_singular() { return $GLOBALS['env']['singular']; }
 function get_queried_object_id() { return $GLOBALS['env']['qid']; }
+$GLOBALS['meta'] = [];
+function update_post_meta( $id, $k, $v ) { $GLOBALS['meta'][ $id ][ $k ] = $v; }
+function delete_post_meta( $id, $k ) { unset( $GLOBALS['meta'][ $id ][ $k ] ); }
+function wp_json_encode( $v ) { return json_encode( $v ); }
+class WPDB_Stub {
+	public $postmeta = 'wp_postmeta';
+	public function prepare( $q, ...$a ) { return $q; }
+	public function get_col( $q ) {
+		$out = [];
+		foreach ( $GLOBALS['meta'] as $id => $m ) { if ( ( $m['_lq_unlisted'] ?? '' ) === '1' ) $out[] = $id; }
+		return $out;
+	}
+}
+$GLOBALS['wpdb'] = new WPDB_Stub();
 class WP_Query {
 	public $vars = []; public $singular = false;
 	public function get( $k ) { return $this->vars[ $k ] ?? ''; }
@@ -31,20 +45,32 @@ class WP_Query {
 }
 require dirname( __DIR__ ) . '/inc/unlist.php';
 
+function lailatulqadar_unlist_sync_legacy_reset() { unset( $GLOBALS['lailatulqadar_unlist_synced'] ); }
 $fail = 0;
 function check( $label, $ok ) { global $fail; echo ( $ok ? 'ok   ' : 'FAIL ' ) . $label . "\n"; if ( ! $ok ) $fail++; }
 
-// Import from the plugin's option, once.
+// First import adds the plugin's list to what the theme holds.
 $GLOBALS['opt']['unlist_posts'] = [ '12', 7, 0, 'x', 12 ];
-lailatulqadar_unlist_import_plugin_list();
-check( 'plugin list imported and cleaned', [ 12, 7 ] === lailatulqadar_unlisted_ids() );
-$GLOBALS['opt']['unlist_posts'] = [ 99 ];
-lailatulqadar_unlist_import_plugin_list();
-check( 'import runs once', [ 12, 7 ] === lailatulqadar_unlisted_ids() );
+check( 'plugin list imported lazily on first read, cleaned', [ 7, 12 ] === lailatulqadar_unlisted_ids() );
+check( 'flags stored per post', '1' === $GLOBALS['meta'][12]['_lq_unlisted'] && '1' === $GLOBALS['meta'][7]['_lq_unlisted'] );
 
 lailatulqadar_set_unlisted( 30, true );
 lailatulqadar_set_unlisted( 7, false );
 check( 'set and clear', [ 12, 30 ] === lailatulqadar_unlisted_ids() );
+check( 'plugin option kept in sync', [ 12, 30 ] === $GLOBALS['opt']['unlist_posts'] );
+
+// A stale cache cannot drop another editor's change: the list is rebuilt from the flags.
+$GLOBALS['opt']['lailatulqadar_unlisted_posts'] = [ 12 ];
+lailatulqadar_set_unlisted( 40, true );
+check( 'rebuild from flags keeps every change', [ 12, 30, 40 ] === lailatulqadar_unlisted_ids() );
+
+// The plugin changes its list later: the theme mirrors it on the next request.
+$GLOBALS['opt']['unlist_posts'] = [ 30, 55 ];
+lailatulqadar_unlist_sync_legacy_reset();
+check( 'plugin list change re-synced exactly', [ 30, 55 ] === lailatulqadar_unlisted_ids() );
+lailatulqadar_set_unlisted( 40, false );
+lailatulqadar_set_unlisted( 55, false );
+lailatulqadar_set_unlisted( 12, true );
 
 // Listing query on the front end.
 $q = new WP_Query(); $q->set( 'post__not_in', [ 5 ] );
@@ -87,6 +113,15 @@ check( 'wp_robots noindex', ! empty( $r['noindex'] ) && ! isset( $r['max-image-p
 check( 'Rank Math robots noindex', 'noindex' === lailatulqadar_unlist_rankmath_robots( [ 'index' => 'index' ] )['index'] );
 $GLOBALS['env']['qid'] = 2;
 check( 'listed post keeps its robots', [ 'index' => 'index' ] === lailatulqadar_unlist_rankmath_robots( [ 'index' => 'index' ] ) );
+
+// Plugin active: the theme stands down on listings, but keeps sitemap exclusions with the plugin's IDs.
+eval( 'class Unlist_Posts {}' );
+$GLOBALS['opt']['unlist_posts'] = [ 66 ];
+lailatulqadar_unlist_sync_legacy_reset();
+$q = new WP_Query(); lailatulqadar_unlist_pre_get_posts( $q );
+check( 'plugin active: no double filtering of listings', '' === $q->get( 'post__not_in' ) );
+check( 'plugin active: core sitemap uses the plugin list', [ 66 ] === lailatulqadar_unlist_sitemap_args( [] )['post__not_in'] );
+check( 'plugin active: Rank Math sitemap uses the plugin list', false === lailatulqadar_unlist_rankmath_sitemap_entry( [ 'loc' => 'u' ], 'post', (object) [ 'ID' => 66 ] ) );
 
 echo $fail ? "\n$fail failed\n" : "\nAll passed\n";
 exit( $fail ? 1 : 0 );

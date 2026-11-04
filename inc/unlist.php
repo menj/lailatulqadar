@@ -9,8 +9,9 @@
  * collections. Its page carries noindex,
  * through Rank Math's robots filter when Rank Math is active.
  *
- * The IDs live in one option, lailatulqadar_unlisted_posts. A list saved by the plugin
- * (option unlist_posts) is copied in once. The theme feature steps aside
+ * Each post carries a flag (meta _lq_unlisted); lailatulqadar_unlisted_posts and the
+ * plugin's unlist_posts hold the list rebuilt from the flags. A list the
+ * plugin changes is synced back on the next request. The theme feature steps aside
  * while the plugin is active, so the two never run together.
  *
  * Admin: an "Unlisted" box in the editor sidebar, Quick Edit and Bulk Edit,
@@ -31,21 +32,56 @@ function lailatulqadar_unlist_active(): bool {
 }
 
 /**
- * The unlisted IDs as clean positive integers.
+ * Clean a list of IDs: positive integers, unique, sorted.
+ *
+ * @param mixed $ids Raw list.
+ * @return int[]
+ */
+function lailatulqadar_unlist_clean( $ids ): array {
+	if ( ! is_array( $ids ) ) {
+		return [];
+	}
+	$ids = array_unique( array_filter( array_map( 'intval', $ids ), static fn( $id ) => $id > 0 ) );
+	sort( $ids );
+	return array_values( $ids );
+}
+
+/**
+ * The unlisted IDs. The truth is the per-post flag (meta _lq_unlisted);
+ * lailatulqadar_unlisted_posts is a cache of it, rebuilt on every change, so two
+ * editors saving at once cannot drop each other's change.
  *
  * @return int[]
  */
 function lailatulqadar_unlisted_ids(): array {
-	$stored = get_option( 'lailatulqadar_unlisted_posts', [] );
-	if ( ! is_array( $stored ) ) {
-		return [];
-	}
-	$ids = array_filter( array_map( 'intval', $stored ), static fn( $id ) => $id > 0 );
-	return array_values( array_unique( $ids ) );
+	lailatulqadar_unlist_sync_legacy();
+	return lailatulqadar_unlist_clean( get_option( 'lailatulqadar_unlisted_posts', [] ) );
 }
 
 function lailatulqadar_is_unlisted( $post_id ): bool {
 	return in_array( (int) $post_id, lailatulqadar_unlisted_ids(), true );
+}
+
+/**
+ * IDs flagged in post meta.
+ *
+ * @return int[]
+ */
+function lailatulqadar_unlist_ids_from_meta(): array {
+	global $wpdb;
+	return lailatulqadar_unlist_clean( $wpdb->get_col( $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %s", '_lq_unlisted', '1' ) ) );
+}
+
+/**
+ * Rebuild the cached list from the flags, and keep the plugin's
+ * unlist_posts option equal to it, so switching to the plugin and back
+ * loses nothing.
+ */
+function lailatulqadar_unlist_rebuild(): void {
+	$ids = lailatulqadar_unlist_ids_from_meta();
+	update_option( 'lailatulqadar_unlisted_posts', $ids );
+	update_option( 'unlist_posts', $ids );
+	update_option( 'lailatulqadar_unlist_legacy_hash', md5( (string) wp_json_encode( $ids ) ), false );
 }
 
 function lailatulqadar_set_unlisted( $post_id, bool $unlist ): void {
@@ -53,28 +89,61 @@ function lailatulqadar_set_unlisted( $post_id, bool $unlist ): void {
 	if ( $post_id <= 0 ) {
 		return;
 	}
-	$ids = lailatulqadar_unlisted_ids();
 	if ( $unlist ) {
-		$ids[] = $post_id;
+		update_post_meta( $post_id, '_lq_unlisted', '1' );
 	} else {
-		$ids = array_diff( $ids, [ $post_id ] );
+		delete_post_meta( $post_id, '_lq_unlisted' );
 	}
-	update_option( 'lailatulqadar_unlisted_posts', array_values( array_unique( $ids ) ) );
+	lailatulqadar_unlist_rebuild();
 }
 
 /**
- * Copy the plugin's list once, so posts it unlisted stay unlisted after the
- * plugin is removed.
+ * Import the plugin's list (option unlist_posts) on any request, front end
+ * included, and again whenever it changed after the last sync (the plugin
+ * active and editing it). The first import adds to what the theme holds;
+ * later ones mirror the plugin's list exactly.
  */
-function lailatulqadar_unlist_import_plugin_list(): void {
-	if ( false !== get_option( 'lailatulqadar_unlisted_posts', false ) ) {
+function lailatulqadar_unlist_sync_legacy(): void {
+	// Once per request.
+	if ( ! empty( $GLOBALS['lailatulqadar_unlist_synced'] ) ) {
 		return;
 	}
-	$legacy = get_option( 'unlist_posts', [] );
-	$ids    = is_array( $legacy ) ? array_values( array_filter( array_map( 'intval', $legacy ), static fn( $id ) => $id > 0 ) ) : [];
-	update_option( 'lailatulqadar_unlisted_posts', array_values( array_unique( $ids ) ) );
+	$GLOBALS['lailatulqadar_unlist_synced'] = true;
+	$legacy = lailatulqadar_unlist_clean( get_option( 'unlist_posts', [] ) );
+	$seen   = get_option( 'lailatulqadar_unlist_legacy_hash', false );
+	if ( md5( (string) wp_json_encode( $legacy ) ) === $seen ) {
+		return;
+	}
+	$flagged = lailatulqadar_unlist_ids_from_meta();
+	$target  = false === $seen
+		? lailatulqadar_unlist_clean( array_merge( $legacy, $flagged, (array) get_option( 'lailatulqadar_unlisted_posts', [] ) ) )
+		: $legacy;
+	foreach ( array_diff( $target, $flagged ) as $id ) {
+		update_post_meta( $id, '_lq_unlisted', '1' );
+	}
+	foreach ( array_diff( $flagged, $target ) as $id ) {
+		delete_post_meta( $id, '_lq_unlisted' );
+	}
+	lailatulqadar_unlist_rebuild();
 }
-add_action( 'admin_init', 'lailatulqadar_unlist_import_plugin_list' );
+add_action( 'init', 'lailatulqadar_unlist_sync_legacy', 1 );
+
+/**
+ * Sitemap exclusions run while the plugin is active as well (it has none of
+ * its own); the IDs then come from its list through lailatulqadar_unlist_sync_legacy().
+ */
+function lailatulqadar_unlist_sitemaps_on(): bool {
+	return (bool) apply_filters( 'lailatulqadar_unlist_enabled', true );
+}
+
+/**
+ * IDs to leave out of every sitemap, the theme's or the plugin's.
+ *
+ * @return int[]
+ */
+function lailatulqadar_unlist_sitemap_ids(): array {
+	return lailatulqadar_unlist_sitemaps_on() ? lailatulqadar_unlisted_ids() : [];
+}
 
 /**
  * Whether an admin-originated request should still see unlisted posts. The
@@ -162,7 +231,7 @@ add_filter( 'wp_list_pages_excludes', 'lailatulqadar_unlist_list_pages_excludes'
  * Core sitemaps.
  */
 function lailatulqadar_unlist_sitemap_args( $args ) {
-	if ( ! lailatulqadar_unlist_active() || ! lailatulqadar_unlisted_ids() ) {
+	if ( ! lailatulqadar_unlist_sitemaps_on() || ! lailatulqadar_unlisted_ids() ) {
 		return $args;
 	}
 	$args['post__not_in'] = array_merge( (array) ( $args['post__not_in'] ?? [] ), lailatulqadar_unlisted_ids() );
@@ -178,7 +247,7 @@ add_filter( 'wp_sitemaps_posts_query_args', 'lailatulqadar_unlist_sitemap_args',
  * @param object      $object Post or term.
  */
 function lailatulqadar_unlist_rankmath_sitemap_entry( $url, $type = '', $object = null ) {
-	if ( lailatulqadar_unlist_active() && 'post' === $type && is_object( $object ) && isset( $object->ID ) && lailatulqadar_is_unlisted( $object->ID ) ) {
+	if ( lailatulqadar_unlist_sitemaps_on() && 'post' === $type && is_object( $object ) && isset( $object->ID ) && lailatulqadar_is_unlisted( $object->ID ) ) {
 		return false;
 	}
 	return $url;

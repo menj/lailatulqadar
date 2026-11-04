@@ -1,6 +1,6 @@
 # Settings reference
 
-Appearance > Theme Options. Each tab saves only its own fields. The screen is a card layout: every tab's panel is on the page and the tabs switch without a reload (arrow keys, Home and End move between them; without JavaScript each tab is a link). Two-valued settings are toggle switches, the link caps are sliders that show their value, and the accents use the WordPress colour picker. The page needs the manage_options capability; its CSS and JS (`css/admin.css`, `js/admin.js`, `css/security.css`, `js/security.js`) load on this screen only, by its hook suffix.
+Appearance > Theme Options. Each tab saves only its own fields. The screen is a card layout: the tabs switch without a reload, except General, Search, Security and Tools, whose panels run report queries and open with a full reload (arrow keys, Home and End move between tabs; without JavaScript each tab is a link). Two-valued settings are toggle switches, the link caps are sliders that show their value, and the accents use the WordPress colour picker. The page needs the manage_options capability; its CSS and JS (`css/admin.css`, `js/admin.js`, `css/security.css`, `js/security.js`) load on this screen only, by its hook suffix.
 
 ## General
 - **Logo calligraphy.** A transparent PNG from the Media Library, recoloured to the scheme's gold; empty means typeset calligraphy.

@@ -13,7 +13,7 @@ Bilingual English and Malay guide theme for Laylat al-Qadr, built as a child of 
 
 Lailatulqadar runs lailatulqadar.guide, a fixed guide to Laylat al-Qadr in English at the site root and in Malay under /ms/. It needs Twenty Twenty-Five installed as its parent and no plugins.
 
-A setup routine creates the guide pages in both languages, fills them with the articles the theme ships, pairs each page with its translation and sets the front page. It never overwrites a page an editor has changed.
+A setup routine creates the guide pages in both languages, fills them with the articles the theme ships, pairs each page with its translation and sets the front page. It never overwrites text an editor has written. A guide page that is still an empty draft takes the shipped title and address before it is filled.
 
 The site has no blog. Post addresses and feeds send visitors to the home page of their language.
 
@@ -30,7 +30,7 @@ The site has no blog. Post addresses and feeds send visitors to the home page of
 
 == Usage ==
 
-Open Appearance > Theme Options. Each tab saves only its own fields, and the tabs switch without a reload. Arrow keys, Home and End move between tabs.
+Open Appearance > Theme Options. Each tab saves only its own fields. Most tabs switch without a reload; General, Search, Security and Tools reload the page, since they run reports. Arrow keys, Home and End move between tabs.
 
 * General: the logo calligraphy image, the footer note in each language, the author named in structured data, and the state of every guide page.
 * Languages: how the two languages work, the switcher labels and the site name on Malay pages.
@@ -60,7 +60,7 @@ The theme makes no remote requests and loads no tracking, fonts or scripts from 
 
 Two things stay in the visitor's own browser (localStorage) and never reach the server: the light or dark choice made with the switch, and the city and start date chosen in the night window of the Night Planner. The night window asks for the visitor's location only when the visitor presses its location button. It works out the times in the browser and keeps that position in localStorage as the chosen city; it sends it nowhere.
 
-For administrators, the Security tab records the time and IP address of each administrator login, failed logins by account name for one day, and a log of up to 200 security events. None of it leaves the site.
+For administrators, the Security tab records the time and IP address of each administrator login, failed logins by account name and IP address, deleted once they are 24 hours old, and a log of up to 200 security events. None of it leaves the site.
 
 == Frequently Asked Questions ==
 

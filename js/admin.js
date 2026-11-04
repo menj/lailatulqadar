@@ -16,7 +16,24 @@
 	var tabs = tablist ? Array.prototype.slice.call( tablist.querySelectorAll( '[role="tab"]' ) ) : [];
 	var transient = [ 'settings-updated', 'lq-reset', 'lq-sec', 'lq-count' ];
 
+	function deferred( tab ) {
+		var panel = document.getElementById( tab.getAttribute( 'aria-controls' ) );
+		return !! ( panel && panel.hasAttribute( 'data-lq-reload' ) );
+	}
+
+	function focusOnly( tab ) {
+		tabs.forEach( function ( item ) {
+			item.tabIndex = item === tab ? 0 : -1;
+		} );
+		tab.focus();
+	}
+
 	function activate( tab, moveFocus ) {
+		if ( deferred( tab ) ) {
+			// This panel is rendered only when open: load it with a full reload.
+			window.location.assign( tab.href );
+			return;
+		}
 		tabs.forEach( function ( item ) {
 			var on = item === tab;
 			var panel = document.getElementById( item.getAttribute( 'aria-controls' ) );
@@ -42,6 +59,12 @@
 			window.history.replaceState( null, '', url.toString() );
 		}
 	}
+
+	// Roving tabindex, set only once the script runs: without it every tab
+	// link stays in the Tab order.
+	tabs.forEach( function ( tab ) {
+		tab.tabIndex = 'true' === tab.getAttribute( 'aria-selected' ) ? 0 : -1;
+	} );
 
 	tabs.forEach( function ( tab, index ) {
 		tab.addEventListener( 'click', function ( event ) {
@@ -70,7 +93,13 @@
 			}
 			if ( next ) {
 				event.preventDefault();
-				activate( next, true );
+				// Arrow keys only move focus to a tab that needs a reload;
+				// Enter, Space or a click opens it.
+				if ( next !== tab && deferred( next ) ) {
+					focusOnly( next );
+				} else {
+					activate( next, true );
+				}
 			}
 		} );
 	} );

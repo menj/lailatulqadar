@@ -449,7 +449,7 @@ add_action( 'wp_login_failed', 'lq_sec_failed_login' );
 
 /**
  * Failed-login rows whose last failure is within the past 24 hours. Older
- * rows are left out on every read, not only pruned on the next failure.
+ * rows are deleted from the option on every read and on every write.
  *
  * @return array account => row
  */
@@ -457,10 +457,17 @@ function lq_sec_failed_recent() {
 	$failed = get_option( LQ_SEC_FAILED, array() );
 	$failed = is_array( $failed ) ? $failed : array();
 	$now    = time();
+	$stale  = false;
 	foreach ( $failed as $name => $row ) {
 		if ( ! is_array( $row ) || $now - (int) ( isset( $row['last'] ) ? $row['last'] : 0 ) > DAY_IN_SECONDS || $now - (int) ( isset( $row['first'] ) ? $row['first'] : 0 ) > DAY_IN_SECONDS ) {
 			unset( $failed[ $name ] );
+			$stale = true;
 		}
+	}
+	if ( $stale ) {
+		// Delete expired names and addresses from the database, so nothing
+		// is kept past the 24 hours the readme states.
+		update_option( LQ_SEC_FAILED, $failed, false );
 	}
 	return $failed;
 }

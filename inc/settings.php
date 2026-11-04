@@ -117,15 +117,19 @@ function lailatulqadar_options_enqueue( $hook_suffix ) {
 add_action( 'admin_enqueue_scripts', 'lailatulqadar_options_enqueue' );
 
 /**
- * Settings screen assets. Every tab is on the page, so the Security tab's
- * script and styles load with the rest.
+ * Settings screen assets. The Security tab's script and styles load only
+ * while that tab is open, since only then is its panel rendered.
  */
 function lq_admin_assets() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+	$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'general';
 	wp_enqueue_style( 'wp-color-picker' );
 	wp_enqueue_style( 'lailatulqadar-admin', LQ_URI . '/css/admin.css', array( 'wp-color-picker', 'dashicons' ), LQ_VERSION );
 	wp_enqueue_media();
 	wp_enqueue_script( 'lailatulqadar-admin', LQ_URI . '/js/admin.js', array( 'jquery', 'wp-color-picker' ), LQ_VERSION, true );
-	lq_sec_assets();
+	if ( 'security' === $tab ) {
+		lq_sec_assets();
+	}
 }
 
 /**
@@ -162,7 +166,13 @@ function lq_sanitize_settings( $input ) {
 	$defaults = lq_default_settings();
 
 	foreach ( $tabs[ $tab ]['fields'] as $key ) {
-		$value = isset( $input[ $key ] ) ? wp_unslash( $input[ $key ] ) : '';
+		// A field the tab did not render keeps its stored value: with an SEO
+		// plugin active the Search tab prints no verification inputs, and
+		// saving it must not clear the codes. Toggles always post a value.
+		if ( ! array_key_exists( $key, $input ) ) {
+			continue;
+		}
+		$value = wp_unslash( $input[ $key ] );
 
 		switch ( $key ) {
 			case 'primary_slug':
@@ -267,7 +277,7 @@ function lq_render_settings() {
 
 		<div class="lq-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Settings sections', 'lailatulqadar' ); ?>">
 			<?php foreach ( $tabs as $slug => $tab ) : ?>
-				<a class="lq-tabs__tab<?php echo $slug === $current ? ' is-active' : ''; ?>" role="tab" id="<?php echo esc_attr( 'lq-tab-' . $slug ); ?>" href="<?php echo esc_url( add_query_arg( 'tab', $slug, $base ) ); ?>" aria-controls="<?php echo esc_attr( 'lq-panel-' . $slug ); ?>" aria-selected="<?php echo $slug === $current ? 'true' : 'false'; ?>" tabindex="<?php echo $slug === $current ? '0' : '-1'; ?>" data-tab="<?php echo esc_attr( $slug ); ?>">
+				<a class="lq-tabs__tab<?php echo $slug === $current ? ' is-active' : ''; ?>" role="tab" id="<?php echo esc_attr( 'lq-tab-' . $slug ); ?>" href="<?php echo esc_url( add_query_arg( 'tab', $slug, $base ) ); ?>" aria-controls="<?php echo esc_attr( 'lq-panel-' . $slug ); ?>" aria-selected="<?php echo $slug === $current ? 'true' : 'false'; ?>" data-tab="<?php echo esc_attr( $slug ); ?>">
 					<span class="dashicons <?php echo esc_attr( 'dashicons-' . $tab['icon'] ); ?>" aria-hidden="true"></span>
 					<span class="lq-tabs__label"><?php echo esc_html( $tab['label'] ); ?></span>
 				</a>
@@ -275,8 +285,19 @@ function lq_render_settings() {
 		</div>
 
 		<?php foreach ( $tabs as $slug => $tab ) : ?>
-			<div class="lq-panel" role="tabpanel" id="<?php echo esc_attr( 'lq-panel-' . $slug ); ?>" aria-labelledby="<?php echo esc_attr( 'lq-tab-' . $slug ); ?>" tabindex="0"<?php echo $slug === $current ? '' : ' hidden'; ?>>
-				<?php lailatulqadar_render_panel( $slug ); ?>
+			<?php $deferred = $slug !== $current && lailatulqadar_tab_is_heavy( $slug ); ?>
+			<div class="lq-panel" role="tabpanel" id="<?php echo esc_attr( 'lq-panel-' . $slug ); ?>" aria-labelledby="<?php echo esc_attr( 'lq-tab-' . $slug ); ?>" tabindex="0"<?php echo $slug === $current ? '' : ' hidden'; ?><?php echo $deferred ? ' data-lq-reload' : ''; ?>>
+				<?php
+				if ( $deferred ) {
+					printf(
+						'<p class="lq-section"><a href="%1$s">%2$s</a></p>',
+						esc_url( add_query_arg( 'tab', $slug, $base ) ),
+						esc_html( sprintf( /* translators: %s: tab name */ __( 'Open the %s tab', 'lailatulqadar' ), $tab['label'] ) )
+					);
+				} else {
+					lailatulqadar_render_panel( $slug );
+				}
+				?>
 			</div>
 		<?php endforeach; ?>
 
@@ -287,6 +308,19 @@ function lq_render_settings() {
 		</footer>
 	</div>
 	<?php
+}
+
+/**
+ * Tabs whose panels run report queries (the Security reports and log, the
+ * Tools page states and word counts, the Search table of every page's meta,
+ * the General page table). They render only when they are the open tab; the
+ * other panels hold a link, and the script loads the tab with a full reload.
+ *
+ * @param string $slug Tab key.
+ * @return bool
+ */
+function lailatulqadar_tab_is_heavy( $slug ) {
+	return in_array( $slug, array( 'general', 'search', 'security', 'tools' ), true );
 }
 
 /**
@@ -336,6 +370,7 @@ function lailatulqadar_settings_fields( $slug ) {
 	<input type="hidden" name="<?php echo esc_attr( LQ_OPTION ); ?>[_tab]" value="<?php echo esc_attr( $slug ); ?>">
 	<?php
 	lailatulqadar_nonce_field( 'lailatulqadar_settings-options' );
+
 	printf(
 		'<input type="hidden" name="_wp_http_referer" value="%s">',
 		esc_attr( wp_make_link_relative( add_query_arg( 'tab', $slug, admin_url( 'themes.php?page=lailatulqadar' ) ) ) )

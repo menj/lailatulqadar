@@ -4,7 +4,7 @@ You can skip versions: upload the newest zip over any 1.9.x and open any admin s
 
 ## To 1.18.1
 
-Upload the zip. If you edited the 404 template in the Site Editor, reset it to see the new Malay line.
+Upload the zip. If you edited the 404 template in the Site Editor, the saved copy keeps the old Malay line. Change that line by hand in the editor; resetting the template would also drop your other edits to it.
 
 ## To 1.18.0
 

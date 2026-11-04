@@ -14,12 +14,14 @@
 	function pct() {
 		var viewH = window.innerHeight;
 		if ( target ) {
+			// 0 while the top of the content is at or below the top of the
+			// window, 100 once its end reaches the bottom of the window.
 			var rect = target.getBoundingClientRect();
-			var readable = target.offsetHeight - viewH * 0.5;
+			var readable = target.offsetHeight - viewH;
 			if ( readable <= 0 ) {
-				return 100;
+				return rect.bottom <= viewH ? 100 : 0;
 			}
-			return Math.min( 100, Math.max( 0, ( ( -rect.top + viewH * 0.5 ) / readable ) * 100 ) );
+			return Math.min( 100, Math.max( 0, ( -rect.top / readable ) * 100 ) );
 		}
 		var max = document.documentElement.scrollHeight - viewH;
 		return max > 0 ? Math.min( 100, ( window.scrollY / max ) * 100 ) : 100;

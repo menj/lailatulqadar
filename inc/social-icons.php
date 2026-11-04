@@ -75,7 +75,7 @@ function lailatulqadar_social_icons_html( $context = '' ) {
 	if ( ! $profiles ) {
 		return '';
 	}
-	wp_enqueue_style( 'lailatulqadar-social', LQ_URI . '/css/social-icons.css', array(), LQ_VERSION );
+	wp_enqueue_style( 'lailatulqadar-social' );
 	$ms    = 'secondary' === lq_current_role();
 	$class = 'lq-social' . ( '' !== $context ? ' lq-social--' . sanitize_html_class( $context ) : '' );
 	$html  = '<ul class="' . esc_attr( $class ) . '" aria-label="' . esc_attr( $ms ? 'Profil kami' : __( 'Our profiles', 'lailatulqadar' ) ) . '">';
@@ -92,7 +92,7 @@ function lailatulqadar_social_icons_html( $context = '' ) {
  */
 function lailatulqadar_social_enqueue() {
 	if ( '1' === lq_setting( 'social_footer' ) && lailatulqadar_social_profiles() ) {
-		wp_enqueue_style( 'lailatulqadar-social', LQ_URI . '/css/social-icons.css', array(), LQ_VERSION );
+		wp_enqueue_style( 'lailatulqadar-social' );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'lailatulqadar_social_enqueue', 25 );
@@ -111,6 +111,9 @@ add_shortcode( 'lailatulqadar_social_icons', 'lailatulqadar_social_shortcode' );
  * The block and the pattern.
  */
 function lailatulqadar_social_register() {
+	// Registered before the block, which names it as its editor style, so
+	// the ServerSideRender preview in the editor is styled too.
+	wp_register_style( 'lailatulqadar-social', LQ_URI . '/css/social-icons.css', array(), LQ_VERSION );
 	register_block_type( LQ_DIR . '/blocks/social-icons' );
 	if ( function_exists( 'register_block_pattern' ) ) {
 		register_block_pattern(

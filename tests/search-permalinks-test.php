@@ -18,7 +18,16 @@ $GLOBALS['redirect'] = null;
 $GLOBALS['flushes']  = 0;
 function add_action() {}
 function apply_filters( $h, $v ) { return $v; }
-function lq_setting( $k ) { return isset( $GLOBALS['set'][ $k ] ) ? $GLOBALS['set'][ $k ] : ''; }
+function untrailingslashit( $s ) { return rtrim( $s, '/' ); }
+function lq_default_settings() { return array( 'search_base' => 'search' ); }
+function wp_parse_args( $a, $d ) { return array_merge( $d, $a ); }
+function lq_setting( $k ) {
+	$stored = isset( $GLOBALS['opt'][ LQ_OPTION ] ) && is_array( $GLOBALS['opt'][ LQ_OPTION ] ) ? $GLOBALS['opt'][ LQ_OPTION ] : array();
+	if ( 'search_base' === $k && isset( $stored['search_base'] ) ) {
+		return $stored['search_base'];
+	}
+	return isset( $GLOBALS['set'][ $k ] ) ? $GLOBALS['set'][ $k ] : '';
+}
 function get_option( $k, $d = false ) { return array_key_exists( $k, $GLOBALS['opt'] ) ? $GLOBALS['opt'][ $k ] : $d; }
 function update_option( $k, $v ) { $GLOBALS['opt'][ $k ] = $v; return true; }
 function sanitize_title( $s ) { return trim( preg_replace( '/[^a-z0-9]+/', '-', strtolower( (string) $s ) ), '-' ); }
@@ -75,12 +84,18 @@ $GLOBALS['set']['search_base'] = 'cari_doa';
 lq_check( 'base follows sanitize_key (underscore kept)', 'cari_doa' === lailatulqadar_search_base() );
 $GLOBALS['set']['search_base'] = 'search';
 
+lq_check( 'pretty check needs home path + base at the start', array( 'https://lq.test/search/x/', 301 ) === lq_run( '/ms/search/x/?s=x', array( 's' => 'x' ), array( 's' => 'x' ) ) );
+lq_check( 'lang[] array does not throw and is kept', array( 'https://lq.test/search/doa/?lang%5B0%5D=ms', 301 ) === lq_run( '/?s=doa&lang[]=ms', array( 's' => 'doa' ), array( 's' => 'doa', 'lang' => array( 'ms' ) ) ) );
+
 $GLOBALS['opt']['wpseosearch_base'] = 'find';
-lq_check( 'plugin base is the fallback', 'find' === lailatulqadar_search_base() );
-$GLOBALS['set']['search_base'] = 'Cari Ini';
+lailatulqadar_search_import_legacy_base();
+lq_check( 'plugin base seeds the setting once', 'find' === lailatulqadar_search_base() );
+$GLOBALS['opt'][ LQ_OPTION ]['search_base'] = 'search';
+lailatulqadar_search_import_legacy_base();
+lq_check( 'an explicit save of "search" wins over the plugin base', 'search' === lailatulqadar_search_base() );
+$GLOBALS['opt'][ LQ_OPTION ]['search_base'] = 'Cari Ini';
 lq_check( 'theme base wins and is sanitised', 'cariini' === lailatulqadar_search_base() );
-$GLOBALS['set']['search_base'] = 'search';
-unset( $GLOBALS['opt']['wpseosearch_base'] );
+unset( $GLOBALS['opt'][ LQ_OPTION ], $GLOBALS['opt']['wpseosearch_base'] );
 
 $GLOBALS['set']['pretty_search'] = '0';
 lq_check( 'switched off: no redirect', null === lq_run( '/?s=dua', array( 's' => 'dua' ) ) );

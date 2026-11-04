@@ -14,5 +14,6 @@
 		"html": false
 	},
 	"editorScript": "lailatulqadar-editor-blocks",
+	"editorStyle": "lailatulqadar-social",
 	"render": "file:./render.php"
 }

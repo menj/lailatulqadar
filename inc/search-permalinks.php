@@ -59,19 +59,36 @@ function lailatulqadar_search_clean_base( $raw ) {
 }
 
 /**
- * The search base. A base saved by the plugin is used while the theme
- * setting is still the default.
+ * The search base: the theme setting. An explicit save always wins,
+ * "search" included; the plugin's base only seeds the setting once.
  *
  * @return string
  */
 function lailatulqadar_search_base() {
 	$base = lailatulqadar_search_clean_base( lq_setting( 'search_base' ) );
-	if ( 'search' === $base || '' === $base ) {
-		$legacy = lailatulqadar_search_clean_base( get_option( 'wpseosearch_base', '' ) );
-		$base   = '' !== $legacy ? $legacy : 'search';
-	}
-	return $base;
+	return '' !== $base ? $base : 'search';
 }
+
+/**
+ * Copy a base saved by the plugin (wpseosearch_base) into the theme setting,
+ * once, before any save of Theme Options could write the default over it.
+ * Saving any tab merges the defaults into the stored array, so after this
+ * the plugin's value is never read again.
+ */
+function lailatulqadar_search_import_legacy_base() {
+	$stored = get_option( LQ_OPTION, array() );
+	$stored = is_array( $stored ) ? $stored : array();
+	if ( array_key_exists( 'search_base', $stored ) ) {
+		return;
+	}
+	$legacy = lailatulqadar_search_clean_base( get_option( 'wpseosearch_base', '' ) );
+	// Runs on init, before the settings sanitiser is registered (admin_init),
+	// so the array is stored as written.
+	$stored                = wp_parse_args( $stored, lq_default_settings() );
+	$stored['search_base'] = '' !== $legacy ? $legacy : 'search';
+	update_option( LQ_OPTION, $stored );
+}
+add_action( 'init', 'lailatulqadar_search_import_legacy_base', 0 );
 
 /**
  * Tell WordPress which segment carries the search terms.
@@ -99,7 +116,9 @@ function lailatulqadar_pretty_search_redirect() {
 	$uri  = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 	$path = (string) wp_parse_url( $uri, PHP_URL_PATH );
 	$base = lailatulqadar_search_base();
-	if ( false !== strpos( $path, '/' . $base . '/' ) ) {
+	// Already pretty only when the path starts with the home path and the base.
+	$home = untrailingslashit( (string) wp_parse_url( home_url( '/' ), PHP_URL_PATH ) );
+	if ( 0 === strpos( $path, $home . '/' . $base . '/' ) ) {
 		return;
 	}
 	$paged = max( 1, (int) get_query_var( 'paged' ) );

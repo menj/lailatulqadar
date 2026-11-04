@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.17.0' );
+define( 'LQ_VERSION', '1.18.0' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 
@@ -37,6 +37,7 @@ require_once LQ_DIR . '/inc/search-permalinks.php';
 
 if ( is_admin() ) {
 	require_once LQ_DIR . '/inc/settings.php';
+	require_once LQ_DIR . '/inc/error-pages.php';
 }
 
 /**

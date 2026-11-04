@@ -2,7 +2,7 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Lailatulqadar 1.17.0\n"
+"Project-Id-Version: Lailatulqadar 1.18.0\n"
 "Report-Msgid-Bugs-To: https://lailatulqadar.guide\n"
 "Last-Translator: Mohd Elfie Nieshaem Juferi\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"

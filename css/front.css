@@ -687,6 +687,11 @@ sup.fn a {
 	color: var(--wp--preset--color--accent-4);
 }
 
+.lq-404__search {
+	max-width: 32rem;
+	margin-block: 1.5rem 2rem;
+}
+
 /* ---------- Footer ---------- */
 
 .lq-footer {
@@ -921,7 +926,7 @@ sup.fn a {
 }
 
 .lq-menu--path li.is-upcoming .lq-menu__title {
-	opacity: 0.75;
+	opacity: 0.85;
 }
 
 .lq-menu__upcoming {

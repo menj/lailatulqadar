@@ -79,6 +79,8 @@ foreach ( array( '403', '500', '502', '503' ) as $err_c ) {
 	err_check( false !== strpos( $err_h, 'noindex' ) && false === strpos( $err_h, '<?php' ), "errors/$err_c.html is static and noindex" );
 }
 err_check( false !== strpos( lailatulqadar_error_htaccess_snippet(), 'ErrorDocument 503 /wp-content/themes/lailatulqadar/errors/503.html' ), '.htaccess lines point at errors/' );
+$err_404 = (string) file_get_contents( dirname( __DIR__ ) . '/templates/404.html' );
+err_check( false !== strpos( $err_404, '<p class="lq-404__alt" lang="ms">Halaman tidak ditemui. Alamatnya mungkin telah berubah. Cari dalam panduan atau pilih salah satu halaman di bawah.</p>' ), 'the 404 page carries the Malay line' );
 
 array_map( 'unlink', glob( "$err_tmp/*" ) );
 rmdir( $err_tmp );

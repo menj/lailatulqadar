@@ -230,17 +230,48 @@ function lq_test_check( $graph, $key, $role, $rank_math, $vocab ) {
 	if ( in_array( $key, array( 'dua', 'signs', 'sources', 'surah', 'what', 'faq', 'about' ), true ) && ! empty( $types['Event'] ) ) {
 		$errors[] = 'Event on a page that shows no Ramadan dates';
 	}
-	// The author carries https://menj.bio in sameAs (owner rule, 4 November 2026).
-	if ( $is_article && ! $rank_math ) {
-		$by = isset( $types['Article'][0]['author'] ) ? $types['Article'][0]['author'] : array();
-		if ( empty( $by['sameAs'] ) || ! in_array( 'https://menj.bio', (array) $by['sameAs'], true ) ) {
-			$errors[] = 'article author sameAs lacks https://menj.bio';
+	// The author (owner rule, 4 November 2026): one Person, #author, named
+	// Mohd Elfie Nieshaem Juferi at https://menj.bio, with sameAs including
+	// it; every author value in the graph points to it.
+	$persons = array();
+	foreach ( isset( $types['Person'] ) ? $types['Person'] : array() as $person ) {
+		if ( isset( $person['name'] ) ) {
+			$persons[] = $person;
 		}
 	}
-	if ( 'about' === $key && ! empty( $types['Person'] ) ) {
-		foreach ( $types['Person'] as $person ) {
-			if ( isset( $person['@id'] ) && '#author' === substr( $person['@id'], -7 ) && ! in_array( 'https://menj.bio', (array) ( $person['sameAs'] ?? array() ), true ) ) {
-				$errors[] = 'author Person sameAs lacks https://menj.bio';
+	$owner = null;
+	foreach ( $persons as $person ) {
+		if ( isset( $person['@id'] ) && '#author' === substr( $person['@id'], -7 ) ) {
+			$owner = $owner ? 'twice' : $person;
+		}
+	}
+	if ( ! is_array( $owner ) ) {
+		$errors[] = 'twice' === $owner ? 'two author Person nodes' : 'no author Person node';
+	} else {
+		if ( 'Mohd Elfie Nieshaem Juferi' !== ( $owner['name'] ?? '' ) || 'https://menj.bio' !== ( $owner['url'] ?? '' ) ) {
+			$errors[] = 'author Person has the wrong name or url';
+		}
+		if ( ! in_array( 'https://menj.bio', (array) ( $owner['sameAs'] ?? array() ), true ) ) {
+			$errors[] = 'author sameAs lacks https://menj.bio';
+		}
+		$authors = function ( $node ) use ( &$authors, &$errors, $owner ) {
+			if ( ! is_array( $node ) ) {
+				return;
+			}
+			foreach ( $node as $k => $v ) {
+				if ( 'author' === $k && ( ! is_array( $v ) || ( $v['@id'] ?? '' ) !== $owner['@id'] ) ) {
+					$errors[] = 'an author does not point to ' . $owner['@id'];
+				} elseif ( is_array( $v ) ) {
+					$authors( $v );
+				}
+			}
+		};
+		$authors( $graph );
+		foreach ( array( 'Article', 'WebPage' ) as $t ) {
+			foreach ( isset( $types[ $t ] ) ? $types[ $t ] : array() as $node ) {
+				if ( empty( $node['author'] ) ) {
+					$errors[] = "$t without an author";
+				}
 			}
 		}
 	}

@@ -656,9 +656,9 @@ function lq_render_general_tab() {
 
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Author for structured data', 'lailatulqadar' ); ?></h2>
-		<p class="lq-help"><?php esc_html_e( 'Named as the author of every guide article in the Article structured data. Leave empty to use each page author’s display name and the About page.', 'lailatulqadar' ); ?></p>
+		<p class="lq-help"><?php esc_html_e( 'The structured data names Mohd Elfie Nieshaem Juferi, at https://menj.bio, as the author of every page. A profile URL entered here is added to the author’s sameAs. The name field is kept but no longer read.', 'lailatulqadar' ); ?></p>
 		<?php if ( lq_seo_plugin() ) : ?>
-			<p class="lq-callout lq-callout--warn"><?php echo esc_html( sprintf( /* translators: %s: SEO plugin name */ __( '%s is active and outputs the structured data, so these fields are not used. Set the author and publisher in the plugin.', 'lailatulqadar' ), lq_seo_plugin() ) ); ?></p>
+			<p class="lq-callout lq-callout--warn"><?php echo esc_html( sprintf( /* translators: %s: SEO plugin name */ __( '%s is active and outputs the structured data. The theme folds its nodes into that graph, so every author still points to the one author Person.', 'lailatulqadar' ), lq_seo_plugin() ) ); ?></p>
 		<?php endif; ?>
 		<?php
 		lailatulqadar_input_row( 'author_name', 'lq-author-name', __( 'Author name', 'lailatulqadar' ) );

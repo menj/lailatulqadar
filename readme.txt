@@ -89,7 +89,8 @@ Theme Options has a new card layout with tabs that switch without a reload. Ever
 == Changelog ==
 
 = 1.18.2 =
-* Four guide pages, in English and Malay, no longer describe other websites as related to this one. Every link stays.
+* Three guide pages, in English and Malay, no longer describe other websites as related to this one. Every link stays.
+* The structured data names the author as Mohd Elfie Nieshaem Juferi, at https://menj.bio. Nothing visible changes.
 
 = 1.18.1 =
 * The Malay line on the 404 page reads more plainly.

@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.17.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.18.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -59,6 +59,7 @@ Version 1.17.0. This file records the architecture, stored data and binding deci
 | `inc/reading-progress.php`, `js/reading-progress.js`, `css/reading-progress.css` | Reading progress bar on single views; off while the Reading Progress Bar plugin is active |
 | `inc/unlist.php`, `js/unlist-admin.js`, `tests/unlist-test.php` | Unlisted pages (replaces Unlist Posts & Pages); off while that plugin is active |
 | `inc/search-permalinks.php`, `tests/search-permalinks-test.php` | /search/term/ addresses (replaces Pretty Search Permalinks); off while that plugin is active |
+| `inc/error-pages.php`, `inc/error-page-html.php` | The wp-content drop-ins (maintenance 503, php-error 500, db-error 503) and their Install error pages button on the Tools tab (admin only); the self-contained page builder, also used by `bin/build-error-pages.php` for the static pages in `errors/`. See `docs/settings.md` |
 | `inc/settings.php` | Tabbed settings screen and Tools handlers (admin only): card layout, ARIA tabs switched without a reload, toggle, slider and colour-picker rows (`lailatulqadar_*_row()`), assets enqueued by hook suffix |
 | `blocks/guide-menu/` | Header links, numbered reading path, footer |
 | `blocks/language-switcher/` | Link to the same page in the other language |

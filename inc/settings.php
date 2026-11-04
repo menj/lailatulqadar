@@ -378,6 +378,11 @@ function lailatulqadar_tab_is_heavy( $slug ) {
 function lailatulqadar_render_panel( $slug ) {
 	if ( 'tools' === $slug ) {
 		lq_render_tools_tab();
+		if ( function_exists( 'lailatulqadar_render_error_pages_section' ) ) {
+			echo '<div class="lq-section">';
+			lailatulqadar_render_error_pages_section();
+			echo '</div>';
+		}
 		return;
 	}
 	if ( 'search' === $slug ) {

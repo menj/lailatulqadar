@@ -496,3 +496,18 @@ function lq_print_archive_canonical() {
 	}
 }
 add_action( 'wp_head', 'lq_print_archive_canonical', 2 );
+
+/**
+ * The 404 page is not indexed; its links are still followed.
+ *
+ * @param array $robots Robots directives.
+ * @return array
+ */
+function lailatulqadar_404_robots( $robots ) {
+	if ( is_404() ) {
+		$robots['noindex'] = true;
+		$robots['follow']  = true;
+	}
+	return $robots;
+}
+add_filter( 'wp_robots', 'lailatulqadar_404_robots' );

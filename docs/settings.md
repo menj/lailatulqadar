@@ -54,3 +54,26 @@ Appearance > Theme Options. Each tab saves only its own fields. The screen is a 
 ## Tools
 - **Run setup.** Creates missing guide pages, links translations, sets the front page, adds the Malay site title if none exists, renames guide pages that are still empty drafts, and fills empty title tags and meta descriptions.
 - **Reset settings.** Returns every setting to its default. Pages are untouched.
+
+## Error pages (Tools tab)
+
+WordPress reads three files from `wp-content` when it cannot build a page. Install error pages on the Tools tab writes them; the theme never writes them on its own.
+
+| File | Shown when | Status sent |
+|---|---|---|
+| `maintenance.php` | WordPress is updating | 503, `Retry-After: 600` |
+| `php-error.php` | a fatal PHP error | 500 |
+| `db-error.php` | the database cannot be reached | 503, `Retry-After: 600` |
+
+The table beside the button reads not installed, installed, outdated (an older copy of the theme) or another file left alone. A file without the marker `Lailatulqadar error page drop-in` is never overwritten.
+
+For the errors the web server answers before WordPress starts, `errors/` holds static 403, 500, 502 and 503 pages. Add these lines to `.htaccess`, with the folder name of the theme:
+
+```
+ErrorDocument 403 /wp-content/themes/lailatulqadar/errors/403.html
+ErrorDocument 500 /wp-content/themes/lailatulqadar/errors/500.html
+ErrorDocument 502 /wp-content/themes/lailatulqadar/errors/502.html
+ErrorDocument 503 /wp-content/themes/lailatulqadar/errors/503.html
+```
+
+Rebuild them after changing `inc/error-page-html.php` with `php bin/build-error-pages.php`.

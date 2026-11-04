@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.17.0
+Stable tag: 1.18.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,11 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.18.0 =
+* Error pages in the guide's night colours, in English and Malay, for the moments WordPress cannot build a page: an update, a PHP fault, a lost database. Install them from Theme Options > Tools.
+* Static 403, 500, 502 and 503 pages for the web server, with the .htaccess lines on the Tools tab.
+* The 404 page has a search field and tells search engines not to index it.
 
 = 1.17.0 =
 * Social icons for the site profiles in the footer, with a block, a pattern and a shortcode for anywhere else.

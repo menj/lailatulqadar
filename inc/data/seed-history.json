@@ -20,6 +20,7 @@
             "66b9f01e082413eee8592856cf33bad7"
         ],
         "last10": [
+            "139e8f462822db1382429cd3c9721019",
             "144c0d44f329c2c3477d03bc53f3a442",
             "1fd0f5a12c484767d6d4fade28d72c8e",
             "3698ee5031ff700ce94040601585474e",
@@ -30,6 +31,7 @@
         "planner": [
             "188eb225fd14687ca2ce0f1117986979",
             "2b973d84243d20ffeccf8c296a668741",
+            "c42352b3be0095075dffdaeb062d4f5f",
             "f965e6ce87e22561e861cacb17c34db5"
         ],
         "signs": [
@@ -39,7 +41,8 @@
             "a2737e6f4007f1fc8963eb7be08878bf",
             "ccdd1866de960899452034775ae53c13",
             "e4e381cfe462f958fac3411c13ac68fe",
-            "f7ee11a35c365e5629ee672f50cc41ac"
+            "f7ee11a35c365e5629ee672f50cc41ac",
+            "fe03a1ead0f7914363a8889a4c929834"
         ],
         "sources": [
             "107d872a7b6d02084f583e0e4ee01232",
@@ -50,6 +53,7 @@
             "94f5fe7a13b62ebcb02353bbcb332f52",
             "97ec353c2d45e15c9b5d21804887a0cc",
             "a20669a159b7cbb514b33d71da9ea26a",
+            "b527c9989bbc28049feb7bf7e54b5cac",
             "bad58c252fec564e79f4bdd51d6ff341",
             "beeef396023d1490710d14749ff88bae",
             "c26c84b66ea0f5a6877c8e215b97bdc5",
@@ -60,7 +64,8 @@
             "6afd3f7c7b41f2eb040646d8fc3fbc59",
             "a6b03da3b4b040e006940be20da91414",
             "c66fc4af9388f297bc80df3a3d209432",
-            "eb0f2522aa5ff9acdc9441e11e58fcca"
+            "eb0f2522aa5ff9acdc9441e11e58fcca",
+            "ef3682e9d08dea95ecab95e7d4278879"
         ],
         "surah": [
             "1e30a261b0f6d0b45b59547e6aabc804",
@@ -78,6 +83,7 @@
             "f7aa23c352ce329241c406381e8a3e6c"
         ],
         "when": [
+            "32646c729f9b64fe920dab037bc451b1",
             "4bd57a72edfd88fe079141ada607b3cb",
             "518be9f2a3bbf62d1a68aa6022306c70",
             "8a8fbb924806df1641b28f7f3c1f0a31",

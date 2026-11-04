@@ -254,13 +254,13 @@ msgid "Author for structured data"
 msgstr ""
 
 #: inc/settings.php:572
-msgid "Named as the author of every guide article in the Article structured data. Leave empty to use each page author’s display name and the About page."
+msgid "The structured data names Mohd Elfie Nieshaem Juferi, at https://menj.bio, as the author of every page. A profile URL entered here is added to the author’s sameAs. The name field is kept but no longer read."
 msgstr ""
 
 #. translators: %s: SEO plugin name
 #: inc/settings.php:574
 #, php-format
-msgid "%s is active and outputs the structured data, so these fields are not used. Set the author and publisher in the plugin."
+msgid "%s is active and outputs the structured data. The theme folds its nodes into that graph, so every author still points to the one author Person."
 msgstr ""
 
 #: inc/settings.php:577

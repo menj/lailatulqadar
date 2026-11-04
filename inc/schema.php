@@ -171,6 +171,10 @@ function lq_schema_graph() {
 	if ( 'secondary' === $role ) {
 		$search .= '&lang=' . rawurlencode( lq_setting( 'secondary_slug' ) );
 	}
+	// The author Person, named in the structured data only (owner rule,
+	// 4 November 2026). Every author reference points to its @id.
+	$graph[] = lq_schema_author_node();
+
 	$graph[1]['potentialAction'] = array(
 		'@type'       => 'SearchAction',
 		'target'      => array(
@@ -207,6 +211,7 @@ function lq_schema_graph() {
 		'url'        => $url,
 		'name'       => wp_strip_all_tags( get_the_title( $id ) ),
 		'isPartOf'   => array( '@id' => $site_id ),
+		'author'     => array( '@id' => lq_schema_author_id() ),
 		'inLanguage' => $lang,
 	);
 	if ( $desc ) {
@@ -301,16 +306,7 @@ function lq_schema_graph() {
 	// About page: ProfilePage about the author when one is named, otherwise
 	// about the publishing organisation.
 	if ( 'about' === $key ) {
-		$subject = lq_setting( 'author_name' )
-			? array(
-				'@type' => 'Person',
-				'@id'   => $url . '#author',
-				'name'  => lq_setting( 'author_name' ),
-			)
-			: array( '@id' => $org_id );
-		if ( lq_setting( 'author_name' ) && lq_setting( 'author_url' ) ) {
-			$subject['sameAs'] = array( lq_setting( 'author_url' ) );
-		}
+		$subject = array( '@id' => lq_schema_author_id() );
 		$webpage['@type']        = array( 'WebPage', 'ProfilePage', 'AboutPage' );
 		$webpage['mainEntity']   = $subject;
 		$webpage['dateCreated']  = get_post_time( 'c', true, $post );
@@ -412,20 +408,13 @@ function lq_schema_graph() {
 	$events = lq_sc_shows_ramadan_dates( $content ) ? lq_schema_ramadan_nodes( $content, $url, $role ) : array();
 
 	if ( $is_article ) {
-		$author  = lq_setting( 'author_name' ) ? lq_setting( 'author_name' ) : get_the_author_meta( 'display_name', $post->post_author );
-		$map     = lq_page_map();
-		$about   = isset( $map[ $role ]['about'] ) ? get_permalink( (int) $map[ $role ]['about'] ) : home_url( '/' );
 		$article = array(
 			'@type'               => 'Article',
 			'@id'                 => $url . '#article',
 			'headline'            => mb_substr( wp_strip_all_tags( get_the_title( $id ) ), 0, 110 ),
 			'datePublished'       => get_post_time( 'c', true, $post ),
 			'dateModified'        => get_post_modified_time( 'c', true, $post ),
-			'author'              => array(
-				'@type' => 'Person',
-				'name'  => $author,
-				'url'   => lq_setting( 'author_url' ) ? lq_setting( 'author_url' ) : $about,
-			),
+			'author'              => array( '@id' => lq_schema_author_id() ),
 			'publisher'           => array( '@id' => $org_id ),
 			'mainEntityOfPage'    => array( '@id' => $page_id ),
 			'isPartOf'            => array( '@id' => $site_id ),
@@ -901,7 +890,7 @@ function lq_rank_math_json_ld( $data, $jsonld = null ) {
 	if ( is_404() || ! is_array( $data ) ) {
 		return $data;
 	}
-	return lq_sc_merge_graph( $data, lq_schema_graph() );
+	return lq_schema_one_author( lq_sc_merge_graph( $data, lq_schema_graph() ) );
 }
 add_filter( 'rank_math/json_ld', 'lq_rank_math_json_ld', 99, 2 );
 
@@ -951,3 +940,113 @@ function lq_print_verification() {
 	}
 }
 add_action( 'wp_head', 'lq_print_verification', 1 );
+
+/**
+ * A sameAs list with https://menj.bio appended when it is missing.
+ *
+ * Existing entries keep their order. The owner ruled on 4 November 2026 that
+ * every sameAs the theme builds for the author includes this address.
+ *
+ * @param string[] $same_as Existing entries.
+ * @return string[]
+ */
+function lq_schema_with_menj( $same_as ) {
+	$same_as = array_values( (array) $same_as );
+	if ( ! in_array( 'https://menj.bio', $same_as, true ) ) {
+		$same_as[] = 'https://menj.bio';
+	}
+	return $same_as;
+}
+
+/**
+ * The @id of the author Person.
+ *
+ * @return string
+ */
+function lq_schema_author_id() {
+	return trailingslashit( home_url( '/' ) ) . '#author';
+}
+
+/**
+ * The author Person: Mohd Elfie Nieshaem Juferi, at https://menj.bio. The
+ * owner ruled on 4 November 2026 that the structured data names him as the
+ * author; nothing visible changes. The author address set in the settings,
+ * if any, stays in sameAs ahead of https://menj.bio.
+ *
+ * @return array
+ */
+function lq_schema_author_node() {
+	$url = (string) lq_setting( 'author_url' );
+	return array(
+		'@type'  => 'Person',
+		'@id'    => lq_schema_author_id(),
+		'name'   => 'Mohd Elfie Nieshaem Juferi',
+		'url'    => 'https://menj.bio',
+		'sameAs' => lq_schema_with_menj( '' !== $url ? array( $url ) : array() ),
+	);
+}
+
+/**
+ * One author in a merged graph. Every author value, at any depth, points to
+ * the author Person. A Person node Rank Math added for the WordPress user is
+ * dropped once nothing points to it, and its sameAs entries join the
+ * author's, ahead of https://menj.bio.
+ *
+ * @param array $graph Merged top-level nodes.
+ * @return array
+ */
+function lq_schema_one_author( $graph ) {
+	$id   = lq_schema_author_id();
+	$old  = array();
+	$walk = function ( $node ) use ( &$walk, &$old, $id ) {
+		if ( ! is_array( $node ) ) {
+			return $node;
+		}
+		foreach ( $node as $k => $v ) {
+			if ( 'author' === $k && is_array( $v ) ) {
+				if ( ! empty( $v['@id'] ) && $id !== $v['@id'] ) {
+					$old[ $v['@id'] ] = true;
+				}
+				$node[ $k ] = array( '@id' => $id );
+			} elseif ( is_array( $v ) ) {
+				$node[ $k ] = $walk( $v );
+			}
+		}
+		return $node;
+	};
+	$graph = $walk( $graph );
+
+	// Any other reference to a dropped Person points to the author.
+	$relink = function ( $n ) use ( &$relink, $old, $id ) {
+		if ( ! is_array( $n ) ) {
+			return $n;
+		}
+		if ( 1 === count( $n ) && isset( $n['@id'] ) && isset( $old[ (string) $n['@id'] ] ) ) {
+			return array( '@id' => $id );
+		}
+		foreach ( $n as $k => $v ) {
+			if ( is_array( $v ) ) {
+				$n[ $k ] = $relink( $v );
+			}
+		}
+		return $n;
+	};
+	$graph = $relink( $graph );
+	$extra = array();
+	$out   = array();
+	foreach ( $graph as $key => $node ) {
+		if ( is_array( $node ) && ! empty( $node['@id'] ) && isset( $old[ $node['@id'] ] ) && in_array( 'Person', (array) ( $node['@type'] ?? array() ), true ) ) {
+			$extra = array_merge( $extra, array_filter( (array) ( $node['sameAs'] ?? array() ), 'is_string' ) );
+			continue;
+		}
+		$out[ $key ] = $node;
+	}
+	foreach ( $out as $key => $node ) {
+		if ( is_array( $node ) && $id === ( $node['@id'] ?? '' ) ) {
+			$same = array_merge( (array) ( $node['sameAs'] ?? array() ), $extra );
+			$same = array_values( array_unique( array_diff( $same, array( 'https://menj.bio' ) ) ) );
+			$out[ $key ]['sameAs'] = lq_schema_with_menj( $same );
+		}
+	}
+	return array_values( $graph ) === $graph ? array_values( $out ) : $out;
+}

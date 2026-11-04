@@ -2,6 +2,10 @@
 
 You can skip versions: upload the newest zip over any 1.9.x and open any admin screen as an administrator. Setup knows every version of each article the theme has shipped, so in one run it brings every unedited page up to date and lists pages you have edited under "Edited, not updated" on the Tools tab. The entries below say what each version changes on the site.
 
+## To 1.18.1
+
+Upload the zip. If you edited the 404 template in the Site Editor, reset it to see the new Malay line.
+
 ## To 1.18.0
 
 Upload the zip. Nothing is written to wp-content until you open Theme Options > Tools and press Install error pages. A row that says another file is there belongs to a plugin or the host and is left alone. To use the static pages for server errors, add the `ErrorDocument` lines from the same tab to `.htaccess`.

@@ -2,6 +2,11 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.18.1 (2026-11-04)
+
+- The Malay line on the 404 page reads "Halaman tidak ditemui. Alamatnya mungkin telah berubah. Cari dalam panduan atau pilih salah satu halaman di bawah." It said "halamannya", which pointed at the wrong noun. The line sits in `templates/404.html` only; no `.po` entry carries it.
+- `tests/error-pages-test.php` checks the line.
+
 ## 1.18.0 (2026-11-04)
 
 Error pages for the moments WordPress cannot build a page, and a fuller 404 page. No feature, option key, handle, block or shortcode was removed or renamed.

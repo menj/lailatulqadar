@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.16.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.17.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -55,6 +55,10 @@ Version 1.16.0. This file records the architecture, stored data and binding deci
 | `inc/setup.php` | Setup on activation, on update and on demand: page creation, publishing of shipped articles, content refresh, trashing of obsolete copies, draft renaming, SEO prefill |
 | `inc/slugs.php` | Addresses WordPress builds from a title leave out the words a, an and the |
 | `inc/data/seed-history.json` | md5 of every version of each article shipped in earlier releases, so a page seeded before `_lq_seed_hash` existed is recognised as unedited. Data only, read with `json_decode()`. Whenever an article changes, run `php bin/build-seed-history.php > inc/data/seed-history.json.new` and move the new file into place: the script adds the versions in the git history of `content/` to the hashes already in the file and never drops one |
+| `inc/social-icons.php`, `blocks/social-icons/`, `css/social-icons.css`, `images/social/` | Social profile icons: footer block, pattern, `[lailatulqadar_social_icons]`; ten SVGs from the Minimalist Social Icons Pack 2.8 (GPL, CC0 sources) |
+| `inc/reading-progress.php`, `js/reading-progress.js`, `css/reading-progress.css` | Reading progress bar on single views; off while the Reading Progress Bar plugin is active |
+| `inc/unlist.php`, `js/unlist-admin.js`, `tests/unlist-test.php` | Unlisted pages (replaces Unlist Posts & Pages); off while that plugin is active |
+| `inc/search-permalinks.php`, `tests/search-permalinks-test.php` | /search/term/ addresses (replaces Pretty Search Permalinks); off while that plugin is active |
 | `inc/settings.php` | Tabbed settings screen and Tools handlers (admin only): card layout, ARIA tabs switched without a reload, toggle, slider and colour-picker rows (`lailatulqadar_*_row()`), assets enqueued by hook suffix |
 | `blocks/guide-menu/` | Header links, numbered reading path, footer |
 | `blocks/language-switcher/` | Link to the same page in the other language |
@@ -96,6 +100,9 @@ Version 1.16.0. This file records the architecture, stored data and binding deci
 | Option | Contents |
 |---|---|
 | `lailatulqadar_settings` | Array: `primary_slug`, `secondary_slug`, `primary_label`, `secondary_label`, `footer_note_primary`, `footer_note_secondary`, `scheme` (`night`, `dawn`, `auto`), `scheme_toggle` (`show`, `hide`), `accent_night`, `accent_dawn`, `calligraphy_id`, `login_tagline_primary`, `login_tagline_secondary`, `login_note_primary`, `login_note_secondary`, `verify_google`, `verify_bing`, `author_name`, `author_url`, `ramadan_year`, `ramadan_start`, `ramadan_alt` (optional override for one year; empty means automatic), `ctx_own`, `ctx_sister` (`1` or `0`), `ctx_own_max` (0 to 15), `ctx_sister_max` (0 to 10), `ctx_extra`, `ctx_extra_ms`, `ctx_exclude`, `sec_xmlrpc_off`, `sec_app_passwords_off`, `sec_rest_lock`, `sec_spam_gate`, `sec_gone` (`1` or `0`, all `1` by default) |
+| `lailatulqadar_settings` (1.17.0) | Also `rpb_enabled`, `rpb_color` (empty follows the accent), `rpb_height` (2 to 8), `rpb_position` (`top`, `bottom`), `rpb_types` (comma list, default `page`), `social_footer`, `social_<network>` (URLs), `pretty_search`, `search_base` |
+| `lailatulqadar_unlisted_posts` | IDs of unlisted pages; copied once from the plugin's `unlist_posts` |
+| `lailatulqadar_rewrite_version` | Theme version and search base of the last rewrite flush |
 | `lailatulqadar_pages` | Page IDs keyed by role (`primary`, `secondary`) then page key |
 | `lailatulqadar_setup_version` | Theme version that last ran setup |
 | `lailatulqadar_blog_retired` | Version of the blog migration that has run (`1.15.0`). Setup runs it once: it clears the posts page and any post template a page was given |
@@ -181,7 +188,7 @@ On 3 November 2026 the owner decided that lailatulqadar.guide has no blog. The s
 
 ## Settings tabs
 
-General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Images, Security, Tools.
+General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Images, Reading and sharing (1.17.0), Security, Tools.
 
 The screen needs `manage_options`, kept in 1.16.0 in place of `edit_theme_options` because it holds the security switches and setup. New PHP functions since 1.16.0 take the prefix `lailatulqadar_`; existing `lq_` functions, option keys, handles, block names and shortcodes keep their names. `git archive` leaves out `.github`, `bin`, `tests`, `CLAUDE.md` and the git files (`.gitattributes`).
 

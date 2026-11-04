@@ -1,0 +1,38 @@
+/* Social profile icons (inc/social-icons.php). Colours follow the scheme
+   through custom properties; override them on .lq-social. */
+.lq-social {
+	--lq-social-color: var(--wp--preset--color--accent-4);
+	--lq-social-hover: var(--wp--preset--color--accent-1);
+	--lq-social-size: 40px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.lq-social li { margin: 0; }
+.lq-footer .lq-social__link,
+.lq-social__link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: var(--lq-social-size);
+	min-height: var(--lq-social-size);
+	border-radius: 50%;
+	color: var(--lq-social-color);
+	transition: color 0.15s ease;
+}
+.lq-footer .lq-social__link:hover,
+.lq-social__link:hover { color: var(--lq-social-hover); }
+.lq-social__link:focus-visible {
+	outline: 2px solid var(--lq-social-hover);
+	outline-offset: 2px;
+}
+.lq-social__icon { display: block; width: 20px; height: 20px; }
+@media (prefers-reduced-motion: reduce) {
+	.lq-social__link { transition: none; }
+}
+@media (forced-colors: active) {
+	.lq-social__link { color: LinkText; }
+}

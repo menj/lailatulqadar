@@ -2,6 +2,10 @@
 
 You can skip versions: upload the newest zip over any 1.9.x and open any admin screen as an administrator. Setup knows every version of each article the theme has shipped, so in one run it brings every unedited page up to date and lists pages you have edited under "Edited, not updated" on the Tools tab. The entries below say what each version changes on the site.
 
+## To 1.17.0
+
+Upload the zip and open any admin screen as an administrator. Setup runs once and finds no article to change. Rewrite rules are flushed once, so searches open at /search/term/. Fill in the Reading and sharing tab, then deactivate the Reading Progress Bar, Unlist Posts & Pages and Pretty Search Permalinks plugins if they are installed: pages the plugin unlisted stay unlisted, and its search base carries over.
+
 ## To 1.16.0
 
 Upload the zip and open any admin screen as an administrator. Setup runs once and finds no article to change. Appearance > Theme Options has a new layout; every setting keeps its value. Clear any page cache so editors get the new settings script and style.

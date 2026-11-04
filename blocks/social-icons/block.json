@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/social-icons",
+	"title": "Social icons",
+	"category": "theme",
+	"icon": "share",
+	"description": "Icons linking to the site profiles set in Theme Options > Reading and sharing.",
+	"textdomain": "lailatulqadar",
+	"attributes": {
+		"context": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

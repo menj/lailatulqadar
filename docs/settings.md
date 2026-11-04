@@ -38,6 +38,12 @@ Appearance > Theme Options. Each tab saves only its own fields. The screen is a 
 ## Images
 - **Featured images.** When setup runs, set each page's lead image as its featured image. An image an editor chose is never replaced, and one an editor removed is not put back.
 
+## Reading and sharing
+- **Reading progress bar.** On or off; colour (empty follows the scheme accent); height from 2 to 8px; top or bottom of the window; the post types it shows on (pages by default). Never on the language homes, and off while the Reading Progress Bar plugin is active.
+- **Social icons.** A footer switch and an address for X, Facebook, YouTube, Instagram, TikTok, Threads, Bluesky, Mastodon, Telegram and WhatsApp. A network without an address gets no icon. The Social icons block and pattern and `[lailatulqadar_social_icons]` print the same row elsewhere.
+- **Search addresses.** A switch for /search/term/ addresses and the base. The base can also be set in Settings > Permalinks.
+- **Unlisted pages.** No setting here: the Unlisted box sits in the page editor, and Quick Edit and Bulk Edit carry it too.
+
 ## Security
 - **Remote publishing.** Turn off XML-RPC (xmlrpc.php answers 403; on Apache a "Block xmlrpc.php" section is kept in .htaccess), turn off application passwords, and allow REST API changes only from a logged-in browser session with a valid nonce. Anonymous requests and all reads are unchanged. Passwords sent through XML-RPC are refused even when XML-RPC is switched back on. `define( 'LQ_SECURITY_LOCK', false );` in wp-config.php turns these three off.
 - **New content.** Hold suspected gambling spam, and anything published from outside the editor, as Pending; answer 410 Gone on the address of spam trashed from this tab. The guide pages the theme seeds (`_lq_lang`, `_lq_key` or `_lq_seed_hash`, or a page created by the theme's own setup run) are exempt. A title or slug alone never exempts a post. Content added through WP-CLI counts as published from outside the editor. Private posts are logged but not held.

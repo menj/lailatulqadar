@@ -2,6 +2,18 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.17.0 (2026-11-04)
+
+The features of four plugins, built into the theme on the owner's brief. None of the four existed in the theme before. Each one turns itself off while its plugin is active, so the two never run together. No feature, option key, handle, block or shortcode was removed or renamed.
+
+- Social icons. Ten inline SVGs from the Minimalist Social Icons Pack 2.8 sit in `images/social/`, one path each, marked `aria-hidden`. Each link carries an `aria-label` in the page language ("YouTube profile", "Profil YouTube"), `rel="me"`, a visible focus ring and a 40px target. Colours come from `--lq-social-color` and `--lq-social-hover`, which follow the scheme. The `lailatulqadar/social-icons` block sits in the footer part; the "Social icons" pattern and the `[lailatulqadar_social_icons]` shortcode place it anywhere else. `css/social-icons.css` loads only when a profile is set.
+- Reading progress bar on single views (`inc/reading-progress.php`, `js/reading-progress.js`, `css/reading-progress.css`). On or off, colour (empty follows the accent), height from 2 to 8px, top or bottom, and the post types (pages by default). One passive scroll listener paints once per animation frame. Transitions stop under `prefers-reduced-motion`. At the top it sits below the admin bar. It is `aria-hidden`, because it repeats the scroll position and a live progressbar would talk on every scroll. It never shows on the language homes.
+- Unlisted pages (`inc/unlist.php`, `js/unlist-admin.js`). Every behaviour of Unlist Posts & Pages 1.2.1: an Unlisted box in the editor sidebar, Quick Edit, Bulk Edit, the Unlisted column, post state and "Unlisted (n)" view, exclusion from listings, adjacent links and `wp_list_pages()`, noindex through `wp_robots` (Yoast's robots array emptied) and `rank_math/frontend/robots`, and the admin-referer AJAX rule. The theme also drops unlisted pages from the core sitemap, the Rank Math sitemap, the image sitemap, `get_posts()` lists and REST collections for visitors. IDs live in `lailatulqadar_unlisted_posts`; a list saved by the plugin is copied in once.
+- Search addresses (`inc/search-permalinks.php`). `/?s=term` answers 301 to `/search/term/`. An empty search is left alone, `?paged=2` keeps its page (`/search/term/page/2/`), and a Malay search keeps `?lang=ms`. The base is set in the new tab and, as the plugin had it, in Settings > Permalinks; a base saved by the plugin is the fallback. Rewrite rules flush once per theme version or base change, never on an ordinary load.
+- A Reading and sharing tab in Theme Options holds the settings, with the existing toggle, slider and colour-picker rows. New keys in `lailatulqadar_settings`: `rpb_*`, `social_*`, `pretty_search`, `search_base`.
+- `tests/unlist-test.php` and `tests/search-permalinks-test.php`.
+- No article changed, so `inc/data/seed-history.json` is unchanged.
+
 ## 1.16.0 (2026-11-04)
 
 An upgrade pass under the owner's theme upgrade rules of 4 November 2026. The theme folder keeps its name by the owner's decision. I checked every rule in a local WordPress 7.1.4 with Twenty Twenty-Five 1.5, SQLite and `WP_DEBUG` on, across the front end in both languages, the editor and every settings tab. No notice, warning or deprecation appeared before or after. No feature, option key, handle, block or shortcode was removed or renamed.

@@ -24,7 +24,10 @@ foreach ( array( '403', '500', '502', '503' ) as $err_code ) {
 		}
 		continue;
 	}
-	file_put_contents( $err_path, $err_html );
+	if ( false === file_put_contents( $err_path, $err_html ) ) {
+		fwrite( STDERR, "cannot write errors/$err_code.html\n" );
+		exit( 1 );
+	}
 	echo "wrote errors/$err_code.html\n";
 }
 exit( $err_stale ? 1 : 0 );

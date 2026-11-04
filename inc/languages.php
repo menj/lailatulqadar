@@ -133,8 +133,8 @@ function lq_search_words_ms( $html ) {
 		return $html;
 	}
 	return str_replace(
-		array( 'Search results for:', 'Search Results for:', 'aria-label="Search"', '>Search<', 'placeholder="Search"' ),
-		array( 'Hasil carian untuk:', 'Hasil carian untuk:', 'aria-label="Cari"', '>Cari<', 'placeholder="Cari"' ),
+		array( 'Search results for:', 'Search Results for:', 'aria-label="Search"', '>Search<', 'placeholder="Search"', 'placeholder="Search the guide"', '>Search the guide<', 'aria-label="Search the guide"' ),
+		array( 'Hasil carian untuk:', 'Hasil carian untuk:', 'aria-label="Cari"', '>Cari<', 'placeholder="Cari"', 'placeholder="Cari dalam panduan"', '>Cari dalam panduan<', 'aria-label="Cari dalam panduan"' ),
 		$html
 	);
 }

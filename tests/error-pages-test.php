@@ -9,8 +9,12 @@
  */
 define( 'ABSPATH', __DIR__ . '/' );
 define( 'LQ_VERSION', '9.9.9' );
-$err_tmp = sys_get_temp_dir() . '/err-test-' . getmypid();
-@mkdir( $err_tmp );
+// A fresh directory of its own, so the cleanup at the end removes only what this test wrote.
+$err_tmp = sys_get_temp_dir() . '/err-test-' . getmypid() . '-' . bin2hex( random_bytes( 6 ) );
+if ( ! mkdir( $err_tmp, 0700 ) ) {
+	fwrite( STDERR, "cannot create $err_tmp\n" );
+	exit( 1 );
+}
 define( 'WP_CONTENT_DIR', $err_tmp );
 $GLOBALS['err_opt'] = array();
 function add_action() {}

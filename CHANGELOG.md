@@ -2,6 +2,19 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.15.1 (2026-11-04)
+
+A mobile and accessibility pass, made under two briefs from the owner dated 4 November 2026: the mobile-first theme audit and the WCAG 2.2 AA implementation policy. I rendered seven pages in a local WordPress with Twenty Twenty-Five 1.5 at nine widths, from 320 to 1280px, and ran axe-core on each at 375 and 1280px. Tablet and desktop render as before; every rule below sits under `max-width: 600px` except the focus ring.
+
+- The footer menu ran 12px past a 320px screen (27px in Malay). It had picked up the header's one-row scrolling list. On phones it wraps again.
+- Footer links on phones were 17px tall. They are now 44px tall, and so is the light and dark switch (it was 36px).
+- Tables on phones dropped their 32rem minimum width. The cells wrap, so the tables fit and no longer scroll inside a frame a keyboard could not reach (axe `scrollable-region-focusable`, WCAG 2.1.1). The frame still scrolls if a cell cannot wrap.
+- The header cells of the odd-nights table carry `scope="col"`.
+- The search field had only a border colour change on focus. It now has the same 2px ring as every other control (WCAG 2.4.7).
+- The header and footer parts were a `<header>` inside the template part's `<header>`, and the same for the footer, so screen readers heard two banners and two content-info landmarks. The inner groups are now `<div>` elements with the same classes.
+- Image credits on phones went from 12px to 13px.
+- No article changed, so `inc/data/seed-history.json` is unchanged.
+
 ## 1.15.0 (2026-11-03)
 
 On 3 November 2026 the owner decided that the site has no blog. Posts are retired.

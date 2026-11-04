@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.15.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.15.1. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -140,7 +140,7 @@ The `theme.json` palette is the night scheme and keeps the parent's slugs (`base
 
 Radius tokens live in `theme.json` under `settings.custom.radius` and reach CSS as `--wp--custom--radius--small` (8px), `--medium` (14px), `--large` (22px) and `--pill` (999px). Every stylesheet uses them, with the same value as a fallback for screens that do not load the global styles (the login screen). Cards, figures, images, the In brief box, tables (outer corners), verse and hadith cards, the footnotes area and the night window use `large` or `medium`; inputs `medium`; buttons, tags, categories, the "Coming soon" badges, header menu items, breadcrumbs chips, pagination, the language switcher and credit links are pills (`pill`). Colours stay on the palette variables, so both schemes follow, and focus outlines stay visible. No inline styles.
 
-Breakpoints: phones to 600px, tablets 601 to 1024px, desktop above. Type is fluid (`settings.typography.fluid` in `theme.json`, and `clamp()` for titles and the verse size). On phones the header menu becomes one horizontally scrolling row of 44px pills; tables scroll inside their rounded frame; SVG figures and images scale to the column; Arabic wraps without overflow; the night window's controls are at least 44px tall. The page never scrolls sideways at 320px.
+Breakpoints: phones to 600px, tablets 601 to 1024px, desktop above. Type is fluid (`settings.typography.fluid` in `theme.json`, and `clamp()` for titles and the verse size). On phones the header menu becomes one horizontally scrolling row of 44px pills; tables wrap their cells to fit the screen and the rounded frame scrolls only when a cell cannot wrap (since 1.15.1); the footer menu wraps onto several lines of 44px links; SVG figures and images scale to the column; Arabic wraps without overflow; the night window's controls are at least 44px tall. The page never scrolls sideways at 320px.
 
 ## Images
 

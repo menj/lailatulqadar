@@ -1370,3 +1370,56 @@ video {
 		print-color-adjust: exact;
 	}
 }
+
+/* ---------- Mobile and WCAG 2.2 pass (1.15.1) ----------
+ * Phone rules only, so tablet and desktop render as before, apart from
+ * the focus ring on the search field, which shows at every width. */
+
+/* 2.4.7: the search field kept only a border colour change on focus. */
+.lq-search-form .wp-block-search__input:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent-1);
+	outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+	/* The one-row scrolling list is for the header menu. The footer menu
+	 * took it too and ran 8 to 27px past a 320px screen. */
+	.lq-menu--footer .lq-menu__list {
+		flex-wrap: wrap;
+		margin-inline: 0;
+		padding: 0;
+		overflow-x: visible;
+	}
+
+	/* Footer links were 17px tall; 2.5.8 and the 44px phone target. */
+	.lq-menu--footer a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+	}
+
+	.lq-scheme-toggle {
+		width: 44px;
+		height: 44px;
+	}
+
+	/* Tables fit the screen on phones instead of scrolling inside a frame
+	 * that keyboard users could not reach (2.1.1). The frame still
+	 * scrolls if a cell cannot wrap. */
+	.lq-table table {
+		min-width: 0;
+	}
+
+	/* "anywhere" lets a long word count as breakable when the table works
+	 * out its column widths; "break-word" does not. */
+	.lq-table th,
+	.lq-table td {
+		padding-inline: 0.5rem;
+		overflow-wrap: anywhere;
+		hyphens: auto;
+	}
+
+	.lq-credit {
+		font-size: 0.8125rem;
+	}
+}

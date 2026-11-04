@@ -970,7 +970,7 @@ add_action( 'wp_ajax_lq_sec_trash', 'lq_sec_ajax_trash' );
  * ---------------------------------------------------------------------- */
 
 /**
- * Assets for the Security tab, enqueued by lq_admin_assets() on that tab.
+ * Assets for the Security tab, enqueued by lq_admin_assets() on the settings screen.
  */
 function lq_sec_assets() {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -985,10 +985,14 @@ function lq_sec_assets() {
 			'ajax'    => admin_url( 'admin-ajax.php' ),
 			'nonce'   => wp_create_nonce( 'lq_sec_ajax' ),
 			'i18n'    => array(
+				/* translators: 1: posts checked, 2: posts to check, 3: posts found. */
 				'scanning'     => __( 'Scanning: %1$d of %2$d checked, %3$d found.', 'lailatulqadar' ),
+				/* translators: 1: posts checked, 2: posts found. */
 				'done'         => __( 'Scan finished: %1$d checked, %2$d found.', 'lailatulqadar' ),
 				'none'         => __( 'No suspected spam found.', 'lailatulqadar' ),
+				/* translators: 1: posts moved so far, 2: posts selected. */
 				'trashing'     => __( 'Moving to the trash: %1$d of %2$d.', 'lailatulqadar' ),
+				/* translators: 1: posts moved to the trash, 2: posts skipped. */
 				'trashed'      => __( '%1$d moved to the trash, %2$d skipped. Posts > Trash can restore them.', 'lailatulqadar' ),
 				'confirmTrash' => __( 'Move the selected posts to the trash? They can be restored from Posts > Trash.', 'lailatulqadar' ),
 				'error'        => __( 'The request failed. Reload the page and try again.', 'lailatulqadar' ),
@@ -1016,25 +1020,19 @@ function lq_sec_notice() {
 		'log-cleared' => __( 'Security log cleared.', 'lailatulqadar' ),
 	);
 	if ( isset( $map[ $code ] ) ) {
-		printf( '<div class="lq-callout lq-callout--ok"><p>%s</p></div>', esc_html( $map[ $code ] ) );
+		lailatulqadar_notice( '<p>' . esc_html( $map[ $code ] ) . '</p>' );
 	}
 }
 
 /**
- * One Security switch, in the theme's checkbox markup.
+ * One Security switch, as a toggle row of the settings screen.
  *
  * @param string $key   Setting key.
  * @param string $label Label.
  * @param string $help  Help text.
  */
 function lq_sec_checkbox( $key, $label, $help ) {
-	?>
-	<div class="lq-field lq-field--check">
-		<input type="hidden" name="<?php echo esc_attr( lq_field_name( $key ) ); ?>" value="0">
-		<label><input type="checkbox" name="<?php echo esc_attr( lq_field_name( $key ) ); ?>" value="1" <?php checked( lq_setting( $key ), '1' ); ?>> <?php echo esc_html( $label ); ?></label>
-	</div>
-	<p class="lq-help"><?php echo esc_html( $help ); ?></p>
-	<?php
+	lailatulqadar_toggle_row( $key, 'lq-' . str_replace( '_', '-', $key ), $label, $help );
 }
 
 /**
@@ -1083,8 +1081,8 @@ function lq_sec_button( $action, $label, $confirm, $class = 'secondary' ) {
 	?>
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="lq-sec-form" data-lq-sec-confirm="<?php echo esc_attr( $confirm ); ?>">
 		<input type="hidden" name="action" value="<?php echo esc_attr( $action ); ?>">
-		<?php wp_nonce_field( $action ); ?>
-		<?php submit_button( $label, $class, 'submit', false ); ?>
+		<?php lailatulqadar_nonce_field( $action ); ?>
+		<?php submit_button( $label, $class, 'submit', false, array( 'id' => str_replace( '_', '-', $action ) ) ); ?>
 	</form>
 	<?php
 }

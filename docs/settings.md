@@ -1,8 +1,10 @@
 # Settings reference
 
-Appearance > Theme Options. Each tab saves only its own fields.
+Appearance > Theme Options. Each tab saves only its own fields. The screen is a card layout: every tab's panel is on the page and the tabs switch without a reload (arrow keys, Home and End move between them; without JavaScript each tab is a link). Two-valued settings are toggle switches, the link caps are sliders that show their value, and the accents use the WordPress colour picker. The page needs the manage_options capability; its CSS and JS (`css/admin.css`, `js/admin.js`, `css/security.css`, `js/security.js`) load on this screen only, by its hook suffix.
 
 ## General
+- **Logo calligraphy.** A transparent PNG from the Media Library, recoloured to the scheme's gold; empty means typeset calligraphy.
+- **Author for structured data.** Name and profile address of the author of every guide article. Not used while an SEO plugin outputs the structured data.
 - **Footer note (English, Bahasa Melayu).** One line above the copyright notice in the footer. Empty hides it.
 - **Guide pages.** Read-only table showing whether each page exists and is published in each language, with edit links.
 
@@ -12,14 +14,19 @@ Appearance > Theme Options. Each tab saves only its own fields.
 - **Switcher label.** Text shown in the language switcher.
 
 ## Colours
-- **Login tab.** Tagline and note on the login screen, in English and Malay. An empty tagline uses the default; an empty note shows nothing.
-- **Search tab: verification.** Google Search Console and Bing Webmaster Tools codes, printed as meta tags on the front page.
-- **General tab: logo calligraphy.** A transparent PNG from the Media Library, recoloured to the scheme's gold; empty means typeset calligraphy.
-- **Colour scheme.** Night, dawn, or follow the visitor's device. This is what first-time visitors see.
-- **Visitor switch.** Show or hide the light and dark switch in the header. A visitor's choice is stored in their own browser.
+- **Colour scheme.** Night, dawn, or follow the visitor's device, chosen on three cards. This is what first-time visitors see.
+- **Visitor switch.** A toggle that shows or hides the light and dark switch in the header. A visitor's choice is stored in their own browser.
 - **Night accent, Dawn accent.** Colour for the Arabic verse, links and buttons. Keep a contrast ratio of at least 4.5:1 against the background.
 
+## Ramadan Dates
+- **Automatic dates.** The next five Ramadans from the Umm al-Qura table, with the alternative start and the evening the 27th night begins.
+- **Override one year.** Hijri year, 1 Ramadan and an alternative 1 Ramadan. Empty fields mean automatic dates.
+
+## Login
+- **Login screen.** Tagline and note on the login screen, in English and Malay. An empty tagline uses the default; an empty note shows nothing.
+
 ## Search
+- **Webmaster tools verification.** Google Search Console and Bing Webmaster Tools codes, printed as meta tags on the front page. Hidden while an SEO plugin handles them.
 - **Search appearance.** Every guide page in both languages with its title tag and meta description and a length badge (green within 60 and 130 characters, red over). Edit values in the Search appearance box on each page. When an SEO plugin is active the theme stops printing these tags and says so here.
 
 ## Contextual links
@@ -27,6 +34,9 @@ Appearance > Theme Options. Each tab saves only its own fields.
 - **This site / Sister sites.** Turn each kind of link on or off, and set the most links of each kind on one page (defaults 4 and 3). Sister-site links appear on English pages only.
 - **Extra phrases.** One per line, "phrase | address". An address beginning with / is on this site; a full address must be on this site or a sister site. Lines here are read before the shared map, so they win. Malay pages have their own field, for addresses on this site only.
 - **Pages without links.** Page slugs that never receive contextual links.
+
+## Images
+- **Featured images.** When setup runs, set each page's lead image as its featured image. An image an editor chose is never replaced, and one an editor removed is not put back.
 
 ## Security
 - **Remote publishing.** Turn off XML-RPC (xmlrpc.php answers 403; on Apache a "Block xmlrpc.php" section is kept in .htaccess), turn off application passwords, and allow REST API changes only from a logged-in browser session with a valid nonce. Anonymous requests and all reads are unchanged. Passwords sent through XML-RPC are refused even when XML-RPC is switched back on. `define( 'LQ_SECURITY_LOCK', false );` in wp-config.php turns these three off.

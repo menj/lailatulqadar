@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.15.1' );
+define( 'LQ_VERSION', '1.16.0' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 
@@ -36,10 +36,15 @@ if ( is_admin() ) {
 }
 
 /**
- * Load translations and editor styles.
+ * Load translations, declare theme supports and add the editor styles.
+ * Block themes get title-tag and automatic-feed-links from core; the theme
+ * declares both itself as well. The retired blog still removes the feed
+ * links from the head (inc/no-blog.php).
  */
 function lq_theme_setup() {
 	load_child_theme_textdomain( 'lailatulqadar', LQ_DIR . '/languages' );
+	add_theme_support( 'title-tag' );
+	add_theme_support( 'automatic-feed-links' );
 	add_editor_style( array( 'css/front.css', 'css/editor.css' ) );
 }
 add_action( 'after_setup_theme', 'lq_theme_setup' );

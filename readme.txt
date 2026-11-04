@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.15.1
+Stable tag: 1.16.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -11,11 +11,56 @@ Bilingual English and Malay guide theme for Laylat al-Qadr, built as a child of 
 
 == Description ==
 
-Lailatulqadar powers lailatulqadar.guide. It provides a night and a dawn colour scheme, self-hosted EB Garamond, Arslan Wessam and KFGQPC Hafs typefaces, a language-aware guide menu, a the theme's own English and Malay handling language switcher and a tabbed settings screen. A setup routine creates the guide pages in both languages and links their translations.
+Lailatulqadar runs lailatulqadar.guide, a fixed guide to Laylat al-Qadr in English at the site root and in Malay under /ms/. It needs Twenty Twenty-Five installed as its parent and no plugins.
+
+A setup routine creates the guide pages in both languages, fills them with the articles the theme ships, pairs each page with its translation and sets the front page. It never overwrites a page an editor has changed.
+
+The site has no blog. Post addresses and feeds send visitors to the home page of their language.
+
+== Features ==
+
+* English and Malay without a translation plugin: page language, hreflang links, a language switcher and a Malay site name.
+* Night and dawn colour schemes, an automatic scheme that follows the device, and a light and dark switch for visitors.
+* Self-hosted typefaces: EB Garamond for Latin text, KFGQPC Hafs for Qurʾānic text only, Arslan Wessam for hadith and Arabic quotations.
+* Blocks: guide menu, Night Planner (night window), odd nights, breadcrumbs, logo mark, scheme toggle, language switcher, photo and image credits.
+* A perpetual Ramadan calendar from the Umm al-Qura table up to 1473 AH, with the `[lq_ramadan]` shortcode.
+* Title tags in the form "page title | Lailatulqadar" under 60 characters, meta descriptions, structured data, an XML and an image sitemap. With Rank Math active the theme hands over and joins its graph.
+* Contextual links to other guide pages and to the sister sites of the network.
+* A Security tab that closes XML-RPC, application passwords and REST writes from outside the browser, holds gambling spam as Pending and offers a spam scan.
+
+== Usage ==
+
+Open Appearance > Theme Options. Each tab saves only its own fields, and the tabs switch without a reload. Arrow keys, Home and End move between tabs.
+
+* General: the logo calligraphy image, the footer note in each language, the author named in structured data, and the state of every guide page.
+* Languages: how the two languages work, the switcher labels and the site name on Malay pages.
+* Colours: the colour scheme cards, the visitor switch and the two accent colours, each with a live preview.
+* Ramadan Dates: the next five Ramadans from the Umm al-Qura table, and an optional override for one year.
+* Login: tagline and note on the login screen in each language.
+* Search: every title tag and meta description with its length, and the Google and Bing verification codes.
+* Contextual links: switches and sliders for links to this site and to the sister sites, extra phrases and pages left without links.
+* Images: whether setup sets each page's lead image as its featured image.
+* Security: the five security switches, the spam scan, password and session tools, and the reports and log.
+* Tools: page states, publishing written drafts, Run setup and Reset settings.
+
+docs/settings.md describes every field.
 
 == Installation ==
 
-See UPGRADING.md for the full first-install sequence.
+1. Install Twenty Twenty-Five. It must stay installed; it need not be active.
+2. Upload the Lailatulqadar zip in Appearance > Themes > Add New and activate it.
+3. Open any admin screen as an administrator. Setup runs once and creates the pages in both languages.
+4. Check the report on the Tools tab of Theme Options.
+
+UPGRADING.md lists what each version changes on the site.
+
+== Privacy ==
+
+The theme makes no remote requests and loads no tracking, fonts or scripts from other servers. Every font, image and script ships in the theme.
+
+Two things stay in the visitor's own browser (localStorage) and never reach the server: the light or dark choice made with the switch, and the city and start date chosen in the night window of the Night Planner. The night window asks for the visitor's location only when the visitor presses its location button. It works out the times in the browser and keeps that position in localStorage as the chosen city; it sends it nowhere.
+
+For administrators, the Security tab records the time and IP address of each administrator login, failed logins by account name for one day, and a log of up to 200 security events. None of it leaves the site.
 
 == Frequently Asked Questions ==
 
@@ -25,9 +70,22 @@ No. The theme handles English and Malay itself: Run setup creates the Malay page
 
 = Why do new pages not appear in the menus? =
 
-Setup saves guide pages as drafts. A page joins the menus when it is published.
+Menus list published pages only. A draft joins the menus when it is published; the reading path shows it as "Coming soon" until then.
+
+= Who can open Theme Options? =
+
+Administrators (the manage_options capability). The page holds the security switches and setup, so the theme keeps it to administrators.
+
+== Upgrade Notice ==
+
+= 1.16.0 =
+Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.16.0 =
+* Theme Options rebuilt as cards with keyboard tabs, toggle switches, sliders and colour pickers. Every option and behaviour is unchanged.
+* The theme declares title-tag and automatic-feed-links, ships the unminified adhan source, and has fresh translation files. The readme gains features, usage, privacy and upgrade notes.
 
 = 1.15.1 =
 * Phones: tables fit the screen, the footer menu no longer runs off a 320px screen, and the footer links and the light and dark switch are 44px tall. The search field shows a focus ring.
@@ -198,5 +256,7 @@ Lailatulqadar is distributed under the terms of the GNU GPL v2 or later.
 EB Garamond, Copyright 2017 The EB Garamond Project Authors. SIL Open Font License 1.1. See fonts/eb-garamond/OFL.txt.
 Arslan Wessam A and B, by Arslan (Dev-Point.com). No licence text is included in the font files. See fonts/arslan-wessam/NOTICE.txt.
 Noto Naskh Arabic, Copyright 2022 The Noto Project Authors. SIL Open Font License 1.1. See fonts/noto-naskh-arabic/OFL.txt.
-adhan 4.4.6 (prayer-time calculation), Copyright 2016 Batoul Apps. MIT License. See js/vendor/adhan-LICENSE.txt.
+adhan 4.4.6 (prayer-time calculation), Copyright 2016 Batoul Apps. MIT License. See js/vendor/adhan-LICENSE.txt. js/vendor/adhan.js is the unminified source of js/vendor/adhan.min.js, both from the adhan 4.4.6 npm package (lib/bundles/adhan.umd.js and adhan.umd.min.js).
 KFGQPC HAFS Uthmanic Script, Copyright 2010 King Fahd Glorious Quran Printing Complex. Free to use, copy and distribute; the file must not be modified. Served as a WOFF2 conversion of the original TTF by the owner's decision of 2026-10-26, accepting that restriction. See fonts/kfgqpc/LICENSE.txt.
+Theme images: the logo mark, favicon, touch icon and 512px logo (images/) are original artwork made for the theme; the pixel book (images/book-open.webp) was supplied by the site owner. Both are distributed with the theme under the GNU GPL v2 or later.
+Photographs in images/commons/ come from Wikimedia Commons, Pixabay and Pexels under the licences listed per file in inc/data/images.json, and are credited beneath each image and on the Sources page.

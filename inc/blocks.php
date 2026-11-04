@@ -22,7 +22,9 @@ function lq_register_blocks() {
 	);
 	wp_set_script_translations( 'lailatulqadar-editor-blocks', 'lailatulqadar', LQ_DIR . '/languages' );
 
-	wp_register_script( 'lailatulqadar-adhan', LQ_URI . '/js/vendor/adhan.min.js', array(), '4.4.6', true );
+	// adhan.js is the unminified source of adhan.min.js (the UMD bundle of adhan 4.4.6).
+	$adhan = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? 'adhan.js' : 'adhan.min.js';
+	wp_register_script( 'lailatulqadar-adhan', LQ_URI . '/js/vendor/' . $adhan, array(), '4.4.6', true );
 	wp_register_script( 'lailatulqadar-night-window', LQ_URI . '/js/night-window.js', array( 'lailatulqadar-adhan' ), LQ_VERSION, true );
 	wp_register_style( 'lailatulqadar-night-window', LQ_URI . '/css/night-window.css', array(), LQ_VERSION );
 

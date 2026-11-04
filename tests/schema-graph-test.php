@@ -230,6 +230,20 @@ function lq_test_check( $graph, $key, $role, $rank_math, $vocab ) {
 	if ( in_array( $key, array( 'dua', 'signs', 'sources', 'surah', 'what', 'faq', 'about' ), true ) && ! empty( $types['Event'] ) ) {
 		$errors[] = 'Event on a page that shows no Ramadan dates';
 	}
+	// The author carries https://menj.bio in sameAs (owner rule, 4 November 2026).
+	if ( $is_article && ! $rank_math ) {
+		$by = isset( $types['Article'][0]['author'] ) ? $types['Article'][0]['author'] : array();
+		if ( empty( $by['sameAs'] ) || ! in_array( 'https://menj.bio', (array) $by['sameAs'], true ) ) {
+			$errors[] = 'article author sameAs lacks https://menj.bio';
+		}
+	}
+	if ( 'about' === $key && ! empty( $types['Person'] ) ) {
+		foreach ( $types['Person'] as $person ) {
+			if ( isset( $person['@id'] ) && '#author' === substr( $person['@id'], -7 ) && ! in_array( 'https://menj.bio', (array) ( $person['sameAs'] ?? array() ), true ) ) {
+				$errors[] = 'author Person sameAs lacks https://menj.bio';
+			}
+		}
+	}
 	if ( $is_article ) {
 		$main = $types['Article'][0];
 		$prop = 'secondary' === $role ? 'translationOfWork' : 'workTranslation';

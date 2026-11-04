@@ -308,8 +308,8 @@ function lq_schema_graph() {
 				'name'  => lq_setting( 'author_name' ),
 			)
 			: array( '@id' => $org_id );
-		if ( lq_setting( 'author_name' ) && lq_setting( 'author_url' ) ) {
-			$subject['sameAs'] = array( lq_setting( 'author_url' ) );
+		if ( lq_setting( 'author_name' ) ) {
+			$subject['sameAs'] = lq_schema_with_menj( lq_setting( 'author_url' ) ? array( lq_setting( 'author_url' ) ) : array() );
 		}
 		$webpage['@type']        = array( 'WebPage', 'ProfilePage', 'AboutPage' );
 		$webpage['mainEntity']   = $subject;
@@ -422,9 +422,10 @@ function lq_schema_graph() {
 			'datePublished'       => get_post_time( 'c', true, $post ),
 			'dateModified'        => get_post_modified_time( 'c', true, $post ),
 			'author'              => array(
-				'@type' => 'Person',
-				'name'  => $author,
-				'url'   => lq_setting( 'author_url' ) ? lq_setting( 'author_url' ) : $about,
+				'@type'  => 'Person',
+				'name'   => $author,
+				'url'    => lq_setting( 'author_url' ) ? lq_setting( 'author_url' ) : $about,
+				'sameAs' => lq_schema_with_menj( array() ),
 			),
 			'publisher'           => array( '@id' => $org_id ),
 			'mainEntityOfPage'    => array( '@id' => $page_id ),
@@ -951,3 +952,20 @@ function lq_print_verification() {
 	}
 }
 add_action( 'wp_head', 'lq_print_verification', 1 );
+
+/**
+ * A sameAs list with https://menj.bio appended when it is missing.
+ *
+ * Existing entries keep their order. The owner ruled on 4 November 2026 that
+ * every sameAs the theme builds for the author includes this address.
+ *
+ * @param string[] $same_as Existing entries.
+ * @return string[]
+ */
+function lq_schema_with_menj( $same_as ) {
+	$same_as = array_values( (array) $same_as );
+	if ( ! in_array( 'https://menj.bio', $same_as, true ) ) {
+		$same_as[] = 'https://menj.bio';
+	}
+	return $same_as;
+}

@@ -2,6 +2,8 @@
 /**
  * Language switcher block render: links to the same page in the other
  * language, or to that language's home when no translation is published.
+ * The header and the footer each hold one, and each landmark gets a name of
+ * its own (see below).
  *
  * @package Lailatulqadar
  */
@@ -24,12 +26,31 @@ if ( is_singular( 'page' ) ) {
 		$lq_urls[ 'secondary' === $lq_role ? 'primary' : 'secondary' ] = get_permalink( $lq_other );
 	}
 }
+// Each navigation landmark on a page needs a name of its own. The footer's
+// is known by its context attribute or, for a footer part saved in the Site
+// Editor before that attribute existed, by sitting in the footer part
+// (lq_enter_footer_part()). Any other switcher after the first, one placed
+// in a page's content, is numbered.
+$lq_footer = ( isset( $attributes['context'] ) && 'footer' === sanitize_key( $attributes['context'] ) )
+	|| ! empty( $GLOBALS['lq_footer_depth'] );
+if ( $lq_footer ) {
+	$lq_name = 'secondary' === $lq_role ? 'Pautan bahasa di kaki halaman' : 'Footer language links';
+} else {
+	$lq_seen                     = (int) ( $GLOBALS['lq_lang_switchers'] ?? 0 ) + 1;
+	$GLOBALS['lq_lang_switchers'] = $lq_seen; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+	if ( 1 === $lq_seen ) {
+		$lq_name = 'secondary' === $lq_role ? 'Bahasa' : 'Language';
+	} else {
+		/* Numbered from 2: "Pautan bahasa 2", "Language links 2". */
+		$lq_name = ( 'secondary' === $lq_role ? 'Pautan bahasa ' : 'Language links ' ) . $lq_seen;
+	}
+}
 $lq_labels = array(
 	'primary'   => lq_setting( 'primary_label' ),
 	'secondary' => lq_setting( 'secondary_label' ),
 );
 ?>
-<nav <?php echo get_block_wrapper_attributes( array( 'class' => 'lq-lang' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> aria-label="<?php echo esc_attr( 'secondary' === $lq_role ? 'Bahasa' : 'Language' ); ?>">
+<nav <?php echo get_block_wrapper_attributes( array( 'class' => 'lq-lang' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> aria-label="<?php echo esc_attr( $lq_name ); ?>">
 	<ul class="lq-lang__list">
 		<?php foreach ( array( 'primary', 'secondary' ) as $lq_r ) : ?>
 			<li>

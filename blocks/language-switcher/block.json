@@ -7,7 +7,9 @@
 	"icon": "translation",
 	"description": "Links to the current page in the other language. Requires Polylang.",
 	"textdomain": "lailatulqadar",
-	"attributes": {},
+	"attributes": {
+		"context": { "type": "string", "default": "" }
+	},
 	"supports": {
 		"html": false
 	},

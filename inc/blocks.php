@@ -68,3 +68,49 @@ function lq_register_block_styles() {
 	);
 }
 add_action( 'init', 'lq_register_block_styles' );
+
+/**
+ * Whether a parsed block is the footer template part.
+ *
+ * @param array $block Parsed block.
+ * @return bool
+ */
+function lq_is_footer_part( $block ) {
+	if ( 'core/template-part' !== ( $block['blockName'] ?? '' ) ) {
+		return false;
+	}
+	$attrs = (array) ( $block['attrs'] ?? array() );
+	return 'footer' === ( $attrs['slug'] ?? '' ) || 'footer' === ( $attrs['area'] ?? '' ) || 'footer' === ( $attrs['tagName'] ?? '' );
+}
+
+/**
+ * Counts the footer template parts being rendered, so a block inside one
+ * (the language switcher) knows it sits in the footer, whatever its own
+ * attributes say. render_block_data runs before a block and its inner
+ * blocks render, render_block after.
+ *
+ * @param array $block Parsed block.
+ * @return array
+ */
+function lq_enter_footer_part( $block ) {
+	if ( lq_is_footer_part( $block ) ) {
+		$GLOBALS['lq_footer_depth'] = (int) ( $GLOBALS['lq_footer_depth'] ?? 0 ) + 1; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+	}
+	return $block;
+}
+add_filter( 'render_block_data', 'lq_enter_footer_part' );
+
+/**
+ * The other half of lq_enter_footer_part().
+ *
+ * @param string $html  Rendered block.
+ * @param array  $block Parsed block.
+ * @return string
+ */
+function lq_leave_footer_part( $html, $block ) {
+	if ( lq_is_footer_part( $block ) ) {
+		$GLOBALS['lq_footer_depth'] = max( 0, (int) ( $GLOBALS['lq_footer_depth'] ?? 0 ) - 1 ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+	}
+	return $html;
+}
+add_filter( 'render_block', 'lq_leave_footer_part', 10, 2 );

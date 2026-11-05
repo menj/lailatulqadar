@@ -2,6 +2,11 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.18.6 (2026-11-05)
+
+- The header and the footer each hold a language switcher, and both navigation landmarks were named "Language" ("Bahasa" on Malay pages), which axe reports as `landmark-unique`. The block takes a `context` attribute; the footer part sets it to `footer`, and that landmark is named "Footer language links" ("Pautan bahasa di kaki halaman"). The header's keeps "Language" ("Bahasa"). A footer part saved in the Site Editor before this version has no context; a switcher inside the footer template part takes the footer name anyway (`lq_enter_footer_part()` and `lq_leave_footer_part()` in `inc/blocks.php` track that part while it renders). Any other switcher after the first, one placed in a page's content, is numbered: "Language links 2" ("Pautan bahasa 2"). axe is clean on both front pages, a guide page, search and the 404 page at 1280px and 375px.
+- `docs/blocks.md` records the attribute.
+
 ## 1.18.5 (2026-11-05)
 
 - The front page reads as one story. The reading path on both front pages is split into 4 chapters from `inc/data/path-chapters.json`: what the night is, when to look for it, how to keep it, and the questions and evidence behind it. One CSS counter runs through them, so the pages keep their numbers 1 to 12, and each list carries its `start`. The order of the pages is the registry's and is unchanged.

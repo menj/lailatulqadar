@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.18.9 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.18.10 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 7.4 or later |
@@ -18,6 +18,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 | Languages | English at the root, Malay under `/ms/`, built in (no translation plugin) |
 | Web server | Apache gets its rules written by the theme. Nginx needs the rules below in the server block |
 | Multisite | Error pages are written by the main site only and stay on a theme switch. The `.htaccess` sections are written by whichever site runs the theme (see the roadmap) |
+| Licence | GNU GPL version 3 or later; the full text is in `LICENSE` at the theme root |
 | Build step | None for the theme. Python scripts in `bin/` check content and fetch images |
 
 ## Install
@@ -81,7 +82,7 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 | `templates/` | front-page, page, page-home, page-no-title, index, search, 404 |
 | `parts/` | header and footer |
 | `patterns/` | The English and Malay front pages, and the empty-results message |
-| `blocks/` | breadcrumbs, guide-menu, image-credits, language-switcher, logo-mark, night-window, odd-nights, photo, scheme-toggle, social-icons |
+| `blocks/` | breadcrumbs, guide-menu, image-credits, in-brief, language-switcher, logo-mark, night-window, odd-nights, page-details, path-nav, photo, scheme-toggle, social-icons, sources |
 | `inc/` | One file per feature: languages, setup, SEO and schema, the Ramadan calendar, the night window, contextual links, images, security, hardening, error pages, the settings screen and the built-in plugin features |
 | `inc/data/` | The page registry, the shared phrase map, the reading-path chapters, image credits, seed and title histories |
 | `content/<lang>/<key>.json` | The shipped articles, read with `json_decode()` and never executed |
@@ -90,6 +91,17 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 | `languages/` | POT file and the `ms_MY` translation |
 | `bin/`, `tests/` | Build and check scripts, and the tests. Not shipped |
 | `docs/` | The detailed references |
+
+### Guide page parts
+
+`templates/page.html` runs: breadcrumbs, title, `lailatulqadar/page-details`, `lailatulqadar/in-brief`, the text (with the contents list after its In brief box), `lailatulqadar/sources`, `lailatulqadar/path-nav`. Everything lives in `inc/page-parts.php`, with `css/page-parts.css`. A guide page is a page in the `path` set of `inc/data/pages.json` (`lailatulqadar_is_guide_page()`); the language homes, About, Contact and the Sitemap take none of the parts.
+
+- Strings come from `lailatulqadar_t()`, English or Malay by the page's language. The author's name stays in the structured data only.
+- Dates: `lailatulqadar_date_label()` adds the Hijri date from `IntlDateFormatter` with the `islamic-umalqura` calendar. Without intl it returns '' and the date is left out.
+- Contents: `lailatulqadar_heading_anchor()` (on `render_block_core/heading`) gives H2s an id; `lailatulqadar_contents_filter()` (on `the_content` at 30, after the contextual links at 25) inserts the list.
+- Sources: `lailatulqadar_page_sources()` returns the quotations (`lq_sc_quotations()`) and the footnotes that name a source (`lq_sc_citation()`); `lq_schema_graph()` builds the `citation` nodes from the same list.
+- Tables: `lailatulqadar_table_parts()` (on `render_block_core/table`) adds `lq-table`, `role="region"`, `tabindex="0"` and the caption as the label.
+- Post meta: `_lq_reviewed` (Y-m-d) and `_lq_brief` (points, one a line), from the Guide page box.
 
 ## Settings
 
@@ -114,6 +126,8 @@ The Security tab is drawn by `inc/security.php`, with `js/security.js` and `css/
 | `lq_allow_parent_variations` | Show the parent's style variations |
 | `lailatulqadar_unlist_enabled` | The built-in unlisting |
 | `lailatulqadar_search_reserved_bases` | Words the search base may not take |
+| `lailatulqadar_is_guide_page` | Whether a page takes the guide page parts (default: the pages of the reading path) |
+| `lailatulqadar_contents_min` | Fewest H2 headings for a contents list (default 3) |
 
 Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]` and `[lailatulqadar_social_icons]`.
 
@@ -125,6 +139,7 @@ Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`
 | `LQ_SPAM_THRESHOLD` | `wp-config.php` | The score at which the spam gate holds a post |
 | `LQ_TITLE_LIMIT`, `LQ_TITLE_SITE`, `LQ_TITLE_SEP` | `inc/seo.php` | 59, "Lailatulqadar" and " \| ": the whole title tag stays under 60 characters |
 | `LQ_SEC_FILES_MARKER` | `inc/security.php` | The marker of the direct-access section |
+| `LAILATULQADAR_META_REVIEWED`, `LAILATULQADAR_META_BRIEF` | `inc/page-parts.php` | `_lq_reviewed` and `_lq_brief`, the Guide page box's meta keys |
 
 The theme defines no `*_KEEP_*` or `*_ALLOW_*` constant, since it has no production clean-up of development files and no switch for core files (see the roadmap in `UPGRADING.md`).
 
@@ -254,6 +269,7 @@ On Nginx: `error_page 403 /wp-content/lailatulqadar-errors/403.html;` and so on 
 - Title tags read `<page> | Lailatulqadar` and stay under 60 characters (`lq_compose_title()`), with Rank Math too.
 - Meta descriptions are stored on each page.
 - Every page carries one JSON-LD graph, merged into Rank Math's graph when it is active.
+- A guide page's Article cites what its Evidence and sources block lists, and a review date becomes the WebPage's `lastReviewed`.
 - There is an XML sitemap trimmed to pages, an image sitemap at `/image-sitemap.xml` and hreflang links between the languages.
 
 `docs/seo.md`, `docs/google-guidelines.md` and `docs/rank-math.md` have the details.

@@ -131,6 +131,23 @@
 		}
 	} );
 
+	// The guide page parts read the page being viewed, so the editor shows a label.
+	[
+		[ 'lailatulqadar/page-details', __( 'Published, updated, last reviewed, reading time', 'lailatulqadar' ) ],
+		[ 'lailatulqadar/in-brief', __( 'In brief (from the Guide page box)', 'lailatulqadar' ) ],
+		[ 'lailatulqadar/sources', __( 'Evidence and sources', 'lailatulqadar' ) ],
+		[ 'lailatulqadar/path-nav', __( 'Previous and next page of the reading path', 'lailatulqadar' ) ]
+	].forEach( function ( pair ) {
+		registerBlockType( pair[ 0 ], {
+			edit: function () {
+				return el( 'p', useBlockProps(), pair[ 1 ] );
+			},
+			save: function () {
+				return null;
+			}
+		} );
+	} );
+
 	registerBlockType( 'lailatulqadar/odd-nights', {
 		edit: function ( props ) {
 			var ToggleControl = wp.components.ToggleControl;

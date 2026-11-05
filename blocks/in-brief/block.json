@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/in-brief",
+	"title": "In brief",
+	"category": "theme",
+	"icon": "list-view",
+	"description": "The In brief points typed in the Guide page box, for a guide page whose text has no In brief box.",
+	"textdomain": "lailatulqadar",
+	"attributes": {},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

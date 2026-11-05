@@ -5,14 +5,22 @@ You can skip versions: upload the newest zip over any 1.9.x and open any admin s
 ## Updating an existing site
 
 1. Turn on hidden files in the FTP program (in FileZilla: Server > Force showing hidden files). The theme carries `.htaccess` files in its own folder and in `tests/`, `bin/` and `docs/`.
-2. Upload the new `lailatulqadar` folder into `wp-content/themes/` as `lailatulqadar-new`.
-3. Rename the live folder to `lailatulqadar-old` and at once `lailatulqadar-new` to `lailatulqadar`, with Appearance > Themes closed, at a quiet hour. A page asked for between the two renames finds no theme, and that screen switches the site to another theme if it finds the folder missing. If WordPress did switch to another theme, activate the theme again under Appearance > Themes. Delete the old one once the site looks right.
+2. Upload the new `lailatulqadar` folder as `lailatulqadar-new` to a temporary folder outside the web root (beside `public_html`, never inside it), so no visitor can reach it while it uploads.
+3. Rename the live folder in `wp-content/themes/` to `lailatulqadar-old` and at once move `lailatulqadar-new` there as `lailatulqadar`, with Appearance > Themes closed, at a quiet hour. A page asked for between the two renames finds no theme, and that screen switches the site to another theme if it finds the folder missing. If WordPress did switch to another theme, activate the theme again under Appearance > Themes. Delete the old one once the site looks right.
 4. Open any admin screen as an administrator. Setup runs, the error pages are written and the `.htaccess` sections are checked.
 5. Read the note below for every version you pass, and the setup report on the Tools tab.
 
 An upload straight into the live folder is riskier. While one of the PHP files `functions.php` loads is missing, visitors see a 503 "Back shortly" page and the login screen keeps working. Nothing checks `functions.php` itself, the templates, the styles, the scripts or `content/`, so the temporary folder and the rename stay the safe way.
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
+
+## To 1.18.10
+
+Nothing to do. Guide pages gain their dates, reading time, contents, sources and the previous and next row on the next page load.
+
+- The dates need PHP's intl extension for their Hijri dates; most hosts have it. Without it the dates stay hidden, and the rest shows.
+- To show a review date, fill in "Last reviewed against its sources" in the Guide page box of each page.
+- The theme is now under the GNU GPL version 3 or later. The `LICENSE` file goes up with the folder.
 
 ## To 1.18.9
 
@@ -309,6 +317,9 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 - Extend the Umm al-Qura table past 1473 AH (2051), as `SSOT.md` asks.
 
 ### Ideas
+
+- A Hijri date without intl. The guide pages leave their dates out on a server without the extension; the Umm al-Qura table in `inc/ramadan.php` holds only the start of each Ramadan and Shawwal, so it cannot date other months.
+- Translate the Guide page box and the new editor labels in `languages/ms_MY.po`. The admin strings there are still empty, so an administrator working in Malay sees them in English.
 
 - Remove development files from a live site after an update. Here the `.htaccess` files refuse them, which does nothing on Nginx.
 - Check the one 500 on `/ms/embed/` in the logs.

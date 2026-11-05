@@ -3,9 +3,9 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.18.9
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Stable tag: 1.18.10
+License: GNU General Public License v3 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Bilingual English and Malay guide theme for Laylat al-Qadr, built as a child of Twenty Twenty-Five.
 
@@ -25,6 +25,7 @@ The site has no blog. Post addresses and feeds send visitors to the home page of
 * Blocks: guide menu, Night Planner (night window), odd nights, breadcrumbs, logo mark, scheme toggle, language switcher, photo and image credits.
 * A perpetual Ramadan calendar from the Umm al-Qura table up to 1473 AH, with the `[lq_ramadan]` shortcode.
 * Title tags in the form "page title | Lailatulqadar" under 60 characters, meta descriptions, structured data, an XML and an image sitemap. With Rank Math active the theme hands over and joins its graph.
+* Guide pages show when they were published and last updated, the date they were last checked against their sources, the reading time, a contents list, the evidence and sources they rest on, and the previous and next page of the reading path. Every date carries its Hijri date, in English or in Malay as the page is.
 * Contextual links from the first mention of a subject to the page that treats it, on this site or another.
 * Social profile icons, a reading progress bar, unlisted pages and search addresses of the form /search/term/.
 * A Security tab that closes XML-RPC, application passwords and REST writes from outside the browser, holds gambling spam as Pending and offers a spam scan.
@@ -63,8 +64,8 @@ With the WordPress uploader:
 With FTP:
 
 1. Turn on hidden files in your FTP program first. In FileZilla it is Server > Force showing hidden files. The theme has files whose names start with a dot (.htaccess), and they must go up too.
-2. Upload the lailatulqadar folder into wp-content/themes under a temporary name, such as lailatulqadar-new.
-3. When every file is up, rename the old folder (if there is one) to lailatulqadar-old, then at once rename lailatulqadar-new to lailatulqadar. Do the two renames one straight after the other, at a quiet hour, with Appearance > Themes closed. A page asked for in the moment between them finds no theme and shows an error, and if WordPress opens that screen while the folder is missing, it switches the site to another theme. Delete lailatulqadar-old once the site looks right.
+2. Upload the lailatulqadar folder under a temporary name, such as lailatulqadar-new, to a temporary folder outside the web root: beside public_html (or whichever folder your site's address opens), never inside it. There no visitor can reach the files while they upload, and WordPress does not see a half-uploaded theme.
+3. When every file is up, rename the old folder in wp-content/themes (if there is one) to lailatulqadar-old, then at once move lailatulqadar-new into wp-content/themes as lailatulqadar. Most FTP programs move a folder when you rename it with its new path, such as public_html/wp-content/themes/lailatulqadar. Do the two renames one straight after the other, at a quiet hour, with Appearance > Themes closed. A page asked for in the moment between them finds no theme and shows an error, and if WordPress opens that screen while the folder is missing, it switches the site to another theme. Delete lailatulqadar-old once the site looks right.
 4. Activate the theme if it is not active yet, and open any admin screen as an administrator.
 
 The folder must be called lailatulqadar, all lower case.
@@ -73,7 +74,7 @@ Uploading into the live folder file by file is riskier. While one of the theme's
 
 That page covers only those PHP files. functions.php itself, the templates, the stylesheets, the images and the content files are not checked, and while one of them is missing or cut off a page can look broken or show an error. The temporary folder and the rename avoid all of it.
 
-Never upload WordPress itself (wp-admin, wp-includes and the files beside them) to a live folder that has no wp-config.php. In that state the WordPress installer answers anyone who finds it. Put wp-config.php in place first, or upload WordPress to a temporary folder and rename it.
+Never upload WordPress itself (wp-admin, wp-includes and the files beside them) to a live folder that has no wp-config.php. In that state the WordPress installer answers anyone who finds it. Put wp-config.php in place first, or upload WordPress to a temporary folder outside the web root and move it into place.
 
 == Updating ==
 
@@ -92,6 +93,14 @@ Two things stay in the visitor's own browser (localStorage) and never reach the 
 For administrators, the Security tab records the time and IP address of each administrator login, failed logins by account name and IP address, deleted once they are 24 hours old, and a log of up to 200 security events. None of it leaves the site.
 
 == Frequently Asked Questions ==
+
+= How do I show when a page was last checked? =
+
+Open the page in the editor and find the Guide page box beside it. Enter the date in "Last reviewed against its sources" and update. The date shows under the title, with its Hijri date. Leave it empty and the line does not show.
+
+= A page has no In brief box. Can I add one? =
+
+Yes. Type the points in the Guide page box, one a line, up to six. They show above the text in the same box the other pages use. A page whose text already has an In brief box keeps its own and ignores these points.
 
 = Does the theme need a translation plugin? =
 
@@ -115,6 +124,9 @@ Administrators (the manage_options capability). The page holds the security swit
 
 == Upgrade Notice ==
 
+= 1.18.10 =
+Nothing to do. Guide pages gain their dates, reading time, contents, sources and a previous and next row. The theme is now under the GNU GPL version 3 or later.
+
 = 1.18.9 =
 Documentation only. Setup runs once, as after any update, and finds nothing to change.
 
@@ -129,21 +141,24 @@ Theme Options has a new card layout with tabs that switch without a reload. Ever
 
 == Changelog ==
 
+= 1.18.10 =
+* Guide pages show, under the title, when they were published and updated, when they were last reviewed and how long they take to read. Each date carries its Hijri date.
+* A contents list follows the In brief box on every guide page with three or more sections. An Evidence and sources block lists the verses, hadith and works the page cites, and a previous and next row ends the page.
+* The Guide page box on the editor takes the review date, and In brief points for a page that has no box of its own.
+* Every table on a guide page takes the guide's table style and can be scrolled from the keyboard.
+* The theme is now under the GNU GPL version 3 or later, with the full text in LICENSE.
+
 = 1.18.9 =
 * Documentation only. A technical README joins the readme, the changelog, the single source of truth and the upgrade notes. The readme now covers updating over FTP.
 
 = 1.18.8 =
 * The web server refuses the theme's development files, notes and PHP files, and the WordPress core files that never serve a page. The settings reference and the theme readme stay open.
 
-= 1.18.7 =
-* A theme caught half uploaded shows a short "Back shortly" page (503) instead of an error.
-* Visitors can no longer list the site's user accounts, and scanner probes for PHP and .env files get a short 404 without loading a whole page.
-
 Earlier releases, back to 1.0.0, are in CHANGELOG.md.
 
 == Copyright ==
 
-Lailatulqadar is distributed under the terms of the GNU GPL v2 or later.
+Lailatulqadar is distributed under the terms of the GNU GPL version 3 or later. The full text is in the LICENSE file.
 
 EB Garamond, Copyright 2017 The EB Garamond Project Authors. SIL Open Font License 1.1. See fonts/eb-garamond/OFL.txt.
 Arslan Wessam A and B, by Arslan (Dev-Point.com). No licence text is included in the font files. See fonts/arslan-wessam/NOTICE.txt.
@@ -152,5 +167,5 @@ adhan 4.4.6 (prayer-time calculation), Copyright 2016 Batoul Apps. MIT License. 
 Social icons in images/social (X, Facebook, YouTube, Instagram, TikTok, Threads, Bluesky, Mastodon, Telegram, WhatsApp): Minimalist Social Icons Pack 2.8, GPL. These ten come from CC0 sources; the pack's two CC BY 4.0 icons are not bundled. The brand marks belong to their owners.
 KFGQPC HAFS Uthmanic Script, Copyright 2010 King Fahd Glorious Quran Printing Complex. Free to use, copy and distribute; the file must not be modified.
 Served as a WOFF2 conversion of the original TTF by the owner's decision of 2026-10-26, accepting that restriction. See fonts/kfgqpc/LICENSE.txt.
-Theme images: the logo mark, favicon, touch icon and 512px logo (images/) are original artwork made for the theme; the pixel book (images/book-open.webp) was supplied by the site owner. Both are distributed with the theme under the GNU GPL v2 or later.
+Theme images: the logo mark, favicon, touch icon and 512px logo (images/) are original artwork made for the theme; the pixel book (images/book-open.webp) was supplied by the site owner. Both are distributed with the theme under the GNU GPL version 3 or later.
 Photographs in images/commons/ come from Wikimedia Commons, Pixabay and Pexels under the licences listed per file in inc/data/images.json, and are credited beneath each image and on the Sources page.

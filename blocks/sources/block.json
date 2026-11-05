@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/sources",
+	"title": "Evidence and sources",
+	"category": "theme",
+	"icon": "book",
+	"description": "The Qurʾān verses and hadith a guide page quotes and the sources its notes name. The Article structured data cites the same list.",
+	"textdomain": "lailatulqadar",
+	"attributes": {},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

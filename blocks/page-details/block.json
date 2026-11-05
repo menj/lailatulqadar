@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/page-details",
+	"title": "Page details",
+	"category": "theme",
+	"icon": "calendar-alt",
+	"description": "The dates, the last review and the reading time of a guide page, in its language.",
+	"textdomain": "lailatulqadar",
+	"attributes": {},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

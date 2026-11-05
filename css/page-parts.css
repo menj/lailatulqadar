@@ -1,0 +1,170 @@
+/* Guide page parts (inc/page-parts.php): details line, contents, sources, previous and next.
+   Colours stay on the palette variables, so the night and dawn schemes both follow. */
+
+.lq-details {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem 1.25rem;
+	margin: -0.25rem 0 var(--wp--preset--spacing--40);
+	padding: 0;
+	list-style: none;
+	font-family: var(--wp--preset--font-family--interface);
+	font-size: var(--wp--preset--font-size--small);
+	color: var(--wp--preset--color--accent-4);
+}
+
+.lq-details__label {
+	color: var(--wp--preset--color--contrast);
+	font-weight: 600;
+}
+
+.lq-contents {
+	margin-block: var(--wp--preset--spacing--40);
+	padding: 1.1rem 1.5rem 1.25rem;
+	border: 1px solid var(--wp--preset--color--accent-3);
+	border-radius: var(--wp--custom--radius--large, 22px);
+	font-family: var(--wp--preset--font-family--interface);
+	box-sizing: border-box;
+}
+
+.lq-contents__title,
+.lq-sources__heading {
+	margin: 0 0 0.6rem;
+	font-family: var(--wp--preset--font-family--interface);
+	font-size: var(--wp--preset--font-size--small);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--accent-1);
+}
+
+.lq-contents__list {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--small);
+	padding-inline-start: 1.4rem;
+	columns: 2 16rem;
+	column-gap: 2rem;
+}
+
+.lq-contents__list li {
+	break-inside: avoid;
+	padding-block: 0.2rem;
+}
+
+.lq-contents__list a,
+.lq-sources__list a {
+	color: var(--wp--preset--color--contrast);
+	text-decoration: underline;
+	text-decoration-color: var(--wp--preset--color--accent-1);
+	text-underline-offset: 0.2em;
+}
+
+.lq-contents__list a:hover,
+.lq-sources__list a:hover {
+	color: var(--wp--preset--color--accent-1);
+}
+
+.lq-sources {
+	margin-block: var(--wp--preset--spacing--50) var(--wp--preset--spacing--40);
+	padding: 1.25rem 1.5rem;
+	background: var(--wp--preset--color--accent-5);
+	border-radius: var(--wp--custom--radius--large, 22px);
+	box-sizing: border-box;
+}
+
+.lq-sources__title {
+	margin: 0 0 1rem;
+	font-size: var(--wp--preset--font-size--large);
+}
+
+.lq-sources__heading {
+	margin-top: 1rem;
+}
+
+.lq-sources__list {
+	margin: 0;
+	padding-inline-start: 1.1rem;
+	font-size: var(--wp--preset--font-size--small);
+	line-height: 1.6;
+}
+
+.lq-sources__list li + li {
+	margin-top: 0.3rem;
+}
+
+.lq-sources__kind {
+	font-family: var(--wp--preset--font-family--interface);
+	font-weight: 600;
+	color: var(--wp--preset--color--accent-4);
+}
+
+.lq-pathnav {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+	margin-block: var(--wp--preset--spacing--40) var(--wp--preset--spacing--50);
+}
+
+.lq-pathnav__link {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	min-height: 44px;
+	padding: 1rem 1.25rem;
+	border: 1px solid var(--wp--preset--color--accent-3);
+	border-radius: var(--wp--custom--radius--large, 22px);
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+	box-sizing: border-box;
+}
+
+.lq-pathnav__link--next {
+	grid-column: 2;
+	text-align: end;
+}
+
+.lq-pathnav__link:hover,
+.lq-pathnav__link:focus-visible {
+	border-color: var(--wp--preset--color--accent-1);
+}
+
+.lq-pathnav__label {
+	font-family: var(--wp--preset--font-family--interface);
+	font-size: var(--wp--preset--font-size--small);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--accent-1);
+}
+
+.lq-pathnav__link--prev .lq-pathnav__label::before {
+	content: "\2190\00a0";
+}
+
+.lq-pathnav__link--next .lq-pathnav__label::after {
+	content: "\00a0\2192";
+}
+
+.lq-pathnav__title {
+	text-decoration: underline;
+	text-decoration-color: var(--wp--preset--color--accent-1);
+	text-underline-offset: 0.2em;
+}
+
+.lq-table:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent-1);
+	outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+	.lq-contents,
+	.lq-sources {
+		padding-inline: 1rem;
+	}
+
+	.lq-pathnav {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.lq-pathnav__link--next {
+		grid-column: 1;
+	}
+}

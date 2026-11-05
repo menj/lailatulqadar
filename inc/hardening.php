@@ -14,8 +14,8 @@
  *   Each one rendered the full 404 page, about 41 KB and every database
  *   query of a page view. Now a short 404 goes out on init, before the
  *   query, the template and the 404 logging. WordPress's own entry points
- *   are never touched, and a real file is served by the web server before
- *   WordPress sees the request at all.
+ *   are never touched, and neither is a real file, such as a plugin's own
+ *   PHP endpoint that loads WordPress itself.
  *
  * @package Lailatulqadar
  */
@@ -100,6 +100,17 @@ function lq_short_circuit_probe() {
 		$path = substr( $path, strlen( $home ) );
 	}
 	if ( ! lq_is_probe( $path ) ) {
+		return;
+	}
+	// Only a path with no file behind it, which WordPress's index.php is
+	// answering: a plugin's own PHP endpoint that loads wp-load.php is a
+	// real file, and runs as before.
+	$root = isset( $_SERVER['DOCUMENT_ROOT'] ) ? rtrim( (string) $_SERVER['DOCUMENT_ROOT'], '/\\' ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	$full = (string) wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH );
+	if ( '' !== $root && file_exists( $root . rawurldecode( $full ) ) ) {
+		return;
+	}
+	if ( '' === $root && file_exists( untrailingslashit( ABSPATH ) . '/' . ltrim( rawurldecode( $path ), '/' ) ) ) {
 		return;
 	}
 	status_header( 404 );

@@ -34,7 +34,7 @@ The folder is `lailatulqadar`, all lower case.
 `git archive` leaves out `.github`, `bin`, `tests`, `.claude` and the git files, as `.gitattributes` marks them:
 
 ```bash
-git archive --format=zip --prefix=lailatulqadar/ -o lailatulqadar-$(sed -n 's/^Version:\s*//p' style.css).zip HEAD
+git archive --format=zip --prefix=lailatulqadar/ -o lailatulqadar-$(sed -n 's/^Version:[[:space:]]*//p' style.css).zip HEAD
 ```
 
 The checks, run from the theme folder. Each test file runs on its own without WordPress, through `tests/stubs/wordpress.php` where it needs one:

@@ -64,8 +64,8 @@ With the WordPress uploader:
 With FTP:
 
 1. Turn on hidden files in your FTP program first. In FileZilla it is Server > Force showing hidden files. The theme has files whose names start with a dot (.htaccess), and they must go up too.
-2. Upload the lailatulqadar folder into wp-content/themes under a temporary name, such as lailatulqadar-new.
-3. When every file is up, rename the old folder (if there is one) to lailatulqadar-old, then at once rename lailatulqadar-new to lailatulqadar. Do the two renames one straight after the other, at a quiet hour, with Appearance > Themes closed. A page asked for in the moment between them finds no theme and shows an error, and if WordPress opens that screen while the folder is missing, it switches the site to another theme. Delete lailatulqadar-old once the site looks right.
+2. Upload the lailatulqadar folder under a temporary name, such as lailatulqadar-new, to a temporary folder outside the web root: beside public_html (or whichever folder your site's address opens), never inside it. There no visitor can reach the files while they upload, and WordPress does not see a half-uploaded theme.
+3. When every file is up, rename the old folder in wp-content/themes (if there is one) to lailatulqadar-old, then at once move lailatulqadar-new into wp-content/themes as lailatulqadar. Most FTP programs move a folder when you rename it with its new path, such as public_html/wp-content/themes/lailatulqadar. Do the two renames one straight after the other, at a quiet hour, with Appearance > Themes closed. A page asked for in the moment between them finds no theme and shows an error, and if WordPress opens that screen while the folder is missing, it switches the site to another theme. Delete lailatulqadar-old once the site looks right.
 4. Activate the theme if it is not active yet, and open any admin screen as an administrator.
 
 The folder must be called lailatulqadar, all lower case.
@@ -74,7 +74,7 @@ Uploading into the live folder file by file is riskier. While one of the theme's
 
 That page covers only those PHP files. functions.php itself, the templates, the stylesheets, the images and the content files are not checked, and while one of them is missing or cut off a page can look broken or show an error. The temporary folder and the rename avoid all of it.
 
-Never upload WordPress itself (wp-admin, wp-includes and the files beside them) to a live folder that has no wp-config.php. In that state the WordPress installer answers anyone who finds it. Put wp-config.php in place first, or upload WordPress to a temporary folder and rename it.
+Never upload WordPress itself (wp-admin, wp-includes and the files beside them) to a live folder that has no wp-config.php. In that state the WordPress installer answers anyone who finds it. Put wp-config.php in place first, or upload WordPress to a temporary folder outside the web root and move it into place.
 
 == Updating ==
 

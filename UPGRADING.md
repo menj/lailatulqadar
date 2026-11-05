@@ -5,8 +5,8 @@ You can skip versions: upload the newest zip over any 1.9.x and open any admin s
 ## Updating an existing site
 
 1. Turn on hidden files in the FTP program (in FileZilla: Server > Force showing hidden files). The theme carries `.htaccess` files in its own folder and in `tests/`, `bin/` and `docs/`.
-2. Upload the new `lailatulqadar` folder into `wp-content/themes/` as `lailatulqadar-new`.
-3. Rename the live folder to `lailatulqadar-old` and at once `lailatulqadar-new` to `lailatulqadar`, with Appearance > Themes closed, at a quiet hour. A page asked for between the two renames finds no theme, and that screen switches the site to another theme if it finds the folder missing. If WordPress did switch to another theme, activate the theme again under Appearance > Themes. Delete the old one once the site looks right.
+2. Upload the new `lailatulqadar` folder as `lailatulqadar-new` to a temporary folder outside the web root (beside `public_html`, never inside it), so no visitor can reach it while it uploads.
+3. Rename the live folder in `wp-content/themes/` to `lailatulqadar-old` and at once move `lailatulqadar-new` there as `lailatulqadar`, with Appearance > Themes closed, at a quiet hour. A page asked for between the two renames finds no theme, and that screen switches the site to another theme if it finds the folder missing. If WordPress did switch to another theme, activate the theme again under Appearance > Themes. Delete the old one once the site looks right.
 4. Open any admin screen as an administrator. Setup runs, the error pages are written and the `.htaccess` sections are checked.
 5. Read the note below for every version you pass, and the setup report on the Tools tab.
 

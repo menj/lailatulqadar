@@ -20,6 +20,7 @@ The parts of an article page, built into the guide pages (`templates/page.html`)
 - The theme is licensed under the GNU GPL version 3 or later (it was version 2 or later). `LICENSE` holds the full text, and `style.css` and `readme.txt` carry the new header lines. The theme images in `images/` follow.
 - `.claude/skills/theme-docs/SKILL.md` gains its Licence section.
 - `tests/schema-graph-test.php` loads `inc/page-parts.php`.
+- `readme.txt` and `UPGRADING.md`: the temporary folder for an FTP upload sits outside the web root, so no visitor can reach a theme or a WordPress core still uploading.
 
 ## 1.18.9 (2026-11-05)
 

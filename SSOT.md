@@ -240,11 +240,11 @@ English text anywhere in the theme (page content, interface strings, JavaScript 
 
 ## Public wording
 
-Pages, the readme and `docs/settings.md` (both served) never say that the site is related to other sites or that it belongs to a group of sites. Links to other sites are ordinary links, and the settings and readme call them links to other sites.
+Pages, the readme and `docs/settings.md` (both served) never say that the site is related to other sites or that it belongs to a group of sites. Links to other sites are ordinary links, and the readme and `docs/settings.md` call them links to other sites. The Theme Options screen, which only administrators see, still labels them sister sites.
 
 ## Release checklist
 
-1. The version is the same in `style.css`, `LQ_VERSION` in `functions.php`, `readme.txt` (Stable tag and changelog), the top entry of `CHANGELOG.md` and the first line of this file.
+1. The version is the same in `style.css`, `LQ_VERSION` in `functions.php`, `readme.txt` (Stable tag and changelog), the top entry of `CHANGELOG.md`, the first line of this file and the At a glance table of `README.md`.
 2. `CHANGELOG.md` has the new entry, and `readme.txt` has the short form.
 3. `UPGRADING.md` has a note when the site owner must act, and its roadmap drops what shipped.
 4. `README.md` (or the reference in `docs/` it points to) covers any new hook, filter, constant, setting, file or rule.

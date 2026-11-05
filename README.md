@@ -58,7 +58,7 @@ GitHub Actions runs `bin/check-content.py` on pull requests that touch `content/
 
 After an article changes, run `php bin/build-seed-history.php > inc/data/seed-history.json.new` and move the file into place, so setup still knows every shipped version. After the error page text changes, run `php bin/build-error-pages.php`.
 
-To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `readme.txt` (Stable tag and changelog) and `SSOT.md`, add the entry to `CHANGELOG.md`, add a note to `UPGRADING.md` if the owner must act, run the checks and build the zip.
+To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `readme.txt` (Stable tag and changelog), `SSOT.md` and the At a glance table of this file, add the entry to `CHANGELOG.md`, add a note to `UPGRADING.md` if the owner must act, run the checks and build the zip.
 
 ## Architecture
 

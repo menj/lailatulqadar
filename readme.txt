@@ -116,7 +116,7 @@ Administrators (the manage_options capability). The page holds the security swit
 == Upgrade Notice ==
 
 = 1.18.9 =
-Documentation only. Nothing on the site changes.
+Documentation only. Setup runs once, as after any update, and finds nothing to change.
 
 = 1.18.8 =
 Upload with hidden files shown, so the new .htaccess files go up.

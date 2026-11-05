@@ -18,6 +18,8 @@ Never upload WordPress core to a live folder without `wp-config.php` in place. T
 
 Nothing to do. The release adds `README.md` and changes no page and no setting.
 
+As after any version change, setup runs once on the first admin screen and finds no article to change, and the error pages are written again with the new version.
+
 ## To 1.18.8
 
 Upload with hidden files shown, so the new `.htaccess` files in the theme folder and in `tests/`, `bin/` and `docs/` go up.

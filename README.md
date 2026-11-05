@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.18.11 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.18.12 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 7.4 or later |
@@ -262,7 +262,15 @@ ErrorDocument 504 /wp-content/lailatulqadar-errors/504.html
 
 On Nginx: `error_page 403 /wp-content/lailatulqadar-errors/403.html;` and so on for each code. Where `wp-content` sits below a subfolder, use its real address, as in `/blog/wp-content/lailatulqadar-errors/403.html`; the tab's lines show it.
 
+Every page carries the mark as its tab icon, as a `data:` address built from the inline mark, so it needs no path.
+
 `errors/` keeps the copies for a site at the domain root, rebuilt with `php bin/build-error-pages.php`. On a network only the main site writes the files, and they stay on a theme switch, since every site shares `wp-content`. `docs/settings.md` has the details.
+
+## Browser icons
+
+`lq_default_icons()` (`inc/assets.php`) prints `images/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `site.webmanifest` and `theme-color` #141b2e on `wp_head`, `admin_head` and, through `lq_login_icons()`, `login_head`, while `has_site_icon()` is false. With a Site Icon, WordPress prints its own tags.
+
+`/favicon.ico` reaches WordPress when no such file sits in the site root. `lq_serve_favicon()` answers it on `template_redirect` (priority 0, so HEAD is covered) and `do_faviconico` with `images/favicon.ico`, `Cache-Control: public, max-age=86400` and an ETag, with a 304 on a match. With a Site Icon, WordPress redirects to it. The manifest is a static file with relative icon paths. The theme `.htaccess` refuses dot files, PHP, Markdown, `tests`, `bin` and `docs` only, so the icons are served (`tests/htaccess-files-test.php`).
 
 ## SEO and structured data
 

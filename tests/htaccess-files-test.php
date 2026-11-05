@@ -137,7 +137,7 @@ foreach ( array( '.git/config', '.github/workflows/content.yml', '.gitignore', '
 	lq_check( $lq_own && $lq_hits( $lq_own, '/wp-content/themes/lailatulqadar/' . $lq_p ), "theme .htaccess (mod_alias): 403 for $lq_p" );
 	lq_check( $lq_hits( $lq_rw, $lq_p ), "theme .htaccess (mod_rewrite): 403 for $lq_p" );
 }
-foreach ( array( 'style.css', 'readme.txt', 'docs/settings.md', 'css/admin.css', 'js/admin.js', 'fonts/kfgqpc/kfgqpc-hafs-uthmanic.woff2', 'images/book-open.webp', 'errors/403.html', 'docsx.css', 'testsuite.css', 'binary.css', '.well-known/x' ) as $lq_p ) {
+foreach ( array( 'style.css', 'readme.txt', 'docs/settings.md', 'css/admin.css', 'js/admin.js', 'fonts/kfgqpc/kfgqpc-hafs-uthmanic.woff2', 'images/book-open.webp', 'errors/403.html', 'docsx.css', 'testsuite.css', 'binary.css', '.well-known/x', 'images/favicon.ico', 'images/favicon.svg', 'images/site.webmanifest', 'images/icon-maskable-512.png' ) as $lq_p ) {
 	lq_check( ! $lq_hits( $lq_own, '/wp-content/themes/lailatulqadar/' . $lq_p ) && ! $lq_hits( $lq_rw, $lq_p ), "theme .htaccess: open $lq_p" );
 }
 

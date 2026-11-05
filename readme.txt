@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.18.11
+Stable tag: 1.18.12
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -124,6 +124,9 @@ Administrators (the manage_options capability). The page holds the security swit
 
 == Upgrade Notice ==
 
+= 1.18.12 =
+Upload the new zip. Open one admin page so the error pages are written again with the icon.
+
 = 1.18.11 =
 Documentation only. The FTP update steps now upload the new folder into wp-content/themes under a temporary name.
 
@@ -143,6 +146,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.18.12 =
+* The browser icon set is complete: favicon.ico, 192px, 512px and maskable icons and a web app manifest, all drawn from the lantern mark. The site answers /favicon.ico with the icon, the icons show in the admin as well as on the site and the login screen, and the error pages show the mark in the tab. A Site Icon you set still wins.
 
 = 1.18.11 =
 * The FTP update steps upload the new folder into wp-content/themes under a temporary name, its .htaccess files first, and then rename it into place.
@@ -173,5 +179,5 @@ adhan 4.4.6 (prayer-time calculation), Copyright 2016 Batoul Apps. MIT License. 
 Social icons in images/social (X, Facebook, YouTube, Instagram, TikTok, Threads, Bluesky, Mastodon, Telegram, WhatsApp): Minimalist Social Icons Pack 2.8, GPL. These ten come from CC0 sources; the pack's two CC BY 4.0 icons are not bundled. The brand marks belong to their owners.
 KFGQPC HAFS Uthmanic Script, Copyright 2010 King Fahd Glorious Quran Printing Complex. Free to use, copy and distribute; the file must not be modified.
 Served as a WOFF2 conversion of the original TTF by the owner's decision of 2026-10-26, accepting that restriction. See fonts/kfgqpc/LICENSE.txt.
-Theme images: the logo mark, favicon, touch icon and 512px logo (images/) are original artwork made for the theme; the pixel book (images/book-open.webp) was supplied by the site owner. Both are distributed with the theme under the GNU GPL version 3 or later.
+Theme images: the logo mark, favicons, touch icon, app icons and 512px logo (images/) are original artwork made for the theme; the pixel book (images/book-open.webp) was supplied by the site owner. Both are distributed with the theme under the GNU GPL version 3 or later.
 Photographs in images/commons/ come from Wikimedia Commons, Pixabay and Pexels under the licences listed per file in inc/data/images.json, and are credited beneath each image and on the Sources page.

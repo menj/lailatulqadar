@@ -79,15 +79,65 @@ function lq_preload_quran_font() {
 add_action( 'wp_head', 'lq_preload_quran_font', 2 );
 
 /**
- * Favicon and touch icon from the logo mark, used until a Site Icon is set
- * in Settings > General (which then takes over, as WordPress intends).
+ * Favicon, touch icon, web app manifest and theme colour from the logo mark,
+ * used until a Site Icon is set in Settings > General (which then takes over,
+ * as WordPress intends). The site, the login screen (inc/login.php) and the admin.
  */
 function lq_default_icons() {
 	if ( has_site_icon() ) {
 		return;
 	}
-	printf( '<link rel="icon" href="%s" type="image/svg+xml">' . "\n", esc_url( LQ_URI . '/images/lailatulqadar-mark.svg' ) );
-	printf( '<link rel="icon" href="%s" sizes="32x32" type="image/png">' . "\n", esc_url( LQ_URI . '/images/favicon-32.png' ) );
-	printf( '<link rel="apple-touch-icon" href="%s">' . "\n", esc_url( LQ_URI . '/images/apple-touch-icon.png' ) );
+	printf( '<link rel="icon" href="%s" type="image/svg+xml">' . "\n", esc_url( LQ_URI . '/images/favicon.svg?ver=' . LQ_VERSION ) );
+	printf( '<link rel="icon" href="%s" sizes="32x32" type="image/png">' . "\n", esc_url( LQ_URI . '/images/favicon-32.png?ver=' . LQ_VERSION ) );
+	printf( '<link rel="apple-touch-icon" href="%s">' . "\n", esc_url( LQ_URI . '/images/apple-touch-icon.png?ver=' . LQ_VERSION ) );
+	printf( '<link rel="manifest" href="%s">' . "\n", esc_url( LQ_URI . '/images/site.webmanifest?ver=' . LQ_VERSION ) );
+	echo '<meta name="theme-color" content="#141b2e">' . "\n";
 }
 add_action( 'wp_head', 'lq_default_icons', 3 );
+add_action( 'admin_head', 'lq_default_icons' );
+
+/**
+ * Browsers and bots ask for /favicon.ico on their own. Until a Site Icon is
+ * set, answer with images/favicon.ico: a day's cache and an ETag, with a 304
+ * while it is unchanged. With a Site Icon, WordPress redirects to it.
+ */
+function lq_serve_favicon() {
+	$file = LQ_DIR . '/images/favicon.ico';
+	if ( has_site_icon() || ! is_readable( $file ) ) {
+		return;
+	}
+	$etag = '"' . md5_file( $file ) . '"';
+	header( 'Content-Type: image/x-icon' );
+	header( 'Cache-Control: public, max-age=86400' );
+	header( 'ETag: ' . $etag );
+	// If-None-Match may list several validators, weak ones (W/"...") or *.
+	$sent = array_map(
+		static function ( $v ) {
+			return preg_replace( '#^W/#', '', trim( $v ) );
+		},
+		explode( ',', wp_unslash( (string) ( $_SERVER['HTTP_IF_NONE_MATCH'] ?? '' ) ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	);
+	if ( in_array( '*', $sent, true ) || in_array( $etag, $sent, true ) ) {
+		status_header( 304 );
+		exit;
+	}
+	status_header( 200 );
+	header( 'Content-Length: ' . (string) filesize( $file ) );
+	// A HEAD request gets the headers alone.
+	if ( 'HEAD' !== ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		readfile( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	}
+	exit;
+}
+add_action( 'do_faviconico', 'lq_serve_favicon', 5 );
+
+/**
+ * WordPress ends a HEAD request before do_favicon, with an empty HTML answer.
+ * template_redirect runs first, so a HEAD request gets the icon's headers too.
+ */
+function lq_favicon_head_request() {
+	if ( is_favicon() ) {
+		lq_serve_favicon();
+	}
+}
+add_action( 'template_redirect', 'lq_favicon_head_request', 0 );

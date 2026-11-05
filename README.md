@@ -270,7 +270,7 @@ Every page carries the mark as its tab icon, as a `data:` address built from the
 
 `lq_default_icons()` (`inc/assets.php`) prints `images/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `site.webmanifest` and `theme-color` #141b2e on `wp_head`, `admin_head` and, through `lq_login_icons()`, `login_head`, while `has_site_icon()` is false. With a Site Icon, WordPress prints its own tags.
 
-`/favicon.ico` reaches WordPress when no such file sits in the site root. `lq_serve_favicon()` answers it on `template_redirect` (priority 0, so HEAD is covered) and `do_faviconico` with `images/favicon.ico`, `Cache-Control: public, max-age=86400` and an ETag, with a 304 on a match. With a Site Icon, WordPress redirects to it. The manifest is a static file with relative icon paths. The theme `.htaccess` refuses dot files, PHP, Markdown, `tests`, `bin` and `docs` only, so the icons are served (`tests/htaccess-files-test.php`).
+`/favicon.ico` reaches WordPress when no such file sits in the site root. On a site in a subfolder, such as `example.com/blog/`, browsers still ask for `example.com/favicon.ico`, which WordPress never sees: put a copy of `images/favicon.ico` at the domain root there. The head tags cover the pages either way. `lq_serve_favicon()` answers it on `template_redirect` (priority 0, so HEAD is covered) and `do_faviconico` with `images/favicon.ico`, `Cache-Control: public, max-age=86400` and an ETag, with a 304 on a match. With a Site Icon, WordPress redirects to it. The manifest is a static file with relative icon paths. The theme `.htaccess` refuses dot files, PHP, Markdown, `tests`, `bin` and `docs` only, so the icons are served (`tests/htaccess-files-test.php`).
 
 ## SEO and structured data
 

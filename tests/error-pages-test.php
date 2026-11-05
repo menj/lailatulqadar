@@ -54,7 +54,7 @@ foreach ( lailatulqadar_error_dropins() as $err_name => $err_kind ) {
 	err_check( false !== strpos( $err_src[ $err_name ], LAILATULQADAR_ERR_MARKER . ' (' . $err_kind . ')' ), "$err_name carries the marker and its kind" );
 	err_check( false !== strpos( $err_src[ $err_name ], 'X-Robots-Tag: noindex' ) && false !== strpos( $err_src[ $err_name ], '<meta name="robots" content="noindex">' ) && false !== strpos( $err_src[ $err_name ], 'no-store' ), "$err_name sends noindex and no-store" );
 	err_check( false !== strpos( $err_src[ $err_name ], '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' ), "$err_name carries the mark as its tab icon" );
-	err_check( ! preg_match( '/<link(?![^>]*href="data:)/', $err_src[ $err_name ] ) && false === strpos( $err_src[ $err_name ], '<script' ), "$err_name loads no file (its tab icon is a data address)" );
+	err_check( ! preg_match( '/<(?:link|script|img|iframe|object|embed|source|video|audio)\b(?![^>]*(?:href|src)="data:)/i', $err_src[ $err_name ] ) && ! preg_match( '/url\(\s*[\'"]?(?!data:)/i', $err_src[ $err_name ] ) && ! preg_match( '/@import/i', $err_src[ $err_name ] ), "$err_name loads no file (its tab icon is a data address)" );
 	preg_match( '~<title>([^<]*)</title>~', $err_src[ $err_name ], $err_m );
 	err_check( isset( $err_m[1] ) && mb_strlen( html_entity_decode( $err_m[1], ENT_QUOTES, 'UTF-8' ) ) < 60 && false !== strpos( $err_m[1], ' | ' ), "$err_name title is <page> | <site>, under 60" );
 	$err_file = "$err_tmp/run-$err_name";

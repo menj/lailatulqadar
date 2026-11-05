@@ -75,6 +75,15 @@ function lailatulqadar_error_page_kinds() {
 			'again' => 'Try again',
 			'alt' => 'Pelayan perantara memberi jawapan yang salah. Sila cuba sebentar lagi.',
 		),
+		'504' => array(
+			'status' => 504,
+			'retry' => 0,
+			'eyebrow' => 'Error 504',
+			'title' => 'Gateway timeout',
+			'lines' => array( 'A server between you and the site took too long to answer.', 'Please try again in a few minutes.' ),
+			'again' => 'Try again',
+			'alt' => 'Pelayan perantara mengambil masa terlalu lama untuk menjawab. Sila cuba sebentar lagi.',
+		),
 		'503' => array(
 			'status' => 503,
 			'retry' => 600,

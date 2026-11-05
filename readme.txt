@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.18.2
+Stable tag: 1.18.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,10 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.18.3 =
+* The error pages are written when the theme is activated, with no button press, and removed when another theme is activated. Pages another theme left behind are replaced.
+* A 504 page for the web server, in English and Malay, with its .htaccess line.
 
 = 1.18.2 =
 * Three guide pages, in English and Malay, no longer describe other websites as related to this one. Every link stays.

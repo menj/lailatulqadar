@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.18.10
+Stable tag: 1.18.11
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -64,8 +64,8 @@ With the WordPress uploader:
 With FTP:
 
 1. Turn on hidden files in your FTP program first. In FileZilla it is Server > Force showing hidden files. The theme has files whose names start with a dot (.htaccess), and they must go up too.
-2. Upload the lailatulqadar folder under a temporary name, such as lailatulqadar-new, to a temporary folder outside the web root: beside public_html (or whichever folder your site's address opens), never inside it. There no visitor can reach the files while they upload, and WordPress does not see a half-uploaded theme.
-3. When every file is up, rename the old folder in wp-content/themes (if there is one) to lailatulqadar-old, then at once move lailatulqadar-new into wp-content/themes as lailatulqadar. Most FTP programs move a folder when you rename it with its new path, such as public_html/wp-content/themes/lailatulqadar. Do the two renames one straight after the other, at a quiet hour, with Appearance > Themes closed. A page asked for in the moment between them finds no theme and shows an error, and if WordPress opens that screen while the folder is missing, it switches the site to another theme. Delete lailatulqadar-old once the site looks right.
+2. Upload the new lailatulqadar folder into wp-content/themes under a temporary name, such as lailatulqadar-new. Send its .htaccess files first: the one at the top of the folder, then those in tests, bin and docs when your copy has them. They keep the theme's private files closed to visitors while the rest arrives. Staying inside wp-content/themes keeps the folder on the same disk as the live one, so the rename in step 3 works in one step.
+3. When every file is up, rename the old folder (if there is one) to lailatulqadar-old, then at once rename lailatulqadar-new to lailatulqadar. Do the two renames one straight after the other, at a quiet hour, with Appearance > Themes closed. A page asked for in the moment between them finds no theme and shows an error, and if WordPress opens that screen while the folder is missing, it switches the site to another theme. Delete lailatulqadar-old once the site looks right.
 4. Activate the theme if it is not active yet, and open any admin screen as an administrator.
 
 The folder must be called lailatulqadar, all lower case.
@@ -124,6 +124,9 @@ Administrators (the manage_options capability). The page holds the security swit
 
 == Upgrade Notice ==
 
+= 1.18.11 =
+Documentation only. The FTP update steps now upload the new folder into wp-content/themes under a temporary name.
+
 = 1.18.10 =
 Nothing to do. Guide pages gain their dates, reading time, contents, sources and a previous and next row. The theme is now under the GNU GPL version 3 or later.
 
@@ -140,6 +143,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.18.11 =
+* The FTP update steps upload the new folder into wp-content/themes under a temporary name, its .htaccess files first, and then rename it into place.
 
 = 1.18.10 =
 * Guide pages show, under the title, when they were published and updated, when they were last reviewed and how long they take to read. Each date carries its Hijri date.

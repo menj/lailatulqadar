@@ -14,6 +14,7 @@
 	var InspectorControls = wp.blockEditor.InspectorControls;
 	var PanelBody = wp.components.PanelBody;
 	var SelectControl = wp.components.SelectControl;
+	var ToggleControl = wp.components.ToggleControl;
 	var ServerSideRender = wp.serverSideRender;
 
 	registerBlockType( 'lailatulqadar/guide-menu', {
@@ -38,6 +39,14 @@
 							],
 							onChange: function ( value ) {
 								props.setAttributes( { set: value } );
+							}
+						} ),
+						'path' === props.attributes.set && el( ToggleControl, {
+							label: __( 'Split into chapters', 'lailatulqadar' ),
+							help: __( 'Headings from inc/data/path-chapters.json; the numbers run on through them.', 'lailatulqadar' ),
+							checked: !! props.attributes.chapters,
+							onChange: function ( value ) {
+								props.setAttributes( { chapters: value } );
 							}
 						} )
 					)

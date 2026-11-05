@@ -1241,6 +1241,14 @@ msgstr ""
 msgid "Footer"
 msgstr ""
 
+#: js/editor-blocks.js:44
+msgid "Split into chapters"
+msgstr ""
+
+#: js/editor-blocks.js:45
+msgid "Headings from inc/data/path-chapters.json; the numbers run on through them."
+msgstr ""
+
 #: js/editor-blocks.js:37
 msgid "Sitemap (every page)"
 msgstr ""

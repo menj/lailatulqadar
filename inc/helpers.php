@@ -199,6 +199,61 @@ function lq_page_definitions() {
 }
 
 /**
+ * The chapters of the reading path on the front page, in reading order:
+ * each a list of page keys with a heading per language role. Data only,
+ * from inc/data/path-chapters.json.
+ *
+ * @return array[] Each chapter: keys (string[]), primary, secondary.
+ */
+function lq_path_chapters() {
+	static $chapters = null;
+	if ( null === $chapters ) {
+		$file     = LQ_DIR . '/inc/data/path-chapters.json';
+		$data     = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : null; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$chapters = array();
+		foreach ( is_array( $data ) ? $data : array() as $chapter ) {
+			if ( is_array( $chapter ) && ! empty( $chapter['keys'] ) && is_array( $chapter['keys'] ) && isset( $chapter['primary'], $chapter['secondary'] ) ) {
+				$chapters[] = $chapter;
+			}
+		}
+	}
+	return $chapters;
+}
+
+/**
+ * Group reading-path items into the chapters of lq_path_chapters(). The
+ * order of the items is kept: each key of each chapter must name the next
+ * item in turn, and every item must be taken. When the items and the
+ * chapters do not line up (a page added to or missing from the path), the
+ * result is empty and the caller prints the plain list.
+ *
+ * @param array[]     $items Items from lq_menu_items( 'path', ... ).
+ * @param string|null $role  primary or secondary; the current view's when null.
+ * @return array[] Each group: heading, start (number of its first item), items.
+ */
+function lq_path_groups( $items, $role = null ) {
+	$role   = null === $role ? lq_current_role() : $role;
+	$groups = array();
+	$i      = 0;
+	foreach ( lq_path_chapters() as $chapter ) {
+		$group = array(
+			'heading' => (string) $chapter[ 'secondary' === $role ? 'secondary' : 'primary' ],
+			'start'   => $i + 1,
+			'items'   => array(),
+		);
+		foreach ( $chapter['keys'] as $key ) {
+			if ( ! isset( $items[ $i ] ) || $items[ $i ]['key'] !== $key ) {
+				return array();
+			}
+			$group['items'][] = $items[ $i ];
+			++$i;
+		}
+		$groups[] = $group;
+	}
+	return count( $items ) === $i ? $groups : array();
+}
+
+/**
  * Stored page IDs, keyed by role then page key.
  *
  * @return array
@@ -216,7 +271,7 @@ function lq_page_map() {
  *
  * @param string $set      header, path, footer or sitemap (every page).
  * @param bool   $upcoming Also list pages not yet published.
- * @return array[] Each item: id, url, title, short, upcoming.
+ * @return array[] Each item: key, id, url, title, short, upcoming.
  */
 function lq_menu_items( $set, $upcoming = false ) {
 	$role  = lq_current_role();
@@ -234,6 +289,7 @@ function lq_menu_items( $set, $upcoming = false ) {
 			continue;
 		}
 		$items[] = array(
+			'key'      => $key,
 			'id'       => $id,
 			'url'      => $published ? get_permalink( $id ) : '',
 			'title'    => $published ? get_the_title( $id ) : $def[ $role ]['title'],

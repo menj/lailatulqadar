@@ -2,6 +2,13 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.18.5 (2026-11-05)
+
+- The front page reads as one story. The reading path on both front pages is split into 4 chapters from `inc/data/path-chapters.json`: what the night is, when to look for it, how to keep it, and the questions and evidence behind it. One CSS counter runs through them, so the pages keep their numbers 1 to 12, and each list carries its `start`. The order of the pages is the registry's and is unchanged.
+- The guide menu block takes a `chapters` attribute (default off; "Split into chapters" in the editor). `lq_path_chapters()` reads the file and `lq_path_groups()` groups the path; when the two do not line up (a page added to, missing from or out of order in the path), the plain list is shown. `tests/path-chapters-test.php` checks that the chapters cover the path exactly and the fallbacks. `lq_menu_items()` items also carry their page `key`. The 404 page and the empty search keep the plain list.
+- The intro under "Read the guide" names the 4 chapters, in English and Malay.
+- `docs/blocks.md` records the front page's arc; `SSOT.md` lists the new data file.
+
 ## 1.18.4 (2026-11-05)
 
 - The static 403, 500, 502, 503 and 504 pages work on a site in a subfolder. `lailatulqadar_error_install()` also writes a copy of each into `wp-content/lailatulqadar-errors/` with the site's name and home address (`lailatulqadar_error_static_files()`, `lailatulqadar_error_file_source()`). The automatic install, the admin check, the status table and `lailatulqadar_error_remove()` cover these copies as they cover the drop-ins. `lailatulqadar_error_htaccess_snippet()` points at that folder. `errors/` stays as the copy for a site at the domain root.

@@ -30,8 +30,8 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Halaman panduan ini disusun mengikut urutan, daripada asas pengertian hingga persediaan bagi setiap malam.</p>
+<p>Halaman panduan ini disusun mengikut urutan dalam empat bahagian: mengenal Lailatulqadar, waktu untuk mencarinya, cara menghidupkannya, serta soalan dan dalil yang mendasarinya.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:lailatulqadar/guide-menu {"set":"path"} /--></div>
+<!-- wp:lailatulqadar/guide-menu {"set":"path","chapters":true} /--></div>
 <!-- /wp:group -->

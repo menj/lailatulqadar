@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.18.4
+Stable tag: 1.18.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.18.5 =
+* The front page reads as one story. The reading path is split into 4 chapters, what the night is, when to look for it, how to keep it, and the questions and evidence behind it, with the numbers running on through them. The order of the pages is unchanged.
 
 = 1.18.4 =
 * The web server error pages work on a site in a subfolder. The theme writes a copy of each into wp-content/lailatulqadar-errors with the site's home address, and the .htaccess lines on the Tools tab point there.

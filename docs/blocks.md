@@ -29,7 +29,7 @@ The reading order itself is fixed in `SSOT.md`; the chapters only group it.
 
 ## Language switcher (`lailatulqadar/language-switcher`)
 
-Links to the current page in the other language, using the labels from the Languages tab, or to the other language's home when the page has no published translation. Renders nothing until the Malay home exists.
+Links to the current page in the other language, using the labels from the Languages tab, or to the other language's home when the page has no published translation. Renders nothing until the Malay home exists. The footer part sets `context` to `footer`, which names its landmark "Footer language links" ("Pautan bahasa di kaki halaman") so it differs from the header's "Language" ("Bahasa").
 
 ## Logo mark (`lailatulqadar/logo-mark`)
 

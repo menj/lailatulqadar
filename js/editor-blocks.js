@@ -60,12 +60,13 @@
 	} );
 
 	registerBlockType( 'lailatulqadar/language-switcher', {
-		edit: function () {
+		edit: function ( props ) {
 			return el(
 				'div',
 				useBlockProps(),
 				el( ServerSideRender, {
 					block: 'lailatulqadar/language-switcher',
+					attributes: props.attributes,
 					EmptyResponsePlaceholder: function () {
 						return el( 'span', null, __( 'Language switcher', 'lailatulqadar' ) );
 					}

@@ -67,16 +67,16 @@ WordPress reads three files from `wp-content` when it cannot build a page. The t
 
 The table beside the button reads not installed, installed, outdated (an older copy of the theme) left behind by another theme, or another file left alone. A copy another theme left behind (marked "Written by the ... theme; safe to delete") is replaced. A file without such a mark, or without the marker `Lailatulqadar error page drop-in`, is never overwritten.
 
-For the errors the web server answers before WordPress starts, `errors/` holds static 403, 500, 502, 503 and 504 pages. Add these lines to `.htaccess`, with the folder name of the theme:
+For the errors the web server answers before WordPress starts, the theme writes static 403, 500, 502, 503 and 504 pages into `wp-content/lailatulqadar-errors/`, at the same times as the drop-ins and with the same marker. Each copy carries the site's name and its real home address, so the home link works on a site in a subfolder. The theme removes them when another theme is activated; take the `ErrorDocument` lines out of `.htaccess` then. On a network every site shares `wp-content` and one `.htaccess`, so only the main site writes the pages and they carry its name and home address, as the drop-ins do. Copy the `.htaccess` lines from the Tools tab, which are built from the real address of `wp-content`. At the domain root they read:
 
 ```
-ErrorDocument 403 /wp-content/themes/lailatulqadar/errors/403.html
-ErrorDocument 500 /wp-content/themes/lailatulqadar/errors/500.html
-ErrorDocument 502 /wp-content/themes/lailatulqadar/errors/502.html
-ErrorDocument 503 /wp-content/themes/lailatulqadar/errors/503.html
-ErrorDocument 504 /wp-content/themes/lailatulqadar/errors/504.html
+ErrorDocument 403 /wp-content/lailatulqadar-errors/403.html
+ErrorDocument 500 /wp-content/lailatulqadar-errors/500.html
+ErrorDocument 502 /wp-content/lailatulqadar-errors/502.html
+ErrorDocument 503 /wp-content/lailatulqadar-errors/503.html
+ErrorDocument 504 /wp-content/lailatulqadar-errors/504.html
 ```
 
-These lines assume WordPress at the root of the domain. On a site installed in a subfolder, or with `wp-content` moved, copy the lines from the theme's Error pages section instead: it builds them from the real address. The static pages themselves cannot learn that address, so their home link points to `/`.
+`errors/` in the theme keeps the copies for a site at the domain root, rebuilt with `php bin/build-error-pages.php`.
 
 Rebuild them after changing `inc/error-page-html.php` with `php bin/build-error-pages.php`.

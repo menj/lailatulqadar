@@ -59,7 +59,7 @@ Version 1.18.1. This file records the architecture, stored data and binding deci
 | `inc/reading-progress.php`, `js/reading-progress.js`, `css/reading-progress.css` | Reading progress bar on single views; off while the Reading Progress Bar plugin is active |
 | `inc/unlist.php`, `js/unlist-admin.js`, `tests/unlist-test.php` | Unlisted pages (replaces Unlist Posts & Pages); off while that plugin is active |
 | `inc/search-permalinks.php`, `tests/search-permalinks-test.php` | /search/term/ addresses (replaces Pretty Search Permalinks); off while that plugin is active |
-| `inc/error-pages.php`, `inc/error-page-html.php` | The wp-content drop-ins (maintenance 503, php-error 500, db-error 503), written on activation and on an administrator's admin page when missing or outdated, removed on a theme switch, and their Install error pages button on the Tools tab (admin only); the self-contained page builder, also used by `bin/build-error-pages.php` for the static pages in `errors/`. See `docs/settings.md` |
+| `inc/error-pages.php`, `inc/error-page-html.php` | The wp-content drop-ins (maintenance 503, php-error 500, db-error 503), written on activation and on an administrator's admin page when missing or outdated, removed on a theme switch, and their Install error pages button on the Tools tab (admin only); the self-contained page builder, also used by `bin/build-error-pages.php` for the static pages in `errors/` (the copies for a site at the domain root); since 1.18.4 it also writes a copy of each into `wp-content/lailatulqadar-errors/` with the site's home address. See `docs/settings.md` |
 | `inc/settings.php` | Tabbed settings screen and Tools handlers (admin only): card layout, ARIA tabs switched without a reload, toggle, slider and colour-picker rows (`lailatulqadar_*_row()`), assets enqueued by hook suffix |
 | `blocks/guide-menu/` | Header links, numbered reading path, footer |
 | `blocks/language-switcher/` | Link to the same page in the other language |
@@ -191,7 +191,7 @@ On 3 November 2026 the owner decided that lailatulqadar.guide has no blog. The s
 
 General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Images, Reading and sharing (1.17.0), Security, Tools.
 
-The screen needs `manage_options`, kept in 1.16.0 in place of `edit_theme_options` because it holds the security switches and setup. New PHP functions since 1.16.0 take the prefix `lailatulqadar_`; existing `lq_` functions, option keys, handles, block names and shortcodes keep their names. `git archive` leaves out `.github`, `bin`, `tests`, `CLAUDE.md` and the git files (`.gitattributes`).
+The screen needs `manage_options`, kept in 1.16.0 in place of `edit_theme_options` because it holds the security switches and setup. New PHP functions since 1.16.0 take the prefix `lailatulqadar_`; existing `lq_` functions, option keys, handles, block names and shortcodes keep their names. `git archive` leaves out `.github`, `bin`, `tests`, `.claude` (which holds `CLAUDE.md` and `FARUQI.md`) and the git files (`.gitattributes`).
 
 ## Roadmap
 

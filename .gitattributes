@@ -13,4 +13,4 @@
 .github export-ignore
 bin export-ignore
 tests export-ignore
-CLAUDE.md export-ignore
+/.claude export-ignore

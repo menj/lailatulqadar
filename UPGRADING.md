@@ -2,6 +2,10 @@
 
 You can skip versions: upload the newest zip over any 1.9.x and open any admin screen as an administrator. Setup knows every version of each article the theme has shipped, so in one run it brings every unedited page up to date and lists pages you have edited under "Edited, not updated" on the Tools tab. The entries below say what each version changes on the site.
 
+## To 1.18.4
+
+Upload the zip and open any admin screen as an administrator. The theme writes its static error pages into `wp-content/lailatulqadar-errors/`. If `.htaccess` has `ErrorDocument` lines that point at `/wp-content/themes/lailatulqadar/errors/`, replace them with the lines from the Tools tab. The old lines still work on a site at the domain root.
+
 ## To 1.18.3
 
 Upload the zip and open any admin screen as an administrator: the error pages are written then, with no button press. A copy another theme left in wp-content is replaced; a file without a theme's mark is left alone. Add the new `ErrorDocument 504` line from the Tools tab to `.htaccess` if you use the static pages.

@@ -771,13 +771,13 @@ function lq_render_links_tab() {
 	?>
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'How contextual links work', 'lailatulqadar' ); ?></h2>
-		<p class="lq-help"><?php esc_html_e( 'In the running text of a guide page or blog post, the first mention of a known phrase links to the page that treats it, here or on a sister site. Links are added as the page is shown, so the stored text is never changed. Headings, quotations, verses, hadith, Arabic, figures, tables, footnotes and the "In brief" box are never linked. Each address is linked once a page, and no paragraph or list item receives more than one new link. Malay pages link only to Malay pages on this site.', 'lailatulqadar' ); ?></p>
+		<p class="lq-help"><?php esc_html_e( 'In the running text of a guide page or blog post, the first mention of a known phrase links to the page that treats it, here or on another site. Links are added as the page is shown, so the stored text is never changed. Headings, quotations, verses, hadith, Arabic, figures, tables, footnotes and the "In brief" box are never linked. Each address is linked once a page, and no paragraph or list item receives more than one new link. Malay pages link only to Malay pages on this site.', 'lailatulqadar' ); ?></p>
 		<p class="lq-callout">
 			<?php
 			echo esc_html(
 				sprintf(
-					/* translators: 1: pages on this site, 2: pages on sister sites, 3: number of sister sites */
-					__( 'The shared map lists %1$d pages on this site and %2$d pages on %3$d sister sites. It lives in inc/data/network-links.json and is the same file in every theme of the network.', 'lailatulqadar' ),
+					/* translators: 1: pages on this site, 2: pages on the other sites, 3: number of other sites */
+					__( 'The shared map lists %1$d pages on this site and %2$d pages on %3$d other sites. It lives in inc/data/network-links.json and is the same file in every one of the seven themes.', 'lailatulqadar' ),
 					$own_count,
 					$sister_count,
 					$sister_sites
@@ -796,16 +796,16 @@ function lq_render_links_tab() {
 	</section>
 
 	<section class="lq-section">
-		<h2><?php esc_html_e( 'Sister sites', 'lailatulqadar' ); ?></h2>
+		<h2><?php esc_html_e( 'Other sites', 'lailatulqadar' ); ?></h2>
 		<?php
-		lailatulqadar_toggle_row( 'ctx_sister', 'lq-ctx-sister', __( 'Link to pages on the sister sites (English pages only)', 'lailatulqadar' ) );
+		lailatulqadar_toggle_row( 'ctx_sister', 'lq-ctx-sister', __( 'Link to pages on the other sites (English pages only)', 'lailatulqadar' ) );
 		lailatulqadar_range_row( 'ctx_sister_max', 'lq-ctx-sister-max', __( 'Links of this kind on one page, at most (0 to 10)', 'lailatulqadar' ), 0, 10 );
 		?>
 	</section>
 
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Extra phrases', 'lailatulqadar' ); ?></h2>
-		<p class="lq-help"><?php esc_html_e( 'One per line: phrase | address. An address beginning with / is a page on this site; a full address must be on this site or a sister site, and any other address is ignored. These lines are read before the shared map, so a phrase listed here takes its address from here.', 'lailatulqadar' ); ?></p>
+		<p class="lq-help"><?php esc_html_e( 'One per line: phrase | address. An address beginning with / is a page on this site; a full address must be on this site or another site, and any other address is ignored. These lines are read before the shared map, so a phrase listed here takes its address from here.', 'lailatulqadar' ); ?></p>
 		<?php
 		lailatulqadar_textarea_row( 'ctx_extra', 'lq-ctx-extra', __( 'English pages', 'lailatulqadar' ), '', array( 'class' => 'code', 'rows' => 5, 'placeholder' => 'night vigil | /laylat-al-qadr-prayer/' ) );
 		lailatulqadar_textarea_row( 'ctx_extra_ms', 'lq-ctx-extra-ms', __( 'Malay pages (addresses on this site only)', 'lailatulqadar' ), '', array( 'class' => 'code', 'rows' => 4, 'lang' => 'ms', 'placeholder' => 'malam kemuliaan | /ms/apa-itu-lailatulqadar/' ) );

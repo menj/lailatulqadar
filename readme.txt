@@ -64,12 +64,14 @@ With FTP:
 
 1. Turn on hidden files in your FTP program first. In FileZilla it is Server > Force showing hidden files. The theme has files whose names start with a dot (.htaccess), and they must go up too.
 2. Upload the lailatulqadar folder into wp-content/themes under a temporary name, such as lailatulqadar-new.
-3. When every file is up, rename the old folder (if there is one) to lailatulqadar-old, then rename lailatulqadar-new to lailatulqadar. Delete lailatulqadar-old once the site looks right.
+3. When every file is up, rename the old folder (if there is one) to lailatulqadar-old, then at once rename lailatulqadar-new to lailatulqadar. Do the two renames one straight after the other, with Appearance > Themes closed: if WordPress opens that screen while the folder is missing, it switches the site to another theme. Delete lailatulqadar-old once the site looks right.
 4. Activate the theme if it is not active yet, and open any admin screen as an administrator.
 
 The folder must be called lailatulqadar, all lower case.
 
-Uploading into the live folder file by file also works. While it runs, visitors see a short "Back shortly" page in English and Malay instead of an error.
+Uploading into the live folder file by file also works for most files. While one of them is missing or half written, visitors see a short "Back shortly" page in English and Malay instead of an error.
+
+The one file that page cannot cover is functions.php, since it is the file that shows it. If that file is cut off part-way, visitors get an error until it is whole. The temporary folder and the rename avoid both.
 
 Never upload WordPress itself (wp-admin, wp-includes and the files beside them) to a live folder that has no wp-config.php. In that state the WordPress installer answers anyone who finds it. Put wp-config.php in place first, or upload WordPress to a temporary folder and rename it.
 

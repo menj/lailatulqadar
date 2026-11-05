@@ -108,6 +108,7 @@ The Security tab is drawn by `inc/security.php`, with `js/security.js` and `css/
 | `lq_contextual_links_enabled` | Contextual links on a given page |
 | `lq_night_window_config` | The night window's cities and strings |
 | `lq_ramadan_today` | The date the Ramadan calendar counts from |
+| `lq_path_show_upcoming` | Whether the reading path lists unpublished pages as "Coming soon" (default true) |
 | `lq_slug_stopwords` | The words left out of new slugs (a, an, the) |
 | `lq_sec_rest_allow` | REST route prefixes exempt from the logged-in write lock |
 | `lq_allow_parent_variations` | Show the parent's style variations |
@@ -134,6 +135,8 @@ The theme defines no `*_KEEP_*` or `*_ALLOW_*` constant, since it has no product
 The owner uploads over FTP, one file at a time. While a file is missing or half written, visitors get a 503 "Back shortly" page in English and Malay, with `Retry-After: 300`, `no-store` and `noindex` (`lq_incomplete_theme()`). The error log gets one line per problem every ten minutes.
 
 The login screen (known by its path), AJAX, cron and WP-CLI go on. The admin sees the page only when a file broke part-way through loading.
+
+`functions.php` holds the guard and is parsed before any of it runs, so it cannot guard itself: a `functions.php` cut off part-way still gives a PHP error. Uploading to a temporary folder and renaming it into place avoids that.
 
 ### Accounts, probes and XML-RPC
 
@@ -192,18 +195,20 @@ The rules carry the site's own folder prefixes. With WordPress in its own folder
 Nginx reads no `.htaccess`. Put these in the server block, above the `location ~ \.php$` block:
 
 ```nginx
-location ~ /\.(git|claude) { return 403; }
-location ~ ^/wp-includes/(?!js/tinymce/wp-tinymce\.php$|ms-files\.php$).+\.php$ { return 403; }
-location ~ ^/wp-admin/includes/.+\.php$ { return 403; }
-location ~ ^/(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)$ { return 403; }
-location ~ ^/wp-content/themes/.+\.php$ { return 403; }
+location ~ /\.(?!well-known(/|$)) { return 403; }
+location ~ ^/wp-includes/(?!js/tinymce/wp-tinymce\.php$|ms-files\.php$).+\.php(/|$) { return 403; }
+location ~ ^/wp-admin/includes/.+\.php(/|$) { return 403; }
+location ~ ^/(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)(/|$) { return 403; }
+location ~ ^/wp-content/themes/.+\.php(/|$) { return 403; }
 location ~ ^/wp-content/themes/lailatulqadar/(tests|bin)(/|$) { return 403; }
 location ~ ^/wp-content/themes/lailatulqadar/docs/(?!settings\.md$) { return 403; }
 location ~* ^/wp-content/themes/lailatulqadar/(?!docs/settings\.md$).+\.md$ { return 403; }
 location = /xmlrpc.php { return 403; }
 ```
 
-Leave out the last line while XML-RPC is switched on. For a site in a subfolder, put its path in front, as in `^/blog/wp-includes/`.
+The first line refuses every dot file and folder and leaves `.well-known` open, as the theme folder's `.htaccess` does. The `(/|$)` endings also catch a PHP file asked for with path info after it, as the Apache rules do.
+
+Leave out the last line while XML-RPC is switched on. For WordPress in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`. WordPress also reads `wp-config.php` from the folder above its own, so refuse both copies: `location ~ ^/blog/wp-config\.php(/|$) { return 403; }` and `location ~ ^/wp-config\.php(/|$) { return 403; }`.
 
 ### The installer
 

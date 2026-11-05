@@ -6,11 +6,11 @@ You can skip versions: upload the newest zip over any 1.9.x and open any admin s
 
 1. Turn on hidden files in the FTP program (in FileZilla: Server > Force showing hidden files). The theme carries `.htaccess` files in its own folder and in `tests/`, `bin/` and `docs/`.
 2. Upload the new `lailatulqadar` folder into `wp-content/themes/` as `lailatulqadar-new`.
-3. Rename the live folder to `lailatulqadar-old` and `lailatulqadar-new` to `lailatulqadar`. Delete the old one once the site looks right.
+3. Rename the live folder to `lailatulqadar-old` and at once `lailatulqadar-new` to `lailatulqadar`, with Appearance > Themes closed: that screen switches the site to another theme if it finds the folder missing. Delete the old one once the site looks right.
 4. Open any admin screen as an administrator. Setup runs, the error pages are written and the `.htaccess` sections are checked.
 5. Read the note below for every version you pass, and the setup report on the Tools tab.
 
-An upload straight into the live folder also works. Until every file is there, visitors see a 503 "Back shortly" page and the login screen keeps working.
+An upload straight into the live folder also works for most files. While one is missing, visitors see a 503 "Back shortly" page and the login screen keeps working. `functions.php` is the exception, since it holds that guard: if it is cut off part-way, visitors get a PHP error until it is whole.
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 

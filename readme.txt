@@ -124,12 +124,12 @@ Administrators (the manage_options capability). The page holds the security swit
 
 = My site is in a subfolder. Where does the browser icon go? =
 
-Browsers ask for /favicon.ico at the top of the domain, such as example.com/favicon.ico, even when the site lives in example.com/blog/. WordPress never sees that request, so put a copy of the theme's favicon.ico in the domain root folder. The icon tags in each page cover the pages either way.
+Browsers ask for /favicon.ico at the top of the domain, such as example.com/favicon.ico, even when the site lives in example.com/blog/. WordPress never sees that request, so put a copy of the theme's favicon.ico in the domain root folder. The icon tags in each page cover the pages either way. If you have set a Site Icon, put that icon there as favicon.ico instead.
 
 == Upgrade Notice ==
 
 = 1.18.13 =
-Replace the theme files. On a site in a subfolder, also put a copy of images/favicon.ico in the domain root folder; otherwise nothing to do.
+Replace the theme files. On a site in a subfolder, also put a copy of images/favicon.ico in the domain root folder (or, with a Site Icon set, that icon as favicon.ico); otherwise nothing to do.
 
 = 1.18.12 =
 Upload the new zip. Open one admin page so the error pages are written again with the icon.

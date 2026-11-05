@@ -16,7 +16,7 @@ Never upload WordPress core to a live folder without `wp-config.php` in place. T
 
 ## To 1.18.13
 
-Replace the theme files. Nothing else changes. On a site in a subfolder, put a copy of `images/favicon.ico` in the domain root, since browsers ask for `/favicon.ico` there.
+Replace the theme files. Nothing else changes. On a site in a subfolder, put a copy of `images/favicon.ico` in the domain root (or, with a Site Icon set, that icon as `favicon.ico`), since browsers ask for `/favicon.ico` there.
 
 ## To 1.18.12
 

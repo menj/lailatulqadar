@@ -25,7 +25,7 @@ function check( $ok, $what ) {
 	$fail += $ok ? 0 : 1;
 }
 
-foreach ( array( '/admin.php', '/info.php', '/1.php', '/3PJcpMFsD8B.php', '/wp-content/plugins/hellopress/wp_filemanager.php', '/_phpinfo.php', '/.env', '/.env.production', '/api/.env', '/.git/config', '/.well-known/pki-validation/cloud.php', '/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php', '/x.php/extra', '/%2eenv' ) as $p ) {
+foreach ( array( '/admin.php', '/info.php', '/1.php', '/3PJcpMFsD8B.php', '/wp-content/plugins/hellopress/wp_filemanager.php', '/_phpinfo.php', '/.env', '/.env.production', '/api/.env', '/.git/config', '/.well-known/pki-validation/cloud.php', '/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php', '/x.php/extra', '/%2eenv', '/WP-LOGIN.PHP', '/ADMIN.PHP', '/.ENV' ) as $p ) {
 	check( lq_is_probe( $p ), "probe: $p" );
 }
 foreach ( array( '/', '/ms/', '/ms/peta-laman/', '/what-is-laylat-al-qadr/', '/index.php', '/wp-login.php', '/wp-cron.php', '/xmlrpc.php', '/wp-comments-post.php', '/wp-admin/', '/wp-admin/admin-ajax.php', '/wp-admin/post.php', '/.well-known/acme-challenge/token', '/sitemap.xml', '/wp-json/wp/v2/posts', '/image.webp' ) as $p ) {

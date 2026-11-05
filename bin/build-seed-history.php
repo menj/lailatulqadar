@@ -1,8 +1,4 @@
 <?php
-if ( 'cli' !== PHP_SAPI ) {
-	exit;
-}
-
 if ( PHP_SAPI !== 'cli' ) { exit; } // Command line only; usage: php bin/build-seed-history.php [repo] > inc/data/seed-history.json.new
 // Build inc/data/seed-history.json: md5 of every shipped version of each article.
 // The hashes already in the file are kept: a version that left the git history

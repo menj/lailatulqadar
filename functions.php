@@ -62,8 +62,9 @@ function lq_incomplete_theme( $what, $all = false ) {
 		set_transient( $key, 1, 10 * MINUTE_IN_SECONDS );
 		error_log( 'Lailatulqadar: the theme is incomplete or being uploaded (' . $what . '); visitors see the maintenance notice until it is whole.' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 	}
-	$uri   = (string) ( $_SERVER['REQUEST_URI'] ?? '' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-	$login = 'wp-login.php' === ( $GLOBALS['pagenow'] ?? '' ) || false !== strpos( $uri, 'wp-login' );
+	// The login screen by its path, not a query that happens to hold the word.
+	$path  = (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	$login = 'wp-login.php' === ( $GLOBALS['pagenow'] ?? '' ) || 'wp-login.php' === basename( $path );
 	if ( wp_doing_ajax() || wp_doing_cron() || 'cli' === PHP_SAPI || $login || ( is_admin() && ! $all ) ) {
 		return;
 	}
@@ -78,7 +79,8 @@ function lq_incomplete_theme( $what, $all = false ) {
 	exit;
 }
 
-foreach ( $lq_files as $lq_file ) {
+// inc/settings.php loads in the admin only, below, and is checked with the rest.
+foreach ( array_merge( $lq_files, array( '/inc/settings.php' ) ) as $lq_file ) {
 	if ( ! is_readable( LQ_DIR . $lq_file ) ) {
 		lq_incomplete_theme( ltrim( $lq_file, '/' ) . ' is missing' );
 		return;
@@ -95,7 +97,12 @@ try {
 unset( $lq_files, $lq_file );
 
 if ( is_admin() ) {
-	require_once LQ_DIR . '/inc/settings.php';
+	try {
+		require_once LQ_DIR . '/inc/settings.php';
+	} catch ( Throwable $lq_error ) {
+		lq_incomplete_theme( $lq_error->getMessage() . ' in ' . basename( $lq_error->getFile() ), true );
+		return;
+	}
 }
 
 /**

@@ -68,17 +68,18 @@ add_filter( 'request', 'lq_block_author_query', 99 );
  * @return bool
  */
 function lq_is_probe( $path ) {
-	$path = strtolower( ltrim( rawurldecode( (string) $path ), '/' ) );
+	$path = ltrim( rawurldecode( (string) $path ), '/' );
 	if ( '' === $path ) {
 		return false;
 	}
-	if ( preg_match( '#(^|/)\.(?!well-known(/|$))[^/]#', $path ) ) {
+	if ( preg_match( '#(^|/)\.(?!well-known(/|$))[^/]#i', $path ) ) {
 		return true;
 	}
-	if ( ! preg_match( '#\.php(/|$)#', $path ) ) {
+	if ( ! preg_match( '#\.php(/|$)#i', $path ) ) {
 		return false;
 	}
-	// WordPress's own entry points, and the admin.
+	// WordPress's own entry points, and the admin, exactly as WordPress names
+	// them: /WP-LOGIN.PHP is no entry point on a case-sensitive server.
 	$own = array( 'index.php', 'wp-login.php', 'wp-cron.php', 'wp-comments-post.php', 'wp-signup.php', 'wp-activate.php', 'wp-trackback.php', 'wp-mail.php', 'wp-links-opml.php', 'xmlrpc.php' );
 	if ( in_array( strtok( $path, '/' ), $own, true ) || 0 === strpos( $path, 'wp-admin/' ) ) {
 		return false;

@@ -144,7 +144,7 @@ foreach ( array( 'style.css', 'readme.txt', 'docs/settings.md', 'css/admin.css',
 // Markdown files by their own name, with no module beyond the core.
 $lq_md = preg_match( '/<FilesMatch "([^"]*md[^"]*)">\s*<IfModule mod_authz_core\.c>\s*Require all denied/', $lq_ht, $lq_m ) ? $lq_m[1] : '';
 lq_check( '' !== $lq_md, 'the theme .htaccess refuses Markdown files with a FilesMatch' );
-foreach ( array( 'CHANGELOG.md', 'SSOT.md', 'UPGRADING.md', 'seo.md', 'notes.MD', 'x-settings.md' ) as $lq_p ) {
+foreach ( array( 'CHANGELOG.md', 'SSOT.md', 'UPGRADING.md', 'README.md', 'seo.md', 'notes.MD', 'x-settings.md' ) as $lq_p ) {
 	lq_check( '' !== $lq_md && 1 === preg_match( '#' . $lq_md . '#', $lq_p ), "theme .htaccess FilesMatch: 403 for $lq_p" );
 }
 foreach ( array( 'settings.md', 'style.css', 'readme.txt', 'main.md.css' ) as $lq_p ) {

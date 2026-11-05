@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.18.8. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.18.9. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -27,6 +27,8 @@ Version 1.18.8. This file records the architecture, stored data and binding deci
 
 | Path | Role |
 |---|---|
+| `README.md` | The technical entry point for developers and hosts; links the references in `docs/` |
+| `readme.txt`, `CHANGELOG.md`, `UPGRADING.md`, `SSOT.md` | The owner's guide, the release history, the update notes with the roadmap, and this file |
 | `style.css` | Theme header only |
 | `functions.php` | Bootstrap, text domain, editor styles |
 | `theme.json` | Night palette, EB Garamond, Arslan Wessam, KFGQPC Hafs and Noto Naskh Arabic (fallback), layout widths |
@@ -38,6 +40,7 @@ Version 1.18.8. This file records the architecture, stored data and binding deci
 | `inc/night-window.php` | City presets, strings and dates for the night window |
 | `blocks/night-window/` | Night window block (server shell; the browser script builds the interface) |
 | `js/night-window.js`, `css/night-window.css` | Night window script and styles |
+| `inc/draft-links.php` | Links in seeded articles to guide pages that are not yet published show as plain text to visitors; editors still see the link |
 | `inc/hardening.php` | The REST user list and `?author=N` hidden from visitors; a short 404 on `init` for scanner probes (PHP files that are not WordPress's entry points, dot files), checked by `tests/hardening-test.php` |
 | `inc/security.php`, `inc/security-detector.php` | Security tab: remote-publishing locks, spam gate, scan and trash tool, 410 Gone, reports and log. The detector is plain PHP. On Apache `lq_sec_sync_htaccess()` also keeps two sections in the site's `.htaccess` (since 1.18.8 for the second): "Block xmlrpc.php" while XML-RPC is off, and "Lailatul Qadar: block direct file access" (`lq_sec_files_htaccess_lines()`, left out when `LQ_BLOCK_DIRECT_FILES` is false), checked by `tests/htaccess-files-test.php` |
 | `.htaccess`, `tests/.htaccess`, `bin/.htaccess`, `docs/.htaccess` | Read by Apache before WordPress runs (since 1.18.8). The theme folder's file refuses dot entries (`.well-known` open), theme PHP, `tests/`, `bin/`, `docs/` and every `.md` file; `docs/settings.md` and `readme.txt` stay open because the Theme Options footer links to them. The three folder files refuse every request into the folder, `docs/settings.md` excepted |
@@ -50,7 +53,7 @@ Version 1.18.8. This file records the architecture, stored data and binding deci
 | `inc/image-sitemap.php` | Image sitemap at /image-sitemap.xml (featured images and photo blocks of every published page), named in robots.txt; off while an SEO plugin is active |
 | `blocks/breadcrumbs/` | Visible breadcrumbs above the page title |
 | `inc/seo.php` | Title tag (also under Rank Math), meta description (stored on pages; excerpt on posts, term description on archives), canonical link on archives, editor box, SEO plugin detection |
-| `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and the sister sites |
+| `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and to other sites |
 | `inc/data/network-links.json` | Shared phrase map of the seven-site network; identical in every theme, edit it in all seven together |
 | `inc/data/path-chapters.json` | The 4 chapters of the reading path on the front page (page keys and an English and a Malay heading each), read by `lq_path_chapters()` and checked by `tests/path-chapters-test.php`; the guide menu block shows them with `chapters` on. Data only, read with `json_decode()`. The chapters group the reading order and never change it (docs/blocks.md) |
 | `inc/data/pages.json` | The page registry: per page key, the menu sets and, for each language role, title, slug, menu label, title tag, meta description and focus keyword. The order of the keys is the reading order. Data only, read with `json_decode()` |
@@ -72,6 +75,7 @@ Version 1.18.8. This file records the architecture, stored data and binding deci
 | `js/scheme.js` | Head script for the visitor light/dark switch |
 | `inc/languages.php` | Two languages without a plugin: page language, translation pairing, hreflang, html lang, Malay site name, Malay search |
 | `inc/parent.php` | Parent stylesheet versioning; parent style variations held back |
+| `templates/page-home.html` | The language home pages |
 | `templates/search.html`, `index.html`, `page-no-title.html` | Search results, the fallback view (title and content, as a page) and the page without a title |
 | `inc/no-blog.php`, `tests/no-blog-test.php` | The retired blog: drops the post templates, sends post views and feeds to the language home with a 301, keeps posts out of the sitemaps, and runs the one-time migration. Run `php tests/no-blog-test.php` |
 | `patterns/no-results.php` | Bilingual message for empty archives and searches |
@@ -196,7 +200,9 @@ General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Ima
 
 The screen needs `manage_options`, kept in 1.16.0 in place of `edit_theme_options` because it holds the security switches and setup. New PHP functions since 1.16.0 take the prefix `lailatulqadar_`; existing `lq_` functions, option keys, handles, block names and shortcodes keep their names. `git archive` leaves out `.github`, `bin`, `tests`, `.claude` (which holds `CLAUDE.md` and `FARUQI.md`) and the git files (`.gitattributes`).
 
-## Roadmap
+## Milestones and standing decisions
+
+The first plan for the theme ran as below. The two open rows moved to the roadmap in `UPGRADING.md` in 1.18.9; version 1.11.0 went to the Security tab instead.
 
 | Version | Scope |
 |---|---|
@@ -207,12 +213,12 @@ The screen needs `manage_options`, kept in 1.16.0 in place of `edit_theme_option
 | 1.5.0 | Night window: interactive timetable for preset cities (41 from 1.5.2) and the visitor's location (done) |
 | 1.6.0 | Perpetual Ramadan calendar; dates roll over each year without editing (done) |
 | 1.7.0 | Structured data (Organization, Breadcrumb, Article) and breadcrumbs, per Google's supported list (done) |
-| 1.7.x | Remaining English articles, then Malay translations |
+| 1.7.x | Remaining English articles, then Malay translations (done by 1.9.8) |
 | 1.8.0 | Parent-theme compatibility with Twenty Twenty-Five 1.5 (done) |
 | 1.9.0 | Built-in English and Malay; Polylang removed (done) |
 | 1.9.8 | Malay translations of the articles (done) |
-| 1.10.0 | Duʿāʾ, evidence and Qurʾān verse blocks, glossary; November to mid-December 2026 |
-| 1.11.0 | Performance pass and pre-season SEO review; by 15 January 2027 |
+| 1.10.0 | Duʿāʾ, evidence and Qurʾān verse blocks, glossary; November to mid-December 2026 (open, see `UPGRADING.md`) |
+| 1.11.0 | Performance pass and pre-season SEO review; by 15 January 2027 (open, see `UPGRADING.md`) |
 
 Parent theme: Twenty Twenty-Five, tested with 1.5 (docs/parent-theme.md).
 
@@ -231,3 +237,21 @@ The first mention of a known phrase in the running text of a guide page or a blo
 ## Writing rule: no contractions
 
 English text anywhere in the theme (page content, interface strings, JavaScript messages, documentation and code comments) spells every word out in full: "it is", "do not", "cannot". Contractions are not used. The only exception is verbatim search-query data in the keyword map, which records what searchers typed.
+
+## Public wording
+
+Pages, the readme and `docs/settings.md` (both served) never say that the site is related to other sites or that it belongs to a group of sites. Links to other sites are ordinary links, and the readme and `docs/settings.md` call them links to other sites. The Theme Options screen, which only administrators see, still uses an older label for them.
+
+## Release checklist
+
+1. The version is the same in `style.css`, `LQ_VERSION` in `functions.php`, `readme.txt` (Stable tag and changelog), the top entry of `CHANGELOG.md`, the version line at the top of this file and the At a glance table of `README.md`.
+2. `CHANGELOG.md` has the new entry, and `readme.txt` has the short form.
+3. `UPGRADING.md` has a note when the site owner must act, and its roadmap drops what shipped.
+4. `README.md` (or the reference in `docs/` it points to) covers any new hook, filter, constant, setting, file or rule.
+5. This file covers any new fixed fact or owner decision.
+6. Every path named in a document exists.
+7. The tests in `tests/`, `php bin/build-error-pages.php --check` and `python3 bin/check-content.py` pass.
+
+## Credits that must stay
+
+The Copyright section of `readme.txt` (fonts, adhan, the social icons, the theme images and the photographs), the licence files in `fonts/` and `js/vendor/`, and the credit beneath every image and in the credits list on the Sources page.

@@ -2,6 +2,44 @@
 
 You can skip versions: upload the newest zip over any 1.9.x and open any admin screen as an administrator. Setup knows every version of each article the theme has shipped, so in one run it brings every unedited page up to date and lists pages you have edited under "Edited, not updated" on the Tools tab. The entries below say what each version changes on the site.
 
+## Updating an existing site
+
+1. Turn on hidden files in the FTP program (in FileZilla: Server > Force showing hidden files). The theme carries `.htaccess` files in its own folder and in `tests/`, `bin/` and `docs/`.
+2. Upload the new `lailatulqadar` folder into `wp-content/themes/` as `lailatulqadar-new`.
+3. Rename the live folder to `lailatulqadar-old` and at once `lailatulqadar-new` to `lailatulqadar`, with Appearance > Themes closed, at a quiet hour. A page asked for between the two renames finds no theme, and that screen switches the site to another theme if it finds the folder missing. If WordPress did switch to another theme, activate the theme again under Appearance > Themes. Delete the old one once the site looks right.
+4. Open any admin screen as an administrator. Setup runs, the error pages are written and the `.htaccess` sections are checked.
+5. Read the note below for every version you pass, and the setup report on the Tools tab.
+
+An upload straight into the live folder is riskier. While one of the PHP files `functions.php` loads is missing, visitors see a 503 "Back shortly" page and the login screen keeps working. Nothing checks `functions.php` itself, the templates, the styles, the scripts or `content/`, so the temporary folder and the rename stay the safe way.
+
+Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
+
+## To 1.18.9
+
+Nothing to do. The release adds `README.md` and changes no page and no setting.
+
+As after any version change, setup runs once on the first admin screen and finds no article to change, and the error pages are written again with the new version.
+
+## To 1.18.8
+
+Upload with hidden files shown, so the new `.htaccess` files in the theme folder and in `tests/`, `bin/` and `docs/` go up.
+
+On Apache, the first admin screen writes the "Lailatul Qadar: block direct file access" section beside "Block xmlrpc.php". To leave it out, define `LQ_BLOCK_DIRECT_FILES` as false in `wp-config.php` first.
+
+On Nginx nothing is written: give the host the rules in `README.md`.
+
+## To 1.18.7
+
+Upload the zip. Nothing to run. Visitors can no longer list user accounts, and `?author=N` answers them with a 404.
+
+## To 1.18.6
+
+Upload the zip. A footer part saved in the Site Editor before this version keeps working: a switcher inside it takes the footer name anyway.
+
+## To 1.18.5
+
+Upload the zip. Nothing to run: the front pages show the 4 chapters of the reading path at once.
+
 ## To 1.18.4
 
 Upload the zip and open any admin screen as an administrator. The theme writes its static error pages into `wp-content/lailatulqadar-errors/`. If `.htaccess` has `ErrorDocument` lines that point at `/wp-content/themes/lailatulqadar/errors/`, replace them with the lines from the Tools tab. The old lines still work on a site at the domain root.
@@ -34,7 +72,7 @@ Upload the zip and open any admin screen as an administrator. Setup clears the p
 
 Upload the new zip over 1.9.18 and open any admin screen as an administrator. Setup refreshes the Night Planner and The Last Ten Nights (English) unless edited. The Security tab (Appearance > Theme Options > Security) is on by default: XML-RPC, application passwords and REST writes from outside the browser stop at once. Writing in the editor, Rank Math and everything visitors do are unchanged.
 
-After the October 2026 attack on the sister site, the owner checklist:
+After the October 2026 attack, the owner checklist:
 
 1. Change the password of every administrator to a long random one used nowhere else, then Log Out Everywhere Else (Users > Profile), or press "Log out all sessions" on the Security tab.
 2. Create a new administrator whose name is not the site name, log in as it, and delete the old account, attributing its content to the new one.
@@ -252,3 +290,26 @@ The live site currently runs Twenty Twenty-Four with its demonstration content. 
 - Upload the new zip over the existing theme. Settings and pages are preserved.
 - Read the matching entry in CHANGELOG.md before upgrading.
 - Setup never overwrites an existing page. Running it again only fills gaps.
+
+## Roadmap
+
+Everything below is a plan, open to change. Each item says why it is here. An item leaves this list when it ships, and goes into `CHANGELOG.md`.
+
+### Next
+
+- Duʿāʾ, evidence and Qurʾān verse blocks, and a glossary. `SSOT.md` planned them for November to mid-December 2026, and `blocks/` has none of them yet.
+- A performance pass and a pre-season SEO review, by 15 January 2027. Ramadan 1448 is expected to begin on 8 February 2027, and `SSOT.md` sets this date.
+- Keep the `.htaccess` sections on a network. `lq_sec_remove_htaccess()` takes them out on any theme switch, while another site on the network may still run the theme; the error pages already stay.
+- Refuse the core files without mod_rewrite. The direct-access section is inside `<IfModule mod_rewrite.c>` only; an Apache 2.4 `<If>` would cover a server without it.
+
+### Later
+
+- Protect the login screen. The logs for October and November show 1,977 login form posts, many in pairs from rotating addresses every 12 minutes. A private login address would end most of it.
+- Find the broken link behind `/wp-login.php%7ccontact@menj.org`, asked for 164 times in the same logs. Some page outside the theme seems to join the login address and an email with a pipe.
+- Extend the Umm al-Qura table past 1473 AH (2051), as `SSOT.md` asks.
+
+### Ideas
+
+- Remove development files from a live site after an update. Here the `.htaccess` files refuse them, which does nothing on Nginx.
+- Check the one 500 on `/ms/embed/` in the logs.
+- Before upgrading adhan, check its upstream source: `js/vendor/adhan.js` marks its shadow-angle calculation with a TODO.

@@ -195,7 +195,8 @@ The rules carry the site's own folder prefixes. With WordPress in its own folder
 Nginx reads no `.htaccess`. Put these in the server block, above the `location ~ \.php$` block:
 
 ```nginx
-location ~ /\.(?!well-known(/|$)) { return 403; }
+location ~ /\.(git|claude) { return 403; }
+location ~ ^/wp-content/themes/lailatulqadar/(.+/)?\.(?!well-known(/|$)) { return 403; }
 location ~ ^/wp-includes/(?!js/tinymce/wp-tinymce\.php$|ms-files\.php$).+\.php(/|$) { return 403; }
 location ~ ^/wp-admin/includes/.+\.php(/|$) { return 403; }
 location ~ ^/(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)(/|$) { return 403; }
@@ -206,7 +207,9 @@ location ~* ^/wp-content/themes/lailatulqadar/(?!docs/settings\.md$).+\.md$ { re
 location = /xmlrpc.php { return 403; }
 ```
 
-The first line refuses every dot file and folder and leaves `.well-known` open, as the theme folder's `.htaccess` does. The `(/|$)` endings also catch a PHP file asked for with path info after it, as the Apache rules do.
+The first line refuses `.git` and `.claude` anywhere on the site, as the section in the site's `.htaccess` does. The second refuses every other dot file and folder inside the theme folder only, with `.well-known` left open, as the theme folder's `.htaccess` does. Neither touches a dot path another application on the host may serve.
+
+The `(/|$)` endings also catch a PHP file asked for with path info after it, as the Apache rules do.
 
 Leave out the last line while XML-RPC is switched on. For WordPress in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`. WordPress also reads `wp-config.php` from the folder above its own, so refuse both copies: `location ~ ^/blog/wp-config\.php(/|$) { return 403; }` and `location ~ ^/wp-config\.php(/|$) { return 403; }`.
 

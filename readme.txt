@@ -64,7 +64,7 @@ With FTP:
 
 1. Turn on hidden files in your FTP program first. In FileZilla it is Server > Force showing hidden files. The theme has files whose names start with a dot (.htaccess), and they must go up too.
 2. Upload the lailatulqadar folder into wp-content/themes under a temporary name, such as lailatulqadar-new.
-3. When every file is up, rename the old folder (if there is one) to lailatulqadar-old, then at once rename lailatulqadar-new to lailatulqadar. Do the two renames one straight after the other, with Appearance > Themes closed: if WordPress opens that screen while the folder is missing, it switches the site to another theme. Delete lailatulqadar-old once the site looks right.
+3. When every file is up, rename the old folder (if there is one) to lailatulqadar-old, then at once rename lailatulqadar-new to lailatulqadar. Do the two renames one straight after the other, at a quiet hour, with Appearance > Themes closed. A page asked for in the moment between them finds no theme and shows an error, and if WordPress opens that screen while the folder is missing, it switches the site to another theme. Delete lailatulqadar-old once the site looks right.
 4. Activate the theme if it is not active yet, and open any admin screen as an administrator.
 
 The folder must be called lailatulqadar, all lower case.

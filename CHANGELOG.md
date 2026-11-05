@@ -2,6 +2,20 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.18.12 (2026-11-05)
+
+The browser icon set is complete. No feature removed.
+
+### Added
+- `images/favicon.svg` (a copy of `lailatulqadar-mark.svg`), `favicon.ico` (16, 32 and 48px, the icon variant of the mark), `icon-192.png`, `icon-512.png` and `icon-maskable-512.png` (the full mark, with the crescent and star, on the night colour) and `site.webmanifest`.
+- `lq_default_icons()` adds the manifest link and `theme-color` (#141b2e) and now also runs on the admin.
+- `lq_serve_favicon()` answers `/favicon.ico` with the icon: a day's cache and an ETag, with a 304 while it is unchanged, and HEAD gets the headers alone. With a Site Icon, WordPress redirects to it.
+- The error pages and drop-ins carry the mark as their tab icon, as a `data:` address, so it shows on any path and in a subfolder install.
+- `tests/error-pages-test.php` checks the icon is there and still refuses any file; `tests/htaccess-files-test.php` checks the icon files stay open.
+
+### Changed
+- The SVG icon link names `images/favicon.svg` in place of `images/lailatulqadar-mark.svg`, and the icon addresses carry `?ver=` with the theme version.
+
 ## 1.18.11 (2026-11-05)
 
 Documentation only. No code, setting or public identifier changes.

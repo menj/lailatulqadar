@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.18.11. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.18.12. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -83,7 +83,7 @@ Version 1.18.11. This file records the architecture, stored data and binding dec
 | `patterns/no-results.php` | Bilingual message for empty archives and searches |
 | `inc/login.php`, `css/login.css` | Login screen styling, brand block, title, favicon |
 | `blocks/logo-mark/` | Header logo lockup: lantern alone, and Arabic calligraphy (full mark with crescent and star on the login screen and larger icons) |
-| `images/` | Default favicon (SVG, 32px PNG), touch icon, 512px logo for structured data |
+| `images/` | Default icons until a Site Icon is set: `favicon.svg`, `favicon.ico` (16, 32, 48) and `favicon-32.png` from the icon variant of the mark; `apple-touch-icon.png`, `icon-192.png`, `icon-512.png` and `icon-maskable-512.png` from the full mark; `site.webmanifest`; the 512px logo for structured data |
 | `blocks/scheme-toggle/` | Light and dark switch button |
 | `js/admin.js` | Settings tabs and keys, slider values, wp-color-picker with the accent preview, media chooser, confirmation prompts |
 | `js/meta-box.js` | Character counts in the Search appearance box |
@@ -210,6 +210,10 @@ Since 1.18.10 every guide page (a page of the reading path) carries, in this ord
 General, Languages, Colours, Ramadan Dates, Login, Search, Contextual links, Images, Reading and sharing (1.17.0), Security, Tools.
 
 The screen needs `manage_options`, kept in 1.16.0 in place of `edit_theme_options` because it holds the security switches and setup. New PHP functions since 1.16.0 take the prefix `lailatulqadar_`; existing `lq_` functions, option keys, handles, block names and shortcodes keep their names. `git archive` leaves out `.github`, `bin`, `tests`, `.claude` (which holds `CLAUDE.md` and `FARUQI.md`) and the git files (`.gitattributes`).
+
+## Browser icons
+
+The owner asked on 2026-11-05: "make sure you have favicon too." Until a Site Icon is set, `lq_default_icons()` prints the SVG, 32px, touch icon, manifest and `theme-color` #141b2e on the site, the login screen and the admin, and `lq_serve_favicon()` answers `/favicon.ico`. A Site Icon always wins. Small sizes use the icon variant of the mark (no crescent or star, as `lq_mark_svg( 'icon' )`); 180px and up use the full mark.
 
 ## Milestones and standing decisions
 

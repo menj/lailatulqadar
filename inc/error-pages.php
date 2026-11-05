@@ -181,8 +181,20 @@ function lailatulqadar_error_install( $dir = '' ) {
 		}
 		// A temporary name, then a rename, so WordPress never reads half a file.
 		$tmp = $target . '.' . uniqid( 'err-', true ) . '.tmp';
-		if ( false !== @file_put_contents( $tmp, lailatulqadar_error_file_source( $name ) ) && @rename( $tmp, $target ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions, WordPress.PHP.NoSilencedErrors
+		$wrote = false !== @file_put_contents( $tmp, lailatulqadar_error_file_source( $name ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions, WordPress.PHP.NoSilencedErrors
+		if ( $wrote && 'missing' === $state ) {
+			// A hard link fails when a file has appeared since the check, so a
+			// file someone else wrote in the meantime is never replaced.
+			$wrote = @link( $tmp, $target ) || ( ! file_exists( $target ) && @rename( $tmp, $target ) ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+		} elseif ( $wrote ) {
+			// Ours or another theme's: check again just before the swap.
+			$wrote = in_array( lailatulqadar_error_state( $name, $dir ), array( 'outdated', 'theme' ), true ) && @rename( $tmp, $target ); // phpcs:ignore WordPress.WP.AlternativeFunctions, WordPress.PHP.NoSilencedErrors
+		}
+		if ( $wrote ) {
 			$result[ $name ] = 'written';
+			if ( file_exists( $tmp ) ) {
+				@unlink( $tmp ); // phpcs:ignore WordPress.WP.AlternativeFunctions, WordPress.PHP.NoSilencedErrors
+			}
 		} else {
 			$result[ $name ] = 'failed';
 			if ( file_exists( $tmp ) ) {

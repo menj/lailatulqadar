@@ -67,7 +67,7 @@ WordPress reads three files from `wp-content` when it cannot build a page. The t
 
 The table beside the button reads not installed, installed, outdated (an older copy of the theme) left behind by another theme, or another file left alone. A copy another theme left behind (marked "Written by the ... theme; safe to delete") is replaced. A file without such a mark, or without the marker `Lailatulqadar error page drop-in`, is never overwritten.
 
-For the errors the web server answers before WordPress starts, the theme writes static 403, 500, 502, 503 and 504 pages into `wp-content/lailatulqadar-errors/`, at the same times as the drop-ins and with the same marker. Each copy carries the site's name and its real home address, so the home link works on a site in a subfolder. The theme removes them when another theme is activated. Copy the `.htaccess` lines from the Tools tab, which are built from the real address of `wp-content`. At the domain root they read:
+For the errors the web server answers before WordPress starts, the theme writes static 403, 500, 502, 503 and 504 pages into `wp-content/lailatulqadar-errors/`, at the same times as the drop-ins and with the same marker. Each copy carries the site's name and its real home address, so the home link works on a site in a subfolder. The theme removes them when another theme is activated; take the `ErrorDocument` lines out of `.htaccess` then. On a network every site shares `wp-content` and one `.htaccess`, so only the main site writes the pages and they carry its name and home address, as the drop-ins do. Copy the `.htaccess` lines from the Tools tab, which are built from the real address of `wp-content`. At the domain root they read:
 
 ```
 ErrorDocument 403 /wp-content/lailatulqadar-errors/403.html

@@ -6,7 +6,9 @@ All notable changes to the Lailatulqadar theme are recorded here.
 
 - The static 403, 500, 502, 503 and 504 pages work on a site in a subfolder. `lailatulqadar_error_install()` also writes a copy of each into `wp-content/lailatulqadar-errors/` with the site's name and home address (`lailatulqadar_error_static_files()`, `lailatulqadar_error_file_source()`). The automatic install, the admin check, the status table and `lailatulqadar_error_remove()` cover these copies as they cover the drop-ins. `lailatulqadar_error_htaccess_snippet()` points at that folder. `errors/` stays as the copy for a site at the domain root.
 - `CLAUDE.md` and `FARUQI.md` moved into `.claude/`. `.gitattributes` export-ignores `/.claude` in place of the `CLAUDE.md` line, so `FARUQI.md`, which had no entry, no longer ships in the zip either.
-- `tests/error-pages-test.php` covers the static copies.
+- `lailatulqadar_error_install()` puts a new file in place with a hard link, which fails when a file has appeared since the check, and checks an existing file again just before the swap. A file someone else wrote in the meantime is never replaced.
+- `docs/settings.md` says what the static pages carry on a network and to take the `.htaccess` lines out after a theme switch.
+- `tests/error-pages-test.php` covers the static copies, with the `.htaccess` lines under a subfolder.
 
 ## 1.18.3 (2026-11-05)
 

@@ -210,8 +210,8 @@ function lailatulqadar_brief_html( $points, $role ) {
 
 /**
  * An id for a heading from its text, unique on the page. With $taken, the
- * text is an id a heading already carries: it is recorded, so no later
- * heading takes it too.
+ * text is an id a heading already carries: it is kept and recorded when it
+ * is free, and given a number when an earlier heading holds it already.
  *
  * @param string $text  Heading text, or the id when $taken.
  * @param bool   $reset Start a new page.
@@ -225,11 +225,11 @@ function lailatulqadar_heading_id( $text, $reset = false, $taken = false ) {
 		return '';
 	}
 	if ( $taken ) {
-		$used[ (string) $text ] = true;
-		return (string) $text;
+		$base = (string) $text;
+	} else {
+		$base = sanitize_title( remove_accents( wp_strip_all_tags( $text ) ) );
+		$base = '' === $base ? 'section' : $base;
 	}
-	$base = sanitize_title( remove_accents( wp_strip_all_tags( $text ) ) );
-	$base = '' === $base ? 'section' : $base;
 	$id   = $base;
 	for ( $n = 2; isset( $used[ $id ] ); $n++ ) {
 		$id = $base . '-' . $n;
@@ -255,12 +255,13 @@ function lailatulqadar_heading_anchor( $html, $block ) {
 	if ( ! $tags->next_tag( 'h2' ) ) {
 		return $html;
 	}
-	$id = $tags->get_attribute( 'id' );
-	if ( is_string( $id ) && '' !== $id ) {
-		lailatulqadar_heading_id( $id, false, true );
+	$own  = $tags->get_attribute( 'id' );
+	$own  = is_string( $own ) && '' !== $own ? $own : '';
+	$id   = '' !== $own ? lailatulqadar_heading_id( $own, false, true ) : lailatulqadar_heading_id( $html );
+	if ( $id === $own ) {
 		return $html;
 	}
-	$tags->set_attribute( 'id', lailatulqadar_heading_id( $html ) );
+	$tags->set_attribute( 'id', $id );
 	return $tags->get_updated_html();
 }
 add_filter( 'render_block_core/heading', 'lailatulqadar_heading_anchor', 10, 2 );

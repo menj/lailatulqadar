@@ -15,7 +15,8 @@ define( 'LQ_URI', get_stylesheet_directory_uri() );
 // so for a while one can be missing, or there but half written. Every file
 // is checked before any loads, and they load inside a try: either case gives
 // visitors a 503 "Back shortly" page instead of a fatal error
-// (lq_incomplete_theme()). inc/error-pages.php loads everywhere: the
+// (lq_incomplete_theme()); this file itself is parsed before any of it runs,
+// so it cannot guard itself. inc/error-pages.php loads everywhere: the
 // drop-ins are written on after_switch_theme, which can fire on a front-end
 // request, and removed on switch_theme.
 $lq_files = array(

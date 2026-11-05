@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.18.7
+Stable tag: 1.18.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.18.8 =
+* The web server refuses the theme's development files, notes and PHP files, and the WordPress core files that never serve a page. The settings reference and the theme readme stay open.
 
 = 1.18.7 =
 * A theme caught half uploaded shows a short "Back shortly" page (503) instead of an error.

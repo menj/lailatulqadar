@@ -370,7 +370,8 @@ function lailatulqadar_page_sources( $id ) {
 }
 
 /**
- * Tables on guide pages take the guide's table style, and each is a
+ * Tables on guide pages (core tables and the odd-nights dates table) take
+ * the guide's table style, and each is a
  * focusable region named by its caption, so a table wider than a phone can
  * be scrolled from the keyboard.
  *
@@ -395,6 +396,8 @@ function lailatulqadar_table_parts( $html ) {
 	return $tags->get_updated_html();
 }
 add_filter( 'render_block_core/table', 'lailatulqadar_table_parts' );
+// The odd-nights dates table is drawn by its own block: the same rules apply.
+add_filter( 'render_block_lailatulqadar/odd-nights', 'lailatulqadar_table_parts' );
 
 /**
  * The previous and next published pages of the reading path.

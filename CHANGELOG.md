@@ -16,7 +16,7 @@ The parts of an article page, built into the guide pages (`templates/page.html`)
 - `css/page-parts.css`, loaded on guide pages only.
 
 ### Changed
-- Every table on a guide page takes the `lq-table` style, and its figure is a focusable region named by its caption, so a wide table scrolls from the keyboard.
+- Every table on a guide page, the odd-nights dates table included, takes the `lq-table` style, and its figure is a focusable region named by its caption, so a wide table scrolls from the keyboard.
 - The theme is licensed under the GNU GPL version 3 or later (it was version 2 or later). `LICENSE` holds the full text, and `style.css` and `readme.txt` carry the new header lines. The theme images in `images/` follow.
 - `.claude/skills/theme-docs/SKILL.md` gains its Licence section.
 - `tests/schema-graph-test.php` loads `inc/page-parts.php`.

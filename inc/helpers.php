@@ -222,16 +222,17 @@ function lq_path_chapters() {
 
 /**
  * Group reading-path items into the chapters of lq_path_chapters(). The
- * order of the items is kept: each chapter must take the next items in
- * turn. When the items and the chapters do not line up (a page added to
- * the path, a chapter left empty), the result is empty and the caller
- * prints the plain list.
+ * order of the items is kept: each key of each chapter must name the next
+ * item in turn, and every item must be taken. When the items and the
+ * chapters do not line up (a page added to or missing from the path), the
+ * result is empty and the caller prints the plain list.
  *
- * @param array[] $items Items from lq_menu_items( 'path', ... ).
+ * @param array[]     $items Items from lq_menu_items( 'path', ... ).
+ * @param string|null $role  primary or secondary; the current view's when null.
  * @return array[] Each group: heading, start (number of its first item), items.
  */
-function lq_path_groups( $items ) {
-	$role   = lq_current_role();
+function lq_path_groups( $items, $role = null ) {
+	$role   = null === $role ? lq_current_role() : $role;
 	$groups = array();
 	$i      = 0;
 	foreach ( lq_path_chapters() as $chapter ) {
@@ -241,13 +242,11 @@ function lq_path_groups( $items ) {
 			'items'   => array(),
 		);
 		foreach ( $chapter['keys'] as $key ) {
-			if ( isset( $items[ $i ] ) && $items[ $i ]['key'] === $key ) {
-				$group['items'][] = $items[ $i ];
-				++$i;
+			if ( ! isset( $items[ $i ] ) || $items[ $i ]['key'] !== $key ) {
+				return array();
 			}
-		}
-		if ( ! $group['items'] ) {
-			return array();
+			$group['items'][] = $items[ $i ];
+			++$i;
 		}
 		$groups[] = $group;
 	}

@@ -2,6 +2,18 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.18.9 (2026-11-05)
+
+Documentation only. No page, setting or public identifier changes.
+
+- New `README.md` at the theme root: the technical entry point for developers and hosts. It covers the boot sequence, the build, test and release commands, the settings, the filters and constants, the upload guard, the exact `.htaccess` sections with their Nginx equivalents, the error pages, multisite, SEO and performance, and links every reference in `docs/`.
+- `readme.txt` covers installing and updating over FTP: hidden files shown, a temporary folder and a rename, and never WordPress core without `wp-config.php`. It gains an Updating section, two FAQ answers and an upgrade notice, and its changelog keeps the last three releases, with the full history here.
+- `readme.txt` is served to visitors, so it no longer calls the other sites the guide links to sister sites of a network.
+- `UPGRADING.md` gains the general update steps, notes for 1.18.5 to 1.18.9, which it lacked, and a roadmap.
+- `SSOT.md` names `inc/draft-links.php`, `templates/page-home.html` and the five documents in the file map. Its first plan is now a record of milestones: the two open rows (the verse and duʿāʾ blocks with the glossary, and the pre-season review) moved to the roadmap. It gains the public wording rule, a release checklist and the credits that must stay.
+- `tests/htaccess-files-test.php` checks that the theme `.htaccess` refuses `README.md` too.
+- `.claude/skills/theme-docs/SKILL.md` holds the documentation standard, and `.claude/CLAUDE.md` points to it.
+
 ## 1.18.8 (2026-11-05)
 
 No feature removed and no public identifier renamed.

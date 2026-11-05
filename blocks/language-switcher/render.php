@@ -2,8 +2,8 @@
 /**
  * Language switcher block render: links to the same page in the other
  * language, or to that language's home when no translation is published.
- * The header and the footer each hold one, so the footer's carries context
- * "footer" and its landmark gets its own name.
+ * The header and the footer each hold one, and each landmark gets a name of
+ * its own (see below).
  *
  * @package Lailatulqadar
  */
@@ -26,16 +26,24 @@ if ( is_singular( 'page' ) ) {
 		$lq_urls[ 'secondary' === $lq_role ? 'primary' : 'secondary' ] = get_permalink( $lq_other );
 	}
 }
-// Each navigation landmark on a page needs a name of its own. A footer
-// part saved in the Site Editor before the context existed has none, so a
-// second switcher on the page is named as the footer's too.
+// Each navigation landmark on a page needs a name of its own. The footer's
+// is known by its context attribute or, for a footer part saved in the Site
+// Editor before that attribute existed, by sitting in the footer part
+// (lq_enter_footer_part()). Any other switcher after the first, one placed
+// in a page's content, is numbered.
 $lq_footer = ( isset( $attributes['context'] ) && 'footer' === sanitize_key( $attributes['context'] ) )
-	|| ! empty( $GLOBALS['lq_lang_switcher_shown'] );
-$GLOBALS['lq_lang_switcher_shown'] = true; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-if ( 'secondary' === $lq_role ) {
-	$lq_name = $lq_footer ? 'Pautan bahasa di kaki halaman' : 'Bahasa';
+	|| ! empty( $GLOBALS['lq_footer_depth'] );
+if ( $lq_footer ) {
+	$lq_name = 'secondary' === $lq_role ? 'Pautan bahasa di kaki halaman' : 'Footer language links';
 } else {
-	$lq_name = $lq_footer ? 'Footer language links' : 'Language';
+	$lq_seen                     = (int) ( $GLOBALS['lq_lang_switchers'] ?? 0 ) + 1;
+	$GLOBALS['lq_lang_switchers'] = $lq_seen; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+	if ( 1 === $lq_seen ) {
+		$lq_name = 'secondary' === $lq_role ? 'Bahasa' : 'Language';
+	} else {
+		/* Numbered from 2: "Pautan bahasa 2", "Language links 2". */
+		$lq_name = ( 'secondary' === $lq_role ? 'Pautan bahasa ' : 'Language links ' ) . $lq_seen;
+	}
 }
 $lq_labels = array(
 	'primary'   => lq_setting( 'primary_label' ),

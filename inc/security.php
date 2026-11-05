@@ -104,6 +104,101 @@ function lq_sec_htaccess_lines() {
 }
 
 /**
+ * The .htaccess marker for the direct-access block. It names this theme,
+ * since the rules carry this theme's folder.
+ */
+define( 'LQ_SEC_FILES_MARKER', 'Lailatul Qadar: block direct file access' );
+
+/**
+ * A folder relative to the folder that holds .htaccess, as a mod_rewrite
+ * pattern prefix ('' for the same folder, 'wp/' below it), or null when it
+ * lies outside that folder.
+ *
+ * @param string $path Absolute path of a folder.
+ * @param string $home Absolute path of the folder that holds .htaccess.
+ * @return string|null
+ */
+function lq_sec_rewrite_prefix( $path, $home ) {
+	$path = trailingslashit( wp_normalize_path( $path ) );
+	$home = trailingslashit( wp_normalize_path( $home ) );
+	if ( 0 !== strpos( $path, $home ) ) {
+		return null;
+	}
+	$rel = (string) substr( $path, strlen( $home ) );
+	return '' === $rel ? '' : implode( '/', array_map( 'lq_sec_rewrite_quote', explode( '/', rtrim( $rel, '/' ) ) ) ) . '/';
+}
+
+/**
+ * One path segment quoted for a mod_rewrite pattern.
+ *
+ * @param string $segment Folder name.
+ * @return string
+ */
+function lq_sec_rewrite_quote( $segment ) {
+	// '\\\\$0' is the PHP string \\$0: a literal backslash, then the match.
+	return preg_replace( '/[^A-Za-z0-9_-]/', '\\\\$0', (string) $segment );
+}
+
+/**
+ * mod_rewrite lines that answer 403 for files that never serve a page: PHP
+ * in wp-includes, wp-admin/includes and the themes folder, the installer
+ * and version files, any path segment that starts with .git or .claude, and
+ * this theme's tests and bin folders and docs/ (but for docs/settings.md,
+ * which the Theme Options footer links to).
+ *
+ * wp-includes/js/tinymce/wp-tinymce.php (the classic editor) and
+ * wp-includes/ms-files.php (uploads on old multisite networks) stay open, as
+ * do the admin, admin-ajax.php, wp-cron.php, wp-login.php and the REST API.
+ *
+ * @param string $home Folder that holds .htaccess; get_home_path() if empty.
+ * @return string[]
+ */
+function lq_sec_files_htaccess_lines( $home = '' ) {
+	if ( '' === $home ) {
+		if ( ! function_exists( 'get_home_path' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		$home = get_home_path();
+	}
+	$core   = lq_sec_rewrite_prefix( ABSPATH, $home );
+	$themes = lq_sec_rewrite_prefix( get_theme_root(), $home );
+	$theme  = lq_sec_rewrite_prefix( get_stylesheet_directory(), $home );
+
+	$rules = array( 'RewriteRule (^|/)\.(git|claude) - [F]' );
+	if ( null !== $core ) {
+		// The two exceptions are exact paths after the prefix; a PHP file
+		// with either one appended as path info is still refused.
+		$rules[] = 'RewriteRule ^' . $core . 'wp-includes/(?!(js/tinymce/wp-tinymce|ms-files)\.php$).+\.php(/|$) - [F]';
+		$rules[] = 'RewriteRule ^' . $core . 'wp-admin/includes/.+\.php(/|$) - [F]';
+		// WordPress also reads wp-config.php from the folder above its own.
+		$parent = '' === $core ? null : lq_sec_rewrite_prefix( dirname( untrailingslashit( wp_normalize_path( ABSPATH ) ) ), $home );
+		if ( null !== $parent ) {
+			$rules[] = 'RewriteRule ^' . $parent . 'wp-config\.php(/|$) - [F]';
+		}
+		$rules[] = 'RewriteRule ^' . $core . '(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)(/|$) - [F]';
+	}
+	if ( null !== $themes && '' !== $themes ) {
+		$rules[] = 'RewriteRule ^' . $themes . '.+\.php(/|$) - [F]';
+	}
+	if ( null !== $theme && '' !== $theme ) {
+		$rules[] = 'RewriteRule ^' . $theme . '(tests|bin)(/|$) - [F]';
+		$rules[] = 'RewriteRule ^' . $theme . 'docs(/(?!settings\.md$)|$) - [F]';
+	}
+
+	return array_merge( array( '<IfModule mod_rewrite.c>', 'RewriteEngine On' ), $rules, array( '</IfModule>' ) );
+}
+
+/**
+ * Whether the direct-access block is wanted. On unless LQ_BLOCK_DIRECT_FILES
+ * is defined false in wp-config.php.
+ *
+ * @return bool
+ */
+function lq_sec_files_block_on() {
+	return ! ( defined( 'LQ_BLOCK_DIRECT_FILES' ) && ! LQ_BLOCK_DIRECT_FILES );
+}
+
+/**
  * Path of the site's .htaccess, or '' when the server is not Apache or the
  * file cannot be written.
  *
@@ -128,9 +223,10 @@ function lq_sec_htaccess_file() {
 }
 
 /**
- * Keep the server-level block in step with the XML-RPC switch: written while
- * the switch is on, removed when it is off. Runs in the admin, at most once an
- * hour, so a lost or overwritten .htaccess is repaired without any action.
+ * Keep the server-level blocks in step with the settings: the xmlrpc block
+ * while the XML-RPC switch is on, and the direct-access block unless
+ * LQ_BLOCK_DIRECT_FILES is false. Runs in the admin, at most once an hour,
+ * so a lost or overwritten .htaccess is repaired without any action.
  *
  * @param bool $force Skip the hourly throttle.
  */
@@ -154,19 +250,26 @@ function lq_sec_sync_htaccess( $force = false ) {
 	}
 	// 'written' only when the block is really in the file.
 	update_option( 'lq_security_htaccess', $want ? ( $ok ? 'written' : 'unavailable' ) : 'off', false );
+
+	$want_files    = lq_sec_files_block_on() ? lq_sec_files_htaccess_lines() : array();
+	$current_files = function_exists( 'extract_from_markers' ) ? extract_from_markers( $file, LQ_SEC_FILES_MARKER ) : array();
+	if ( $current_files !== $want_files ) {
+		insert_with_markers( $file, LQ_SEC_FILES_MARKER, $want_files );
+	}
 }
 add_action( 'admin_init', 'lq_sec_sync_htaccess' );
 add_action( 'after_switch_theme', function () { lq_sec_sync_htaccess( true ); } );
 add_action( 'update_option_' . LQ_OPTION, function () { lq_sec_sync_htaccess( true ); } );
 
 /**
- * Take the block out when the theme is switched to one outside the sister
- * themes. A sister theme writes the same block back on its first admin load.
+ * Take both blocks out when the theme is switched. A sister theme writes the
+ * xmlrpc block back on its first admin load.
  */
 function lq_sec_remove_htaccess() {
 	$file = lq_sec_htaccess_file();
 	if ( '' !== $file ) {
 		insert_with_markers( $file, 'Block xmlrpc.php', array() );
+		insert_with_markers( $file, LQ_SEC_FILES_MARKER, array() );
 	}
 	delete_transient( 'lq_sec_htaccess_checked' );
 }

@@ -1,0 +1,16 @@
+# Written by the Lailatul Qadar theme. Apache refuses every request into
+# this folder, whatever the address of the theme folder, except
+# settings.md: the Theme Options footer links to it.
+<IfModule mod_authz_core.c>
+Require all denied
+<Files "settings.md">
+Require all granted
+</Files>
+</IfModule>
+<IfModule !mod_authz_core.c>
+Order deny,allow
+Deny from all
+<Files "settings.md">
+Allow from all
+</Files>
+</IfModule>

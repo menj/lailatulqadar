@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.18.7. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.18.8. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -39,7 +39,8 @@ Version 1.18.7. This file records the architecture, stored data and binding deci
 | `blocks/night-window/` | Night window block (server shell; the browser script builds the interface) |
 | `js/night-window.js`, `css/night-window.css` | Night window script and styles |
 | `inc/hardening.php` | The REST user list and `?author=N` hidden from visitors; a short 404 on `init` for scanner probes (PHP files that are not WordPress's entry points, dot files), checked by `tests/hardening-test.php` |
-| `inc/security.php`, `inc/security-detector.php` | Security tab: remote-publishing locks, spam gate, scan and trash tool, 410 Gone, reports and log. The detector is plain PHP |
+| `inc/security.php`, `inc/security-detector.php` | Security tab: remote-publishing locks, spam gate, scan and trash tool, 410 Gone, reports and log. The detector is plain PHP. On Apache `lq_sec_sync_htaccess()` also keeps two sections in the site's `.htaccess` (since 1.18.8 for the second): "Block xmlrpc.php" while XML-RPC is off, and "Lailatul Qadar: block direct file access" (`lq_sec_files_htaccess_lines()`, left out when `LQ_BLOCK_DIRECT_FILES` is false), checked by `tests/htaccess-files-test.php` |
+| `.htaccess`, `tests/.htaccess`, `bin/.htaccess`, `docs/.htaccess` | Read by Apache before WordPress runs (since 1.18.8). The theme folder's file refuses dot entries (`.well-known` open), theme PHP, `tests/`, `bin/`, `docs/` and every `.md` file; `docs/settings.md` and `readme.txt` stay open because the Theme Options footer links to them. The three folder files refuse every request into the folder, `docs/settings.md` excepted |
 | `js/security.js`, `css/security.css` | Security tab script and styles |
 | `tests/security-detector-test.php` | Detector self-test against every shipped article, page definition and pattern, and the attack samples |
 | `js/vendor/adhan.min.js`, `js/vendor/adhan.js` | adhan 4.4.6 prayer-time library (MIT); `adhan.js` is its unminified source, loaded when `SCRIPT_DEBUG` is on |

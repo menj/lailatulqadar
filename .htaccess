@@ -1,0 +1,82 @@
+# Lailatul Qadar theme folder. Written by the Lailatul Qadar theme.
+#
+# Apache reads this file on every request into the theme folder, before
+# WordPress starts, so the development files an FTP upload brings along are
+# refused from the moment they arrive. The "Lailatul Qadar: block direct
+# file access" section in the site's own .htaccess (inc/security.php)
+# refuses them as well, and tests/, bin/ and docs/ carry an .htaccess of
+# their own. docs/settings.md and readme.txt stay open: the Theme Options
+# footer links to them. Nothing here touches the styles, scripts, fonts or
+# images the pages load.
+
+<IfModule mod_alias.c>
+# Every file and folder whose name begins with a dot, wherever it sits in
+# the theme: .git, .github, .gitignore, .claude, .env and the like.
+# .well-known stays open.
+RedirectMatch 403 /[.](?!well-known(/|$))[^/]+(/|$)
+# The tests and build scripts at the theme root, and docs/ but for
+# docs/settings.md, by address; the rewrite rules below match them by the
+# path below this folder.
+RedirectMatch 403 /themes/[^/]+/(tests|bin)(/|$)
+RedirectMatch 403 /themes/[^/]+/docs(/(?!settings\.md$)|$)
+# No PHP file in the theme serves a page of its own.
+RedirectMatch 403 \.php(/|$)
+</IfModule>
+
+# Theme PHP files by their own name, with neither mod_alias nor mod_rewrite.
+<FilesMatch "\.php$">
+<IfModule mod_authz_core.c>
+Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+Order allow,deny
+Deny from all
+</IfModule>
+</FilesMatch>
+
+# Markdown notes by their own name, wherever they sit and with no module
+# beyond the core: CHANGELOG.md, SSOT.md, UPGRADING.md and the docs.
+# settings.md stays open for the Theme Options footer link.
+<FilesMatch "(?i)^(?!settings\.md$).*\.md$">
+<IfModule mod_authz_core.c>
+Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+Order allow,deny
+Deny from all
+</IfModule>
+</FilesMatch>
+
+# Dot files, also without mod_alias.
+<FilesMatch "^\.">
+<IfModule mod_authz_core.c>
+Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+Order allow,deny
+Deny from all
+</IfModule>
+</FilesMatch>
+
+# The same folders by the path below this folder, whatever its address.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+# Keep the site's own rules (WordPress's 404 for a missing file) for
+# requests into this folder.
+RewriteOptions Inherit
+# Dot entries too, for a server without mod_alias (FilesMatch above
+# matches a file's own name, not a dot folder such as .git/ above it).
+RewriteRule (^|/)\.(?!well-known(/|$)) - [F]
+# Theme PHP too, for a server without mod_alias.
+RewriteRule \.php(/|$) - [F]
+RewriteRule ^(tests|bin)(/|$) - [F]
+RewriteRule ^docs(/(?!settings\.md$)|$) - [F]
+</IfModule>
+
+# Dot folders such as .git/ on Apache 2.4 even without mod_alias and
+# mod_rewrite (FilesMatch matches a file's own name, not the folder above it).
+<IfModule mod_authz_core.c>
+<If "%{REQUEST_URI} =~ m#/\.(?!well-known(/|$))#">
+Require all denied
+</If>
+</IfModule>

@@ -192,7 +192,7 @@ The rules carry the site's own folder prefixes. With WordPress in its own folder
 
 ### Nginx
 
-Nginx reads no `.htaccess`. Put these in the server block, above the `location ~ \.php$` block:
+Nginx reads no `.htaccess`. Put these in the server block above every other regex `location`, the `location ~ \.php$` block that hands PHP to PHP-FPM and any static-file block among them: Nginx takes the first regex location that matches, so a rule further down never runs. Where the host keeps such blocks in an include, merge the denials into them instead.
 
 ```nginx
 location ~ /\.(git|claude) { return 403; }
@@ -211,7 +211,7 @@ The first line refuses `.git` and `.claude` anywhere on the site, as the section
 
 The `(/|$)` endings also catch a PHP file asked for with path info after it, as the Apache rules do.
 
-Leave out the last line while XML-RPC is switched on. For WordPress in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`. WordPress also reads `wp-config.php` from the folder above its own, so refuse both copies: `location ~ ^/blog/wp-config\.php(/|$) { return 403; }` and `location ~ ^/wp-config\.php(/|$) { return 403; }`.
+Leave out the last line while XML-RPC is switched on. For WordPress in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`, and the theme-folder rules with it (`^/blog/wp-content/themes/lailatulqadar/`). WordPress also reads `wp-config.php` from the folder above its own, so refuse both copies: `location ~ ^/blog/wp-config\.php(/|$) { return 403; }` and `location ~ ^/wp-config\.php(/|$) { return 403; }`.
 
 ### The installer
 

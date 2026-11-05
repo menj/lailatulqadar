@@ -209,17 +209,24 @@ function lailatulqadar_brief_html( $points, $role ) {
 }
 
 /**
- * An id for a heading from its text, unique on the page.
+ * An id for a heading from its text, unique on the page. With $taken, the
+ * text is an id a heading already carries: it is recorded, so no later
+ * heading takes it too.
  *
- * @param string $text Heading text.
+ * @param string $text  Heading text, or the id when $taken.
  * @param bool   $reset Start a new page.
+ * @param bool   $taken Record an existing id.
  * @return string
  */
-function lailatulqadar_heading_id( $text, $reset = false ) {
+function lailatulqadar_heading_id( $text, $reset = false, $taken = false ) {
 	static $used = array();
 	if ( $reset ) {
 		$used = array();
 		return '';
+	}
+	if ( $taken ) {
+		$used[ (string) $text ] = true;
+		return (string) $text;
 	}
 	$base = sanitize_title( remove_accents( wp_strip_all_tags( $text ) ) );
 	$base = '' === $base ? 'section' : $base;
@@ -245,11 +252,16 @@ function lailatulqadar_heading_anchor( $html, $block ) {
 		return $html;
 	}
 	$tags = new WP_HTML_Tag_Processor( $html );
-	if ( $tags->next_tag( 'h2' ) && ! $tags->get_attribute( 'id' ) ) {
-		$tags->set_attribute( 'id', lailatulqadar_heading_id( $html ) );
-		return $tags->get_updated_html();
+	if ( ! $tags->next_tag( 'h2' ) ) {
+		return $html;
 	}
-	return $html;
+	$id = $tags->get_attribute( 'id' );
+	if ( is_string( $id ) && '' !== $id ) {
+		lailatulqadar_heading_id( $id, false, true );
+		return $html;
+	}
+	$tags->set_attribute( 'id', lailatulqadar_heading_id( $html ) );
+	return $tags->get_updated_html();
 }
 add_filter( 'render_block_core/heading', 'lailatulqadar_heading_anchor', 10, 2 );
 
@@ -311,7 +323,12 @@ add_filter( 'the_content', 'lailatulqadar_contents_filter', 30 );
  * the structured data cites never part.
  *
  * @param int $id Page ID.
- * @return array{dalil:array<int,array{n:int,cite:string,kind:string}>,refs:array<int,array{n:int,note:string,name:string,text:string,url:string}>}
+ * Each quotation keeps its number (#quote-N, as the Quotation nodes) and
+ * the note that gives its source. A footnote that names a work already
+ * listed is left out here and in the citation, so every #note-N the
+ * structured data cites is on the page.
+ *
+ * @return array{dalil:array<int,array{n:int,cite:string,kind:string,note:string}>,refs:array<int,array{n:int,note:string,name:string,text:string,url:string}>}
  */
 function lailatulqadar_page_sources( $id ) {
 	$out   = array(
@@ -327,15 +344,18 @@ function lailatulqadar_page_sources( $id ) {
 				'n'    => $i + 1,
 				'cite' => $q['cite'],
 				'kind' => $q['kind'],
+				'note' => $q['notes'] ? (string) $q['notes'][0] : '',
 			);
 		}
 	}
+	$seen = array();
 	foreach ( lq_page_footnotes( $id ) as $i => $note ) {
 		if ( empty( $note['id'] ) || ! isset( $note['content'] ) ) {
 			continue;
 		}
 		$cite = lq_sc_citation( $note['content'] );
-		if ( $cite ) {
+		if ( $cite && ! isset( $seen[ $cite['name'] ] ) ) {
+			$seen[ $cite['name'] ] = true;
 			$out['refs'][] = array(
 				'n'    => $i + 1,
 				'note' => (string) $note['id'],

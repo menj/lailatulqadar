@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.18.12
+Stable tag: 1.18.13
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -122,7 +122,14 @@ The theme writes its server rules only on Apache. On Nginx, give your host the r
 
 Administrators (the manage_options capability). The page holds the security switches and setup, so the theme keeps it to administrators.
 
+= My site is in a subfolder. Where does the browser icon go? =
+
+Browsers ask for /favicon.ico at the top of the domain, such as example.com/favicon.ico, even when the site lives in example.com/blog/. WordPress never sees that request, so put a copy of the theme's favicon.ico in the domain root folder. The icon tags in each page cover the pages either way.
+
 == Upgrade Notice ==
+
+= 1.18.13 =
+Replace the theme files. On a site in a subfolder, also put a copy of images/favicon.ico in the domain root folder; otherwise nothing to do.
 
 = 1.18.12 =
 Upload the new zip. Open one admin page so the error pages are written again with the icon.
@@ -146,6 +153,10 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.18.13 =
+* The settings and the readme speak of the other sites in plain words. Links to them stay.
+* The readme says where the browser icon goes on a site in a subfolder: a copy of favicon.ico in the domain root.
 
 = 1.18.12 =
 * The browser icon set is complete: favicon.ico, 192px, 512px and maskable icons and a web app manifest, all drawn from the lantern mark. The site answers /favicon.ico with the icon, the icons show in the admin as well as on the site and the login screen, and the error pages show the mark in the tab. A Site Icon you set still wins.

@@ -756,13 +756,13 @@ msgid "How contextual links work"
 msgstr ""
 
 #: inc/settings.php:687
-msgid "In the running text of a guide page or blog post, the first mention of a known phrase links to the page that treats it, here or on a sister site. Links are added as the page is shown, so the stored text is never changed. Headings, quotations, verses, hadith, Arabic, figures, tables, footnotes and the \"In brief\" box are never linked. Each address is linked once a page, and no paragraph or list item receives more than one new link. Malay pages link only to Malay pages on this site."
+msgid "In the running text of a guide page or blog post, the first mention of a known phrase links to the page that treats it, here or on another site. Links are added as the page is shown, so the stored text is never changed. Headings, quotations, verses, hadith, Arabic, figures, tables, footnotes and the \"In brief\" box are never linked. Each address is linked once a page, and no paragraph or list item receives more than one new link. Malay pages link only to Malay pages on this site."
 msgstr ""
 
-#. translators: 1: pages on this site, 2: pages on sister sites, 3: number of sister sites
+#. translators: 1: pages on this site, 2: pages on the other sites, 3: number of other sites
 #: inc/settings.php:693
 #, php-format
-msgid "The shared map lists %1$d pages on this site and %2$d pages on %3$d sister sites. It lives in inc/data/network-links.json and is the same file in every theme of the network."
+msgid "The shared map lists %1$d pages on this site and %2$d pages on %3$d other sites. It lives in inc/data/network-links.json and is the same file in every one of the seven themes."
 msgstr ""
 
 #: inc/settings.php:704
@@ -778,11 +778,11 @@ msgid "Links of this kind on one page, at most (0 to 15)"
 msgstr ""
 
 #: inc/settings.php:712
-msgid "Sister sites"
+msgid "Other sites"
 msgstr ""
 
 #: inc/settings.php:714
-msgid "Link to pages on the sister sites (English pages only)"
+msgid "Link to pages on the other sites (English pages only)"
 msgstr ""
 
 #: inc/settings.php:715
@@ -794,7 +794,7 @@ msgid "Extra phrases"
 msgstr ""
 
 #: inc/settings.php:721
-msgid "One per line: phrase | address. An address beginning with / is a page on this site; a full address must be on this site or a sister site, and any other address is ignored. These lines are read before the shared map, so a phrase listed here takes its address from here."
+msgid "One per line: phrase | address. An address beginning with / is a page on this site; a full address must be on this site or another site, and any other address is ignored. These lines are read before the shared map, so a phrase listed here takes its address from here."
 msgstr ""
 
 #: inc/settings.php:723

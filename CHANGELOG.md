@@ -2,6 +2,14 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.18.13 (2026-11-05)
+
+The settings and readme speak of the other sites in plain words, and readme.txt names the subfolder favicon step. No feature removed and no public identifier renamed.
+
+### Changed
+- The Contextual links tab (the "Other sites" heading, its help text and switch labels), `languages/lailatulqadar.pot`, `languages/ms_MY.po` and the code comments say "the other sites". The `ctx_sister` option keys and the `lq-ctx-sister` ids keep their names.
+- `readme.txt` says that a site in a subfolder needs a copy of `favicon.ico` at the domain root, as `README.md` already did.
+
 ## 1.18.12 (2026-11-05)
 
 The browser icon set is complete. No feature removed.

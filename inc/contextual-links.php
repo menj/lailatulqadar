@@ -2,13 +2,13 @@
 /**
  * Contextual links: the first mention of a known phrase in the running text
  * of a guide page or blog post links to the inner page that treats it, on
- * this site or on one of the six sister sites.
+ * this site or on one of the six other sites.
  *
  * English pages read inc/data/network-links.json, a shared file kept
  * identical in all seven themes. Entries for this site link to the
- * published guide page; entries for a sister site link to that site.
+ * published guide page; entries for another site link to that site.
  * Malay pages read inc/data/contextual-links-ms.json and link only to Malay
- * pages here, since the sister sites are in English.
+ * pages here, since the other sites are in English.
  *
  * Links are added as the page renders, so the stored text is untouched. A
  * phrase is matched whole, capitals aside, in the running text only: never
@@ -100,7 +100,7 @@ function lq_ctx_own_url( $path ) {
 }
 
 /**
- * Hosts of the sister sites, lower case.
+ * Hosts of the other sites, lower case.
  *
  * @return string[]
  */
@@ -116,11 +116,11 @@ function lq_ctx_sister_hosts() {
 
 /**
  * Lines "phrase | address" from a settings field. An address beginning with
- * / is on this site; a full address must be on a sister site (or on this
+ * / is on this site; a full address must be on another site (or on this
  * site), anything else is ignored.
  *
  * @param string $text      Field value.
- * @param bool   $allow_out Whether sister addresses are accepted.
+ * @param bool   $allow_out Whether addresses on the other sites are accepted.
  * @return array<int,array{phrase:string,url:string,sister:bool}>
  */
 function lq_ctx_parse_extra( $text, $allow_out ) {
@@ -359,7 +359,7 @@ function lq_ctx_url_key( $url ) {
  * @param array  $targets    From lq_ctx_targets().
  * @param string $here       Address of the page being rendered.
  * @param int    $own_max    Most links to this site.
- * @param int    $sister_max Most links to sister sites.
+ * @param int    $sister_max Most links to other sites.
  * @return string
  */
 function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {

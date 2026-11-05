@@ -1,6 +1,6 @@
 <?php
 /**
- * Small hardening the server logs asked for (1.18.7), as in the sister themes.
+ * Small hardening the server logs asked for (1.18.7), as in the other themes.
  *
  * - The REST user list (/wp/v2/users and /wp/v2/users/<id>) is hidden from
  *   visitors who are not logged in. It names every account with posts and

@@ -13,6 +13,10 @@
  * @package Lailatulqadar
  */
 
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
+
 define( 'ABSPATH', __DIR__ );
 $root = dirname( __DIR__ );
 $fail = 0;

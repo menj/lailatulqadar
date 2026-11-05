@@ -5,6 +5,10 @@
  *
  * Run: php tests/unlist-test.php
  */
+
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
 define( 'ABSPATH', '/' );
 $GLOBALS['opt']   = [];
 $GLOBALS['env']   = [ 'admin' => false, 'ajax' => false, 'can' => false, 'singular' => false, 'qid' => 0 ];

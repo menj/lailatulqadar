@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.18.6. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.18.7. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -38,6 +38,7 @@ Version 1.18.6. This file records the architecture, stored data and binding deci
 | `inc/night-window.php` | City presets, strings and dates for the night window |
 | `blocks/night-window/` | Night window block (server shell; the browser script builds the interface) |
 | `js/night-window.js`, `css/night-window.css` | Night window script and styles |
+| `inc/hardening.php` | The REST user list and `?author=N` hidden from visitors; a short 404 on `init` for scanner probes (PHP files that are not WordPress's entry points, dot files), checked by `tests/hardening-test.php` |
 | `inc/security.php`, `inc/security-detector.php` | Security tab: remote-publishing locks, spam gate, scan and trash tool, 410 Gone, reports and log. The detector is plain PHP |
 | `js/security.js`, `css/security.css` | Security tab script and styles |
 | `tests/security-detector-test.php` | Detector self-test against every shipped article, page definition and pattern, and the attack samples |

@@ -7,6 +7,10 @@
  *
  * Run: php tests/error-pages-test.php
  */
+
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
 define( 'ABSPATH', __DIR__ . '/' );
 define( 'LQ_VERSION', '9.9.9' );
 // A fresh directory of its own, so the cleanup at the end removes only what this test wrote.

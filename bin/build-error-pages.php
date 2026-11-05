@@ -6,6 +6,10 @@
  * @package lailatulqadar
  */
 
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
+
 define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 require dirname( __DIR__ ) . '/inc/error-page-html.php';
 

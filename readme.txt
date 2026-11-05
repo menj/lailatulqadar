@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.18.6
+Stable tag: 1.18.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,10 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.18.7 =
+* A theme caught half uploaded shows a short "Back shortly" page (503) instead of an error.
+* Visitors can no longer list the site's user accounts, and scanner probes for PHP and .env files get a short 404 without loading a whole page.
 
 = 1.18.6 =
 * The language switchers in the header and the footer have names of their own for screen readers: "Language" and "Footer language links", in Malay "Bahasa" and "Pautan bahasa di kaki halaman".

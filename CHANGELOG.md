@@ -2,6 +2,16 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.18.7 (2026-11-05)
+
+- A theme caught half uploaded answers 503 instead of a fatal error. The owner uploads over FTP one file at a time. `functions.php` now checks every file is readable before any loads, and loads them inside a `try`, so a missing file or a half-written one (a `ParseError`) gives visitors a short "Back shortly" page, in English and Malay, with `Retry-After: 300` and `noindex`. The error log gets one line per problem every ten minutes. The login screen, AJAX, cron and WP-CLI go on, and the admin sees the notice only when a file broke part-way through loading (`lq_incomplete_theme()`). Checked on the scratch site with a file moved away and with a truncated file: 503 for the home page, 200 for `wp-login.php`.
+- The new `inc/hardening.php`:
+  - Visitors who are not logged in get no `/wp/v2/users` routes (404), and `?author=N` gives them a 404 where WordPress would redirect to the author's address and so name the account. Logged-in editors keep both.
+  - Scanner probes get a short 404 on `init`, before the query, the template and the 404 logging. These are requests for PHP files that are not WordPress's entry points (`admin.php`, `info.php`, `wp_filemanager.php` and the like) and for dot files (`.env`, `.git/config`). In October the logs show about 15,000 404s, most of them these. Each one rendered the full 404 page, about 41 KB. `.well-known` stays open, apart from PHP files in it.
+  - `tests/hardening-test.php` covers 30 paths and the REST routes (32 checks).
+- Every PHP script in `tests/` and `bin/` exits unless it runs from the command line.
+- XML-RPC was already off (Security tab, on by default).
+
 ## 1.18.6 (2026-11-05)
 
 - The header and the footer each hold a language switcher, and both navigation landmarks were named "Language" ("Bahasa" on Malay pages), which axe reports as `landmark-unique`. The block takes a `context` attribute; the footer part sets it to `footer`, and that landmark is named "Footer language links" ("Pautan bahasa di kaki halaman"). The header's keeps "Language" ("Bahasa"). A footer part saved in the Site Editor before this version has no context; a switcher inside the footer template part takes the footer name anyway (`lq_enter_footer_part()` and `lq_leave_footer_part()` in `inc/blocks.php` track that part while it renders). Any other switcher after the first, one placed in a page's content, is numbered: "Language links 2" ("Pautan bahasa 2"). axe is clean on both front pages, a guide page, search and the 404 page at 1280px and 375px.

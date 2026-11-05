@@ -244,7 +244,7 @@ Pages, the readme and `docs/settings.md` (both served) never say that the site i
 
 ## Release checklist
 
-1. The version is the same in `style.css`, `LQ_VERSION` in `functions.php`, `readme.txt` (Stable tag and changelog), the top entry of `CHANGELOG.md`, the first line of this file and the At a glance table of `README.md`.
+1. The version is the same in `style.css`, `LQ_VERSION` in `functions.php`, `readme.txt` (Stable tag and changelog), the top entry of `CHANGELOG.md`, the version line at the top of this file and the At a glance table of `README.md`.
 2. `CHANGELOG.md` has the new entry, and `readme.txt` has the short form.
 3. `UPGRADING.md` has a note when the site owner must act, and its roadmap drops what shipped.
 4. `README.md` (or the reference in `docs/` it points to) covers any new hook, filter, constant, setting, file or rule.

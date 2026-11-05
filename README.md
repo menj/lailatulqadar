@@ -196,20 +196,22 @@ Nginx reads no `.htaccess`. Put these in the server block above every other rege
 
 ```nginx
 location ~ /\.(git|claude) { return 403; }
-location ~ ^/wp-content/themes/lailatulqadar/(.+/)?\.(?!well-known(/|$)) { return 403; }
+location ~ ^/wp-content/themes/lailatulqadar[^/]*/(.+/)?\.(?!well-known(/|$)) { return 403; }
 location ~ ^/wp-includes/(?!js/tinymce/wp-tinymce\.php$|ms-files\.php$).+\.php(/|$) { return 403; }
 location ~ ^/wp-admin/includes/.+\.php(/|$) { return 403; }
 location ~ ^/(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)(/|$) { return 403; }
 location ~ ^/wp-content/themes/.+\.php(/|$) { return 403; }
-location ~ ^/wp-content/themes/lailatulqadar/(tests|bin)(/|$) { return 403; }
-location ~ ^/wp-content/themes/lailatulqadar/docs/(?!settings\.md$) { return 403; }
-location ~* ^/wp-content/themes/lailatulqadar/(?!docs/settings\.md$).+\.md$ { return 403; }
+location ~ ^/wp-content/themes/lailatulqadar[^/]*/(tests|bin)(/|$) { return 403; }
+location ~ ^/wp-content/themes/lailatulqadar[^/]*/docs(/(?!settings\.md$)|$) { return 403; }
+location ~* ^/wp-content/themes/lailatulqadar[^/]*/(?!docs/settings\.md$).+\.md$ { return 403; }
 location = /xmlrpc.php { return 403; }
 ```
 
 The first line refuses `.git` and `.claude` anywhere on the site, as the section in the site's `.htaccess` does. The second refuses every other dot file and folder inside the theme folder only, with `.well-known` left open, as the theme folder's `.htaccess` does. Neither touches a dot path another application on the host may serve.
 
 The `(/|$)` endings also catch a PHP file asked for with path info after it, as the Apache rules do.
+
+The `lailatulqadar[^/]*` in the theme rules also covers the `lailatulqadar-new` and `lailatulqadar-old` folders of an FTP update, which Nginx would otherwise serve while both sit on the server.
 
 Leave out the last line while XML-RPC is switched on. For WordPress in a subfolder, put its path in front of every rule but the first (the `.git` and `.claude` rule stays global), as in `^/blog/wp-includes/`, and the theme-folder rules with it (`^/blog/wp-content/themes/lailatulqadar/`). WordPress also reads `wp-config.php` from the folder above its own, so refuse both copies: `location ~ ^/blog/wp-config\.php(/|$) { return 403; }` and `location ~ ^/wp-config\.php(/|$) { return 403; }`.
 
@@ -241,7 +243,7 @@ ErrorDocument 503 /wp-content/lailatulqadar-errors/503.html
 ErrorDocument 504 /wp-content/lailatulqadar-errors/504.html
 ```
 
-On Nginx: `error_page 403 /wp-content/lailatulqadar-errors/403.html;` and so on for each code.
+On Nginx: `error_page 403 /wp-content/lailatulqadar-errors/403.html;` and so on for each code. Where `wp-content` sits below a subfolder, use its real address, as in `/blog/wp-content/lailatulqadar-errors/403.html`; the tab's lines show it.
 
 `errors/` keeps the copies for a site at the domain root, rebuilt with `php bin/build-error-pages.php`. On a network only the main site writes the files, and they stay on a theme switch, since every site shares `wp-content`. `docs/settings.md` has the details.
 

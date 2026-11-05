@@ -27,6 +27,10 @@ function untrailingslashit( $s ) { return rtrim( $s, '/' ); }
 function get_stylesheet_directory_uri() { return 'https://example.test/wp-content/themes/lailatulqadar'; }
 function update_option( $k, $v ) { $GLOBALS['err_opt'][ $k ] = $v; return true; }
 function get_option( $k, $d = false ) { return $GLOBALS['err_opt'][ $k ] ?? $d; }
+function delete_option( $k ) { unset( $GLOBALS['err_opt'][ $k ] ); }
+function wp_delete_file( $p ) { @unlink( $p ); }
+function is_multisite() { return false; }
+function current_user_can() { return true; }
 
 require dirname( __DIR__ ) . '/inc/error-pages.php';
 
@@ -68,17 +72,29 @@ err_check( 'outdated' === lailatulqadar_error_state( 'maintenance.php' ), 'an ol
 err_check( 'written' === lailatulqadar_error_install()['maintenance.php'] && file_get_contents( "$err_tmp/maintenance.php" ) === $err_src['maintenance.php'], 'installer refreshes an outdated copy' );
 file_put_contents( "$err_tmp/php-error.php", $err_src['maintenance.php'] );
 err_check( 'outdated' === lailatulqadar_error_state( 'php-error.php' ) && 'written' === lailatulqadar_error_install()['php-error.php'] && file_get_contents( "$err_tmp/php-error.php" ) === $err_src['php-error.php'], 'the maintenance page in php-error.php is replaced by the right page' );
+file_put_contents( "$err_tmp/maintenance.php", "<?php\n// Paulus error page drop-in 2.77.3. Written by the Paulus theme; safe to delete.\n" );
+err_check( 'theme' === lailatulqadar_error_state( 'maintenance.php' ), 'another theme\'s marked leftover reads as theme' );
+err_check( 'written' === lailatulqadar_error_install()['maintenance.php'] && file_get_contents( "$err_tmp/maintenance.php" ) === $err_src['maintenance.php'], 'installer replaces another theme\'s marked leftover' );
+err_check( lailatulqadar_error_needs_install(), 'with nothing remembered, the files need writing' );
+lailatulqadar_error_auto_install();
+err_check( ! lailatulqadar_error_needs_install(), 'after an automatic install nothing is pending' );
+unlink( "$err_tmp/php-error.php" );
+err_check( lailatulqadar_error_needs_install(), 'a missing file is noticed' );
+lailatulqadar_error_maybe_install();
+err_check( 'installed' === lailatulqadar_error_state( 'php-error.php' ), 'an administrator\'s visit writes it back' );
+lailatulqadar_error_remove();
+err_check( 'missing' === lailatulqadar_error_state( 'maintenance.php' ) && 'missing' === lailatulqadar_error_state( 'php-error.php' ) && "<?php // Somebody else's page\n" === file_get_contents( "$err_tmp/db-error.php" ), 'switching away removes only the theme\'s own files' );
 foreach ( glob( "$err_tmp/*.tmp" ) as $err_left ) {
 	err_check( false, "temporary file left: $err_left" );
 }
 
 exec( escapeshellarg( PHP_BINARY ) . ' ' . escapeshellarg( dirname( __DIR__ ) . '/bin/build-error-pages.php' ) . ' --check 2>&1', $err_o, $err_code );
 err_check( 0 === $err_code, 'errors/*.html match the builder' );
-foreach ( array( '403', '500', '502', '503' ) as $err_c ) {
+foreach ( array( '403', '500', '502', '503', '504' ) as $err_c ) {
 	$err_h = (string) @file_get_contents( dirname( __DIR__ ) . "/errors/$err_c.html" );
 	err_check( false !== strpos( $err_h, 'noindex' ) && false === strpos( $err_h, '<?php' ), "errors/$err_c.html is static and noindex" );
 }
-err_check( false !== strpos( lailatulqadar_error_htaccess_snippet(), 'ErrorDocument 503 /wp-content/themes/lailatulqadar/errors/503.html' ), '.htaccess lines point at errors/' );
+err_check( false !== strpos( lailatulqadar_error_htaccess_snippet(), 'ErrorDocument 503 /wp-content/themes/lailatulqadar/errors/503.html' ) && false !== strpos( lailatulqadar_error_htaccess_snippet(), 'ErrorDocument 504 /wp-content/themes/lailatulqadar/errors/504.html' ), '.htaccess lines point at errors/' );
 $err_404 = (string) file_get_contents( dirname( __DIR__ ) . '/templates/404.html' );
 err_check( false !== strpos( $err_404, '<p class="lq-404__alt" lang="ms">Halaman tidak ditemui. Alamatnya mungkin telah berubah. Cari dalam panduan atau pilih salah satu halaman di bawah.</p>' ), 'the 404 page carries the Malay line' );
 

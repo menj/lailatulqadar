@@ -14,7 +14,7 @@ $err_stale = 0;
 if ( ! $err_check && ! is_dir( dirname( __DIR__ ) . '/errors' ) ) {
 	mkdir( dirname( __DIR__ ) . '/errors' );
 }
-foreach ( array( '403', '500', '502', '503' ) as $err_code ) {
+foreach ( array( '403', '500', '502', '503', '504' ) as $err_code ) {
 	$err_path = dirname( __DIR__ ) . '/errors/' . $err_code . '.html';
 	$err_html = lailatulqadar_error_page_html( $err_code, 'Lailatulqadar', '/' ) . "\n";
 	if ( $err_check ) {

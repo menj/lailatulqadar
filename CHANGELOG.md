@@ -2,6 +2,15 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.18.3 (2026-11-05)
+
+- The error drop-ins no longer wait for the button. `lailatulqadar_error_auto_install()` runs `lailatulqadar_error_install()` on `after_switch_theme`, and `lailatulqadar_error_maybe_install()` runs it on `admin_init` for a user with `edit_theme_options` when a file is missing, is another theme's leftover, or was written for another version, site name or home address (option `lailatulqadar_error_pages_fingerprint`). Install error pages stays.
+- A drop-in another theme left behind, marked "Written by the ... theme; safe to delete", is replaced at install (`lailatulqadar_error_is_other_theme()`, state `theme`). A file without such a mark is still never touched.
+- `inc/error-pages.php` is loaded on every request, no longer only in the admin, so activation can write the files from the first front-end load and a switch from WP-CLI removes them.
+- `lailatulqadar_error_remove()` on `switch_theme` deletes the drop-ins that carry the theme's marker, and only those.
+- `errors/504.html` (gateway timeout) in the design of the 502 page, with a Malay line, and an `ErrorDocument 504` line on the Tools tab and in `docs/settings.md`.
+- `tests/error-pages-test.php` covers the automatic install, the replacement, the removal and the 504 page.
+
 ## 1.18.2 (2026-11-04)
 
 - The front end no longer presents other sites as related to this one. Every link stays where it was, on the same subject words.

@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.18.2' );
+define( 'LQ_VERSION', '1.18.3' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 
@@ -34,10 +34,12 @@ require_once LQ_DIR . '/inc/social-icons.php';
 require_once LQ_DIR . '/inc/reading-progress.php';
 require_once LQ_DIR . '/inc/unlist.php';
 require_once LQ_DIR . '/inc/search-permalinks.php';
+// Loaded everywhere: the drop-ins are written on after_switch_theme, which
+// can fire on a front-end request, and removed on switch_theme.
+require_once LQ_DIR . '/inc/error-pages.php';
 
 if ( is_admin() ) {
 	require_once LQ_DIR . '/inc/settings.php';
-	require_once LQ_DIR . '/inc/error-pages.php';
 }
 
 /**

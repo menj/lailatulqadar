@@ -14,6 +14,14 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.18.10
+
+Nothing to do. Guide pages gain their dates, reading time, contents, sources and the previous and next row on the next page load.
+
+- The dates need PHP's intl extension for their Hijri dates; most hosts have it. Without it the dates stay hidden, and the rest shows.
+- To show a review date, fill in "Last reviewed against its sources" in the Guide page box of each page.
+- The theme is now under the GNU GPL version 3 or later. The `LICENSE` file goes up with the folder.
+
 ## To 1.18.9
 
 Nothing to do. The release adds `README.md` and changes no page and no setting.
@@ -309,6 +317,9 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 - Extend the Umm al-Qura table past 1473 AH (2051), as `SSOT.md` asks.
 
 ### Ideas
+
+- A Hijri date without intl. The guide pages leave their dates out on a server without the extension; the Umm al-Qura table in `inc/ramadan.php` holds only the start of each Ramadan and Shawwal, so it cannot date other months.
+- Translate the Guide page box and the new editor labels in `languages/ms_MY.po`. The admin strings there are still empty, so an administrator working in Malay sees them in English.
 
 - Remove development files from a live site after an update. Here the `.htaccess` files refuse them, which does nothing on Nginx.
 - Check the one 500 on `/ms/embed/` in the logs.

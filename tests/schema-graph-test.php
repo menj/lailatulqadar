@@ -374,7 +374,7 @@ function lq_test_render( $root, $key, $role, $rank_math ) {
 	}
 	require __DIR__ . '/stubs/wordpress.php';
 	lq_stub_site( $root );
-	foreach ( array( 'helpers', 'images', 'ramadan', 'seo', 'image-sitemap', 'setup', 'schema-content', 'schema' ) as $file ) {
+	foreach ( array( 'helpers', 'images', 'ramadan', 'seo', 'image-sitemap', 'setup', 'schema-content', 'page-parts', 'schema' ) as $file ) {
 		require $root . '/inc/' . $file . '.php';
 	}
 	lq_stub_view( $key, $role );

@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.18.9. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.18.10. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -12,6 +12,7 @@ Version 1.18.9. This file records the architecture, stored data and binding deci
 | Site | https://lailatulqadar.guide |
 | Package name | `lailatulqadar-[version].zip` |
 | Requirements | WordPress 6.7 or later, PHP 7.4 or later |
+| Licence | GNU GPL version 3 or later (owner decision, 5 November 2026); the full text is in `LICENSE` at the theme root |
 | Languages | Built into the theme: English at the root, Malay beneath /ms/ (docs/languages.md); no plugin |
 
 ## Editorial decisions
@@ -77,6 +78,7 @@ Version 1.18.9. This file records the architecture, stored data and binding deci
 | `inc/parent.php` | Parent stylesheet versioning; parent style variations held back |
 | `templates/page-home.html` | The language home pages |
 | `templates/search.html`, `index.html`, `page-no-title.html` | Search results, the fallback view (title and content, as a page) and the page without a title |
+| `inc/page-parts.php`, `css/page-parts.css`, `blocks/page-details/`, `blocks/in-brief/`, `blocks/sources/`, `blocks/path-nav/` | The guide page parts: dates with their Hijri dates, last review and reading time under the title; the contents list; the In brief box from the Guide page box; Evidence and sources (the list the Article `citation` reads); the previous and next row of the reading path; the table style on every table |
 | `inc/no-blog.php`, `tests/no-blog-test.php` | The retired blog: drops the post templates, sends post views and feeds to the language home with a 301, keeps posts out of the sitemaps, and runs the one-time migration. Run `php tests/no-blog-test.php` |
 | `patterns/no-results.php` | Bilingual message for empty archives and searches |
 | `inc/login.php`, `css/login.css` | Login screen styling, brand block, title, favicon |
@@ -123,6 +125,7 @@ Version 1.18.9. This file records the architecture, stored data and binding deci
 | Post meta `_lq_lang`, `_lq_key` | Language and page key of a page setup created or adopted; the theme's ownership marker. Only pages carrying `_lq_lang` are ever trashed as obsolete copies |
 | Post meta `_lq_seed_hash` | md5 of the content setup wrote (links resolved, line endings unified, trimmed), a colon, and md5 of its footnotes. A page whose content and footnotes still match is unedited and takes new shipped versions |
 | Post meta `_lq_seed_edited` | Set when an editor has changed a page and the shipped article differs; the Tools tab lists it as "Edited, not updated" |
+| Post meta `_lq_reviewed`, `_lq_brief` | From the Guide page box (1.18.10): the date the page was last reviewed against its sources (Y-m-d), and In brief points, one a line, shown only when the page's text has no In brief box |
 | Post meta `_lq_featured_seeded` | Set once setup has given a page its featured image, so an image an editor removes is not put back |
 | `lq_security_log`, `lq_security_counts`, `lq_security_failed`, `lq_security_gone`, `lq_security_htaccess` | Security tab: the capped log (200 lines), per-day counts for 30 days, failed logins by account name for a rolling day, addresses of trashed spam answered with 410, and the state of the .htaccess block. None autoloaded |
 | Post meta `_lq_spam_held`, user meta `_lq_last_login` | Time the spam gate held a post; last login time and IP of a user |
@@ -193,6 +196,14 @@ On 3 November 2026 the owner decided that lailatulqadar.guide has no blog. The s
 - A post with no language mark is Malay when its address lies under /ms/.
 - Posts are out of the core sitemap, the image sitemap and the Rank Math sitemap (with categories and tags). The head carries no feed links.
 - The admin keeps its Posts menu. Nobody should write a post; one written anyway is never shown.
+
+## Guide page parts
+
+Since 1.18.10 every guide page (a page of the reading path) carries, in this order: breadcrumbs, title, the details line (Published, Updated only when it falls on a later day, Last reviewed when set, Reading time), the In brief box, the contents list (three or more H2 headings), the text, Evidence and sources, and the previous and next row. Each string reads in English or in baku Malay as the page does, and the author's name never shows on the page (structured data only). The parts offer no price, no buy button and no sign-up.
+
+- Dates follow the Dates rule below: each shows with its Umm al-Qura Hijri date, and on a server without PHP's intl extension the dates are left out instead.
+- Hijri months in Malay: Muharam, Safar, Rabiulawal, Rabiulakhir, Jamadilawal, Jamadilakhir, Rejab, Syaaban, Ramadan, Syawal, Zulkaedah, Zulhijah.
+- The Evidence and sources block and the Article `citation` read one list, `lailatulqadar_page_sources()`.
 
 ## Settings tabs
 

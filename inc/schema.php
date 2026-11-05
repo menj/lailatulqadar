@@ -223,9 +223,18 @@ function lq_schema_graph() {
 	if ( 'contact' === $key ) {
 		$webpage['@type'] = array( 'WebPage', 'ContactPage' );
 	}
+	// The "Last reviewed" date the page shows under its title.
+	$reviewed = $post && lailatulqadar_is_guide_page( $id ) ? lailatulqadar_reviewed_date( $id ) : '';
+	if ( '' !== $reviewed && '' !== lailatulqadar_date_label( $reviewed, $role ) ) {
+		$webpage['lastReviewed'] = $reviewed;
+	}
 
-	// Read aloud: the page title and the "In brief" box, where they show.
+	// Read aloud: the page title and the "In brief" box, where they show:
+	// in the page's text, or from the Guide page box (inc/page-parts.php).
 	$brief    = lq_sc_brief( $content );
+	if ( '' === $brief && $post && lailatulqadar_is_guide_page( $id ) ) {
+		$brief = implode( ' ', lailatulqadar_template_brief( $id ) );
+	}
 	$speak    = array();
 	$template = (string) get_page_template_slug( $id );
 	if ( ! lq_is_home() && 'page-no-title' !== $template ) {
@@ -382,18 +391,16 @@ function lq_schema_graph() {
 	$notes     = $post ? lq_page_footnotes( $id ) : array();
 	$note_html = array();
 	$citations = array();
-	foreach ( $notes as $i => $note ) {
-		if ( empty( $note['id'] ) || ! isset( $note['content'] ) ) {
-			continue;
+	foreach ( $notes as $note ) {
+		if ( ! empty( $note['id'] ) && isset( $note['content'] ) ) {
+			$note_html[ $note['id'] ] = (string) $note['content'];
 		}
-		$note_html[ $note['id'] ] = (string) $note['content'];
-		$cite                     = lq_sc_citation( $note['content'] );
-		if ( ! $cite ) {
-			continue;
-		}
+	}
+	// The same list the Evidence and sources block shows (inc/page-parts.php).
+	foreach ( $post ? lailatulqadar_page_sources( $id )['refs'] : array() as $cite ) {
 		$node = array(
 			'@type' => 'CreativeWork',
-			'@id'   => $url . '#note-' . ( $i + 1 ),
+			'@id'   => $url . '#note-' . $cite['n'],
 			'name'  => $cite['name'],
 			'text'  => $cite['text'],
 		);

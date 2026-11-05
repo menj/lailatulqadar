@@ -2,6 +2,25 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.18.10 (2026-11-05)
+
+The parts of an article page, built into the guide pages (`templates/page.html`), since the site has no blog. No article, setting or public identifier changes. Setup runs once on the version change and finds no article to change.
+
+### Added
+- `lailatulqadar/page-details` under the title: Published, Updated (only when the last change falls on a later day), Last reviewed and Reading time, in English or Malay ("Diterbitkan", "Dikemas kini", "Kali terakhir disemak", "Masa bacaan"). Each date carries its Umm al-Qura Hijri date ("10 August 2026 (27 Safar 1448 AH)", "10 Ogos 2026 (27 Safar 1448 H)"), worked out with PHP's intl extension; without intl the dates are left out, so no Gregorian date ever shows without its Hijri date.
+- A contents list ("On this page", "Kandungan halaman") after the In brief box, built from the H2 headings when a guide page has three or more. H2 headings on guide pages get an id from their text.
+- `lailatulqadar/in-brief`: the In brief box from the new Guide page box, for a guide page whose text has none (the Night Planner, for one). It joins the speakable selectors and the Article `abstract`.
+- `lailatulqadar/sources`, "Evidence and sources" ("Dalil dan rujukan"): the verses and hadith the page quotes and the works its notes name, each linked to its note. The ids (`#quote-N`, `#note-N`) are the structured data's, and the Article `citation` now reads the same list (`lailatulqadar_page_sources()`), so the two cannot part. Left off the Hadith and Sources page, which is that list.
+- `lailatulqadar/path-nav`: the previous and next published pages of the reading path (the guide menu's `path` set), "Previous" and "Next" or "Sebelumnya" and "Seterusnya".
+- The Guide page box on the page editor: "Last reviewed against its sources" (`_lq_reviewed`) and In brief points (`_lq_brief`). A review date also goes into the WebPage as `lastReviewed`.
+- `css/page-parts.css`, loaded on guide pages only.
+
+### Changed
+- Every table on a guide page takes the `lq-table` style, and its figure is a focusable region named by its caption, so a wide table scrolls from the keyboard.
+- The theme is licensed under the GNU GPL version 3 or later (it was version 2 or later). `LICENSE` holds the full text, and `style.css` and `readme.txt` carry the new header lines. The theme images in `images/` follow.
+- `.claude/skills/theme-docs/SKILL.md` gains its Licence section.
+- `tests/schema-graph-test.php` loads `inc/page-parts.php`.
+
 ## 1.18.9 (2026-11-05)
 
 Documentation only. No page, setting or public identifier changes. Setup runs once on the version change and finds no article to change, and the error pages are written again with the new version.

@@ -103,7 +103,7 @@ Menus list published pages only. A draft joins the menus when it is published; t
 
 = I see "Back shortly" on the site. =
 
-The theme is incomplete on the server, usually because an upload is still running or stopped part-way. Upload the missing files, or the whole folder again. The login screen keeps working.
+The theme is incomplete on the server, usually because an upload is still running or stopped part-way. Upload the missing files, or the whole folder again. The login screen keeps working, unless the file missing or broken is functions.php itself.
 
 = My host runs Nginx. =
 

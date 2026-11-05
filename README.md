@@ -140,7 +140,7 @@ The login screen (known by its path), AJAX, cron and WP-CLI go on. The admin see
 
 ### Accounts, probes and XML-RPC
 
-- Visitors who are not logged in get no `/wp/v2/users` routes, and `?author=N` answers them with a 404. Logged-in editors keep both.
+- Visitors who are not logged in get no `/wp/v2/users` routes, and `?author=N` answers them with a 404. Any logged-in user, a subscriber included, keeps both (`is_user_logged_in()`).
 - Scanner probes (PHP files that are not WordPress's entry points, and dot files such as `.env`) get a short 404 on `init`. A real file behind the path is never cut short. `tests/hardening-test.php` covers it.
 - The Security tab turns off XML-RPC, application passwords and REST writes from outside a logged-in browser, all on by default. It also holds gambling spam and anything published from outside the editor as Pending, and answers 410 Gone on the address of spam it trashed.
 - Failed logins are counted by account name for a rolling day, and each administrator login is recorded with its time and IP address.

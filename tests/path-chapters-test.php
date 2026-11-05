@@ -6,6 +6,10 @@
  * @package Lailatulqadar
  */
 
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
+
 define( 'ABSPATH', __DIR__ . '/' );
 define( 'LQ_DIR', dirname( __DIR__ ) );
 function add_shortcode() {}

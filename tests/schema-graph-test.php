@@ -22,6 +22,10 @@
  * @package Lailatulqadar
  */
 
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
+
 $root = dirname( __DIR__ );
 
 if ( isset( $argv[1] ) && 'render' === $argv[1] ) {

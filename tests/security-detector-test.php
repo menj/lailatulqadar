@@ -7,6 +7,10 @@
  * @package Lailatulqadar
  */
 
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
+
 define( 'LQ_SECURITY_TEST', true );
 define( 'ABSPATH', __DIR__ . '/' );
 define( 'LQ_DIR', dirname( __DIR__ ) ); // lq_page_definitions() reads inc/data/pages.json from here.

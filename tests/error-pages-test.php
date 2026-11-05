@@ -78,6 +78,10 @@ err_check( 'written' === lailatulqadar_error_install()['maintenance.php'] && fil
 err_check( lailatulqadar_error_needs_install(), 'with nothing remembered, the files need writing' );
 lailatulqadar_error_auto_install();
 err_check( ! lailatulqadar_error_needs_install(), 'after an automatic install nothing is pending' );
+file_put_contents( "$err_tmp/maintenance.php", str_replace( 'Back shortly', 'Edited', (string) file_get_contents( "$err_tmp/maintenance.php" ) ) );
+err_check( lailatulqadar_error_needs_install(), 'an edited copy of its own is noticed with the fingerprint current' );
+lailatulqadar_error_maybe_install();
+err_check( 'installed' === lailatulqadar_error_state( 'maintenance.php' ), 'an administrator\'s visit repairs it' );
 unlink( "$err_tmp/php-error.php" );
 err_check( lailatulqadar_error_needs_install(), 'a missing file is noticed' );
 lailatulqadar_error_maybe_install();

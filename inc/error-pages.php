@@ -87,7 +87,8 @@ function lailatulqadar_error_is_other_theme( $path ) {
 		return false;
 	}
 	$head = (string) file_get_contents( $path, false, null, 0, 400 ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-	return 1 === preg_match( '/Written by the .{1,60} theme; safe to delete/', $head );
+	// The mark must sit on a comment line of the file's header.
+	return 1 === preg_match( '~^//[^\n]*Written by the [^\n]{1,80} theme; safe to delete~m', $head );
 }
 
 /**
@@ -164,8 +165,9 @@ function lailatulqadar_error_needs_install() {
 		return true;
 	}
 	foreach ( array_keys( lailatulqadar_error_dropins() ) as $name ) {
-		$path = WP_CONTENT_DIR . '/' . $name;
-		if ( ! file_exists( $path ) || lailatulqadar_error_is_other_theme( $path ) ) {
+		// Missing, another theme's leftover, or a copy of the theme's own that
+		// differs from what it would write now (edited or half restored).
+		if ( in_array( lailatulqadar_error_state( $name ), array( 'missing', 'theme', 'outdated' ), true ) ) {
 			return true;
 		}
 	}
@@ -205,12 +207,14 @@ add_action( 'admin_init', 'lailatulqadar_error_maybe_install' );
 
 /**
  * Remove the theme's own drop-ins when another theme is activated. Only files
- * carrying one of the theme's markers are deleted.
+ * carrying one of the theme's markers are deleted. On a network the files
+ * are left in place: wp-content is shared, and another site may still use
+ * this theme.
  *
  * @return void
  */
 function lailatulqadar_error_remove() {
-	if ( is_multisite() && ! is_main_site() ) {
+	if ( is_multisite() ) {
 		return;
 	}
 	foreach ( array_keys( lailatulqadar_error_dropins() ) as $name ) {

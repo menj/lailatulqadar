@@ -10,7 +10,7 @@ You can skip versions: upload the newest zip over any 1.9.x and open any admin s
 4. Open any admin screen as an administrator. Setup runs, the error pages are written and the `.htaccess` sections are checked.
 5. Read the note below for every version you pass, and the setup report on the Tools tab.
 
-An upload straight into the live folder also works for most files. While one is missing, visitors see a 503 "Back shortly" page and the login screen keeps working. `functions.php` is the exception, since it holds that guard: if it is cut off part-way, visitors get a PHP error until it is whole.
+An upload straight into the live folder is riskier. While one of the PHP files `functions.php` loads is missing, visitors see a 503 "Back shortly" page and the login screen keeps working. Nothing checks `functions.php` itself, the templates, the styles, the scripts or `content/`, so the temporary folder and the rename stay the safe way.
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 

@@ -211,7 +211,7 @@ The first line refuses `.git` and `.claude` anywhere on the site, as the section
 
 The `(/|$)` endings also catch a PHP file asked for with path info after it, as the Apache rules do.
 
-Leave out the last line while XML-RPC is switched on. For WordPress in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`, and the theme-folder rules with it (`^/blog/wp-content/themes/lailatulqadar/`). WordPress also reads `wp-config.php` from the folder above its own, so refuse both copies: `location ~ ^/blog/wp-config\.php(/|$) { return 403; }` and `location ~ ^/wp-config\.php(/|$) { return 403; }`.
+Leave out the last line while XML-RPC is switched on. For WordPress in a subfolder, put its path in front of every rule but the first (the `.git` and `.claude` rule stays global), as in `^/blog/wp-includes/`, and the theme-folder rules with it (`^/blog/wp-content/themes/lailatulqadar/`). WordPress also reads `wp-config.php` from the folder above its own, so refuse both copies: `location ~ ^/blog/wp-config\.php(/|$) { return 403; }` and `location ~ ^/wp-config\.php(/|$) { return 403; }`.
 
 ### The installer
 

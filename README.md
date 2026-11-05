@@ -186,13 +186,15 @@ RewriteRule ^wp-content/themes/lailatulqadar/docs(/(?!settings\.md$)|$) - [F]
 # END Lailatul Qadar: block direct file access
 ```
 
-"Block xmlrpc.php" is there only while XML-RPC is off. Other themes the owner runs use the same marker, so a switch between them never writes it twice.
+"Block xmlrpc.php" is there only while XML-RPC is off. The marker name is a common one, so a switch between themes that use it never writes the section twice.
 
 The rules carry the site's own folder prefixes. With WordPress in its own folder below the `.htaccess`, a rule for `wp-config.php` one folder up is added. Define `LQ_BLOCK_DIRECT_FILES` as false to leave the second section out. `tests/htaccess-files-test.php` checks the lines and the theme's own files.
 
 ### Nginx
 
-Nginx reads no `.htaccess`. Put these in the server block above every other regex `location`, the `location ~ \.php$` block that hands PHP to PHP-FPM and any static-file block among them: Nginx takes the first regex location that matches, so a rule further down never runs. Where the host keeps such blocks in an include, merge the denials into them instead.
+Nginx reads no `.htaccess`. Put these in the server block above every other regex `location`, the `location ~ \.php$` block that hands PHP to PHP-FPM and any static-file block among them: Nginx takes the first regex location that matches, so a rule further down never runs.
+
+Where the host keeps such blocks in an include, merge the denials into them instead. Check for a matching `location ^~` or exact `location =` block too (for `/wp-content/` or the themes folder, say): Nginx skips every regex location after one of those matches, so put the denials inside it.
 
 ```nginx
 location ~ /\.(git|claude) { return 403; }

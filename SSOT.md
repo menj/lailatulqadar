@@ -53,7 +53,7 @@ Version 1.18.9. This file records the architecture, stored data and binding deci
 | `inc/image-sitemap.php` | Image sitemap at /image-sitemap.xml (featured images and photo blocks of every published page), named in robots.txt; off while an SEO plugin is active |
 | `blocks/breadcrumbs/` | Visible breadcrumbs above the page title |
 | `inc/seo.php` | Title tag (also under Rank Math), meta description (stored on pages; excerpt on posts, term description on archives), canonical link on archives, editor box, SEO plugin detection |
-| `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and the sister sites |
+| `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and to other sites |
 | `inc/data/network-links.json` | Shared phrase map of the seven-site network; identical in every theme, edit it in all seven together |
 | `inc/data/path-chapters.json` | The 4 chapters of the reading path on the front page (page keys and an English and a Malay heading each), read by `lq_path_chapters()` and checked by `tests/path-chapters-test.php`; the guide menu block shows them with `chapters` on. Data only, read with `json_decode()`. The chapters group the reading order and never change it (docs/blocks.md) |
 | `inc/data/pages.json` | The page registry: per page key, the menu sets and, for each language role, title, slug, menu label, title tag, meta description and focus keyword. The order of the keys is the reading order. Data only, read with `json_decode()` |
@@ -240,7 +240,7 @@ English text anywhere in the theme (page content, interface strings, JavaScript 
 
 ## Public wording
 
-Pages, the readme and `docs/settings.md` (both served) never say that the site is related to other sites or that it belongs to a group of sites. Links to other sites are ordinary links, and the readme and `docs/settings.md` call them links to other sites. The Theme Options screen, which only administrators see, still labels them sister sites.
+Pages, the readme and `docs/settings.md` (both served) never say that the site is related to other sites or that it belongs to a group of sites. Links to other sites are ordinary links, and the readme and `docs/settings.md` call them links to other sites. The Theme Options screen, which only administrators see, still uses an older label for them.
 
 ## Release checklist
 

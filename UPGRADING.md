@@ -72,7 +72,7 @@ Upload the zip and open any admin screen as an administrator. Setup clears the p
 
 Upload the new zip over 1.9.18 and open any admin screen as an administrator. Setup refreshes the Night Planner and The Last Ten Nights (English) unless edited. The Security tab (Appearance > Theme Options > Security) is on by default: XML-RPC, application passwords and REST writes from outside the browser stop at once. Writing in the editor, Rank Math and everything visitors do are unchanged.
 
-After the October 2026 attack on the sister site, the owner checklist:
+After the October 2026 attack, the owner checklist:
 
 1. Change the password of every administrator to a long random one used nowhere else, then Log Out Everywhere Else (Users > Profile), or press "Log out all sessions" on the Security tab.
 2. Create a new administrator whose name is not the site name, log in as it, and delete the old account, attributing its content to the new one.
@@ -300,16 +300,16 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 - Duʿāʾ, evidence and Qurʾān verse blocks, and a glossary. `SSOT.md` planned them for November to mid-December 2026, and `blocks/` has none of them yet.
 - A performance pass and a pre-season SEO review, by 15 January 2027. Ramadan 1448 is expected to begin on 8 February 2027, and `SSOT.md` sets this date.
 - Keep the `.htaccess` sections on a network. `lq_sec_remove_htaccess()` takes them out on any theme switch, while another site on the network may still run the theme; the error pages already stay.
-- Refuse the core files without mod_rewrite. The direct-access section is inside `<IfModule mod_rewrite.c>` only, where another of the owner's themes adds an Apache 2.4 `<If>` for a server without it.
+- Refuse the core files without mod_rewrite. The direct-access section is inside `<IfModule mod_rewrite.c>` only; an Apache 2.4 `<If>` would cover a server without it.
 
 ### Later
 
-- Protect the login screen. The logs for October and November show 1,977 login form posts, many in pairs from rotating addresses every 12 minutes. Two of the owner's other themes offer a private login address.
+- Protect the login screen. The logs for October and November show 1,977 login form posts, many in pairs from rotating addresses every 12 minutes. A private login address would end most of it.
 - Find the broken link behind `/wp-login.php%7ccontact@menj.org`, asked for 164 times in the same logs. Some page outside the theme seems to join the login address and an email with a pipe.
 - Extend the Umm al-Qura table past 1473 AH (2051), as `SSOT.md` asks.
 
 ### Ideas
 
-- Remove development files from a live site after an update, as two of the owner's other themes do. Here the `.htaccess` files refuse them, which does nothing on Nginx.
+- Remove development files from a live site after an update. Here the `.htaccess` files refuse them, which does nothing on Nginx.
 - Check the one 500 on `/ms/embed/` in the logs.
 - Before upgrading adhan, check its upstream source: `js/vendor/adhan.js` marks its shadow-angle calculation with a TODO.

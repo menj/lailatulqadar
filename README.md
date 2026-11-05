@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.18.10 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.18.11 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 7.4 or later |

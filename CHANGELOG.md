@@ -2,6 +2,14 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.18.11 (2026-11-05)
+
+Documentation only. No code, setting or public identifier changes.
+
+### Changed
+- The FTP update steps in `readme.txt` and `UPGRADING.md` stage the new folder inside `wp-content/themes/` as `lailatulqadar-new`, with its `.htaccess` files sent first, then rename it into place. On Nginx, which ignores `.htaccess`, they ask for the server rules in `README.md` first. They used to stage it outside the web root, and a rename from there can fail when the two folders sit on different filesystems.
+- `.claude/skills/theme-docs/SKILL.md` carries the same rule.
+
 ## 1.18.10 (2026-11-05)
 
 The parts of an article page, built into the guide pages (`templates/page.html`), since the site has no blog. No article, setting or public identifier changes. Setup runs once on the version change and finds no article to change.

@@ -5,14 +5,18 @@ You can skip versions: upload the newest zip over any 1.9.x and open any admin s
 ## Updating an existing site
 
 1. Turn on hidden files in the FTP program (in FileZilla: Server > Force showing hidden files). The theme carries `.htaccess` files in its own folder and in `tests/`, `bin/` and `docs/`.
-2. Upload the new `lailatulqadar` folder as `lailatulqadar-new` to a temporary folder outside the web root (beside `public_html`, never inside it), so no visitor can reach it while it uploads.
-3. Rename the live folder in `wp-content/themes/` to `lailatulqadar-old` and at once move `lailatulqadar-new` there as `lailatulqadar`, with Appearance > Themes closed, at a quiet hour. A page asked for between the two renames finds no theme, and that screen switches the site to another theme if it finds the folder missing. If WordPress did switch to another theme, activate the theme again under Appearance > Themes. Delete the old one once the site looks right.
+2. Upload the new `lailatulqadar` folder into `wp-content/themes/` as `lailatulqadar-new`, its `.htaccess` files first (the theme folder's, then those in `tests/`, `bin/` and `docs/` when the copy has them), so on Apache none of its private files can be read while the rest uploads. Nginx ignores `.htaccess`: on an Nginx host, check first that the server rules in `README.md` are in place, since they cover `lailatulqadar-new` too. The folder stays on the same filesystem as the live one, so the rename is a single step.
+3. Rename the live folder to `lailatulqadar-old` and at once rename `lailatulqadar-new` to `lailatulqadar`, with Appearance > Themes closed, at a quiet hour. A page asked for between the two renames finds no theme, and that screen switches the site to another theme if it finds the folder missing. If WordPress did switch to another theme, activate the theme again under Appearance > Themes. Delete the old one once the site looks right.
 4. Open any admin screen as an administrator. Setup runs, the error pages are written and the `.htaccess` sections are checked.
 5. Read the note below for every version you pass, and the setup report on the Tools tab.
 
 An upload straight into the live folder is riskier. While one of the PHP files `functions.php` loads is missing, visitors see a 503 "Back shortly" page and the login screen keeps working. Nothing checks `functions.php` itself, the templates, the styles, the scripts or `content/`, so the temporary folder and the rename stay the safe way.
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
+
+## To 1.18.11
+
+Nothing to do. Documentation only: the FTP steps above now stage the new folder inside `wp-content/themes/`.
 
 ## To 1.18.10
 

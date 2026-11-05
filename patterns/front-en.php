@@ -30,8 +30,8 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>The pages follow one another in order, from first principles to preparation for each night.</p>
+<p>The pages follow one another in 4 chapters: what the night is, when to look for it, how to keep it, and the questions and evidence behind it.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:lailatulqadar/guide-menu {"set":"path"} /--></div>
+<!-- wp:lailatulqadar/guide-menu {"set":"path","chapters":true} /--></div>
 <!-- /wp:group -->

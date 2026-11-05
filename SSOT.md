@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.18.1. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.18.5. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -50,6 +50,7 @@ Version 1.18.1. This file records the architecture, stored data and binding deci
 | `inc/seo.php` | Title tag (also under Rank Math), meta description (stored on pages; excerpt on posts, term description on archives), canonical link on archives, editor box, SEO plugin detection |
 | `inc/contextual-links.php` | Contextual links in the running text of guide pages and posts, to this site and the sister sites |
 | `inc/data/network-links.json` | Shared phrase map of the seven-site network; identical in every theme, edit it in all seven together |
+| `inc/data/path-chapters.json` | The 4 chapters of the reading path on the front page (page keys and an English and a Malay heading each), read by `lq_path_chapters()`; the guide menu block shows them with `chapters` on. Data only, read with `json_decode()`. The chapters group the reading order and never change it (docs/blocks.md) |
 | `inc/data/pages.json` | The page registry: per page key, the menu sets and, for each language role, title, slug, menu label, title tag, meta description and focus keyword. The order of the keys is the reading order. Data only, read with `json_decode()` |
 | `inc/data/contextual-links-ms.json` | Malay phrases for the Malay guide pages, keyed by page key |
 | `inc/setup.php` | Setup on activation, on update and on demand: page creation, publishing of shipped articles, content refresh, trashing of obsolete copies, draft renaming, SEO prefill |

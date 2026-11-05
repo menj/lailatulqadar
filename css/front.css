@@ -395,6 +395,29 @@ ol.lq-menu--path a:hover {
 	color: var(--wp--preset--color--accent-1);
 }
 
+/* Reading path in chapters (front page). One counter runs through every
+   chapter's list, so the numbers carry on from one chapter to the next. */
+.lq-menu--chapters {
+	margin-top: 1.5rem;
+	counter-reset: lq-path;
+}
+
+.lq-menu--chapters ol.lq-menu--path {
+	margin-top: 0.5rem;
+	counter-reset: none;
+}
+
+.lq-menu__chapter {
+	margin: 2rem 0 0;
+	font-size: var(--wp--preset--font-size--medium);
+	font-weight: 600;
+	color: var(--wp--preset--color--accent-2);
+}
+
+.lq-menu__chapter:first-child {
+	margin-top: 0;
+}
+
 /* HTML sitemap */
 ul.lq-menu--sitemap {
 	margin: 0;

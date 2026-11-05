@@ -7,10 +7,25 @@ Both blocks render on the server and appear in the Theme category of the inserte
 Attribute `set`:
 - `header`: short labels for the main pages, marking the current page.
 - `path`: every guide page in reading order as a numbered list. Editors see a notice when no page is published; visitors see nothing.
+
+Attribute `chapters` (boolean, default off; "Split into chapters" in the block settings): with `set` `path`, the list is split under the headings in `inc/data/path-chapters.json`, and the numbers run on from one chapter to the next. Each chapter names its page keys in reading order and a heading for each language role. If the path and the chapters do not line up, for instance after a page joins the path, the plain list is shown until the file is updated.
 - `footer`: Sources, About, Sitemap and Contact, the footer note, and the copyright line.
 - `sitemap`: every published guide page as a plain list; used on the HTML sitemap pages.
 
 The list follows the visitor's language and includes published pages only.
+
+### The front page as one story
+
+The front page (`patterns/front-en.php`, `patterns/front-ms.php`) has two sections, in this order. The verse hero opens it with Q 97:3, the title and the lede: the claim that one night is better than a thousand months. "Read the guide" then carries the reader through the reading path in 4 chapters, which follow the order of `inc/data/pages.json`:
+
+| Chapter | Pages | Job in the story |
+|---|---|---|
+| What the night is (Mengenal Lailatulqadar) | Start Here, What Is, Sūrat al-Qadr | The question, answered from the Qurʾān |
+| When to look for it (Waktu untuk mencarinya) | When Is, The Last Ten Nights, Signs | The evidence on its timing |
+| How to keep it (Cara menghidupkannya) | Prayer and Worship, Duʿāʾ, Night Planner | The reader's next step |
+| Questions and evidence (Soalan dan dalil) | FAQ, Hadith and Sources, The Islamic Dilemma | Objections and the sources to test the guide by |
+
+The reading order itself is fixed in `SSOT.md`; the chapters only group it.
 
 ## Language switcher (`lailatulqadar/language-switcher`)
 

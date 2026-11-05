@@ -64,6 +64,29 @@ if ( 'sitemap' === $lq_set ) :
 endif;
 
 if ( 'path' === $lq_set ) :
+	// On the front page the path is split into chapters, so the guide reads
+	// as one story; the numbering runs on through them.
+	$lq_groups = empty( $attributes['chapters'] ) ? array() : lq_path_groups( $lq_items );
+	if ( $lq_groups ) :
+		$lq_wrap = get_block_wrapper_attributes( array( 'class' => 'lq-menu lq-menu--chapters' ) );
+		?>
+	<div <?php echo $lq_wrap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+		<?php foreach ( $lq_groups as $lq_group ) : ?>
+		<h3 class="lq-menu__chapter"><?php echo esc_html( $lq_group['heading'] ); ?></h3>
+		<ol class="lq-menu lq-menu--path" start="<?php echo (int) $lq_group['start']; ?>">
+			<?php foreach ( $lq_group['items'] as $lq_item ) : ?>
+				<?php if ( ! empty( $lq_item['upcoming'] ) ) : ?>
+				<li class="is-upcoming"><span class="lq-menu__upcoming"><span class="lq-menu__title"><?php echo esc_html( $lq_item['title'] ); ?></span><span class="lq-menu__soon"><?php echo esc_html( $lq_soon ); ?></span></span></li>
+				<?php else : ?>
+				<li><a href="<?php echo esc_url( $lq_item['url'] ); ?>"><?php echo esc_html( $lq_item['title'] ); ?></a></li>
+				<?php endif; ?>
+			<?php endforeach; ?>
+		</ol>
+		<?php endforeach; ?>
+	</div>
+		<?php
+		return;
+	endif;
 	?>
 	<ol <?php echo $lq_wrap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 		<?php foreach ( $lq_items as $lq_item ) : ?>

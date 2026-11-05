@@ -12,6 +12,10 @@
 			"type": "string",
 			"enum": [ "header", "path", "footer", "sitemap" ],
 			"default": "header"
+		},
+		"chapters": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {

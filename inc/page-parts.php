@@ -293,7 +293,8 @@ function lailatulqadar_contents_html( $html, $min, $role ) {
 
 /**
  * Put the contents list into a guide page's text, after the In brief box
- * when the text opens with one, else at the top. Priority 30: after the
+ * when the text opens with one, else at the top, unless the text places
+ * its own list (the [auto_toc] shortcode or the Contents block). Priority 30: after the
  * contextual links (25), which never link inside a nav.
  *
  * @param string $content Rendered text.
@@ -302,6 +303,10 @@ function lailatulqadar_contents_html( $html, $min, $role ) {
 function lailatulqadar_contents_filter( $content ) {
 	$id = lailatulqadar_current_guide_page();
 	if ( ! $id || is_admin() || is_feed() || ! is_main_query() || (int) get_the_ID() !== $id || doing_filter( 'get_the_excerpt' ) ) {
+		return $content;
+	}
+	// A list placed by hand (inc/contents.php, at 29) takes the place of this one.
+	if ( false !== strpos( $content, 'lq-contents--placed' ) ) {
 		return $content;
 	}
 	$nav = lailatulqadar_contents_html( $content, max( 1, (int) apply_filters( 'lailatulqadar_contents_min', 3 ) ), lq_role_of( $id ) );

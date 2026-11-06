@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.18.13 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.19.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 7.4 or later |
@@ -42,6 +42,7 @@ The checks, run from the theme folder. Each test file runs on its own without Wo
 
 ```bash
 find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
+php tests/contents-test.php
 php tests/error-pages-test.php
 php tests/hardening-test.php
 php tests/htaccess-files-test.php
@@ -82,8 +83,8 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 | `templates/` | front-page, page, page-home, page-no-title, index, search, 404 |
 | `parts/` | header and footer |
 | `patterns/` | The English and Malay front pages, and the empty-results message |
-| `blocks/` | breadcrumbs, guide-menu, image-credits, in-brief, language-switcher, logo-mark, night-window, odd-nights, page-details, path-nav, photo, scheme-toggle, social-icons, sources |
-| `inc/` | One file per feature: languages, setup, SEO and schema, the Ramadan calendar, the night window, contextual links, images, security, hardening, error pages, the settings screen and the built-in plugin features |
+| `blocks/` | breadcrumbs, contents, guide-menu, image-credits, in-brief, language-switcher, logo-mark, night-window, odd-nights, page-details, path-nav, photo, scheme-toggle, social-icons, sources |
+| `inc/` | One file per feature: languages, setup, SEO and schema, the Ramadan calendar, the night window, contextual links, images, the placed contents list, security, hardening, error pages, the settings screen and the built-in plugin features |
 | `inc/data/` | The page registry, the shared phrase map, the reading-path chapters, image credits, seed and title histories |
 | `content/<lang>/<key>.json` | The shipped articles, read with `json_decode()` and never executed |
 | `css/`, `js/`, `fonts/`, `images/` | Styles, scripts (the adhan prayer-time library in `js/vendor/`), self-hosted fonts, logo and photographs |
@@ -99,9 +100,21 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 - Strings come from `lailatulqadar_t()`, English or Malay by the page's language. The author's name stays in the structured data only.
 - Dates: `lailatulqadar_date_label()` adds the Hijri date from `IntlDateFormatter` with the `islamic-umalqura` calendar. Without intl it returns '' and the date is left out.
 - Contents: `lailatulqadar_heading_anchor()` (on `render_block_core/heading`) gives H2s an id; `lailatulqadar_contents_filter()` (on `the_content` at 30, after the contextual links at 25) inserts the list.
+- A list placed by hand (`[auto_toc]` or `lailatulqadar/contents`, see below) takes the place of the contents list.
 - Sources: `lailatulqadar_page_sources()` returns the quotations (`lq_sc_quotations()`) and the footnotes that name a source (`lq_sc_citation()`); `lq_schema_graph()` builds the `citation` nodes from the same list.
 - Tables: `lailatulqadar_table_parts()` (on `render_block_core/table`) adds `lq-table`, `role="region"`, `tabindex="0"` and the caption as the label.
 - Post meta: `_lq_reviewed` (Y-m-d) and `_lq_brief` (points, one a line), from the Guide page box.
+
+### Placed contents list
+
+`inc/contents.php`, from "WordPress Table-of-Contents Shortcode Done Properly" by Ikram Hawramani (MIT; the notice stays in the file header). It works on any page or post, guide page or not.
+
+- `[auto_toc tags="h2,h3" title="..."]` and the `lailatulqadar/contents` block (`blocks/contents/`, attributes `tags`, `title`, `showTitle`) both print a marker, an HTML comment holding the levels and title as base64 JSON (`lailatulqadar_toc_mark()`).
+- `lailatulqadar_toc_filter()` on `the_content` at 29 drops the paragraph wpautop puts round a marker, gives an id to each heading of the requested levels that has none (`lailatulqadar_toc_add_ids()`, which never reuses an id already in the text), and replaces each marker with `lailatulqadar_toc_html()`. In feeds and excerpts the markers are removed.
+- The list is `<nav class="lq-contents lq-contents--placed">` with nested `<ol>`; `lailatulqadar_toc_list()` closes every list. `lailatulqadar_contents_filter()` (30) skips a text that already holds one.
+- `lailatulqadar_toc_assets()` loads `css/page-parts.css` on a singular view whose text places a list.
+- The shortcode is registered on `init` at 20, after plugins load, so the theme's version wins over the plugin's.
+- The block works inside a page's or post's text. In a template, outside the text, it prints nothing visible.
 
 ## Settings
 
@@ -129,7 +142,7 @@ The Security tab is drawn by `inc/security.php`, with `js/security.js` and `css/
 | `lailatulqadar_is_guide_page` | Whether a page takes the guide page parts (default: the pages of the reading path) |
 | `lailatulqadar_contents_min` | Fewest H2 headings for a contents list (default 3) |
 
-Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]` and `[lailatulqadar_social_icons]`.
+Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`, `[lailatulqadar_social_icons]` and `[auto_toc]` (a contents list, `tags` and `title` attributes).
 
 | Constant | Set in | Effect |
 |---|---|---|
@@ -140,6 +153,7 @@ Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`
 | `LQ_TITLE_LIMIT`, `LQ_TITLE_SITE`, `LQ_TITLE_SEP` | `inc/seo.php` | 59, "Lailatulqadar" and " \| ": the whole title tag stays under 60 characters |
 | `LQ_SEC_FILES_MARKER` | `inc/security.php` | The marker of the direct-access section |
 | `LAILATULQADAR_META_REVIEWED`, `LAILATULQADAR_META_BRIEF` | `inc/page-parts.php` | `_lq_reviewed` and `_lq_brief`, the Guide page box's meta keys |
+| `LAILATULQADAR_TOC_MARK` | `inc/contents.php` | The prefix of the placed contents list's marker comment |
 
 The theme defines no `*_KEEP_*` or `*_ALLOW_*` constant, since it has no production clean-up of development files and no switch for core files (see the roadmap in `UPGRADING.md`).
 

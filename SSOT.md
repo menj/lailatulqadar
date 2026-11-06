@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.18.13. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.19.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -79,6 +79,7 @@ Version 1.18.13. This file records the architecture, stored data and binding dec
 | `templates/page-home.html` | The language home pages |
 | `templates/search.html`, `index.html`, `page-no-title.html` | Search results, the fallback view (title and content, as a page) and the page without a title |
 | `inc/page-parts.php`, `css/page-parts.css`, `blocks/page-details/`, `blocks/in-brief/`, `blocks/sources/`, `blocks/path-nav/` | The guide page parts: dates with their Hijri dates, last review and reading time under the title; the contents list; the In brief box from the Guide page box; Evidence and sources (the list the Article `citation` reads); the previous and next row of the reading path; the table style on every table |
+| `inc/contents.php`, `blocks/contents/`, `tests/contents-test.php` | The contents list placed by hand: the `[auto_toc]` shortcode (adapted from Ikram Hawramani's MIT-licensed plugin, whose notice stays in the file) and the Contents block, on any page or post. On a guide page it takes the place of the automatic list. The shortcode name and its `tags` and `title` attributes must not change, so text written for the plugin keeps working |
 | `inc/no-blog.php`, `tests/no-blog-test.php` | The retired blog: drops the post templates, sends post views and feeds to the language home with a 301, keeps posts out of the sitemaps, and runs the one-time migration. Run `php tests/no-blog-test.php` |
 | `patterns/no-results.php` | Bilingual message for empty archives and searches |
 | `inc/login.php`, `css/login.css` | Login screen styling, brand block, title, favicon |
@@ -269,4 +270,4 @@ Pages, the readme and `docs/settings.md` (both served) never say that the site i
 
 ## Credits that must stay
 
-The Copyright section of `readme.txt` (fonts, adhan, the social icons, the theme images and the photographs), the licence files in `fonts/` and `js/vendor/`, and the credit beneath every image and in the credits list on the Sources page.
+The Copyright section of `readme.txt` (fonts, adhan, the social icons, the theme images and the photographs), the licence files in `fonts/` and `js/vendor/`, the MIT notice in the header of `inc/contents.php`, and the credit beneath every image and in the credits list on the Sources page.

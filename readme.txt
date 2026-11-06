@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.18.13
+Stable tag: 1.19.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -22,7 +22,8 @@ The site has no blog. Post addresses and feeds send visitors to the home page of
 * English and Malay without a translation plugin: page language, hreflang links, a language switcher and a Malay site name.
 * Night and dawn colour schemes, an automatic scheme that follows the device, and a light and dark switch for visitors.
 * Self-hosted typefaces: EB Garamond for Latin text, KFGQPC Hafs for Qurʾānic text only, Arslan Wessam for hadith and Arabic quotations.
-* Blocks: guide menu, Night Planner (night window), odd nights, breadcrumbs, logo mark, scheme toggle, language switcher, photo and image credits.
+* Blocks: guide menu, Night Planner (night window), odd nights, breadcrumbs, logo mark, scheme toggle, language switcher, photo, image credits and contents.
+* A contents list you place yourself, on any page: the Contents block, or the `[auto_toc]` shortcode written for the "Table-of-Contents Shortcode Done Properly" plugin, which now works without it.
 * A perpetual Ramadan calendar from the Umm al-Qura table up to 1473 AH, with the `[lq_ramadan]` shortcode.
 * Title tags in the form "page title | Lailatulqadar" under 60 characters, meta descriptions, structured data, an XML and an image sitemap. With Rank Math active the theme hands over and joins its graph.
 * Guide pages show when they were published and last updated, the date they were last checked against their sources, the reading time, a contents list, the evidence and sources they rest on, and the previous and next page of the reading path. Every date carries its Hijri date, in English or in Malay as the page is.
@@ -122,11 +123,18 @@ The theme writes its server rules only on Apache. On Nginx, give your host the r
 
 Administrators (the manage_options capability). The page holds the security switches and setup, so the theme keeps it to administrators.
 
+= How do I add a table of contents? =
+
+Add the Contents block where the list should go, and choose the headings to list and the title in the block settings. In text without blocks, write [auto_toc] on a line of its own; [auto_toc tags="h2,h3,h4" title="In this article"] lists three levels under your own title, and title="" leaves the title out. Guide pages get a list of their H2 headings without either; a list you place takes its place.
+
 = My site is in a subfolder. Where does the browser icon go? =
 
 Browsers ask for /favicon.ico at the top of the domain, such as example.com/favicon.ico, even when the site lives in example.com/blog/. WordPress never sees that request, so put a copy of the theme's favicon.ico in the domain root folder. The icon tags in each page cover the pages either way. If you have set a Site Icon, put that icon there as favicon.ico instead.
 
 == Upgrade Notice ==
+
+= 1.19.0 =
+Nothing to do. If you used the "Table-of-Contents Shortcode Done Properly" plugin or its code in functions.php, remove it: the theme now runs [auto_toc] itself.
 
 = 1.18.13 =
 Replace the theme files. On a site in a subfolder, also put a copy of images/favicon.ico in the domain root folder (or, with a Site Icon set, that icon as favicon.ico); otherwise nothing to do.
@@ -153,6 +161,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.19.0 =
+* A contents list you place yourself: the new Contents block, or the [auto_toc] shortcode. It lists the headings you choose (H2 and H3 by default), nested by level, with a title of your own or "On this page" ("Kandungan halaman" on Malay pages). On a guide page it takes the place of the automatic list.
 
 = 1.18.13 =
 * The settings and the readme speak of the other sites in plain words. Links to them stay.
@@ -191,4 +202,5 @@ Social icons in images/social (X, Facebook, YouTube, Instagram, TikTok, Threads,
 KFGQPC HAFS Uthmanic Script, Copyright 2010 King Fahd Glorious Quran Printing Complex. Free to use, copy and distribute; the file must not be modified.
 Served as a WOFF2 conversion of the original TTF by the owner's decision of 2026-10-26, accepting that restriction. See fonts/kfgqpc/LICENSE.txt.
 Theme images: the logo mark, favicons, touch icon, app icons and 512px logo (images/) are original artwork made for the theme; the pixel book (images/book-open.webp) was supplied by the site owner. Both are distributed with the theme under the GNU GPL version 3 or later.
+The contents list is adapted from "WordPress Table-of-Contents Shortcode Done Properly" by Ikram Hawramani, Copyright 2025. MIT License; the notice is kept in inc/contents.php.
 Photographs in images/commons/ come from Wikimedia Commons, Pixabay and Pexels under the licences listed per file in inc/data/images.json, and are credited beneath each image and on the Sources page.

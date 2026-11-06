@@ -1591,3 +1591,43 @@ msgstr ""
 #: inc/settings.php:895
 msgid "Tick Unlist this post in the Unlisted box of the page editor, or use Quick Edit or Bulk Edit in the page list. An unlisted page keeps its address but leaves search, the sitemaps, page lists and the REST lists, and carries noindex. The guide menus and the reading path follow the page registry and are not changed."
 msgstr ""
+
+#: js/editor-blocks.js
+msgid "Contents"
+msgstr ""
+
+#: js/editor-blocks.js
+msgid "Headings to list"
+msgstr ""
+
+#: js/editor-blocks.js
+msgid "H2 only"
+msgstr ""
+
+#: js/editor-blocks.js
+msgid "H2 and H3"
+msgstr ""
+
+#: js/editor-blocks.js
+msgid "H2 to H4"
+msgstr ""
+
+#: js/editor-blocks.js
+msgid "H2 to H6"
+msgstr ""
+
+#: js/editor-blocks.js
+msgid "Show a title"
+msgstr ""
+
+#: js/editor-blocks.js
+msgid "Leave empty for \"On this page\" (Malay: \"Kandungan halaman\")."
+msgstr ""
+
+#: js/editor-blocks.js
+msgid "On this page"
+msgstr ""
+
+#: js/editor-blocks.js
+msgid "The list of headings appears on the published page."
+msgstr ""

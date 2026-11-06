@@ -44,6 +44,10 @@ function is_feed() {
 function doing_filter() {
 	return false;
 }
+$GLOBALS['enqueued'] = 0;
+function wp_enqueue_style() {
+	++$GLOBALS['enqueued'];
+}
 function get_the_ID() {
 	return 0;
 }
@@ -75,6 +79,12 @@ check( false !== strpos( $taken, '<h4 id="deep-2">' ), 'id taken elsewhere on th
 $ar = '<h2>ليلة القدر</h2>';
 check( false !== strpos( lailatulqadar_toc_add_ids( $ar, array( 2 ) ), 'ليلة القدر</h2>' ), 'Arabic heading text untouched' );
 
+$unq = lailatulqadar_toc_add_ids( '<h2 id=section>Plain</h2><h2>Section</h2><h2 data-id="x">Data</h2>', array( 2 ) );
+check( false !== strpos( $unq, '<h2 id=section>Plain</h2>' ) && false !== strpos( $unq, '<h2 id="section-2">Section</h2>' ), 'unquoted id kept and not reused' );
+check( false !== strpos( $unq, '<h2 id="data" data-id="x">' ), 'data-id is not an id' );
+$unq_items = lailatulqadar_toc_items( $unq, array( 2 ) );
+check( 3 === count( $unq_items ) && 'section' === $unq_items[0]['id'], 'heading with an unquoted id is listed' );
+
 $items = lailatulqadar_toc_items( $ids, array( 2, 3 ) );
 check( 4 === count( $items ), 'h4 left out of an h2,h3 list' );
 check( 'Signs' === $items[1]['text'], 'footnote marker left out of the text' );
@@ -105,7 +115,9 @@ $done = lailatulqadar_toc_filter( $page );
 check( 0 === strpos( $done, '<nav class="lq-contents lq-contents--placed"' ), 'paragraph around the marker removed' );
 check( false !== strpos( $done, '>x --&gt; y</p>' ) && false !== strpos( $done, '<a href="#two">Two</a>' ), 'marker replaced with the list' );
 check( '<p>plain</p>' === lailatulqadar_toc_filter( '<p>plain</p>' ), 'text without a marker untouched' );
-check( false === strpos( lailatulqadar_toc_filter( lailatulqadar_toc_shortcode( '' ) . '<p>x</p>' ), '<!--' ), 'marker removed when no headings' );
+check( $GLOBALS['enqueued'] > 0, 'a rendered list loads its style' );
+$none = lailatulqadar_toc_filter( lailatulqadar_toc_shortcode( '' ) . '<p>x</p>' );
+check( '<!--lq-contents--placed--><p>x</p>' === $none, 'no headings: marker left as an empty placed note' );
 
 echo $fail ? "$fail failed\n" : "All checks passed\n";
 exit( $fail ? 1 : 0 );

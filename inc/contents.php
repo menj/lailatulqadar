@@ -120,6 +120,19 @@ function lailatulqadar_toc_text( $html ) {
 }
 
 /**
+ * The id in a tag's attribute text, quoted or not, or ''.
+ *
+ * @param string $attrs Attribute text of a tag.
+ * @return string
+ */
+function lailatulqadar_toc_attr_id( $attrs ) {
+	if ( ! preg_match( '/(?:^|\s)id\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'=<>`]+))/i', (string) $attrs, $m ) ) {
+		return '';
+	}
+	return (string) ( $m[1] . ( $m[2] ?? '' ) . ( $m[3] ?? '' ) );
+}
+
+/**
  * Gives an id to every heading of the given levels that has none. Ids
  * already in the text are kept and never given twice. Pure.
  *
@@ -132,14 +145,19 @@ function lailatulqadar_toc_add_ids( $html, $levels ) {
 		return $html;
 	}
 	$used = array();
-	if ( preg_match_all( '/\sid\s*=\s*["\']([^"\']+)["\']/i', $html, $m ) ) {
-		$used = array_fill_keys( $m[1], true );
+	if ( preg_match_all( '/<[a-z][a-z0-9-]*(\s[^>]*)>/i', $html, $m ) ) {
+		foreach ( $m[1] as $attrs ) {
+			$id = lailatulqadar_toc_attr_id( $attrs );
+			if ( '' !== $id ) {
+				$used[ $id ] = true;
+			}
+		}
 	}
 	$pattern = '#<h([' . implode( '', $levels ) . '])\b([^>]*)>(.*?)</h\1>#is';
 	return (string) preg_replace_callback(
 		$pattern,
 		static function ( $h ) use ( &$used ) {
-			if ( preg_match( '/\sid\s*=/i', $h[2] ) ) {
+			if ( '' !== lailatulqadar_toc_attr_id( $h[2] ) ) {
 				return $h[0];
 			}
 			$base = sanitize_title( remove_accents( lailatulqadar_toc_text( $h[3] ) ) );
@@ -170,10 +188,11 @@ function lailatulqadar_toc_items( $html, $levels ) {
 	}
 	foreach ( $m as $h ) {
 		$text = lailatulqadar_toc_text( $h[3] );
-		if ( '' !== $text && preg_match( '/\sid\s*=\s*["\']([^"\']+)["\']/i', $h[2], $id ) ) {
+		$id   = lailatulqadar_toc_attr_id( $h[2] );
+		if ( '' !== $text && '' !== $id ) {
 			$items[] = array(
 				'level' => (int) $h[1],
-				'id'    => $id[1],
+				'id'    => html_entity_decode( $id, ENT_QUOTES, 'UTF-8' ),
 				'text'  => $text,
 			);
 		}
@@ -244,8 +263,10 @@ function lailatulqadar_toc_html( $html, $levels, $title = null, $role = null ) {
 }
 
 /**
- * Replaces each marker with its list. In feeds and excerpts, where in-page
- * links lead nowhere, the markers are removed. Priority 29: after the
+ * Replaces each marker with its list, or with an empty
+ * `lq-contents--placed` comment when the text has no heading of its levels.
+ * In feeds and excerpts, where in-page links lead nowhere, the markers are
+ * removed. Priority 29: after the
  * contextual links (25), before the automatic contents list (30).
  *
  * @param string $content Rendered text.
@@ -279,7 +300,17 @@ function lailatulqadar_toc_filter( $content ) {
 		'#' . $mark . '#',
 		static function ( $m ) use ( $marks, $content, $role ) {
 			list( $levels, $title ) = $marks[ $m[1] ];
-			return lailatulqadar_toc_html( $content, $levels, $title, $role );
+			$list                   = lailatulqadar_toc_html( $content, $levels, $title, $role );
+			if ( '' === $list ) {
+				// No heading of its levels: a list was still placed, so the
+				// automatic list of a guide page stays out.
+				return '<!--lq-contents--placed-->';
+			}
+			// Also covers a list inside a synced pattern, which
+			// lailatulqadar_toc_placed() cannot see. A block theme renders
+			// the text before wp_head, so the style still goes in the head.
+			lailatulqadar_toc_enqueue_style();
+			return $list;
 		},
 		$content
 	);
@@ -301,12 +332,20 @@ function lailatulqadar_toc_placed( $post = null ) {
 }
 
 /**
+ * Enqueues the contents style (css/page-parts.css).
+ */
+function lailatulqadar_toc_enqueue_style() {
+	wp_enqueue_style( 'lailatulqadar-page-parts', LQ_URI . '/css/page-parts.css', array( 'lailatulqadar-front' ), LQ_VERSION );
+}
+
+/**
  * The contents style on a page or post that places a list; guide pages
- * load it already (inc/page-parts.php).
+ * load it already (inc/page-parts.php). A list in a synced pattern loads
+ * it when it renders (lailatulqadar_toc_filter()).
  */
 function lailatulqadar_toc_assets() {
 	if ( is_singular() && lailatulqadar_toc_placed( get_queried_object_id() ) ) {
-		wp_enqueue_style( 'lailatulqadar-page-parts', LQ_URI . '/css/page-parts.css', array( 'lailatulqadar-front' ), LQ_VERSION );
+		lailatulqadar_toc_enqueue_style();
 	}
 }
 add_action( 'wp_enqueue_scripts', 'lailatulqadar_toc_assets', 20 );

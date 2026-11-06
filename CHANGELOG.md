@@ -9,15 +9,15 @@ A contents list placed by hand, on any page: the "WordPress Table-of-Contents Sh
 ### Added
 - `inc/contents.php`: the `[auto_toc]` shortcode, with the plugin's `tags` (default `h2,h3`) and `title` attributes, so text written for the plugin works unchanged. `title=""` leaves the title out; the list then keeps a name for screen readers.
 - `blocks/contents/` (`lailatulqadar/contents`): the same list as a block, with the levels (H2 only, H2 and H3, H2 to H4, H2 to H6), a title switch and an optional title in its settings.
-- The list nests by heading level, reads "On this page" or "Kandungan halaman" by the page's language, and uses the contents style of the guide pages. `css/page-parts.css` loads on any page or post that places one.
+- The list nests by heading level, reads "On this page" or "Kandungan halaman" by the page's language, and uses the contents style of the guide pages. `css/page-parts.css` loads on any page or post that places one, also when the block sits in a synced pattern.
 - `tests/contents-test.php`.
 
 ### Changed
-- On a guide page, a placed list takes the place of the automatic contents list.
+- On a guide page, a placed list takes the place of the automatic contents list. It does so even when it finds no heading of its levels, so the automatic list never comes back with other levels and another title.
 
 ### Fixed (against the plugin)
 - The list is built on `the_content` at 29, once the text is rendered. The plugin built it at 99, after shortcodes had run, so the shortcode came out empty.
-- Headings keep their ids; only headings without one get an id, unique on the page. The rest of the text is not re-serialised, so Arabic passes through untouched.
+- Headings keep their ids, quoted or not (`id=intro`); only headings without one get an id, unique on the page. The rest of the text is not re-serialised, so Arabic passes through untouched.
 - Nested lists always close, however deep the last heading.
 - No style is printed in the head of every page; footnote markers are left out of the list text; in feeds and excerpts the list is left out.
 

@@ -110,9 +110,9 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 `inc/contents.php`, from "WordPress Table-of-Contents Shortcode Done Properly" by Ikram Hawramani (MIT; the notice stays in the file header). It works on any page or post, guide page or not.
 
 - `[auto_toc tags="h2,h3" title="..."]` and the `lailatulqadar/contents` block (`blocks/contents/`, attributes `tags`, `title`, `showTitle`) both print a marker, an HTML comment holding the levels and title as base64 JSON (`lailatulqadar_toc_mark()`).
-- `lailatulqadar_toc_filter()` on `the_content` at 29 drops the paragraph wpautop puts round a marker, gives an id to each heading of the requested levels that has none (`lailatulqadar_toc_add_ids()`, which never reuses an id already in the text), and replaces each marker with `lailatulqadar_toc_html()`. In feeds and excerpts the markers are removed.
+- `lailatulqadar_toc_filter()` on `the_content` at 29 drops the paragraph wpautop puts round a marker, gives an id to each heading of the requested levels that has none (`lailatulqadar_toc_add_ids()`, which never reuses an id already in the text), and replaces each marker with `lailatulqadar_toc_html()`, or with an empty `<!--lq-contents--placed-->` when the text has no heading of its levels. Ids are read quoted or not (`lailatulqadar_toc_attr_id()`). In feeds and excerpts the markers are removed.
 - The list is `<nav class="lq-contents lq-contents--placed">` with nested `<ol>`; `lailatulqadar_toc_list()` closes every list. `lailatulqadar_contents_filter()` (30) skips a text that already holds one.
-- `lailatulqadar_toc_assets()` loads `css/page-parts.css` on a singular view whose text places a list.
+- `lailatulqadar_toc_assets()` loads `css/page-parts.css` on a singular view whose text places a list; the filter also enqueues it when it renders one, which covers a list inside a synced pattern.
 - The shortcode is registered on `init` at 20, after plugins load, so the theme's version wins over the plugin's.
 - The block works inside a page's or post's text. In a template, outside the text, it prints nothing visible.
 

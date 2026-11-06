@@ -168,3 +168,19 @@
 		grid-column: 1;
 	}
 }
+
+/* Placed contents list (inc/contents.php): nested headings indent and the
+   list stays in one column so the nesting reads. */
+.lq-contents--placed .lq-contents__list {
+	columns: auto;
+}
+
+.lq-contents__list ol {
+	margin: 0.2rem 0 0;
+	padding-inline-start: 1.2rem;
+	list-style: lower-alpha;
+}
+
+.lq-contents__list ol ol {
+	list-style: lower-roman;
+}

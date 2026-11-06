@@ -15,6 +15,7 @@
 	var PanelBody = wp.components.PanelBody;
 	var SelectControl = wp.components.SelectControl;
 	var ToggleControl = wp.components.ToggleControl;
+	var TextControl = wp.components.TextControl;
 	var ServerSideRender = wp.serverSideRender;
 
 	registerBlockType( 'lailatulqadar/guide-menu', {
@@ -184,6 +185,57 @@
 				useBlockProps( { className: 'lq-nw-placeholder' } ),
 				el( 'strong', null, __( 'Night window', 'lailatulqadar' ) ),
 				el( 'p', null, __( 'Interactive timetable of the last ten nights. It appears on the published page.', 'lailatulqadar' ) )
+			);
+		},
+		save: function () {
+			return null;
+		}
+	} );
+
+	registerBlockType( 'lailatulqadar/contents', {
+		edit: function ( props ) {
+			var a = props.attributes;
+			return el(
+				'div',
+				useBlockProps( { className: 'lq-contents lq-contents--placeholder' } ),
+				el(
+					InspectorControls,
+					null,
+					el(
+						PanelBody,
+						{ title: __( 'Contents', 'lailatulqadar' ) },
+						el( SelectControl, {
+							label: __( 'Headings to list', 'lailatulqadar' ),
+							value: a.tags,
+							options: [
+								{ label: __( 'H2 only', 'lailatulqadar' ), value: 'h2' },
+								{ label: __( 'H2 and H3', 'lailatulqadar' ), value: 'h2,h3' },
+								{ label: __( 'H2 to H4', 'lailatulqadar' ), value: 'h2,h3,h4' },
+								{ label: __( 'H2 to H6', 'lailatulqadar' ), value: 'h2,h3,h4,h5,h6' }
+							],
+							onChange: function ( value ) {
+								props.setAttributes( { tags: value } );
+							}
+						} ),
+						el( ToggleControl, {
+							label: __( 'Show a title', 'lailatulqadar' ),
+							checked: !! a.showTitle,
+							onChange: function ( value ) {
+								props.setAttributes( { showTitle: value } );
+							}
+						} ),
+						a.showTitle && el( TextControl, {
+							label: __( 'Title', 'lailatulqadar' ),
+							help: __( 'Leave empty for "On this page" (Malay: "Kandungan halaman").', 'lailatulqadar' ),
+							value: a.title,
+							onChange: function ( value ) {
+								props.setAttributes( { title: value } );
+							}
+						} )
+					)
+				),
+				el( 'p', { className: 'lq-contents__title' }, a.showTitle && a.title ? a.title : __( 'On this page', 'lailatulqadar' ) ),
+				el( 'p', null, __( 'The list of headings appears on the published page.', 'lailatulqadar' ) )
 			);
 		},
 		save: function () {

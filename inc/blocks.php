@@ -2,7 +2,8 @@
 /**
  * Dynamic theme blocks (guide menu, night window, odd nights, breadcrumbs,
  * scheme toggle, logo mark, language switcher, photo, image credits, and the
- * guide page parts: page details, in brief, sources, previous and next) and
+ * guide page parts: page details, in brief, sources, previous and next; the
+ * contents list placed by hand) and
  * the Arabic paragraph styles.
  *
  * @package Lailatulqadar
@@ -42,6 +43,7 @@ function lq_register_blocks() {
 	register_block_type( LQ_DIR . '/blocks/in-brief' );
 	register_block_type( LQ_DIR . '/blocks/sources' );
 	register_block_type( LQ_DIR . '/blocks/path-nav' );
+	register_block_type( LQ_DIR . '/blocks/contents' );
 }
 add_action( 'init', 'lq_register_blocks' );
 

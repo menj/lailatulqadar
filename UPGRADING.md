@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.19.0
+
+Nothing to do. If the "WordPress Table-of-Contents Shortcode Done Properly" plugin is active, or its code sits in a child theme's `functions.php`, remove it: the theme now runs `[auto_toc]` itself, and the plugin would only add its own styles to every page. Text that uses the shortcode keeps working.
+
 ## To 1.18.13
 
 Replace the theme files. Nothing else changes. On a site in a subfolder, put a copy of `images/favicon.ico` in the domain root (or, with a Site Icon set, that icon as `favicon.ico`), since browsers ask for `/favicon.ico` there.

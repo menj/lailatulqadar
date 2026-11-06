@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/contents",
+	"title": "Contents",
+	"category": "theme",
+	"icon": "list-view",
+	"description": "A list of the headings in the text, with links to each. Place it where the list should appear; it reads in English or Malay as the page does.",
+	"keywords": [ "table of contents", "toc", "headings" ],
+	"textdomain": "lailatulqadar",
+	"attributes": {
+		"tags": {
+			"type": "string",
+			"default": "h2,h3"
+		},
+		"title": {
+			"type": "string",
+			"default": ""
+		},
+		"showTitle": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false,
+		"multiple": true
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

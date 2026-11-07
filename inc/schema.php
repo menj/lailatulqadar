@@ -637,6 +637,7 @@ function lq_schema_page_images( $content, $key ) {
 		}
 		$caption = $ms && ! empty( $image['caption_ms'] ) && is_string( $image['caption_ms'] ) ? $image['caption_ms'] : $image['caption'];
 		$alt     = $ms && ! empty( $image['alt_ms'] ) && is_string( $image['alt_ms'] ) ? $image['alt_ms'] : $image['alt'];
+		// Licences that need no attribution.
 		$open    = (bool) preg_match( '/^(CC0|Public domain|PD\b)/i', $image['licence'] );
 		$node    = array(
 			'@type'              => 'ImageObject',
@@ -912,7 +913,7 @@ function lq_print_schema() {
 		'@context' => 'https://schema.org',
 		'@graph'   => lq_schema_graph(),
 	);
-	echo '<script type="application/ld+json">' . wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo '<script type="application/ld+json">' . wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 add_action( 'wp_head', 'lq_print_schema', 20 );
 

@@ -33,6 +33,7 @@ function lq_hide_rest_users( $endpoints ) {
 		return $endpoints;
 	}
 	foreach ( array_keys( (array) $endpoints ) as $route ) {
+		// The users route and anything below it.
 		if ( preg_match( '#^/wp/v2/users(/|$)#', (string) $route ) ) {
 			unset( $endpoints[ $route ] );
 		}
@@ -72,9 +73,11 @@ function lq_is_probe( $path ) {
 	if ( '' === $path ) {
 		return false;
 	}
+	// A dot file or folder anywhere in the path, except /.well-known/.
 	if ( preg_match( '#(^|/)\.(?!well-known(/|$))[^/]#i', $path ) ) {
 		return true;
 	}
+	// A .php file, alone or followed by a path.
 	if ( ! preg_match( '#\.php(/|$)#i', $path ) ) {
 		return false;
 	}

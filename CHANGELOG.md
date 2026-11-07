@@ -2,6 +2,35 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.20.0 (2026-11-07)
+
+The classical Arabic dictionaries join the sources. Five articles, in English and Malay, cite them on the words they explain. No feature removed and no public identifier renamed.
+
+### Added
+- What Is Laylat al-Qadr: Ibn Fāris on the root q-d-r; Ibn Sīda (in Ibn Manẓūr) on *qadr* as the decree of 97:1 and the gloss of the name in hadith; al-Rāghib al-Iṣfahānī on a night appointed for particular matters; al-Liḥyānī on *qadar* and *qadr*.
+- Sūrat al-Qadr: al-Rāghib on *tanzīl* against *inzāl* and on the Spirit as Jibrīl; al-Fattinī on the night of peace; the readings *maṭlaʿ* and *maṭliʿ* of 97:5 from Ibn Manẓūr and Ibn Fāris.
+- Duʿāʾ: Ibn Manẓūr on *al-ʿAfuww* and al-Rāghib on pardon as removing the sin.
+- The Islamic Dilemma: Ibn al-Athīr and Ibn Manẓūr on *muhaymin* and its root ʾ-m-n; al-Rāghib on *taṣdīq*.
+- FAQ: *qadr* and *qadar* as two forms of the word.
+- Each footnote quotes the Arabic of the entry and links to it on arabiclexicon.hawramani.com under its book. `SSOT.md` sets the citation form; `docs/content.md` has refreshed word and footnote counts.
+
+### Security
+- The JSON-LD graph is printed with `JSON_HEX_TAG | JSON_HEX_AMP`, so no string in it, a search term included, can close its `<script>` element.
+- Every state-changing handler now checks the capability before the nonce: the two spam-scan AJAX calls, the Search appearance and Guide page boxes, and Tools > Replace with the shipped article (which also no longer reads the page ID before the capability check).
+- The Unlisted view reads `post_status` through `sanitize_key( wp_unslash() )`.
+
+### Changed
+- Code review against the maintainable-PHP conventions. The Search appearance box and the Unlisted box, column, Quick Edit and Bulk Edit fields print HTML with escaped values in place of strings built inside `echo`. `inc/unlist.php` has a docblock for every function and long array syntax, as the rest of the theme. The one assignment inside a condition (`lailatulqadar_contents_filter()`) is gone. Each of the 82 regular expressions that lacked one has a comment saying what it matches.
+
+## 1.19.1 (2026-11-07)
+
+Two fixes from a check of the whole codebase. No feature removed and no public identifier renamed.
+
+### Fixed
+- The Islamic Dilemma article in both languages (`content/en/dilemma.json`, `content/ms/dilemma.json`) lacked the footnotes block, so its seven notes were never shown and the note numbers in its text led nowhere. The block now sits after the article, before the further reading box. Setup gives the corrected text to each page that nobody has edited; `inc/data/seed-history.json` carries the earlier version.
+- A footnote cited twice repeated the same id in the page (core writes `id="<note>-link"` at every citation). `lailatulqadar_footnote_ref_ids()` (`inc/contents.php`, on `the_content` at 12) numbers the later citations `-link-2`, `-link-3` and so on; the note's back link keeps pointing to the first. Four pages had such a note.
+- `tests/contents-test.php` covers it.
+
 ## 1.19.0 (2026-11-06)
 
 A contents list placed by hand, on any page: the "WordPress Table-of-Contents Shortcode Done Properly" plugin by Ikram Hawramani (MIT), built into the theme and reworked. No feature removed and no public identifier renamed.

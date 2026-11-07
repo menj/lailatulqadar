@@ -34,6 +34,7 @@ const LQ_SITE_KEY = 'lailatulqadar';
 function lq_ctx_norm( $text ) {
 	$text = html_entity_decode( (string) $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 	$text = str_replace( array( "\u{2019}", "\u{2018}", "\u{02BC}", "\u{00A0}" ), array( "'", "'", "'", ' ' ), $text );
+	// Runs of white space become one space.
 	$text = preg_replace( '/\s+/u', ' ', trim( $text ) ) ?? trim( $text );
 	return function_exists( 'mb_strtolower' ) ? mb_strtolower( $text, 'UTF-8' ) : strtolower( $text );
 }
@@ -181,6 +182,7 @@ function lq_ctx_compile( $entries ) {
 	foreach ( $phrases as $phrase ) {
 		$quoted = preg_quote( $phrase, '/' );
 		$quoted = str_replace( array( "'", "\u{2019}", "\u{2018}", "\u{02BC}" ), '(?&q)', $quoted );
+		// Each escaped or literal space in the quoted phrase becomes the (?&s) subpattern, which matches any white space.
 		$quoted = preg_replace( '/(?:\\\\ |\s)+/u', '(?&s)', $quoted );
 		if ( null !== $quoted ) {
 			$parts[] = $quoted;
@@ -253,6 +255,7 @@ function lq_ctx_replace( $patterns, $text, $link ) {
 	while ( $pos < $len ) {
 		$best = null;
 		foreach ( $patterns as $pattern ) {
+			// The compiled phrase pattern, from the current offset.
 			$hit = preg_match( $pattern, $text, $m, PREG_OFFSET_CAPTURE, $pos );
 			if ( false === $hit ) {
 				return null;
@@ -366,6 +369,7 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 	if ( empty( $targets['patterns'] ) || false === strpos( $content, '<' ) || ( $own_max < 1 && $sister_max < 1 ) ) {
 		return $content;
 	}
+	// Split into tags and text, keeping the tags as pieces.
 	$pieces = preg_split( '/(<[^>]+>)/', $content, -1, PREG_SPLIT_DELIM_CAPTURE );
 	if ( false === $pieces ) {
 		return $content;
@@ -394,6 +398,7 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 		// non-ASCII capitals ("SŪRAT AL-QADR") is looked up key by key.
 		if ( ! isset( $targets['by'][ $key ] ) && ! function_exists( 'mb_strtolower' ) ) {
 			foreach ( array_keys( $targets['by'] ) as $candidate ) {
+				// Case-insensitive whole-key match, for servers without mbstring.
 				if ( preg_match( '/^' . preg_quote( (string) $candidate, '/' ) . '$/iu', $key ) ) {
 					$key = $candidate;
 					break;
@@ -424,6 +429,7 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 			continue;
 		}
 		if ( '<' === $piece[0] ) {
+			// A start or end tag: group 1 is the slash of an end tag, group 2 the tag name.
 			if ( preg_match( '#^<(/?)([a-zA-Z][a-zA-Z0-9-]*)#', $piece, $m ) ) {
 				$tag      = strtolower( $m[2] );
 				$is_block = 'p' === $tag || 'li' === $tag || 'dd' === $tag;
@@ -438,6 +444,7 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
 						}
 					}
 				} elseif ( ! in_array( $tag, $void, true ) && '/>' !== substr( $piece, -2 ) ) {
+					// Elements whose class or language forbids links (see $skip_class and $skip_lang above).
 					$forbid = $skips > 0 || in_array( $tag, $skip_tags, true ) || preg_match( $skip_class, $piece ) || preg_match( $skip_lang, $piece );
 					$block  = ! $forbid && $is_block;
 					if ( $block ) {
@@ -471,6 +478,7 @@ function lq_ctx_apply( $content, $targets, $here, $own_max, $sister_max ) {
  * @return bool
  */
 function lq_ctx_enabled_for( $post ) {
+	// The excluded pages: slugs or addresses separated by commas or white space.
 	$excluded = array_filter( array_map( 'sanitize_title', preg_split( '/[\s,]+/', (string) lq_setting( 'ctx_exclude' ) ) ) );
 	$enabled  = ! in_array( $post->post_name, $excluded, true );
 	return (bool) apply_filters( 'lq_contextual_links_enabled', $enabled, $post );

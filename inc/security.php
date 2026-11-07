@@ -340,6 +340,7 @@ function lq_sec_rest_guard( $result, $server, $request ) {
 			return $result;
 		}
 	}
+	// Core REST routes (wp/v2 and batch/v1); comments stay open.
 	$core = (bool) preg_match( '#^/(wp/v2|batch/v1)(/|$)#', $route ) && 0 !== strpos( $route, '/wp/v2/comments' );
 	if ( ! is_user_logged_in() && ! $core ) {
 		return $result;
@@ -422,6 +423,7 @@ function lq_sec_counts() {
 	$live   = array();
 	$done   = array();
 	foreach ( (array) $rows as $row ) {
+		// A tally option: group 1 the counter, group 2 the day as Ymd.
 		if ( ! preg_match( '/^lq_security_tally_([a-z0-9_-]+)_(\d{8})$/', $row->option_name, $m ) ) {
 			continue;
 		}
@@ -464,6 +466,7 @@ function lq_sec_counts() {
  */
 function lq_sec_fake_jetpack() {
 	$agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
+	// User agents that claim to be Jetpack or WordPress.com.
 	if ( ! preg_match( '/jetpack|wordpress\.com/i', $agent ) ) {
 		return false;
 	}
@@ -984,10 +987,10 @@ add_action( 'admin_post_lq_sec_clear_log', 'lq_sec_handle_clear_log' );
  * AJAX: one batch of the scan.
  */
 function lq_sec_ajax_scan() {
-	check_ajax_referer( 'lq_sec_ajax', 'nonce' );
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_send_json_error( array( 'message' => __( 'You do not have permission to do that.', 'lailatulqadar' ) ), 403 );
 	}
+	check_ajax_referer( 'lq_sec_ajax', 'nonce' );
 	$offset = isset( $_POST['offset'] ) ? absint( $_POST['offset'] ) : 0;
 	$batch  = 100;
 	$query  = new WP_Query(
@@ -1041,10 +1044,10 @@ add_action( 'wp_ajax_lq_sec_scan', 'lq_sec_ajax_scan' );
  * only posts that still read as spam and are not starter content go.
  */
 function lq_sec_ajax_trash() {
-	check_ajax_referer( 'lq_sec_ajax', 'nonce' );
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_send_json_error( array( 'message' => __( 'You do not have permission to do that.', 'lailatulqadar' ) ), 403 );
 	}
+	check_ajax_referer( 'lq_sec_ajax', 'nonce' );
 	$ids     = isset( $_POST['ids'] ) ? array_slice( array_map( 'absint', (array) wp_unslash( $_POST['ids'] ) ), 0, 100 ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- absint on each.
 	$trashed = array();
 	$skipped = array();

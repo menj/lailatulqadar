@@ -119,5 +119,11 @@ check( $GLOBALS['enqueued'] > 0, 'a rendered list loads its style' );
 $none = lailatulqadar_toc_filter( lailatulqadar_toc_shortcode( '' ) . '<p>x</p>' );
 check( '<!--lq-contents--placed--><p>x</p>' === $none, 'no headings: marker left as an empty placed note' );
 
+$fn  = '<p>a<sup data-fn="u1" class="fn"><a href="#u1" id="u1-link">1</a></sup> b<sup data-fn="u1" class="fn"><a href="#u1" id="u1-link">1</a></sup> c<sup data-fn="u1" class="fn"><a href="#u1" id="u1-link">1</a></sup><sup data-fn="u2" class="fn"><a href="#u2" id="u2-link">2</a></sup></p>';
+$fnd = lailatulqadar_footnote_ref_ids( $fn );
+check( 1 === substr_count( $fnd, 'id="u1-link"' ) && false !== strpos( $fnd, 'id="u1-link-2"' ) && false !== strpos( $fnd, 'id="u1-link-3"' ), 'repeated footnote references get unique ids' );
+check( 1 === substr_count( $fnd, 'id="u2-link"' ) && 4 === substr_count( $fnd, 'href="#u' ), 'single references and the links stay as they are' );
+check( '<p>x</p>' === lailatulqadar_footnote_ref_ids( '<p>x</p>' ), 'text without footnotes untouched' );
+
 echo $fail ? "$fail failed\n" : "All checks passed\n";
 exit( $fail ? 1 : 0 );

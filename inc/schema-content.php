@@ -24,10 +24,15 @@ defined( 'ABSPATH' ) || exit;
  * @return string
  */
 function lq_sc_text( $html ) {
+	// Footnote markers.
 	$html = preg_replace( '#<sup\b[^>]*class="fn"[^>]*>.*?</sup>#su', '', (string) $html );
+	// Script, style and SVG elements with their content.
 	$html = preg_replace( '#<(script|style|svg)\b.*?</\1>#su', ' ', $html );
+	// HTML comments, block delimiters included.
 	$html = preg_replace( '#<!--.*?-->#su', ' ', $html );
+	// A space after each element that ends a line, so words do not run together once tags go.
 	$text = html_entity_decode( strip_tags( preg_replace( '#<(br|/p|/li|/h[1-6]|/td|/th|/tr|/figcaption)\b[^>]*>#i', '$0 ', $html ) ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	// Runs of white space become one space.
 	return trim( preg_replace( '/\s+/u', ' ', $text ) );
 }
 
@@ -38,6 +43,7 @@ function lq_sc_text( $html ) {
  * @return string[]
  */
 function lq_sc_footnote_ids( $html ) {
+	// The footnote IDs, in order.
 	preg_match_all( '#data-fn="([^"]+)"#', (string) $html, $m );
 	return array_values( array_unique( $m[1] ) );
 }
@@ -49,6 +55,7 @@ function lq_sc_footnote_ids( $html ) {
  * @return array[]
  */
 function lq_sc_sections( $content ) {
+	// Split at each H2, keeping the headings as pieces.
 	$parts = preg_split( '#(<h2\b[^>]*>.*?</h2>)#su', (string) $content, -1, PREG_SPLIT_DELIM_CAPTURE );
 	$out   = array();
 	for ( $i = 1; $i < count( $parts ); $i += 2 ) {
@@ -91,12 +98,15 @@ function lq_sc_faq( $content ) {
 function lq_sc_howto( $content ) {
 	$out = array();
 	foreach ( lq_sc_sections( $content ) as $section ) {
+		// The first ordered list of the section.
 		if ( ! preg_match( '#<ol\b[^>]*>(.*?)</ol>#su', $section[1], $ol ) ) {
 			continue;
 		}
+		// Each item of that list.
 		preg_match_all( '#<li\b[^>]*>(.*?)</li>#su', $ol[1], $items );
 		$steps = array();
 		foreach ( $items[1] as $item ) {
+			// A step whose name opens the item in <strong>.
 			if ( ! preg_match( '#^\s*<strong>(.*?)</strong>#su', $item, $s ) ) {
 				$steps = array();
 				break;
@@ -127,7 +137,9 @@ function lq_sc_tables( $content ) {
 	preg_match_all( '#<figure\b(?=[^>]*\sclass="(?:[^"]*\s)?wp-block-table[\s"])[^>]*>(.*?)</figure>#su', (string) $content, $m );
 	$out = array();
 	foreach ( $m[1] as $table ) {
+		// The table's caption.
 		$caption = preg_match( '#<figcaption[^>]*>(.*?)</figcaption>#su', $table, $c ) ? lq_sc_text( $c[1] ) : '';
+		// Each header cell.
 		preg_match_all( '#<th\b[^>]*>(.*?)</th>#su', $table, $th );
 		$out[] = array(
 			'caption' => $caption,
@@ -146,18 +158,22 @@ function lq_sc_tables( $content ) {
  *                 surah, surah_name, verses, notes (footnote IDs).
  */
 function lq_sc_quotations( $content ) {
+	// Each verse or hadith card: group 1 its class, group 2 its inner HTML.
 	preg_match_all( '#<figure class="(lq-verse|lq-hadith-card)">(.*?)</figure>#su', (string) $content, $m, PREG_SET_ORDER );
 	$out = array();
 	foreach ( $m as $fig ) {
+		// The Arabic paragraph of the card.
 		$arabic = preg_match( '#<p class="lq-(?:quran|hadith)"[^>]*>(.*?)</p>#su', $fig[2], $a ) ? lq_sc_text( $a[1] ) : '';
 		if ( '' === $arabic ) {
 			continue;
 		}
+		// The citation line.
 		$cite_html = preg_match( '#<cite>(.*?)</cite>#su', $fig[2], $c ) ? $c[1] : '';
 		$cite      = lq_sc_text( $cite_html );
 		$row       = array(
 			'kind'        => 'lq-verse' === $fig[1] ? 'quran' : 'hadith',
 			'arabic'      => $arabic,
+			// The translation.
 			'translation' => preg_match( '#<span class="lq-verse__translation">(.*?)</span>#su', $fig[2], $t ) ? lq_sc_text( $t[1] ) : '',
 			'cite'        => $cite,
 			'surah'       => 0,
@@ -165,9 +181,11 @@ function lq_sc_quotations( $content ) {
 			'verses'      => '',
 			'notes'       => lq_sc_footnote_ids( $fig[2] ),
 		);
+		// "Sūrat al-Qadr 97:1" or "97:1–5": group 1 the name, 2 the chapter, 3 the verse or range.
 		if ( 'quran' === $row['kind'] && preg_match( '/^(.*?)\s*(\d{1,3}):(\d+(?:\s*[–-]\s*\d+)?)/u', $cite, $v ) ) {
 			$row['surah']      = (int) $v[2];
 			$row['surah_name'] = trim( $v[1] );
+			// "1 – 5" becomes "1–5".
 			$row['verses']     = preg_replace( '/\s+/', '', $v[3] );
 		}
 		$out[] = $row;
@@ -185,6 +203,7 @@ function lq_sc_quotations( $content ) {
  */
 function lq_sc_hadith_source( $note ) {
 	$text = lq_sc_text( $note );
+	// "Collection, no. 123" (or hadith, hadis, nombor) at the start of a note: group 1 the collection, 2 the number.
 	if ( ! preg_match( '/^([^,.;]{3,80}),\s*(?:no\.|hadith|hadis|nombor)\s*(\d+)/iu', $text, $m ) ) {
 		return null;
 	}
@@ -194,6 +213,7 @@ function lq_sc_hadith_source( $note ) {
 		'grading'    => '',
 		'graded_by'  => '',
 	);
+	// "graded ṣaḥīḥ by al-Albānī" (or the Malay "dinilai … oleh …"): group 1 the grade, 2 the grader.
 	if ( preg_match( '/(?:graded|dinilai)\s+(.{2,40}?)\s+(?:by|oleh)\s+([^.,;]+)/iu', $text, $g ) ) {
 		$out['grading']   = trim( $g[1], '.,' );
 		$out['graded_by'] = trim( $g[2] );
@@ -218,6 +238,7 @@ function lq_sc_citation( $note ) {
 	if ( preg_match_all( '#href="(https?://[^"]+)"#', (string) $note, $links ) ) {
 		$url = html_entity_decode( $links[1][0], ENT_QUOTES, 'UTF-8' );
 	}
+	// A note names a source when it carries a link, a volume, page, number or edition, an API, or a verse reference.
 	$source = '' !== $url || preg_match( '/\b(?:no|vol|jld|p|pp|hlm|ed)\.\s*\d|\b(?:edition|edisi|API|Ibid)\b|\d{1,3}:\d{1,3}/u', $text );
 	if ( ! $source ) {
 		return null;
@@ -240,6 +261,7 @@ function lq_sc_citation( $note ) {
  * @return array[]
  */
 function lq_sc_blocks( $content ) {
+	// Each theme block comment: group 1 the block name, group 3 its JSON attributes.
 	preg_match_all( '#<!--\s+wp:lailatulqadar/([a-z-]+)(\s+(\{.*?\}))?\s+/?-->#su', (string) $content, $m, PREG_SET_ORDER );
 	$out = array();
 	foreach ( $m as $block ) {
@@ -257,6 +279,7 @@ function lq_sc_blocks( $content ) {
  * @return bool
  */
 function lq_sc_shows_ramadan_dates( $content ) {
+	// An [lq_ramadan] shortcode that prints a date (show=start, alt, eid or night), quotes escaped or not.
 	if ( preg_match( '/\[lq_ramadan[^\]]*show=\\\\?["\']?(start|alt|eid|night)/', (string) $content ) ) {
 		return true;
 	}
@@ -275,9 +298,11 @@ function lq_sc_shows_ramadan_dates( $content ) {
  * @return string
  */
 function lq_sc_brief( $content ) {
+	// The In brief box.
 	if ( ! preg_match( '#<aside class="lq-brief"[^>]*>(.*?)</aside>#su', (string) $content, $m ) ) {
 		return '';
 	}
+	// The box's label paragraph.
 	return lq_sc_text( preg_replace( '#<p class="lq-brief__label">.*?</p>#su', '', $m[1] ) );
 }
 
@@ -288,11 +313,14 @@ function lq_sc_brief( $content ) {
  * @return array[] Each: title, caption.
  */
 function lq_sc_figures( $content ) {
+	// Each illustration figure.
 	preg_match_all( '#<figure class="lq-figure">(.*?)</figure>#su', (string) $content, $m );
 	$out = array();
 	foreach ( $m[1] as $fig ) {
 		$out[] = array(
+			// The SVG's title.
 			'title'   => preg_match( '#<title\b[^>]*>(.*?)</title>#su', $fig, $t ) ? lq_sc_text( $t[1] ) : '',
+			// The figure's caption.
 			'caption' => preg_match( '#<figcaption[^>]*>(.*?)</figcaption>#su', $fig, $c ) ? lq_sc_text( $c[1] ) : '',
 		);
 	}

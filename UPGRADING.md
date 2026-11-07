@@ -14,6 +14,14 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.20.0
+
+Nothing to do. On the first admin visit, setup gives the new text to What Is Laylat al-Qadr, Sūrat al-Qadr, the Duʿāʾ, the Islamic Dilemma and the FAQ in each language, unless you have edited them. An edited page is listed on the Tools tab as "Edited, not updated", with a button to take the new text.
+
+## To 1.19.1
+
+Nothing to do. On the first admin visit, setup gives the Islamic Dilemma page in each language the corrected text with its notes, unless you have edited it. An edited page is listed on the Tools tab as "Edited, not updated"; add a Footnotes block at the end of its text to show its notes.
+
 ## To 1.19.0
 
 Nothing to do. If the "WordPress Table-of-Contents Shortcode Done Properly" plugin is active, or its code sits in a child theme's `functions.php`, remove it: the theme now runs `[auto_toc]` itself, and the plugin would only add its own styles to every page. Text that uses the shortcode keeps working.

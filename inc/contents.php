@@ -114,7 +114,9 @@ add_action( 'init', 'lailatulqadar_toc_register', 20 );
  * @return string
  */
 function lailatulqadar_toc_text( $html ) {
+	// Footnote markers (<sup>…</sup>) are not part of the heading text.
 	$html = preg_replace( '#<sup\b[^>]*>.*?</sup>#is', '', (string) $html );
+	// Runs of white space, line breaks included, become one space.
 	$text = trim( (string) preg_replace( '/\s+/u', ' ', wp_strip_all_tags( (string) $html ) ) );
 	return html_entity_decode( $text, ENT_QUOTES, 'UTF-8' );
 }
@@ -126,6 +128,7 @@ function lailatulqadar_toc_text( $html ) {
  * @return string
  */
 function lailatulqadar_toc_attr_id( $attrs ) {
+	// id="…", id='…' or an unquoted id=…, as the first attribute or after white space (so data-id is not matched).
 	if ( ! preg_match( '/(?:^|\s)id\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'=<>`]+))/i', (string) $attrs, $m ) ) {
 		return '';
 	}
@@ -145,6 +148,7 @@ function lailatulqadar_toc_add_ids( $html, $levels ) {
 		return $html;
 	}
 	$used = array();
+	// The attribute text of every start tag, to collect the ids already in use.
 	if ( preg_match_all( '/<[a-z][a-z0-9-]*(\s[^>]*)>/i', $html, $m ) ) {
 		foreach ( $m[1] as $attrs ) {
 			$id = lailatulqadar_toc_attr_id( $attrs );
@@ -154,6 +158,7 @@ function lailatulqadar_toc_add_ids( $html, $levels ) {
 		}
 	}
 	$pattern = '#<h([' . implode( '', $levels ) . '])\b([^>]*)>(.*?)</h\1>#is';
+	// Each heading of the requested levels: level, attributes, inner HTML, matching closing tag.
 	return (string) preg_replace_callback(
 		$pattern,
 		static function ( $h ) use ( &$used ) {
@@ -183,6 +188,7 @@ function lailatulqadar_toc_add_ids( $html, $levels ) {
  */
 function lailatulqadar_toc_items( $html, $levels ) {
 	$items = array();
+	// Each heading of the requested levels: level, attributes, inner HTML, matching closing tag.
 	if ( ! $levels || ! preg_match_all( '#<h([' . implode( '', $levels ) . '])\b([^>]*)>(.*?)</h\1>#is', $html, $m, PREG_SET_ORDER ) ) {
 		return $items;
 	}
@@ -280,8 +286,10 @@ function lailatulqadar_toc_filter( $content ) {
 	// wpautop wraps a shortcode on its own line in a paragraph.
 	$content = (string) preg_replace( '#<p>\s*(' . $mark . ')\s*</p>#', '$1', $content );
 	if ( is_feed() || doing_filter( 'get_the_excerpt' ) ) {
+		// Every marker comment left by the shortcode or block.
 		return (string) preg_replace( '#' . $mark . '#', '', $content );
 	}
+	// Every marker comment; group 1 is its base64 payload.
 	preg_match_all( '#' . $mark . '#', $content, $found );
 	$marks = array();
 	$all   = array();
@@ -296,6 +304,7 @@ function lailatulqadar_toc_filter( $content ) {
 	$content = lailatulqadar_toc_add_ids( $content, array_values( array_unique( $all ) ) );
 	$id      = (int) get_the_ID();
 	$role    = $id && function_exists( 'lq_role_of' ) ? lq_role_of( $id ) : null;
+	// Each marker comment, replaced by its list.
 	return (string) preg_replace_callback(
 		'#' . $mark . '#',
 		static function ( $m ) use ( $marks, $content, $role ) {
@@ -349,3 +358,31 @@ function lailatulqadar_toc_assets() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'lailatulqadar_toc_assets', 20 );
+
+/**
+ * A footnote cited twice gets the same reference id twice from the core
+ * footnotes format (`<sup data-fn="X"><a id="X-link">`), which makes the
+ * page's ids repeat. The second and later references become X-link-2,
+ * X-link-3 and so on; the note's back link keeps pointing to the first.
+ * Pure.
+ *
+ * @param string $content Rendered text.
+ * @return string
+ */
+function lailatulqadar_footnote_ref_ids( $content ) {
+	if ( false === strpos( (string) $content, 'data-fn=' ) ) {
+		return $content;
+	}
+	$seen = array();
+	// A footnote reference: <sup data-fn=…><a … id="<note>-link">; group 2 is the id.
+	return (string) preg_replace_callback(
+		'#(<sup\b[^>]*\sdata-fn="[^"]*"[^>]*>\s*<a\b[^>]*\sid=")([^"]+-link)(")#i',
+		static function ( $m ) use ( &$seen ) {
+			$id          = $m[2];
+			$seen[ $id ] = isset( $seen[ $id ] ) ? $seen[ $id ] + 1 : 1;
+			return 1 === $seen[ $id ] ? $m[0] : $m[1] . $id . '-' . $seen[ $id ] . $m[3];
+		},
+		(string) $content
+	);
+}
+add_filter( 'the_content', 'lailatulqadar_footnote_ref_ids', 12 );

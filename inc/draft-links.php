@@ -61,6 +61,7 @@ function lq_unlink_unpublished_pages( $content ) {
 	if ( ! $urls ) {
 		return $content;
 	}
+	// Each link in the text, so links to unpublished pages lose their anchor.
 	$out = preg_replace_callback(
 		'#<a\s[^>]*\bhref=(["\'])([^"\']*)\1[^>]*>(.*?)</a>#is',
 		static function ( $m ) use ( $urls ) {

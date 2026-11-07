@@ -80,6 +80,7 @@ function lailatulqadar_current_guide_page() {
  * @return string
  */
 function lailatulqadar_hijri_date( $ymd, $role = null ) {
+	// A date as Y-m-d.
 	if ( ! class_exists( 'IntlDateFormatter' ) || ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', (string) $ymd ) ) {
 		return '';
 	}
@@ -132,6 +133,7 @@ function lailatulqadar_reading_minutes( $id ) {
  */
 function lailatulqadar_reviewed_date( $id ) {
 	$date = (string) get_post_meta( $id, LAILATULQADAR_META_REVIEWED, true );
+	// A date as Y-m-d.
 	return preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ? $date : '';
 }
 
@@ -174,6 +176,7 @@ function lailatulqadar_page_details( $id ) {
  * @return string[]
  */
 function lailatulqadar_brief_points( $id ) {
+	// One point a line, whatever the line endings.
 	$lines = preg_split( '/\r\n|\r|\n/', (string) get_post_meta( $id, LAILATULQADAR_META_BRIEF, true ) );
 	return array_slice( array_values( array_filter( array_map( 'trim', (array) $lines ), 'strlen' ) ), 0, 6 );
 }
@@ -276,6 +279,7 @@ add_filter( 'render_block_core/heading', 'lailatulqadar_heading_anchor', 10, 2 )
  * @return string '' below the minimum.
  */
 function lailatulqadar_contents_html( $html, $min, $role ) {
+	// Each H2 that carries an id: group 1 the id, group 2 its inner HTML.
 	if ( ! preg_match_all( '#<h2\b[^>]*\sid="([^"]+)"[^>]*>(.*?)</h2>#is', $html, $m, PREG_SET_ORDER ) || count( $m ) < $min ) {
 		return '';
 	}
@@ -283,6 +287,7 @@ function lailatulqadar_contents_html( $html, $min, $role ) {
 	$label = function_exists( 'wp_unique_id' ) ? wp_unique_id( 'lq-contents-title-' ) : 'lq-contents-title';
 	$items = '';
 	foreach ( $m as $heading ) {
+		// Runs of white space become one space.
 		$text = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( $heading[2] ) ) );
 		if ( '' !== $text ) {
 			$items .= '<li><a href="#' . esc_attr( $heading[1] ) . '">' . esc_html( html_entity_decode( $text, ENT_QUOTES, 'UTF-8' ) ) . '</a></li>';
@@ -313,8 +318,9 @@ function lailatulqadar_contents_filter( $content ) {
 	if ( '' === $nav ) {
 		return $content;
 	}
-	$at = strpos( $content, '<aside class="lq-brief"' );
-	if ( false !== $at && false !== ( $end = strpos( $content, '</aside>', $at ) ) ) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition
+	$at  = strpos( $content, '<aside class="lq-brief"' );
+	$end = false === $at ? false : strpos( $content, '</aside>', $at );
+	if ( false !== $end ) {
 		$end += strlen( '</aside>' );
 		return substr( $content, 0, $end ) . "\n" . $nav . substr( $content, $end );
 	}
@@ -387,6 +393,7 @@ function lailatulqadar_table_parts( $html ) {
 	if ( ! lailatulqadar_current_guide_page() ) {
 		return $html;
 	}
+	// The table's caption, without footnote markers, as its accessible name.
 	$label = preg_match( '#<figcaption[^>]*>(.*?)</figcaption>#s', $html, $m ) ? trim( wp_strip_all_tags( preg_replace( '#<sup\b.*?</sup>#s', '', $m[1] ) ) ) : '';
 	$tags  = new WP_HTML_Tag_Processor( $html );
 	if ( ! $tags->next_tag( 'figure' ) ) {
@@ -455,14 +462,15 @@ function lailatulqadar_page_parts_box( $post ) {
  * @param int $post_id Page ID.
  */
 function lailatulqadar_save_page_parts_box( $post_id ) {
-	if ( ! isset( $_POST['lailatulqadar_page_parts_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lailatulqadar_page_parts_nonce'] ) ), 'lailatulqadar_page_parts' ) ) {
+	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) || ! current_user_can( 'edit_page', $post_id ) ) {
 		return;
 	}
-	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) || ! current_user_can( 'edit_page', $post_id ) ) {
+	if ( ! isset( $_POST['lailatulqadar_page_parts_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lailatulqadar_page_parts_nonce'] ) ), 'lailatulqadar_page_parts' ) ) {
 		return;
 	}
 	$date  = sanitize_text_field( wp_unslash( $_POST['lailatulqadar_reviewed'] ?? '' ) );
 	$brief = sanitize_textarea_field( wp_unslash( $_POST['lailatulqadar_brief'] ?? '' ) );
+	// A date as Y-m-d; checkdate() then rejects days that do not exist.
 	$valid = preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $date, $d ) && checkdate( (int) $d[2], (int) $d[3], (int) $d[1] );
 	if ( $valid ) {
 		update_post_meta( $post_id, LAILATULQADAR_META_REVIEWED, $date );

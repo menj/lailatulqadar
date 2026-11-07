@@ -147,6 +147,8 @@ The Security tab is drawn by `inc/security.php`, with `js/security.js` and `css/
 | `lailatulqadar_is_guide_page` | Whether a page takes the guide page parts (default: the pages of the reading path) |
 | `lailatulqadar_contents_min` | Fewest H2 headings for a contents list (default 3) |
 
+The theme also filters `wp_speculation_rules_configuration` (`lq_speculation_rules()` in `inc/assets.php`): prerender with moderate eagerness, in place of WordPress's prefetch.
+
 Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`, `[lailatulqadar_social_icons]` and `[auto_toc]` (a contents list, `tags` and `title` attributes).
 
 | Constant | Set in | Effect |

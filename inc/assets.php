@@ -143,3 +143,24 @@ function lq_favicon_head_request() {
 	}
 }
 add_action( 'template_redirect', 'lq_favicon_head_request', 0 );
+
+/**
+ * Instant navigation: WordPress (6.8 and later) prints speculation rules
+ * that prefetch links on a click. The guide is read page after page, so
+ * the next page is prerendered when a visitor points at its link
+ * ("moderate"), and opens at once. Where WordPress turns the rules off
+ * (logged-in users, a filter, an older version) the value stays null and
+ * nothing is added. Browsers without the API ignore the rules.
+ *
+ * @param array|null $config Speculation rules configuration.
+ * @return array|null
+ */
+function lq_speculation_rules( $config ) {
+	if ( ! is_array( $config ) ) {
+		return $config;
+	}
+	$config['mode']      = 'prerender';
+	$config['eagerness'] = 'moderate';
+	return $config;
+}
+add_filter( 'wp_speculation_rules_configuration', 'lq_speculation_rules' );

@@ -172,7 +172,8 @@ Theme Options has a new card layout with tabs that switch without a reload. Ever
 == Changelog ==
 
 = 1.21.0 =
-* The front page shows the reading path as cards, in English and Malay: each chapter under an eight-pointed star, and each page with its number, an icon, a summary and its reading time.
+* The front page shows the reading path as cards, in English and Malay: each chapter under an eight-pointed star, a feature card for its first page, and each page with its number, an icon, a summary and its reading time.
+* Pages open faster (the next page is prepared when you point at its link) and change with a soft fade in browsers that support it. Keyboard focus is always visible.
 
 = 1.20.0 =
 * The classical Arabic dictionaries join the sources: What Is Laylat al-Qadr, Sūrat al-Qadr, the Duʿāʾ, the Islamic Dilemma and the FAQ cite them on the words they explain, in English and Malay, with links to each entry.

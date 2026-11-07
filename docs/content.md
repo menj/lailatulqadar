@@ -15,19 +15,19 @@
 
 | Page | Words | Footnotes | Status |
 |---|---|---|---|
-| Laylat al-Qadr Duʿāʾ | 1,333 | 6 | Published by setup |
-| Sūrat al-Qadr | 1,429 | 4 | Published by setup |
-| When Is Laylat al-Qadr? | 1,317 | 10 | Published by setup |
-| The Last Ten Nights of Ramadan | 1,268 | 8 | Published by setup |
-| Signs of Laylat al-Qadr | 1,240 | 5 | Published by setup |
-| Start Here | about 720 | 3 | Published by setup |
-| What Is Laylat al-Qadr? | about 2,050 | 15 | Published by setup |
-| Prayer and Worship on Laylat al-Qadr | about 2,470 | 22 | Published by setup |
-| Frequently Asked Questions | about 2,200 | 20 | Published by setup |
-| Hadith and Sources | about 2,700 | 34 | Published by setup |
-| The Islamic Dilemma and the Qurʾān as Guardian (1.9.5) | about 2,070 | 7 | Published by setup |
+| Laylat al-Qadr Duʿāʾ | 1,755 | 12 | Published by setup |
+| Sūrat al-Qadr | 2,018 | 15 | Published by setup |
+| When Is Laylat al-Qadr? | 1,803 | 17 | Published by setup |
+| The Last Ten Nights of Ramadan | 1,800 | 15 | Published by setup |
+| Signs of Laylat al-Qadr | 1,685 | 11 | Published by setup |
+| Start Here | 1,691 | 7 | Published by setup |
+| What Is Laylat al-Qadr? | 2,991 | 22 | Published by setup |
+| Prayer and Worship on Laylat al-Qadr | 3,414 | 27 | Published by setup |
+| Frequently Asked Questions | 2,310 | 22 | Published by setup |
+| Hadith and Sources | 3,457 | 50 | Published by setup |
+| The Islamic Dilemma and the Qurʾān as Guardian (1.9.5) | 2,064 | 10 | Published by setup |
 
-Word counts exclude Arabic text, illustrations and footnotes.
+Word counts are of the English text and exclude Arabic text, illustrations and footnotes.
 
 ## Seed files
 

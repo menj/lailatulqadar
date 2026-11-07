@@ -2,6 +2,18 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.20.0 (2026-11-07)
+
+The classical Arabic dictionaries join the sources. Five articles, in English and Malay, cite them on the words they explain. No feature removed and no public identifier renamed.
+
+### Added
+- What Is Laylat al-Qadr: Ibn Fāris on the root q-d-r; Ibn Sīda (in Ibn Manẓūr) on *qadr* as the decree of 97:1 and the gloss of the name in hadith; al-Rāghib al-Iṣfahānī on a night appointed for particular matters; al-Liḥyānī on *qadar* and *qadr*.
+- Sūrat al-Qadr: al-Rāghib on *tanzīl* against *inzāl* and on the Spirit as Jibrīl; al-Fattinī on the night of peace; the readings *maṭlaʿ* and *maṭliʿ* of 97:5 from Ibn Manẓūr and Ibn Fāris.
+- Duʿāʾ: Ibn Manẓūr on *al-ʿAfuww* and al-Rāghib on pardon as removing the sin.
+- The Islamic Dilemma: Ibn al-Athīr and Ibn Manẓūr on *muhaymin* and its root ʾ-m-n; al-Rāghib on *taṣdīq*.
+- FAQ: *qadr* and *qadar* as two forms of the word.
+- Each footnote quotes the Arabic of the entry and links to it on arabiclexicon.hawramani.com under its book. `SSOT.md` sets the citation form; `docs/content.md` has refreshed word and footnote counts.
+
 ## 1.19.1 (2026-11-07)
 
 Two fixes from a check of the whole codebase. No feature removed and no public identifier renamed.

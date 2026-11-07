@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.19.1
+Stable tag: 1.20.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -133,6 +133,9 @@ Browsers ask for /favicon.ico at the top of the domain, such as example.com/favi
 
 == Upgrade Notice ==
 
+= 1.20.0 =
+Nothing to do. Five guide pages in each language take their new text on the first admin visit, unless you have edited them.
+
 = 1.19.1 =
 Nothing to do. The Islamic Dilemma page in each language takes the corrected text on the first admin visit, unless you have edited it.
 
@@ -164,6 +167,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.20.0 =
+* The classical Arabic dictionaries join the sources: What Is Laylat al-Qadr, Sūrat al-Qadr, the Duʿāʾ, the Islamic Dilemma and the FAQ cite them on the words they explain, in English and Malay, with links to each entry.
 
 = 1.19.1 =
 * The Islamic Dilemma page shows its notes again, in English and Malay: the numbers in its text led to notes the page never displayed.

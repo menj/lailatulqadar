@@ -18,13 +18,6 @@
 	--lq-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* A visible focus ring on every background, for anything focusable that
-   has no ring of its own (WCAG 2.2, 2.4.7 and 2.4.11). */
-:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-	outline: var(--lq-focus-width) solid var(--lq-focus-color);
-	outline-offset: var(--lq-focus-offset);
-}
-
 /* Native page transitions between pages of the site, in browsers that
    support them: the page fades and rises while the header holds still.
    Nothing moves for visitors who ask for reduced motion. */
@@ -35,6 +28,12 @@
 
 	.lq-header {
 		view-transition-name: lq-header;
+	}
+
+	::view-transition-group(lq-header),
+	::view-transition-old(lq-header),
+	::view-transition-new(lq-header) {
+		animation: none;
 	}
 
 	::view-transition-old(root) {
@@ -125,9 +124,11 @@ a {
 	text-underline-offset: 0.2em;
 }
 
+/* A visible focus ring on every background (WCAG 2.2, 2.4.7 and 2.4.11),
+   from the focus tokens above. */
 :focus-visible {
-	outline: 2px solid var(--wp--preset--color--accent-1);
-	outline-offset: 3px;
+	outline: var(--lq-focus-width) solid var(--lq-focus-color);
+	outline-offset: var(--lq-focus-offset);
 	border-radius: var(--wp--custom--radius--small, 8px);
 }
 
@@ -778,6 +779,9 @@ a.lq-gcard__body:focus-visible .lq-gcard__arrow {
 	a.lq-gcard__body:hover,
 	a.lq-gcard__body:focus-visible,
 	a.lq-gcard__body:hover .lq-gcard__arrow,
+	a.lq-gcard__body:focus-visible .lq-gcard__arrow,
+	a.lq-gcard__body:hover::after,
+	a.lq-gcard__body:focus-visible::after,
 	.lq-chapter:hover .lq-chapter__star {
 		transform: none;
 	}

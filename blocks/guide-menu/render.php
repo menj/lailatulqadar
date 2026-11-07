@@ -76,12 +76,15 @@ if ( 'path' === $lq_set ) :
 		$lq_tool    = $lq_ms ? 'Jadual interaktif' : 'Interactive timetable';
 		?>
 	<div <?php echo $lq_wrap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-		<?php foreach ( $lq_groups as $lq_n => $lq_group ) : ?>
-		<section class="lq-chapter" aria-labelledby="lq-chapter-<?php echo (int) $lq_n + 1; ?>">
+		<?php
+		foreach ( $lq_groups as $lq_n => $lq_group ) :
+			$lq_ch_id = wp_unique_id( 'lq-chapter-' );
+			?>
+		<section class="lq-chapter" aria-labelledby="<?php echo esc_attr( $lq_ch_id ); ?>">
 			<header class="lq-chapter__head">
 				<span class="lq-chapter__badge"><?php echo $lq_star; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed SVG. ?><span class="lq-chapter__no"><?php echo (int) $lq_n + 1; ?></span></span>
 				<span class="lq-chapter__label"><?php echo esc_html( $lq_ch_word . ' ' . ( $lq_n + 1 ) ); ?></span>
-				<h3 class="lq-chapter__title" id="lq-chapter-<?php echo (int) $lq_n + 1; ?>"><?php echo esc_html( $lq_group['heading'] ); ?></h3>
+				<h3 class="lq-chapter__title" id="<?php echo esc_attr( $lq_ch_id ); ?>"><?php echo esc_html( $lq_group['heading'] ); ?></h3>
 			</header>
 			<ol class="lq-cards" start="<?php echo (int) $lq_group['start']; ?>">
 				<?php

@@ -349,3 +349,30 @@ function lailatulqadar_toc_assets() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'lailatulqadar_toc_assets', 20 );
+
+/**
+ * A footnote cited twice gets the same reference id twice from the core
+ * footnotes format (`<sup data-fn="X"><a id="X-link">`), which makes the
+ * page's ids repeat. The second and later references become X-link-2,
+ * X-link-3 and so on; the note's back link keeps pointing to the first.
+ * Pure.
+ *
+ * @param string $content Rendered text.
+ * @return string
+ */
+function lailatulqadar_footnote_ref_ids( $content ) {
+	if ( false === strpos( (string) $content, 'data-fn=' ) ) {
+		return $content;
+	}
+	$seen = array();
+	return (string) preg_replace_callback(
+		'#(<sup\b[^>]*\sdata-fn="[^"]*"[^>]*>\s*<a\b[^>]*\sid=")([^"]+-link)(")#i',
+		static function ( $m ) use ( &$seen ) {
+			$id          = $m[2];
+			$seen[ $id ] = isset( $seen[ $id ] ) ? $seen[ $id ] + 1 : 1;
+			return 1 === $seen[ $id ] ? $m[0] : $m[1] . $id . '-' . $seen[ $id ] . $m[3];
+		},
+		(string) $content
+	);
+}
+add_filter( 'the_content', 'lailatulqadar_footnote_ref_ids', 12 );

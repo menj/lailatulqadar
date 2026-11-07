@@ -2,6 +2,15 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.19.1 (2026-11-07)
+
+Two fixes from a check of the whole codebase. No feature removed and no public identifier renamed.
+
+### Fixed
+- The Islamic Dilemma article in both languages (`content/en/dilemma.json`, `content/ms/dilemma.json`) lacked the footnotes block, so its seven notes were never shown and the note numbers in its text led nowhere. The block now sits after the article, before the further reading box. Setup gives the corrected text to each page that nobody has edited; `inc/data/seed-history.json` carries the earlier version.
+- A footnote cited twice repeated the same id in the page (core writes `id="<note>-link"` at every citation). `lailatulqadar_footnote_ref_ids()` (`inc/contents.php`, on `the_content` at 12) numbers the later citations `-link-2`, `-link-3` and so on; the note's back link keeps pointing to the first. Four pages had such a note.
+- `tests/contents-test.php` covers it.
+
 ## 1.19.0 (2026-11-06)
 
 A contents list placed by hand, on any page: the "WordPress Table-of-Contents Shortcode Done Properly" plugin by Ikram Hawramani (MIT), built into the theme and reworked. No feature removed and no public identifier renamed.

@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.19.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.19.1 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 7.4 or later |
@@ -115,6 +115,7 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 - `lailatulqadar_toc_assets()` loads `css/page-parts.css` on a singular view whose text places a list; the filter also enqueues it when it renders one, which covers a list inside a synced pattern.
 - The shortcode is registered on `init` at 20, after plugins load, so the theme's version wins over the plugin's.
 - The block works inside a page's or post's text. In a template, outside the text, it prints nothing visible.
+- `lailatulqadar_footnote_ref_ids()` (on `the_content` at 12) gives the second and later citations of one footnote the ids `<note>-link-2`, `-link-3`, since core repeats `<note>-link` at each.
 
 ## Settings
 

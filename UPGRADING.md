@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.21.0
+
+Nothing to do. The front page in each language shows the reading path as cards. A home page whose text an editor has replaced keeps that text; to take the cards there, set its "Read the guide" group to wide width and keep the Guide menu block in it with "Split into chapters" on.
+
 ## To 1.20.0
 
 Nothing to do. On the first admin visit, setup gives the new text to What Is Laylat al-Qadr, Sūrat al-Qadr, the Duʿāʾ, the Islamic Dilemma and the FAQ in each language, unless you have edited them. An edited page is listed on the Tools tab as "Edited, not updated", with a button to take the new text.

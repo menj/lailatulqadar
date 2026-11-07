@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.20.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.21.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 7.4 or later |
@@ -93,6 +93,10 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 | `bin/`, `tests/` | Build and check scripts, and the tests. Not shipped |
 | `docs/` | The detailed references |
 
+### Front page reading path
+
+`patterns/front-en.php` and `patterns/front-ms.php` hold a wide "Read the guide" group with `lailatulqadar/guide-menu` (`set` path, `chapters` on). `blocks/guide-menu/render.php` draws one `section.lq-chapter` per chapter of `inc/data/path-chapters.json` and a card (`li.lq-gcard`) per page, from `lq_page_summary()`, `lq_page_icon()` and `lq_reading_minutes_cached()` in `inc/helpers.php`; the styles are the `lq-chapter*` and `lq-gcard*` rules in `css/front.css`. Without chapters, or when the path and the chapters do not line up, the block prints the plain numbered list.
+
 ### Guide page parts
 
 `templates/page.html` runs: breadcrumbs, title, `lailatulqadar/page-details`, `lailatulqadar/in-brief`, the text (with the contents list after its In brief box), `lailatulqadar/sources`, `lailatulqadar/path-nav`. Everything lives in `inc/page-parts.php`, with `css/page-parts.css`. A guide page is a page in the `path` set of `inc/data/pages.json` (`lailatulqadar_is_guide_page()`); the language homes, About, Contact and the Sitemap take none of the parts.
@@ -142,6 +146,8 @@ The Security tab is drawn by `inc/security.php`, with `js/security.js` and `css/
 | `lailatulqadar_search_reserved_bases` | Words the search base may not take |
 | `lailatulqadar_is_guide_page` | Whether a page takes the guide page parts (default: the pages of the reading path) |
 | `lailatulqadar_contents_min` | Fewest H2 headings for a contents list (default 3) |
+
+The theme also filters `wp_speculation_rules_configuration` (`lq_speculation_rules()` in `inc/assets.php`): prerender with moderate eagerness, in place of WordPress's prefetch.
 
 Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`, `[lailatulqadar_social_icons]` and `[auto_toc]` (a contents list, `tags` and `title` attributes).
 

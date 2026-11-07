@@ -68,20 +68,56 @@ if ( 'path' === $lq_set ) :
 	// as one story; the numbering runs on through them.
 	$lq_groups = empty( $attributes['chapters'] ) ? array() : lq_path_groups( $lq_items );
 	if ( $lq_groups ) :
-		$lq_wrap = get_block_wrapper_attributes( array( 'class' => 'lq-menu lq-menu--chapters' ) );
+		$lq_ms      = 'secondary' === lq_current_role();
+		$lq_wrap    = get_block_wrapper_attributes( array( 'class' => 'lq-menu lq-menu--chapters alignwide' ) );
+		$lq_star    = lq_star_svg();
+		$lq_ch_word = $lq_ms ? 'Bab' : 'Chapter';
+		$lq_minutes = $lq_ms ? '%d minit bacaan' : '%d min read';
+		$lq_tool    = $lq_ms ? 'Jadual interaktif' : 'Interactive timetable';
 		?>
 	<div <?php echo $lq_wrap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-		<?php foreach ( $lq_groups as $lq_group ) : ?>
-		<h3 class="lq-menu__chapter"><?php echo esc_html( $lq_group['heading'] ); ?></h3>
-		<ol class="lq-menu lq-menu--path" start="<?php echo (int) $lq_group['start']; ?>">
-			<?php foreach ( $lq_group['items'] as $lq_item ) : ?>
-				<?php if ( ! empty( $lq_item['upcoming'] ) ) : ?>
-				<li class="is-upcoming"><span class="lq-menu__upcoming"><span class="lq-menu__title"><?php echo esc_html( $lq_item['title'] ); ?></span><span class="lq-menu__soon"><?php echo esc_html( $lq_soon ); ?></span></span></li>
-				<?php else : ?>
-				<li><a href="<?php echo esc_url( $lq_item['url'] ); ?>"><?php echo esc_html( $lq_item['title'] ); ?></a></li>
-				<?php endif; ?>
-			<?php endforeach; ?>
-		</ol>
+		<?php
+		foreach ( $lq_groups as $lq_n => $lq_group ) :
+			$lq_ch_id = wp_unique_id( 'lq-chapter-' );
+			?>
+		<section class="lq-chapter" aria-labelledby="<?php echo esc_attr( $lq_ch_id ); ?>">
+			<header class="lq-chapter__head">
+				<span class="lq-chapter__badge"><?php echo $lq_star; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed SVG. ?><span class="lq-chapter__no"><?php echo (int) $lq_n + 1; ?></span></span>
+				<span class="lq-chapter__label"><?php echo esc_html( $lq_ch_word . ' ' . ( $lq_n + 1 ) ); ?></span>
+				<h3 class="lq-chapter__title" id="<?php echo esc_attr( $lq_ch_id ); ?>"><?php echo esc_html( $lq_group['heading'] ); ?></h3>
+			</header>
+			<ol class="lq-cards" start="<?php echo (int) $lq_group['start']; ?>">
+				<?php
+				foreach ( $lq_group['items'] as $lq_i => $lq_item ) :
+					$lq_num     = sprintf( '%02d', (int) $lq_group['start'] + $lq_i );
+					$lq_summary = lq_page_summary( $lq_item['key'] );
+					$lq_icon    = lq_page_icon( $lq_item['key'] );
+					?>
+					<?php if ( ! empty( $lq_item['upcoming'] ) ) : ?>
+				<li class="lq-gcard is-upcoming">
+					<div class="lq-gcard__body">
+						<span class="lq-gcard__top"><span class="lq-gcard__num"><?php echo esc_html( $lq_num ); ?></span><?php echo $lq_icon; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed SVG. ?></span>
+						<span class="lq-gcard__title"><?php echo esc_html( $lq_item['title'] ); ?></span>
+						<span class="lq-gcard__text"><?php echo esc_html( $lq_summary ); ?></span>
+						<span class="lq-gcard__foot"><span class="lq-gcard__chip"><?php echo esc_html( $lq_soon ); ?></span></span>
+					</div>
+				</li>
+					<?php else : ?>
+				<li class="lq-gcard">
+					<a class="lq-gcard__body" href="<?php echo esc_url( $lq_item['url'] ); ?>">
+						<span class="lq-gcard__top"><span class="lq-gcard__num"><?php echo esc_html( $lq_num ); ?></span><?php echo $lq_icon; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed SVG. ?></span>
+						<span class="lq-gcard__title"><?php echo esc_html( $lq_item['title'] ); ?></span>
+						<span class="lq-gcard__text"><?php echo esc_html( $lq_summary ); ?></span>
+						<span class="lq-gcard__foot">
+							<span class="lq-gcard__chip"><?php echo esc_html( 'planner' === $lq_item['key'] ? $lq_tool : sprintf( $lq_minutes, lq_reading_minutes_cached( $lq_item['id'] ) ) ); ?></span>
+							<span class="lq-gcard__arrow" aria-hidden="true">&rarr;</span>
+						</span>
+					</a>
+				</li>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</ol>
+		</section>
 		<?php endforeach; ?>
 	</div>
 		<?php

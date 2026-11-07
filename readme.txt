@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.20.0
+Stable tag: 1.21.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -133,6 +133,9 @@ Browsers ask for /favicon.ico at the top of the domain, such as example.com/favi
 
 == Upgrade Notice ==
 
+= 1.21.0 =
+Nothing to do. The front page shows the reading path as cards in both languages.
+
 = 1.20.0 =
 Nothing to do. Five guide pages in each language take their new text on the first admin visit, unless you have edited them.
 
@@ -167,6 +170,10 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.21.0 =
+* The front page shows the reading path as cards, in English and Malay: each chapter under an eight-pointed star, a feature card for its first page, and each page with its number, an icon, a summary and its reading time.
+* Pages open faster (the next page is prepared when you point at its link) and change with a soft fade in browsers that support it. Keyboard focus is always visible.
 
 = 1.20.0 =
 * The classical Arabic dictionaries join the sources: What Is Laylat al-Qadr, Sūrat al-Qadr, the Duʿāʾ, the Islamic Dilemma and the FAQ cite them on the words they explain, in English and Malay, with links to each entry.

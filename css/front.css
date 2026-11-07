@@ -6,6 +6,58 @@
  * palette colour follows the active scheme without extra classes.
  */
 
+/* ---------- Tokens: focus and motion ---------- */
+
+:root {
+	--lq-focus-color: var(--wp--preset--color--accent-1);
+	--lq-focus-width: 2px;
+	--lq-focus-offset: 3px;
+	--lq-dur-1: 0.15s;
+	--lq-dur-2: 0.25s;
+	--lq-dur-3: 0.6s;
+	--lq-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Native page transitions between pages of the site, in browsers that
+   support them: the page fades and rises while the header holds still.
+   Nothing moves for visitors who ask for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+	@view-transition {
+		navigation: auto;
+	}
+
+	.lq-header {
+		view-transition-name: lq-header;
+	}
+
+	::view-transition-group(lq-header),
+	::view-transition-old(lq-header),
+	::view-transition-new(lq-header) {
+		animation: none;
+	}
+
+	::view-transition-old(root) {
+		animation: lq-vt-out var(--lq-dur-1) var(--lq-ease) both;
+	}
+
+	::view-transition-new(root) {
+		animation: lq-vt-in var(--lq-dur-2) var(--lq-ease) both;
+	}
+}
+
+@keyframes lq-vt-out {
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes lq-vt-in {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+}
+
 /* ---------- Colour schemes ---------- */
 
 html[data-scheme="night"],
@@ -72,9 +124,11 @@ a {
 	text-underline-offset: 0.2em;
 }
 
+/* A visible focus ring on every background (WCAG 2.2, 2.4.7 and 2.4.11),
+   from the focus tokens above. */
 :focus-visible {
-	outline: 2px solid var(--wp--preset--color--accent-1);
-	outline-offset: 3px;
+	outline: var(--lq-focus-width) solid var(--lq-focus-color);
+	outline-offset: var(--lq-focus-offset);
 	border-radius: var(--wp--custom--radius--small, 8px);
 }
 
@@ -395,27 +449,342 @@ ol.lq-menu--path a:hover {
 	color: var(--wp--preset--color--accent-1);
 }
 
-/* Reading path in chapters (front page). One counter runs through every
-   chapter's list, so the numbers carry on from one chapter to the next. */
+/* Reading path in chapters (front page): each chapter a section of cards.
+   Wide alignment gives three cards a row; the page numbers run on through
+   the chapters. Palette and radius tokens only, so both schemes follow. */
 .lq-menu--chapters {
-	margin-top: 1.5rem;
-	counter-reset: lq-path;
+	margin-top: var(--wp--preset--spacing--50, 2.5rem);
+	display: grid;
+	gap: var(--wp--preset--spacing--60, 3.5rem);
 }
 
-.lq-menu--chapters ol.lq-menu--path {
-	margin-top: 0.5rem;
-	counter-reset: none;
+.lq-chapter__head {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-rows: auto auto;
+	column-gap: 1rem;
+	align-items: center;
+	margin-bottom: 1.25rem;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid var(--wp--preset--color--accent-3);
+	position: relative;
 }
 
-.lq-menu__chapter {
-	margin: 2rem 0 0;
-	font-size: var(--wp--preset--font-size--medium);
-	font-weight: 600;
+.lq-chapter__head::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -1px;
+	width: 4.5rem;
+	height: 2px;
+	background: var(--wp--preset--color--accent-1);
+}
+
+.lq-chapter__badge {
+	grid-row: 1 / span 2;
+	position: relative;
+	display: grid;
+	place-items: center;
+	width: 3.25rem;
+	height: 3.25rem;
+	color: var(--wp--preset--color--accent-1);
+}
+
+.lq-chapter__star {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	transition: transform var(--lq-dur-3) var(--lq-ease);
+}
+
+.lq-chapter:hover .lq-chapter__star {
+	transform: rotate(45deg);
+}
+
+.lq-chapter__no {
+	position: relative;
+	font-size: var(--wp--preset--font-size--large);
+	font-style: italic;
+	font-variant-numeric: oldstyle-nums;
+	color: var(--wp--preset--color--accent-1);
+}
+
+.lq-chapter__label {
+	font-family: var(--wp--preset--font-family--interface);
+	font-size: var(--wp--preset--font-size--small);
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--accent-4);
+}
+
+.lq-chapter__title {
+	margin: 0;
+	text-wrap: balance;
+	font-size: var(--wp--preset--font-size--x-large, 1.75rem);
+	line-height: 1.2;
+	color: var(--wp--preset--color--contrast);
+}
+
+ol.lq-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+	gap: 1.25rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.lq-gcard {
+	display: flex;
+	margin: 0;
+}
+
+.lq-gcard__body {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	width: 100%;
+	padding: 1.4rem 1.4rem 1.2rem;
+	overflow: hidden;
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+	background: var(--wp--preset--color--accent-5);
+	background:
+		radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--wp--preset--color--accent-1) 14%, transparent), transparent 60%),
+		var(--wp--preset--color--accent-5);
+	border: 1px solid var(--wp--preset--color--accent-3);
+	border-radius: var(--wp--custom--radius--large, 22px);
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+	box-shadow: 0 1px 0 color-mix(in srgb, var(--wp--preset--color--contrast) 6%, transparent) inset;
+	transition: transform var(--lq-dur-2) var(--lq-ease), border-color var(--lq-dur-2) var(--lq-ease), box-shadow var(--lq-dur-2) var(--lq-ease);
+}
+
+/* A gold edge down the left side. */
+.lq-gcard__body::before {
+	content: "";
+	position: absolute;
+	inset: 1.1rem auto 1.1rem 0;
+	width: 3px;
+	border-radius: 0 3px 3px 0;
+	background: linear-gradient(var(--wp--preset--color--accent-1), var(--wp--preset--color--accent-2));
+	opacity: 0.85;
+}
+
+/* A faint eight-pointed star in the corner, drawn as a mask so it takes
+   the accent colour of either scheme. */
+.lq-gcard__body::after {
+	content: "";
+	position: absolute;
+	right: -1.75rem;
+	bottom: -1.75rem;
+	width: 7.5rem;
+	height: 7.5rem;
+	background: var(--wp--preset--color--accent-1);
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23000' stroke-width='1'%3E%3Crect x='8' y='8' width='24' height='24'/%3E%3Crect x='8' y='8' width='24' height='24' transform='rotate(45 20 20)'/%3E%3Ccircle cx='20' cy='20' r='6'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23000' stroke-width='1'%3E%3Crect x='8' y='8' width='24' height='24'/%3E%3Crect x='8' y='8' width='24' height='24' transform='rotate(45 20 20)'/%3E%3Ccircle cx='20' cy='20' r='6'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+	opacity: 0.16;
+	transition: transform var(--lq-dur-3) var(--lq-ease), opacity var(--lq-dur-2) var(--lq-ease);
+	pointer-events: none;
+}
+
+a.lq-gcard__body:hover,
+a.lq-gcard__body:focus-visible {
+	transform: translateY(-3px);
+	border-color: var(--wp--preset--color--accent-1);
+	box-shadow: 0 12px 30px -14px rgba(0, 0, 0, 0.45);
+	box-shadow: 0 12px 30px -14px color-mix(in srgb, var(--wp--preset--color--accent-1) 55%, transparent);
+}
+
+a.lq-gcard__body:hover::after,
+a.lq-gcard__body:focus-visible::after {
+	opacity: 0.22;
+	transform: rotate(90deg);
+}
+
+a.lq-gcard__body:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent-1);
+	outline-offset: 3px;
+}
+
+.lq-gcard__top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.lq-gcard__num {
+	font-size: 2.1rem;
+	line-height: 1;
+	font-style: italic;
+	font-variant-numeric: oldstyle-nums;
+	color: var(--wp--preset--color--accent-1);
+}
+
+.lq-gcard__icon {
+	width: 1.9rem;
+	height: 1.9rem;
 	color: var(--wp--preset--color--accent-2);
 }
 
-.lq-menu__chapter:first-child {
-	margin-top: 0;
+.lq-gcard__title {
+	text-wrap: balance;
+	font-size: var(--wp--preset--font-size--large);
+	line-height: 1.25;
+	font-weight: 600;
+	color: var(--wp--preset--color--contrast);
+}
+
+.lq-gcard__text {
+	flex: 1;
+	font-size: var(--wp--preset--font-size--small);
+	line-height: 1.55;
+	color: var(--wp--preset--color--accent-4);
+}
+
+.lq-gcard__foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 0.4rem;
+	padding-top: 0.75rem;
+	border-top: 1px solid var(--wp--preset--color--accent-3);
+}
+
+.lq-gcard__chip {
+	display: inline-block;
+	padding: 0.2rem 0.7rem;
+	font-family: var(--wp--preset--font-family--interface);
+	font-size: 0.78rem;
+	letter-spacing: 0.04em;
+	color: var(--wp--preset--color--accent-2);
+	border: 1px solid var(--wp--preset--color--accent-3);
+	border-radius: var(--wp--custom--radius--pill, 999px);
+}
+
+.lq-gcard__arrow {
+	font-size: 1.25rem;
+	color: var(--wp--preset--color--accent-1);
+	transition: transform var(--lq-dur-2) var(--lq-ease);
+}
+
+a.lq-gcard__body:hover .lq-gcard__arrow,
+a.lq-gcard__body:focus-visible .lq-gcard__arrow {
+	transform: translateX(5px);
+}
+
+.lq-gcard.is-upcoming .lq-gcard__body {
+	opacity: 0.7;
+	border-style: dashed;
+}
+
+/* Bento: each chapter is a container. Wide enough, its first page is a
+   full-width feature card laid out across, with the other two side by
+   side below it; the reading order of the list is unchanged. Each card is
+   a container too, so it sets its type by the room it has. */
+.lq-chapter {
+	container: lq-chapter / inline-size;
+}
+
+.lq-gcard {
+	container-type: inline-size;
+}
+
+@container lq-chapter (min-width: 34rem) {
+	ol.lq-cards {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.lq-gcard:first-child {
+		grid-column: 1 / -1;
+	}
+}
+
+@container (min-width: 24rem) {
+	.lq-gcard__body {
+		padding: 1.6rem 1.75rem 1.3rem;
+	}
+
+	.lq-gcard__num {
+		font-size: 2.6rem;
+	}
+}
+
+/* The feature card: number and icon in a column on the left, the words on
+   the right. */
+@container (min-width: 44rem) {
+	.lq-gcard__body {
+		display: grid;
+		grid-template-columns: 7rem 1fr;
+		grid-template-areas:
+			"top title"
+			"top text"
+			"top foot";
+		column-gap: 2rem;
+		row-gap: 0.7rem;
+		padding: 2.1rem 2.4rem 1.6rem;
+	}
+
+	.lq-gcard__top {
+		grid-area: top;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: flex-start;
+		gap: 1.1rem;
+		padding-right: 1.5rem;
+		border-right: 1px solid var(--wp--preset--color--accent-3);
+	}
+
+	.lq-gcard__num {
+		font-size: 4.25rem;
+	}
+
+	.lq-gcard__icon {
+		width: 2.75rem;
+		height: 2.75rem;
+	}
+
+	.lq-gcard__title {
+		grid-area: title;
+		font-size: var(--wp--preset--font-size--x-large);
+	}
+
+	.lq-gcard__text {
+		grid-area: text;
+		max-width: 46ch;
+		font-size: var(--wp--preset--font-size--medium);
+	}
+
+	.lq-gcard__foot {
+		grid-area: foot;
+	}
+
+	.lq-gcard__body::after {
+		width: 12rem;
+		height: 12rem;
+		right: -2.5rem;
+		bottom: -3rem;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.lq-gcard__body,
+	.lq-gcard__body::after,
+	.lq-gcard__arrow,
+	.lq-chapter__star {
+		transition: none;
+	}
+
+	a.lq-gcard__body:hover,
+	a.lq-gcard__body:focus-visible,
+	a.lq-gcard__body:hover .lq-gcard__arrow,
+	a.lq-gcard__body:focus-visible .lq-gcard__arrow,
+	a.lq-gcard__body:hover::after,
+	a.lq-gcard__body:focus-visible::after,
+	.lq-chapter:hover .lq-chapter__star {
+		transform: none;
+	}
 }
 
 /* HTML sitemap */
@@ -490,8 +859,26 @@ ul.lq-menu--sitemap li {
 /* ---------- Hero: the verse is the one bold element ---------- */
 
 .lq-hero {
+	position: relative;
+	isolation: isolate;
+	border-radius: var(--wp--custom--radius--large, 22px);
 	padding-block: clamp(4rem, 12vw, 9rem) clamp(3rem, 8vw, 6rem);
 	text-align: center;
+}
+
+/* A faint paper grain and a soft glow from above: texture as a layer
+   behind the verse, light enough to keep its contrast. */
+.lq-hero::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	z-index: -1;
+	pointer-events: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"), radial-gradient(60% 50% at 50% 0%, color-mix(in srgb, var(--wp--preset--color--accent-1) 12%, transparent), transparent 70%);
+	background-size: 160px 160px, 100% 100%;
+	opacity: 0.07;
 }
 
 .lq-ayah {

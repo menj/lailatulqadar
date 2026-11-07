@@ -205,9 +205,11 @@ function lq_sanitize_settings( $input ) {
 				break;
 			case 'ramadan_start':
 			case 'ramadan_alt':
+				// A date as Y-m-d.
 				$value = preg_match( '/^\d{4}-\d{2}-\d{2}$/', (string) $value ) ? $value : '';
 				break;
 			case 'ramadan_year':
+				// Digits only.
 				$value = preg_replace( '/[^0-9]/', '', (string) $value );
 				break;
 			case 'verify_google':
@@ -216,6 +218,7 @@ function lq_sanitize_settings( $input ) {
 				if ( preg_match( '/content=["\']([^"\']+)["\']/', (string) $value, $m ) ) {
 					$value = $m[1];
 				}
+				// Letters, digits, underscores and hyphens only.
 				$value = preg_replace( '/[^A-Za-z0-9_\-]/', '', (string) $value );
 				break;
 			case 'calligraphy_id':
@@ -1446,10 +1449,11 @@ add_action( 'admin_post_lq_run_setup', 'lq_handle_run_setup' );
  * Tools: replace an edited guide page with the article the theme ships.
  */
 function lq_handle_replace_shipped() {
-	$id = isset( $_POST['page_id'] ) ? absint( $_POST['page_id'] ) : 0;
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_die( esc_html__( 'You do not have permission to replace pages.', 'lailatulqadar' ) );
 	}
+	// The nonce action names the page, so the ID is read before the nonce check.
+	$id = isset( $_POST['page_id'] ) ? absint( $_POST['page_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked on the next line.
 	check_admin_referer( 'lq_replace_shipped_' . $id );
 	$report = array(
 		'created'   => array(),

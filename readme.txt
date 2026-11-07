@@ -170,6 +170,7 @@ Theme Options has a new card layout with tabs that switch without a reload. Ever
 
 = 1.20.0 =
 * The classical Arabic dictionaries join the sources: What Is Laylat al-Qadr, Sūrat al-Qadr, the Duʿāʾ, the Islamic Dilemma and the FAQ cite them on the words they explain, in English and Malay, with links to each entry.
+* Code review: the structured data can no longer be broken by a search term, admin actions check permissions before anything else, and the admin boxes and code comments were tidied.
 
 = 1.19.1 =
 * The Islamic Dilemma page shows its notes again, in English and Malay: the numbers in its text led to notes the page never displayed.

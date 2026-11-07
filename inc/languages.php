@@ -35,6 +35,7 @@ function lq_language_attributes( $output ) {
 	if ( is_admin() || 'secondary' !== lq_current_role() ) {
 		return $output;
 	}
+	// The lang attribute WordPress printed, replaced on Malay pages.
 	return preg_match( '/lang="[^"]*"/', $output ) ? preg_replace( '/lang="[^"]*"/', 'lang="ms-MY"', $output ) : $output . ' lang="ms-MY"';
 }
 add_filter( 'language_attributes', 'lq_language_attributes' );
@@ -94,6 +95,7 @@ function lq_search_language( $html ) {
 	if ( 'secondary' !== lq_current_role() || false === strpos( $html, '<form' ) ) {
 		return $html;
 	}
+	// The opening <form> tag of the search form, after which the language field goes.
 	return preg_replace( '/(<form[^>]*>)/', '$1<input type="hidden" name="lang" value="' . esc_attr( lq_setting( 'secondary_slug' ) ) . '">', $html, 1 );
 }
 add_filter( 'render_block_core/search', 'lq_search_language' );

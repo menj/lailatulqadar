@@ -39,7 +39,7 @@ function lailatulqadar_unlist_active(): bool {
  */
 function lailatulqadar_unlist_clean( $ids ): array {
 	if ( ! is_array( $ids ) ) {
-		return [];
+		return array();
 	}
 	$ids = array_unique( array_filter( array_map( 'intval', $ids ), static fn( $id ) => $id > 0 ) );
 	sort( $ids );
@@ -55,9 +55,15 @@ function lailatulqadar_unlist_clean( $ids ): array {
  */
 function lailatulqadar_unlisted_ids(): array {
 	lailatulqadar_unlist_sync_legacy();
-	return lailatulqadar_unlist_clean( get_option( 'lailatulqadar_unlisted_posts', [] ) );
+	return lailatulqadar_unlist_clean( get_option( 'lailatulqadar_unlisted_posts', array() ) );
 }
 
+/**
+ * Whether a post is unlisted.
+ *
+ * @param int $post_id Post ID.
+ * @return bool
+ */
 function lailatulqadar_is_unlisted( $post_id ): bool {
 	return in_array( (int) $post_id, lailatulqadar_unlisted_ids(), true );
 }
@@ -84,6 +90,13 @@ function lailatulqadar_unlist_rebuild(): void {
 	update_option( 'lailatulqadar_unlist_legacy_hash', md5( (string) wp_json_encode( $ids ) ), false );
 }
 
+/**
+ * Unlist or list a post: the flag lives in post meta, and the cached list
+ * (and the plugin's option) is rebuilt from the flags.
+ *
+ * @param int  $post_id Post ID.
+ * @param bool $unlist  True to unlist, false to list.
+ */
 function lailatulqadar_set_unlisted( $post_id, bool $unlist ): void {
 	$post_id = (int) $post_id;
 	if ( $post_id <= 0 ) {
@@ -109,14 +122,14 @@ function lailatulqadar_unlist_sync_legacy(): void {
 		return;
 	}
 	$GLOBALS['lailatulqadar_unlist_synced'] = true;
-	$legacy = lailatulqadar_unlist_clean( get_option( 'unlist_posts', [] ) );
+	$legacy = lailatulqadar_unlist_clean( get_option( 'unlist_posts', array() ) );
 	$seen   = get_option( 'lailatulqadar_unlist_legacy_hash', false );
 	if ( md5( (string) wp_json_encode( $legacy ) ) === $seen ) {
 		return;
 	}
 	$flagged = lailatulqadar_unlist_ids_from_meta();
 	$target  = false === $seen
-		? lailatulqadar_unlist_clean( array_merge( $legacy, $flagged, (array) get_option( 'lailatulqadar_unlisted_posts', [] ) ) )
+		? lailatulqadar_unlist_clean( array_merge( $legacy, $flagged, (array) get_option( 'lailatulqadar_unlisted_posts', array() ) ) )
 		: $legacy;
 	foreach ( array_diff( $target, $flagged ) as $id ) {
 		update_post_meta( $id, '_lq_unlisted', '1' );
@@ -142,7 +155,7 @@ function lailatulqadar_unlist_sitemaps_on(): bool {
  * @return int[]
  */
 function lailatulqadar_unlist_sitemap_ids(): array {
-	return lailatulqadar_unlist_sitemaps_on() ? lailatulqadar_unlisted_ids() : [];
+	return lailatulqadar_unlist_sitemaps_on() ? lailatulqadar_unlisted_ids() : array();
 }
 
 /**
@@ -234,7 +247,7 @@ function lailatulqadar_unlist_sitemap_args( $args ) {
 	if ( ! lailatulqadar_unlist_sitemaps_on() || ! lailatulqadar_unlisted_ids() ) {
 		return $args;
 	}
-	$args['post__not_in'] = array_merge( (array) ( $args['post__not_in'] ?? [] ), lailatulqadar_unlisted_ids() );
+	$args['post__not_in'] = array_merge( (array) ( $args['post__not_in'] ?? array() ), lailatulqadar_unlisted_ids() );
 	return $args;
 }
 add_filter( 'wp_sitemaps_posts_query_args', 'lailatulqadar_unlist_sitemap_args', 20 );
@@ -296,9 +309,12 @@ add_filter( 'rank_math/frontend/robots', 'lailatulqadar_unlist_rankmath_robots',
 /* ── Admin ─────────────────────────────────────────────────────────────── */
 
 function lailatulqadar_unlist_post_types(): array {
-	return array_values( get_post_types( [ 'public' => true ], 'names' ) );
+	return array_values( get_post_types( array( 'public' => true ), 'names' ) );
 }
 
+/**
+ * The Unlisted box in the editor sidebar.
+ */
 function lailatulqadar_unlist_register_metabox(): void {
 	if ( ! lailatulqadar_unlist_active() ) {
 		return;
@@ -307,13 +323,17 @@ function lailatulqadar_unlist_register_metabox(): void {
 }
 add_action( 'add_meta_boxes', 'lailatulqadar_unlist_register_metabox' );
 
+/**
+ * Draw the Unlisted box.
+ *
+ * @param WP_Post $post Post being edited.
+ */
 function lailatulqadar_unlist_metabox_render( $post ): void {
 	wp_nonce_field( 'lailatulqadar_unlist_save', 'lailatulqadar_unlist_nonce' );
-	echo '<p><label><input type="checkbox" name="lailatulqadar_unlisted" value="1"' . checked( lailatulqadar_is_unlisted( $post->ID ), true, false ) . '> ';
-	esc_html_e( 'Unlist this post', 'lailatulqadar' );
-	echo '</label></p><p class="description">';
-	esc_html_e( 'Hidden from the home page, archives, feeds, search, sitemaps and related links, and marked noindex. Anyone with the URL can still open it.', 'lailatulqadar' );
-	echo '</p>';
+	?>
+	<p><label><input type="checkbox" name="lailatulqadar_unlisted" value="1"<?php checked( lailatulqadar_is_unlisted( $post->ID ) ); ?>> <?php esc_html_e( 'Unlist this post', 'lailatulqadar' ); ?></label></p>
+	<p class="description"><?php esc_html_e( 'Hidden from the home page, archives, feeds, search, sitemaps and related links, and marked noindex. Anyone with the URL can still open it.', 'lailatulqadar' ); ?></p>
+	<?php
 }
 
 /**
@@ -366,42 +386,94 @@ function lailatulqadar_unlist_list_table_hooks(): void {
 }
 add_action( 'admin_init', 'lailatulqadar_unlist_list_table_hooks' );
 
+/**
+ * Add the Unlisted column to the posts list.
+ *
+ * @param array $columns Column names keyed by slug.
+ * @return array
+ */
 function lailatulqadar_unlist_column( $columns ) {
 	$columns['lailatulqadar_unlisted'] = __( 'Unlisted', 'lailatulqadar' );
 	return $columns;
 }
 
+/**
+ * Fill the Unlisted column. The data-unlisted value lets Quick Edit tick
+ * its box from the row.
+ *
+ * @param string $column  Column slug.
+ * @param int    $post_id Post ID.
+ */
 function lailatulqadar_unlist_column_cell( $column, $post_id ): void {
 	if ( 'lailatulqadar_unlisted' !== $column ) {
 		return;
 	}
 	$on = lailatulqadar_is_unlisted( $post_id );
-	echo '<span class="lq-unlist-status" data-unlisted="' . ( $on ? '1' : '0' ) . '">' . ( $on ? esc_html__( 'Yes', 'lailatulqadar' ) : '&mdash;' ) . '</span>';
+	?>
+	<span class="lq-unlist-status" data-unlisted="<?php echo $on ? '1' : '0'; ?>"><?php echo $on ? esc_html__( 'Yes', 'lailatulqadar' ) : '&mdash;'; ?></span>
+	<?php
 }
 
+/**
+ * The Unlisted box in Quick Edit.
+ *
+ * @param string $column    Column slug.
+ * @param string $post_type Post type of the list.
+ */
 function lailatulqadar_unlist_quick_edit( $column, $post_type ): void {
 	if ( 'lailatulqadar_unlisted' !== $column || ! in_array( $post_type, lailatulqadar_unlist_post_types(), true ) ) {
 		return;
 	}
 	wp_nonce_field( 'lailatulqadar_unlist_quick_edit', 'lailatulqadar_unlist_qe_nonce' );
-	echo '<fieldset class="inline-edit-col-right"><div class="inline-edit-col"><label class="alignleft"><input type="checkbox" name="lailatulqadar_unlisted_qe" value="1"> <span class="checkbox-title">' . esc_html__( 'Unlist this post', 'lailatulqadar' ) . '</span></label></div></fieldset>';
+	?>
+	<fieldset class="inline-edit-col-right"><div class="inline-edit-col"><label class="alignleft"><input type="checkbox" name="lailatulqadar_unlisted_qe" value="1"> <span class="checkbox-title"><?php esc_html_e( 'Unlist this post', 'lailatulqadar' ); ?></span></label></div></fieldset>
+	<?php
 }
 
+/**
+ * The Unlisted choice in Bulk Edit.
+ *
+ * @param string $column    Column slug.
+ * @param string $post_type Post type of the list.
+ */
 function lailatulqadar_unlist_bulk_edit( $column, $post_type ): void {
 	if ( 'lailatulqadar_unlisted' !== $column || ! in_array( $post_type, lailatulqadar_unlist_post_types(), true ) ) {
 		return;
 	}
-	echo '<fieldset class="inline-edit-col-right"><div class="inline-edit-col"><label class="inline-edit-group"><span class="title">' . esc_html__( 'Unlisted', 'lailatulqadar' ) . '</span><select name="lailatulqadar_unlist_bulk">'
-		. '<option value="-1">' . esc_html__( 'No change', 'lailatulqadar' ) . '</option>'
-		. '<option value="unlist">' . esc_html__( 'Unlist', 'lailatulqadar' ) . '</option>'
-		. '<option value="list">' . esc_html__( 'List', 'lailatulqadar' ) . '</option>'
-		. '</select></label></div></fieldset>';
+	?>
+	<fieldset class="inline-edit-col-right">
+		<div class="inline-edit-col">
+			<label class="inline-edit-group">
+				<span class="title"><?php esc_html_e( 'Unlisted', 'lailatulqadar' ); ?></span>
+				<select name="lailatulqadar_unlist_bulk">
+					<option value="-1"><?php esc_html_e( 'No change', 'lailatulqadar' ); ?></option>
+					<option value="unlist"><?php esc_html_e( 'Unlist', 'lailatulqadar' ); ?></option>
+					<option value="list"><?php esc_html_e( 'List', 'lailatulqadar' ); ?></option>
+				</select>
+			</label>
+		</div>
+	</fieldset>
+	<?php
 }
 
+/**
+ * Whether the posts list is showing the Unlisted view.
+ *
+ * @return bool
+ */
 function lailatulqadar_unlist_viewing_unlisted(): bool {
-	return is_admin() && isset( $_GET['post_status'] ) && 'unlisted' === $_GET['post_status']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- list filter only.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- list filter only.
+	$status = isset( $_GET['post_status'] ) ? sanitize_key( wp_unslash( $_GET['post_status'] ) ) : '';
+	return is_admin() && 'unlisted' === $status;
 }
 
+/**
+ * Mark an unlisted post "Unlisted" in the list, except in the Unlisted view.
+ *
+ * @param array   $states Post states.
+ * @param WP_Post $post   Post.
+ * @return array
+ */
 function lailatulqadar_unlist_post_state( $states, $post ) {
 	if ( ! lailatulqadar_unlist_viewing_unlisted() && lailatulqadar_is_unlisted( $post->ID ) ) {
 		$states['lailatulqadar_unlisted'] = __( 'Unlisted', 'lailatulqadar' );
@@ -409,19 +481,28 @@ function lailatulqadar_unlist_post_state( $states, $post ) {
 	return $states;
 }
 
+/**
+ * The "Unlisted (n)" link above the posts list, when any post of this type
+ * is unlisted.
+ *
+ * @param array $views View links keyed by slug.
+ * @return array
+ */
 function lailatulqadar_unlist_view( $views ) {
 	$ids = lailatulqadar_unlisted_ids();
 	if ( ! $ids ) {
 		return $views;
 	}
 	$screen = get_current_screen();
-	$q      = new WP_Query( [
-		'post_type'      => $screen && $screen->post_type ? $screen->post_type : 'any',
-		'post__in'       => $ids,
-		'post_status'    => 'any',
-		'posts_per_page' => 1,
-		'fields'         => 'ids',
-	] );
+	$q      = new WP_Query(
+		array(
+			'post_type'      => $screen && $screen->post_type ? $screen->post_type : 'any',
+			'post__in'       => $ids,
+			'post_status'    => 'any',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+		)
+	);
 	if ( $q->found_posts > 0 ) {
 		$current           = lailatulqadar_unlist_viewing_unlisted() ? ' class="current" aria-current="page"' : '';
 		$views['unlisted'] = '<a href="' . esc_url( add_query_arg( 'post_status', 'unlisted' ) ) . '"' . $current . '>' . esc_html__( 'Unlisted', 'lailatulqadar' ) . ' <span class="count">(' . (int) $q->found_posts . ')</span></a>';
@@ -429,11 +510,16 @@ function lailatulqadar_unlist_view( $views ) {
 	return $views;
 }
 
+/**
+ * Limit the posts list to unlisted posts in the Unlisted view.
+ *
+ * @param WP_Query $query Query.
+ */
 function lailatulqadar_unlist_filter_view( $query ): void {
 	global $pagenow;
 	if ( 'edit.php' === $pagenow && $query->is_main_query() && lailatulqadar_unlist_viewing_unlisted() ) {
 		$ids = lailatulqadar_unlisted_ids();
-		$query->set( 'post__in', $ids ? $ids : [ 0 ] );
+		$query->set( 'post__in', $ids ? $ids : array( 0 ) );
 		$query->set( 'post_status', 'any' );
 	}
 }

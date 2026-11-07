@@ -14,6 +14,14 @@ The classical Arabic dictionaries join the sources. Five articles, in English an
 - FAQ: *qadr* and *qadar* as two forms of the word.
 - Each footnote quotes the Arabic of the entry and links to it on arabiclexicon.hawramani.com under its book. `SSOT.md` sets the citation form; `docs/content.md` has refreshed word and footnote counts.
 
+### Security
+- The JSON-LD graph is printed with `JSON_HEX_TAG | JSON_HEX_AMP`, so no string in it, a search term included, can close its `<script>` element.
+- Every state-changing handler now checks the capability before the nonce: the two spam-scan AJAX calls, the Search appearance and Guide page boxes, and Tools > Replace with the shipped article (which also no longer reads the page ID before the capability check).
+- The Unlisted view reads `post_status` through `sanitize_key( wp_unslash() )`.
+
+### Changed
+- Code review against the maintainable-PHP conventions. The Search appearance box and the Unlisted box, column, Quick Edit and Bulk Edit fields print HTML with escaped values in place of strings built inside `echo`. `inc/unlist.php` has a docblock for every function and long array syntax, as the rest of the theme. The one assignment inside a condition (`lailatulqadar_contents_filter()`) is gone. Each of the 82 regular expressions that lacked one has a comment saying what it matches.
+
 ## 1.19.1 (2026-11-07)
 
 Two fixes from a check of the whole codebase. No feature removed and no public identifier renamed.

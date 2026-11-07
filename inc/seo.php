@@ -223,26 +223,33 @@ function lq_render_seo_box( $post ) {
 		LQ_META_TITLE       => array( __( 'Title tag (the theme adds “ | Lailatulqadar”)', 'lailatulqadar' ), lq_title_part_limit(), 'input' ),
 		LQ_META_DESCRIPTION => array( __( 'Meta description', 'lailatulqadar' ), LQ_META_LIMIT, 'textarea' ),
 	);
-	echo '<div class="lq-seo">';
-	foreach ( $fields as $key => $field ) {
-		$value = (string) get_post_meta( $post->ID, $key, true );
-		$id    = 'lq-seo' . str_replace( '_', '-', $key );
-		echo '<div class="lq-seo__field">';
-		printf( '<label for="%1$s">%2$s</label>', esc_attr( $id ), esc_html( $field[0] ) );
-		if ( 'input' === $field[2] ) {
-			printf( '<input type="text" id="%1$s" name="%2$s" value="%3$s" data-lq-limit="%4$d">', esc_attr( $id ), esc_attr( $key ), esc_attr( $value ), (int) $field[1] );
-		} else {
-			printf( '<textarea id="%1$s" name="%2$s" rows="3" data-lq-limit="%4$d">%3$s</textarea>', esc_attr( $id ), esc_attr( $key ), esc_textarea( $value ), (int) $field[1] );
-		}
-		printf(
-			'<p class="lq-seo__count" data-lq-count-for="%1$s">%2$s</p>',
-			esc_attr( $id ),
-			esc_html( sprintf( /* translators: 1: characters used, 2: limit */ __( '%1$d of %2$d characters', 'lailatulqadar' ), mb_strlen( lq_title_part( $value, false ) ), (int) $field[1] ) )
-		);
-		echo '</div>';
-	}
-	echo '<p class="lq-seo__help">' . esc_html__( 'Leave the title tag empty to use the page title. Every title tag reads “title | Lailatulqadar” and stays under 60 characters; a longer one is cut at a word. The meta description should end with a call to action.', 'lailatulqadar' ) . '</p>';
-	echo '</div>';
+	?>
+	<div class="lq-seo">
+		<?php
+		foreach ( $fields as $key => $field ) :
+			list( $label, $limit, $control ) = $field;
+			$value = (string) get_post_meta( $post->ID, $key, true );
+			$id    = 'lq-seo' . str_replace( '_', '-', $key );
+			$count = sprintf(
+				/* translators: 1: characters used, 2: limit */
+				__( '%1$d of %2$d characters', 'lailatulqadar' ),
+				mb_strlen( lq_title_part( $value, false ) ),
+				(int) $limit
+			);
+			?>
+			<div class="lq-seo__field">
+				<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $label ); ?></label>
+				<?php if ( 'input' === $control ) : ?>
+					<input type="text" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $key ); ?>" value="<?php echo esc_attr( $value ); ?>" data-lq-limit="<?php echo (int) $limit; ?>">
+				<?php else : ?>
+					<textarea id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $key ); ?>" rows="3" data-lq-limit="<?php echo (int) $limit; ?>"><?php echo esc_textarea( $value ); ?></textarea>
+				<?php endif; ?>
+				<p class="lq-seo__count" data-lq-count-for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $count ); ?></p>
+			</div>
+		<?php endforeach; ?>
+		<p class="lq-seo__help"><?php esc_html_e( 'Leave the title tag empty to use the page title. Every title tag reads “title | Lailatulqadar” and stays under 60 characters; a longer one is cut at a word. The meta description should end with a call to action.', 'lailatulqadar' ); ?></p>
+	</div>
+	<?php
 }
 
 /**
@@ -251,10 +258,10 @@ function lq_render_seo_box( $post ) {
  * @param int $post_id Page ID.
  */
 function lq_save_seo_box( $post_id ) {
-	if ( ! isset( $_POST['lq_seo_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lq_seo_nonce'] ) ), 'lq_seo_save' ) ) {
+	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ! current_user_can( 'edit_page', $post_id ) ) {
 		return;
 	}
-	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ! current_user_can( 'edit_page', $post_id ) ) {
+	if ( ! isset( $_POST['lq_seo_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lq_seo_nonce'] ) ), 'lq_seo_save' ) ) {
 		return;
 	}
 	foreach ( array( LQ_META_TITLE, LQ_META_DESCRIPTION ) as $key ) {
@@ -367,6 +374,7 @@ function lq_rank_math_title( $title ) {
 		if ( 0 === strcasecmp( $text, $name ) ) {
 			return LQ_TITLE_SITE;
 		}
+		// A separator and the site name Rank Math put at the end, so the theme's own form can replace them.
 		$text = trim( (string) preg_replace( '/\s*(?:' . $seps . ')\s*' . preg_quote( $name, '/' ) . '\s*$/iu', '', $text ) );
 	}
 	return lq_compose_title( $text, true );
@@ -407,6 +415,7 @@ function lq_preg_quote_slash( $text ) {
  * @return string
  */
 function lq_meta_trim( $text ) {
+	// Runs of white space become one space.
 	$text = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( strip_shortcodes( (string) $text ) ) ) );
 	if ( mb_strlen( $text ) <= LQ_META_LIMIT ) {
 		return $text;

@@ -60,6 +60,7 @@ function lq_has_quran() {
 		return false;
 	}
 	$content = (string) get_post_field( 'post_content', get_queried_object_id() );
+	// Any of the classes or patterns that show Qurʾānic text, which needs the KFGQPC font.
 	return (bool) preg_match( '/lq-quran|lq-ayah|is-style-lq-quran|lailatulqadar\/front-/', $content );
 }
 
@@ -113,6 +114,7 @@ function lq_serve_favicon() {
 	// If-None-Match may list several validators, weak ones (W/"...") or *.
 	$sent = array_map(
 		static function ( $v ) {
+			// A weak ETag (W/"…") compares equal to the strong one.
 			return preg_replace( '#^W/#', '', trim( $v ) );
 		},
 		explode( ',', wp_unslash( (string) ( $_SERVER['HTTP_IF_NONE_MATCH'] ?? '' ) ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput

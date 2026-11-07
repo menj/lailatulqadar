@@ -77,6 +77,7 @@ function lq_spam_link_pattern() {
  */
 function lq_spam_normalise( $text ) {
 	$text = html_entity_decode( strip_tags( (string) $text ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	// Runs of white space become one space.
 	$text = preg_replace( '/\s+/iu', ' ', $text );
 	return function_exists( 'mb_strtolower' ) ? mb_strtolower( $text, 'UTF-8' ) : strtolower( $text );
 }
@@ -99,6 +100,7 @@ function lq_spam_score( $title, $slug = '', $content = '' ) {
 	foreach ( lq_spam_patterns() as $label => $rule ) {
 		list( $regex, $weight ) = $rule;
 		if ( 'probe title' === $label ) {
+			// Each spam signal pattern, on the title.
 			if ( preg_match( $regex, $title_text, $m ) ) {
 				$score    += $weight;
 				$reasons[] = 'probe title: ' . trim( $m[0] );
@@ -106,6 +108,7 @@ function lq_spam_score( $title, $slug = '', $content = '' ) {
 			continue;
 		}
 		foreach ( array( 'title' => $title_text, 'slug' => $slug_text, 'content' => $body_text ) as $where => $text ) {
+			// Each spam signal pattern, on the text.
 			if ( '' !== $text && preg_match( $regex, $text, $m ) ) {
 				$score    += $weight;
 				$reasons[] = $label . ' in ' . $where . ': ' . trim( $m[0] );

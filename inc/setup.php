@@ -385,6 +385,7 @@ function lq_page_is_claimable( $id, $role, $map ) {
  * @return array{content:string,footnotes:array<int,array{id:string,content:string}>}|null
  */
 function lq_article_data( $lang, $key ) {
+	// A two-letter language and a page key of lower-case letters and digits, so the path cannot leave content/.
 	if ( ! preg_match( '/^[a-z]{2}$/', $lang ) || ! preg_match( '/^[a-z0-9]+$/', $key ) ) {
 		return null;
 	}
@@ -498,6 +499,7 @@ function lq_article_link_urls( $key, $role ) {
  * @return string
  */
 function lq_resolve_article_links( $content, $role ) {
+	// Each {{url:key}} placeholder in a shipped article.
 	return preg_replace_callback(
 		'/\{\{url:([a-z0-9]+)\}\}/',
 		static function ( $m ) use ( $role ) {
@@ -525,6 +527,7 @@ function lq_unresolve_article_links( $content, $role ) {
 			}
 		}
 	}
+	// Each link to a guide page, turned back into its {{url:key}} placeholder.
 	return preg_replace_callback(
 		'/href="([^"]*)"/',
 		static function ( $m ) use ( $urls ) {
@@ -721,6 +724,7 @@ function lq_trash_duplicates( $map, &$report ) {
 		if ( '' === $key || empty( $defs[ $key ] ) ) {
 			$key = '';
 			foreach ( $defs as $k => $def ) {
+				// The page's slug, or a copy of it with a number added (slug-2).
 				if ( preg_match( '/^' . preg_quote( $def[ $role ]['slug'], '/' ) . '(-\d+)?$/', $post->post_name ) ) {
 					$key = $k;
 					break;
@@ -754,6 +758,7 @@ function lq_is_default_block_page( $post, $key ) {
 		return true;
 	}
 	return 'home' === $key
+		// A page whose whole text is the front-page pattern block.
 		? (bool) preg_match( '#^<!-- wp:pattern \{"slug":"lailatulqadar/front-(en|ms)"\} /-->$#', $body )
 		: '<!-- wp:lailatulqadar/guide-menu {"set":"sitemap"} /-->' === $body;
 }

@@ -44,6 +44,7 @@ function twentytwentyfive_enqueue_styles() {
  * @return WP_HTTP_Response
  */
 function lq_hide_parent_variations( $response, $server, $request ) {
+	// The REST route that lists a theme's style variations; group 1 is the theme.
 	if ( ! preg_match( '#^/wp/v2/global-styles/themes/([^/]+)/variations$#', $request->get_route(), $m ) ) {
 		return $response;
 	}

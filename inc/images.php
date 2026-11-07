@@ -58,6 +58,7 @@ function lq_image_source_of( $image ) {
 			continue;
 		}
 		foreach ( $source['licences'] as $pattern ) {
+			// The licence names of this image source (see lq_image_sources()).
 			if ( preg_match( $pattern, $image['licence'] ) ) {
 				return $key;
 			}
@@ -87,6 +88,7 @@ function lq_images_data() {
 	}
 	$fields = array( 'file', 'alt', 'caption', 'artist', 'licence', 'licence_url', 'source' );
 	foreach ( $raw as $key => $list ) {
+		// A page key: lower-case letters and digits only.
 		if ( ! is_string( $key ) || ! preg_match( '/^[a-z0-9]+$/', $key ) || ! is_array( $list ) ) {
 			continue;
 		}
@@ -99,6 +101,7 @@ function lq_images_data() {
 					continue 2;
 				}
 			}
+			// A file name stem: lower-case letters, digits and hyphens, so it cannot leave images/commons/.
 			if ( ! preg_match( '/^[a-z0-9-]+$/', $image['file'] ) || empty( $image['widths'] ) || ! is_array( $image['widths'] ) ) {
 				continue;
 			}

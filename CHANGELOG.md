@@ -2,6 +2,18 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.21.0 (2026-11-07)
+
+The front page's reading path is a set of cards. The same design on the English and Malay front pages. No feature removed and no public identifier renamed.
+
+### Changed
+- "Read the guide" shows each chapter as a section headed by its number in an eight-pointed star, "Chapter n" (Malay "Bab n") and its title, with a card for each page: its number, a line icon, the title, a one-line summary, the reading time ("Interactive timetable" for the Night Planner) and an arrow. Cards lift and take a gold border on hover and keyboard focus; the motion stops under reduced motion. Palette and radius tokens only, so the night and dawn schemes both follow.
+- The section is wide (`alignwide`) in `patterns/front-en.php` and `patterns/front-ms.php`, so three cards sit in a row; its heading and introduction keep the reading width. Home pages that still hold the pattern take the change without setup.
+- The icons and the star are geometric line drawings (crescent, book, calendar, niche, lantern, balance), never figures, as `.claude/FARUQI.md` asks of the sites' ornament.
+
+### Added
+- `lq_page_summary()` (the registry's meta description without its closing call to action), `lq_reading_minutes_cached()` (reading time cached until the page changes), `lq_page_icon()` and `lq_star_svg()` in `inc/helpers.php`. The card classes are `lq-chapter*` and `lq-gcard*` in `css/front.css`.
+
 ## 1.20.0 (2026-11-07)
 
 The classical Arabic dictionaries join the sources. Five articles, in English and Malay, cite them on the words they explain. No feature removed and no public identifier renamed.

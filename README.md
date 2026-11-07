@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.20.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.21.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 7.4 or later |
@@ -92,6 +92,10 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 | `languages/` | POT file and the `ms_MY` translation |
 | `bin/`, `tests/` | Build and check scripts, and the tests. Not shipped |
 | `docs/` | The detailed references |
+
+### Front page reading path
+
+`patterns/front-en.php` and `patterns/front-ms.php` hold a wide "Read the guide" group with `lailatulqadar/guide-menu` (`set` path, `chapters` on). `blocks/guide-menu/render.php` draws one `section.lq-chapter` per chapter of `inc/data/path-chapters.json` and a card (`li.lq-gcard`) per page, from `lq_page_summary()`, `lq_page_icon()` and `lq_reading_minutes_cached()` in `inc/helpers.php`; the styles are the `lq-chapter*` and `lq-gcard*` rules in `css/front.css`. Without chapters, or when the path and the chapters do not line up, the block prints the plain numbered list.
 
 ### Guide page parts
 

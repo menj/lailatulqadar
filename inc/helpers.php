@@ -419,3 +419,96 @@ function lq_lanah_shortcode() {
 	return '<span class="lq-lanah" lang="ar-Latn" title="' . esc_attr( $words ) . '"><span class="lq-lanah__text">' . esc_html( $words ) . '</span></span>';
 }
 add_shortcode( 'lq_lanah', 'lq_lanah_shortcode' );
+
+/**
+ * A one-line summary of a guide page for the front page cards: its meta
+ * description from the registry without the closing call to action
+ * ("Read more.", "Baca lanjut."), which suits a search result but not a
+ * card that is already a link. Registry text only, never editor input, so
+ * the [lq_ramadan] year in it may be expanded.
+ *
+ * @param string      $key  Page key.
+ * @param string|null $role primary or secondary; the current view's when null.
+ * @return string
+ */
+function lq_page_summary( $key, $role = null ) {
+	$role = null === $role ? lq_current_role() : $role;
+	$defs = lq_page_definitions();
+	if ( empty( $defs[ $key ][ $role ]['meta'] ) ) {
+		return '';
+	}
+	$text = trim( do_shortcode( (string) $defs[ $key ][ $role ]['meta'] ) );
+	// The last sentence, when the text has more than one: the call to action.
+	$cut = preg_replace( '/(?<=[.?!])\s+[^.?!]+[.?!]$/u', '', $text );
+	return is_string( $cut ) && '' !== $cut ? $cut : $text;
+}
+
+/**
+ * Reading minutes of a page, cached until the page changes, so a list of
+ * every guide page does not count the words of each on every view.
+ *
+ * @param int $id Page ID.
+ * @return int
+ */
+function lq_reading_minutes_cached( $id ) {
+	$id  = (int) $id;
+	$key = 'lq_rmin_' . $id . '_' . md5( (string) get_post_modified_time( 'U', true, $id ) );
+	$min = get_transient( $key );
+	if ( false === $min ) {
+		$min = function_exists( 'lailatulqadar_reading_minutes' ) ? lailatulqadar_reading_minutes( $id ) : max( 1, (int) round( lq_word_count( $id ) / 200 ) );
+		set_transient( $key, (int) $min, WEEK_IN_SECONDS );
+	}
+	return (int) $min;
+}
+
+/**
+ * A line icon for a guide page, for the front page cards: plain geometric
+ * shapes (crescent, book, calendar, arch, lantern), never figures, as
+ * .claude/FARUQI.md asks of the sites' ornament. Decorative, so hidden
+ * from assistive technology. Fixed markup, no input.
+ *
+ * @param string $key Page key.
+ * @return string SVG markup, or '' for an unknown key.
+ */
+function lq_page_icon( $key ) {
+	$paths = array(
+		// A path that sets out: a circle with a forward arrow.
+		'start'   => '<circle cx="12" cy="12" r="9"/><path d="M8 12h8M13 8l4 4-4 4"/>',
+		// Crescent and star.
+		'what'    => '<path d="M15 3.5a8.5 8.5 0 1 0 5.5 14 7 7 0 0 1-5.5-14z"/><path d="M18 5l.7 1.5 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2z"/>',
+		// An open book.
+		'surah'   => '<path d="M12 6c-2-1.5-5-2-8-1.5V19c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5C17 4 14 4.5 12 6z"/><path d="M12 6v14.5"/>',
+		// A calendar.
+		'when'    => '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 17h2"/>',
+		// Three stars in the night.
+		'last10'  => '<path d="M7 4l1 2.2 2.4.3-1.8 1.6.5 2.4L7 9.3 4.9 10.5l.5-2.4L3.6 6.5 6 6.2z"/><path d="M17 9l1 2.2 2.4.3-1.8 1.6.5 2.4-2.1-1.2-2.1 1.2.5-2.4-1.8-1.6 2.4-.3z"/><path d="M9.5 15l.8 1.6 1.7.2-1.3 1.2.4 1.7-1.6-.9-1.5.9.3-1.7-1.2-1.2 1.7-.2z"/>',
+		// A sun rising without rays.
+		'signs'   => '<path d="M5 17a7 7 0 0 1 14 0"/><path d="M2.5 17h19M6 20.5h12"/>',
+		// A prayer niche.
+		'worship' => '<path d="M5 21V11a7 7 0 0 1 14 0v10"/><path d="M9 21v-7a3 3 0 0 1 6 0v7M3 21h18"/>',
+		// A lantern, the site's own mark.
+		'dua'     => '<path d="M12 2.5v2M9.5 4.5h5l1.5 3h-8z"/><path d="M8 7.5h8l1 9.5H7z"/><path d="M12 10.5c1.2 1.4 1.2 2.8 0 4.2-1.2-1.4-1.2-2.8 0-4.2z"/><path d="M9 17h6l-1 3h-4z"/>',
+		// A clock.
+		'planner' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+		// A question in a circle.
+		'faq'     => '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7V14"/><path d="M12 17h.01"/>',
+		// A written page.
+		'sources' => '<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 11h7M9 14.5h7M9 18h4"/>',
+		// A balance.
+		'dilemma' => '<path d="M12 3v18M7 21h10M5 7h14M12 5V3"/><path d="M5 7l-2.5 6a3 3 0 0 0 5 0zM19 7l-2.5 6a3 3 0 0 0 5 0z"/>',
+	);
+	if ( ! isset( $paths[ $key ] ) ) {
+		return '';
+	}
+	return '<svg class="lq-gcard__icon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . $paths[ $key ] . '</svg>';
+}
+
+/**
+ * The eight-pointed star (two squares, one turned) that marks a chapter.
+ * Decorative and fixed.
+ *
+ * @return string SVG markup.
+ */
+function lq_star_svg() {
+	return '<svg class="lq-chapter__star" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><rect x="8" y="8" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="8" y="8" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" transform="rotate(45 20 20)"/></svg>';
+}

@@ -24,8 +24,8 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
-<!-- wp:group {"className":"lq-section","layout":{"type":"constrained"}} -->
-<div class="wp-block-group lq-section"><!-- wp:heading -->
+<!-- wp:group {"align":"wide","className":"lq-section lq-section--guide","layout":{"type":"constrained"}} -->
+<div class="wp-block-group alignwide lq-section lq-section--guide"><!-- wp:heading -->
 <h2 class="wp-block-heading">Read the guide</h2>
 <!-- /wp:heading -->
 

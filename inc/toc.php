@@ -120,16 +120,46 @@ function lailatulqadar_toc_graph( $graph ) {
 	if ( ! $kept || ! is_array( $graph ) ) {
 		return $graph;
 	}
-	foreach ( $graph as $i => $node ) {
-		$id = is_array( $node ) && isset( $node['@id'] ) ? (string) $node['@id'] : '';
-		if ( '' === $id || ! isset( $kept[ $id ] ) ) {
+	foreach ( $kept as $page_id => $sections ) {
+		$at = lailatulqadar_toc_graph_page( $graph, $page_id, $sections );
+		if ( null === $at ) {
 			continue;
 		}
-		$parts                  = isset( $node['hasPart'] ) ? (array) $node['hasPart'] : array();
-		$parts                  = isset( $parts['@id'] ) || isset( $parts['@type'] ) ? array( $parts ) : $parts;
-		$graph[ $i ]['hasPart'] = array_merge( $parts, $kept[ $id ] );
+		$parts                   = isset( $graph[ $at ]['hasPart'] ) ? (array) $graph[ $at ]['hasPart'] : array();
+		$parts                   = isset( $parts['@id'] ) || isset( $parts['@type'] ) ? array( $parts ) : $parts;
+		$graph[ $at ]['hasPart'] = array_merge( $parts, $sections );
 	}
 	return $graph;
+}
+
+/**
+ * The index of the WebPage node the sections belong to: the node with the
+ * same @id, or else (Rank Math with a canonical that differs from the
+ * permalink, so WP TOC's @id is the canonical's) the #webpage node whose url
+ * is the page the section ids point into.
+ *
+ * @param array  $graph    The theme's graph.
+ * @param string $page_id  WebPage @id from WP TOC.
+ * @param array  $sections Section nodes.
+ * @return int|string|null
+ */
+function lailatulqadar_toc_graph_page( $graph, $page_id, $sections ) {
+	foreach ( $graph as $i => $node ) {
+		if ( is_array( $node ) && isset( $node['@id'] ) && (string) $node['@id'] === $page_id ) {
+			return $i;
+		}
+	}
+	$first = reset( $sections );
+	$url   = is_array( $first ) && isset( $first['@id'] ) ? strtok( (string) $first['@id'], '#' ) : '';
+	if ( '' === (string) $url ) {
+		return null;
+	}
+	foreach ( $graph as $i => $node ) {
+		if ( is_array( $node ) && isset( $node['@id'], $node['url'] ) && '#webpage' === substr( (string) $node['@id'], -8 ) && (string) $node['url'] === $url ) {
+			return $i;
+		}
+	}
+	return null;
 }
 add_filter( 'lq_schema_graph', 'lailatulqadar_toc_graph', 20 );
 

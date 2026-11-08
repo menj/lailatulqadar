@@ -85,6 +85,14 @@ $single = lailatulqadar_toc_graph( array( array( '@id' => 'https://x.test/p/#web
 check( 2 === count( $single[0]['hasPart'] ) && 'https://x.test/p/#only' === $single[0]['hasPart'][0]['@id'], 'a single hasPart node becomes a list' );
 check( isset( $GLOBALS['filters']['wp_toc_load_css'] ), 'WP TOC stylesheet replaced by the theme one' );
 
+// Rank Math with a custom canonical: WP TOC's @id is the canonical's, the theme node is found by its url.
+$canon = array( '@type' => 'WebPage', '@id' => 'https://x.test/canon/#webpage', 'hasPart' => array( array( '@type' => 'WebPageElement', '@id' => 'https://x.test/q/#b' ) ) );
+lailatulqadar_toc_schema( $canon );
+$byurl = lailatulqadar_toc_graph( array( array( '@type' => 'WebPage', '@id' => 'https://x.test/q/#webpage', 'url' => 'https://x.test/q/' ) ) );
+check( isset( $byurl[0]['hasPart'][0]['@id'] ) && 'https://x.test/q/#b' === $byurl[0]['hasPart'][0]['@id'], 'sections found a page by url when the @id differs' );
+$none = lailatulqadar_toc_graph( array( array( '@type' => 'WebPage', '@id' => 'https://x.test/other/#webpage', 'url' => 'https://x.test/other/' ) ) );
+check( ! isset( $none[0]['hasPart'] ), 'no matching page, nothing added' );
+
 // Footnote references cited more than once get unique ids.
 $fn  = '<p>a<sup data-fn="u1" class="fn"><a href="#u1" id="u1-link">1</a></sup> b<sup data-fn="u1" class="fn"><a href="#u1" id="u1-link">1</a></sup> c<sup data-fn="u1" class="fn"><a href="#u1" id="u1-link">1</a></sup><sup data-fn="u2" class="fn"><a href="#u2" id="u2-link">2</a></sup></p>';
 $fnd = lailatulqadar_footnote_ref_ids( $fn );

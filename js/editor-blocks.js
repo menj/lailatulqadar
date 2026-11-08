@@ -197,7 +197,7 @@
 			var a = props.attributes;
 			return el(
 				'div',
-				useBlockProps( { className: 'lq-contents lq-contents--placeholder' } ),
+				useBlockProps( { className: 'wp-toc lq-toc-placeholder' } ),
 				el(
 					InspectorControls,
 					null,
@@ -234,7 +234,7 @@
 						} )
 					)
 				),
-				el( 'p', { className: 'lq-contents__title' }, a.showTitle && a.title ? a.title : __( 'On this page', 'lailatulqadar' ) ),
+				el( 'p', { className: 'wp-toc-title' }, a.showTitle && a.title ? a.title : __( 'On this page', 'lailatulqadar' ) ),
 				el( 'p', null, __( 'The list of headings appears on the published page.', 'lailatulqadar' ) )
 			);
 		},

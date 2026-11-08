@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.21.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.22.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -11,7 +11,7 @@ Version 1.21.0. This file records the architecture, stored data and binding deci
 | Parent | Twenty Twenty-Five (`twentytwentyfive`) |
 | Site | https://lailatulqadar.guide |
 | Package name | `lailatulqadar-[version].zip` |
-| Requirements | WordPress 6.7 or later, PHP 7.4 or later |
+| Requirements | WordPress 6.7 or later, PHP 8.4 or later (since 1.22.0, for the bundled WP TOC) |
 | Licence | GNU GPL version 3 or later (owner decision, 5 November 2026); the full text is in `LICENSE` at the theme root |
 | Languages | Built into the theme: English at the root, Malay beneath /ms/ (docs/languages.md); no plugin |
 
@@ -79,7 +79,9 @@ Version 1.21.0. This file records the architecture, stored data and binding deci
 | `templates/page-home.html` | The language home pages |
 | `templates/search.html`, `index.html`, `page-no-title.html` | Search results, the fallback view (title and content, as a page) and the page without a title |
 | `inc/page-parts.php`, `css/page-parts.css`, `blocks/page-details/`, `blocks/in-brief/`, `blocks/sources/`, `blocks/path-nav/` | The guide page parts: dates with their Hijri dates, last review and reading time under the title; the contents list; the In brief box from the Guide page box; Evidence and sources (the list the Article `citation` reads); the previous and next row of the reading path; the table style on every table |
-| `inc/contents.php`, `blocks/contents/`, `tests/contents-test.php` | The contents list placed by hand: the `[auto_toc]` shortcode (adapted from Ikram Hawramani's MIT-licensed plugin, whose notice stays in the file) and the Contents block, on any page or post. On a guide page it takes the place of the automatic list. The shortcode name and its `tags` and `title` attributes must not change, so text written for the plugin keeps working |
+| `wp-toc/` | WP TOC 1.1.0 (https://github.com/menj/wp-toc, GPL-3.0-or-later, based on Ikram Hawramani's MIT-licensed work), bundled unchanged by the owner's decision of 8 November 2026. Never edited in the theme: an update is a new copy of the folder. Loaded by `functions.php`; needs PHP 8.4 |
+| `inc/toc.php`, `blocks/contents/`, `tests/toc-test.php` | The theme's side of WP TOC, through its filters only: the automatic list on guide pages (H2, three at least), the title in the page's language, the theme's styles, and its sections merged into the one graph (it prints no JSON-LD of its own). The Contents block prints `[wp_toc]`. `[wp_toc]`, `[auto_toc]` and their attributes are WP TOC's |
+| `inc/footnotes.php` | Unique ids for the second and later citations of one footnote |
 | `inc/no-blog.php`, `tests/no-blog-test.php` | The retired blog: drops the post templates, sends post views and feeds to the language home with a 301, keeps posts out of the sitemaps, and runs the one-time migration. Run `php tests/no-blog-test.php` |
 | `patterns/no-results.php` | Bilingual message for empty archives and searches |
 | `inc/login.php`, `css/login.css` | Login screen styling, brand block, title, favicon |
@@ -246,6 +248,8 @@ Dates: never write a Gregorian year or date of Ramadan into content, titles or d
 
 Work tracking follows the agency template: `lailatulqadar.guide - SEO Work Progress (2026).xlsx` (CHECKPOINT, META INFO, CONTENT, TIMELINE). Month 0 is October 2026; Ramadan 1448 is expected to begin on 8 February 2027, subject to sighting.
 
+WP TOC (decision of 8 November 2026): the table of contents is WP TOC from https://github.com/menj/wp-toc, bundled unchanged in `wp-toc/`, and the theme requires PHP 8.4 or later. The theme fits it through its filters (`inc/toc.php`) and never edits its files.
+
 ## Contextual links
 
 The first mention of a known phrase in the running text of a guide page or a blog post links to the inner page that treats it, here or on a sister site. The phrase map `inc/data/network-links.json` is shared by the seven themes of the network and must stay identical in all of them; each phrase belongs to exactly one page, chosen by the site whose subject it is (Laylat al-Qadr, the last ten nights, the odd nights, iʿtikāf and the night prayer belong to this site). Malay pages use `inc/data/contextual-links-ms.json` and link only within the Malay guide. Caps: 4 links to this site and 3 to sister sites a page by default, one new link a paragraph. Never in headings, quotations, verses, hadith, Arabic, figures, tables, footnotes or the "In brief" box.
@@ -270,4 +274,4 @@ Pages, the readme and `docs/settings.md` (both served) never say that the site i
 
 ## Credits that must stay
 
-The Copyright section of `readme.txt` (fonts, adhan, the social icons, the theme images and the photographs), the licence files in `fonts/` and `js/vendor/`, the MIT notice in the header of `inc/contents.php`, and the credit beneath every image and in the credits list on the Sources page.
+The Copyright section of `readme.txt` (fonts, adhan, the social icons, the theme images and the photographs), the licence files in `fonts/` and `js/vendor/`, `wp-toc/LICENSE` and `wp-toc/LICENSE-MIT-ORIGINAL`, and the credit beneath every image and in the credits list on the Sources page.

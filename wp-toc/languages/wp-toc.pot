@@ -1,0 +1,52 @@
+# Copyright (C) 2026 MENJ
+# This file is distributed under the GPL-3.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP TOC 1.1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/menj/wp-toc/issues\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-07T00:00:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Domain: wp-toc\n"
+
+#. Plugin Name of the plugin
+#: wp-toc.php
+msgid "WP TOC"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: wp-toc.php
+msgid "https://github.com/menj/wp-toc"
+msgstr ""
+
+#. Description of the plugin
+#: wp-toc.php
+msgid "Automatic table of contents for long posts, with schema.org structured data. Works as theme code (load it from functions.php) or as a plugin."
+msgstr ""
+
+#. Author of the plugin
+#: wp-toc.php
+msgid "MENJ"
+msgstr ""
+
+#. Author URI of the plugin
+#: wp-toc.php
+msgid "https://menj.blog"
+msgstr ""
+
+#: includes/class-wp-toc.php:331
+#: includes/class-wp-toc.php:995
+#: includes/class-wp-toc.php:997
+#: includes/class-wp-toc.php:1004
+msgid "Table of Contents"
+msgstr ""
+
+#. translators: 1: required PHP version, 2: current PHP version.
+#: wp-toc.php:75
+#, php-format
+msgid "WP TOC requires PHP %1$s or later. This site runs PHP %2$s, so WP TOC is not loaded."
+msgstr ""

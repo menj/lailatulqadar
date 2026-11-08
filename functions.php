@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.21.0' );
+define( 'LQ_VERSION', '1.22.0' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 
@@ -33,7 +33,9 @@ $lq_files = array(
 	'/inc/draft-links.php',
 	'/inc/schema-content.php',
 	'/inc/page-parts.php',
-	'/inc/contents.php',
+	'/inc/footnotes.php',
+	'/wp-toc/wp-toc.php',
+	'/inc/toc.php',
 	'/inc/schema.php',
 	'/inc/image-sitemap.php',
 	'/inc/no-blog.php',

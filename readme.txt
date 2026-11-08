@@ -2,8 +2,8 @@
 Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
-Requires PHP: 7.4
-Stable tag: 1.21.0
+Requires PHP: 8.4
+Stable tag: 1.22.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -23,7 +23,7 @@ The site has no blog. Post addresses and feeds send visitors to the home page of
 * Night and dawn colour schemes, an automatic scheme that follows the device, and a light and dark switch for visitors.
 * Self-hosted typefaces: EB Garamond for Latin text, KFGQPC Hafs for Qurʾānic text only, Arslan Wessam for hadith and Arabic quotations.
 * Blocks: guide menu, Night Planner (night window), odd nights, breadcrumbs, logo mark, scheme toggle, language switcher, photo, image credits and contents.
-* A contents list you place yourself, on any page: the Contents block, or the `[auto_toc]` shortcode written for the "Table-of-Contents Shortcode Done Properly" plugin, which now works without it.
+* A table of contents by WP TOC, built in: on every guide page, and anywhere you place the Contents block or the `[wp_toc]` shortcode (`[auto_toc]` still works).
 * A perpetual Ramadan calendar from the Umm al-Qura table up to 1473 AH, with the `[lq_ramadan]` shortcode.
 * Title tags in the form "page title | Lailatulqadar" under 60 characters, meta descriptions, structured data, an XML and an image sitemap. With Rank Math active the theme hands over and joins its graph.
 * Guide pages show when they were published and last updated, the date they were last checked against their sources, the reading time, a contents list, the evidence and sources they rest on, and the previous and next page of the reading path. Every date carries its Hijri date, in English or in Malay as the page is.
@@ -125,13 +125,16 @@ Administrators (the manage_options capability). The page holds the security swit
 
 = How do I add a table of contents? =
 
-Add the Contents block where the list should go, and choose the headings to list and the title in the block settings. In text without blocks, write [auto_toc] on a line of its own; [auto_toc tags="h2,h3,h4" title="In this article"] lists three levels under your own title, and title="" leaves the title out. Guide pages get a list of their H2 headings without either; a list you place takes its place.
+Guide pages get one by themselves, listing their sections. Elsewhere, add the Contents block where the list should go and choose the headings and the title in its settings. In text without blocks, write [wp_toc] on a line of its own; [wp_toc tags="h2,h3,h4" title="In this article"] lists three levels under your own title, title="" leaves the title out, and collapsible="true" lets readers fold it. A list you place takes the place of the automatic one. To leave a heading out, give it the class no-toc. [auto_toc] still works.
 
 = My site is in a subfolder. Where does the browser icon go? =
 
 Browsers ask for /favicon.ico at the top of the domain, such as example.com/favicon.ico, even when the site lives in example.com/blog/. WordPress never sees that request, so put a copy of the theme's favicon.ico in the domain root folder. The icon tags in each page cover the pages either way. If you have set a Site Icon, put that icon there as favicon.ico instead.
 
 == Upgrade Notice ==
+
+= 1.22.0 =
+The theme now needs PHP 8.4 or later. Check your host's PHP version first (Tools > Site Health > Info > Server); on an older PHP the table of contents does not show. If the WP TOC plugin is active, you can deactivate it.
 
 = 1.21.0 =
 Nothing to do. The front page shows the reading path as cards in both languages.
@@ -170,6 +173,10 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.22.0 =
+* The table of contents is now WP TOC, built into the theme: the same box on guide pages and wherever you place one, with the [wp_toc] shortcode, a collapsible option, headings left out with the class no-toc, and its sections described to search engines.
+* The theme needs PHP 8.4 or later.
 
 = 1.21.0 =
 * The front page shows the reading path as cards, in English and Malay: each chapter under an eight-pointed star, a feature card for its first page, and each page with its number, an icon, a summary and its reading time.
@@ -223,5 +230,5 @@ Social icons in images/social (X, Facebook, YouTube, Instagram, TikTok, Threads,
 KFGQPC HAFS Uthmanic Script, Copyright 2010 King Fahd Glorious Quran Printing Complex. Free to use, copy and distribute; the file must not be modified.
 Served as a WOFF2 conversion of the original TTF by the owner's decision of 2026-10-26, accepting that restriction. See fonts/kfgqpc/LICENSE.txt.
 Theme images: the logo mark, favicons, touch icon, app icons and 512px logo (images/) are original artwork made for the theme; the pixel book (images/book-open.webp) was supplied by the site owner. Both are distributed with the theme under the GNU GPL version 3 or later.
-The contents list is adapted from "WordPress Table-of-Contents Shortcode Done Properly" by Ikram Hawramani, Copyright 2025. MIT License; the notice is kept in inc/contents.php.
+WP TOC 1.1.0 (wp-toc/), Copyright 2026 MENJ, GNU GPL version 3 or later, https://github.com/menj/wp-toc. Based on original work by Ikram Hawramani, MIT License; the notice is kept in wp-toc/LICENSE-MIT-ORIGINAL.
 Photographs in images/commons/ come from Wikimedia Commons, Pixabay and Pexels under the licences listed per file in inc/data/images.json, and are credited beneath each image and on the Sources page.

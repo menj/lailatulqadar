@@ -10,10 +10,10 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.21.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.22.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
-| PHP | 7.4 or later |
+| PHP | 8.4 or later. The bundled WP TOC needs it; on an older PHP it does not load and the site shows no table of contents |
 | Plugins | None needed. Rank Math is supported and takes over titles, descriptions and the sitemap when active |
 | Languages | English at the root, Malay under `/ms/`, built in (no translation plugin) |
 | Web server | Apache gets its rules written by the theme. Nginx needs the rules below in the server block |
@@ -42,7 +42,6 @@ The checks, run from the theme folder. Each test file runs on its own without Wo
 
 ```bash
 find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
-php tests/contents-test.php
 php tests/error-pages-test.php
 php tests/hardening-test.php
 php tests/htaccess-files-test.php
@@ -51,6 +50,7 @@ php tests/path-chapters-test.php
 php tests/schema-graph-test.php
 php tests/search-permalinks-test.php
 php tests/security-detector-test.php
+php tests/toc-test.php
 php tests/unlist-test.php
 php bin/build-error-pages.php --check
 python3 bin/check-content.py
@@ -83,8 +83,9 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 | `templates/` | front-page, page, page-home, page-no-title, index, search, 404 |
 | `parts/` | header and footer |
 | `patterns/` | The English and Malay front pages, and the empty-results message |
+| `wp-toc/` | WP TOC 1.1.0, bundled unchanged (table of contents) |
 | `blocks/` | breadcrumbs, contents, guide-menu, image-credits, in-brief, language-switcher, logo-mark, night-window, odd-nights, page-details, path-nav, photo, scheme-toggle, social-icons, sources |
-| `inc/` | One file per feature: languages, setup, SEO and schema, the Ramadan calendar, the night window, contextual links, images, the placed contents list, security, hardening, error pages, the settings screen and the built-in plugin features |
+| `inc/` | One file per feature: languages, setup, SEO and schema, the Ramadan calendar, the night window, contextual links, images, the WP TOC glue (`toc.php`) and footnote ids (`footnotes.php`), security, hardening, error pages, the settings screen and the built-in plugin features |
 | `inc/data/` | The page registry, the shared phrase map, the reading-path chapters, image credits, seed and title histories |
 | `content/<lang>/<key>.json` | The shipped articles, read with `json_decode()` and never executed |
 | `css/`, `js/`, `fonts/`, `images/` | Styles, scripts (the adhan prayer-time library in `js/vendor/`), self-hosted fonts, logo and photographs |
@@ -103,23 +104,24 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 
 - Strings come from `lailatulqadar_t()`, English or Malay by the page's language. The author's name stays in the structured data only.
 - Dates: `lailatulqadar_date_label()` adds the Hijri date from `IntlDateFormatter` with the `islamic-umalqura` calendar. Without intl it returns '' and the date is left out.
-- Contents: `lailatulqadar_heading_anchor()` (on `render_block_core/heading`) gives H2s an id; `lailatulqadar_contents_filter()` (on `the_content` at 30, after the contextual links at 25) inserts the list.
-- A list placed by hand (`[auto_toc]` or `lailatulqadar/contents`, see below) takes the place of the contents list.
+- Contents: `lailatulqadar_heading_anchor()` (on `render_block_core/heading`) gives H2s an id; WP TOC draws the list (see below).
 - Sources: `lailatulqadar_page_sources()` returns the quotations (`lq_sc_quotations()`) and the footnotes that name a source (`lq_sc_citation()`); `lq_schema_graph()` builds the `citation` nodes from the same list.
 - Tables: `lailatulqadar_table_parts()` (on `render_block_core/table`) adds `lq-table`, `role="region"`, `tabindex="0"` and the caption as the label.
 - Post meta: `_lq_reviewed` (Y-m-d) and `_lq_brief` (points, one a line), from the Guide page box.
 
-### Placed contents list
+### Table of contents (WP TOC)
 
-`inc/contents.php`, from "WordPress Table-of-Contents Shortcode Done Properly" by Ikram Hawramani (MIT; the notice stays in the file header). It works on any page or post, guide page or not.
+`wp-toc/` is WP TOC 1.1.0 from https://github.com/menj/wp-toc, bundled unchanged (`wp-toc.php`, `includes/`, `assets/`, `languages/` and the licences). `functions.php` loads `wp-toc/wp-toc.php` with the other files; it stops before its `includes/` on a PHP older than 8.4 and shows administrators a notice. To update it, copy the new release over the folder and keep `inc/toc.php` in step with its filters. Its own docs are in its repo; `wp-toc/README.md` is the copy shipped with it.
 
-- `[auto_toc tags="h2,h3" title="..."]` and the `lailatulqadar/contents` block (`blocks/contents/`, attributes `tags`, `title`, `showTitle`) both print a marker, an HTML comment holding the levels and title as base64 JSON (`lailatulqadar_toc_mark()`).
-- `lailatulqadar_toc_filter()` on `the_content` at 29 drops the paragraph wpautop puts round a marker, gives an id to each heading of the requested levels that has none (`lailatulqadar_toc_add_ids()`, which never reuses an id already in the text), and replaces each marker with `lailatulqadar_toc_html()`, or with an empty `<!--lq-contents--placed-->` when the text has no heading of its levels. Ids are read quoted or not (`lailatulqadar_toc_attr_id()`). In feeds and excerpts the markers are removed.
-- The list is `<nav class="lq-contents lq-contents--placed">` with nested `<ol>`; `lailatulqadar_toc_list()` closes every list. `lailatulqadar_contents_filter()` (30) skips a text that already holds one.
-- `lailatulqadar_toc_assets()` loads `css/page-parts.css` on a singular view whose text places a list; the filter also enqueues it when it renders one, which covers a list inside a synced pattern.
-- The shortcode is registered on `init` at 20, after plugins load, so the theme's version wins over the plugin's.
-- The block works inside a page's or post's text. In a template, outside the text, it prints nothing visible.
-- `lailatulqadar_footnote_ref_ids()` (on `the_content` at 12) gives the second and later citations of one footnote the ids `<note>-link-2`, `-link-3`, since core repeats `<note>-link` at each.
+`inc/toc.php` fits it to the site through WP TOC's filters only:
+
+- `wp_toc_auto_insert`: the automatic list on guide pages only, H2 headings, at least `lailatulqadar_contents_min` (3), before the first heading, so after the In brief box.
+- `wp_toc_default_atts` and `wp_toc_html`: the title, and the name of an untitled list, read "On this page" or "Kandungan halaman" by the page's language.
+- `wp_toc_load_css` off: the `.wp-toc*` rules in `css/page-parts.css` style it in both schemes. `lailatulqadar_toc_assets()` loads that stylesheet on any page that places a list.
+- `wp_toc_schema`: WP TOC prints no JSON-LD of its own. `lailatulqadar_toc_graph()` (on `lq_schema_graph` at 20) adds its sections, as `WebPageElement` nodes, to the `hasPart` of the WebPage node with the same `@id` (permalink plus `#webpage`, or Rank Math's canonical plus `#webpage`), so the page keeps one graph. WP TOC's microdata on the list carries the same ids.
+- The Contents block (`blocks/contents/`, attributes `tags`, `title`, `showTitle`) prints WP TOC's `[wp_toc]` placeholder through `WP_TOC::shortcode()`. `[wp_toc]` and `[auto_toc]` are WP TOC's own.
+
+`inc/footnotes.php`: `lailatulqadar_footnote_ref_ids()` (on `the_content` at 12) gives the second and later citations of one footnote the ids `<note>-link-2`, `-link-3`, since core repeats `<note>-link` at each.
 
 ## Settings
 
@@ -145,11 +147,11 @@ The Security tab is drawn by `inc/security.php`, with `js/security.js` and `css/
 | `lailatulqadar_unlist_enabled` | The built-in unlisting |
 | `lailatulqadar_search_reserved_bases` | Words the search base may not take |
 | `lailatulqadar_is_guide_page` | Whether a page takes the guide page parts (default: the pages of the reading path) |
-| `lailatulqadar_contents_min` | Fewest H2 headings for a contents list (default 3) |
+| `lailatulqadar_contents_min` | Fewest H2 headings for the automatic table of contents (default 3) |
 
 The theme also filters `wp_speculation_rules_configuration` (`lq_speculation_rules()` in `inc/assets.php`): prerender with moderate eagerness, in place of WordPress's prefetch.
 
-Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`, `[lailatulqadar_social_icons]` and `[auto_toc]` (a contents list, `tags` and `title` attributes).
+Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`, `[lailatulqadar_social_icons]`, and WP TOC's `[wp_toc]` and `[auto_toc]` (attributes `tags`, `title`, `depth`, `min`, `collapsible`, `collapsed`).
 
 | Constant | Set in | Effect |
 |---|---|---|
@@ -160,7 +162,7 @@ Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`
 | `LQ_TITLE_LIMIT`, `LQ_TITLE_SITE`, `LQ_TITLE_SEP` | `inc/seo.php` | 59, "Lailatulqadar" and " \| ": the whole title tag stays under 60 characters |
 | `LQ_SEC_FILES_MARKER` | `inc/security.php` | The marker of the direct-access section |
 | `LAILATULQADAR_META_REVIEWED`, `LAILATULQADAR_META_BRIEF` | `inc/page-parts.php` | `_lq_reviewed` and `_lq_brief`, the Guide page box's meta keys |
-| `LAILATULQADAR_TOC_MARK` | `inc/contents.php` | The prefix of the placed contents list's marker comment |
+| `WP_TOC_VERSION`, `WP_TOC_FILE`, `WP_TOC_DIR` | `wp-toc/wp-toc.php` | Defined by WP TOC when it loads; `WP_TOC_URL` may be set in `wp-config.php` to give its folder URL |
 
 The theme defines no `*_KEEP_*` or `*_ALLOW_*` constant, since it has no production clean-up of development files and no switch for core files (see the roadmap in `UPGRADING.md`).
 

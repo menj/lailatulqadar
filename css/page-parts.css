@@ -18,7 +18,10 @@
 	font-weight: 600;
 }
 
-.lq-contents {
+/* Table of contents, drawn by WP TOC (wp-toc/, inc/toc.php); its own
+   stylesheet is off, so it takes the theme's look in both schemes. */
+.wp-toc {
+	display: block;
 	margin-block: var(--wp--preset--spacing--40);
 	padding: 1.1rem 1.5rem 1.25rem;
 	border: 1px solid var(--wp--preset--color--accent-3);
@@ -27,8 +30,9 @@
 	box-sizing: border-box;
 }
 
-.lq-contents__title,
+.wp-toc-title,
 .lq-sources__heading {
+	display: block;
 	margin: 0 0 0.6rem;
 	font-family: var(--wp--preset--font-family--interface);
 	font-size: var(--wp--preset--font-size--small);
@@ -37,20 +41,76 @@
 	color: var(--wp--preset--color--accent-1);
 }
 
-.lq-contents__list {
+.wp-toc-list {
 	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: lq-toc;
 	font-size: var(--wp--preset--font-size--small);
-	padding-inline-start: 1.4rem;
 	columns: 2 16rem;
 	column-gap: 2rem;
 }
 
-.lq-contents__list li {
+.wp-toc-list > li {
+	counter-increment: lq-toc;
 	break-inside: avoid;
 	padding-block: 0.2rem;
+	padding-inline-start: 1.6rem;
+	position: relative;
 }
 
-.lq-contents__list a,
+/* Numbers for the top level, in the accent colour. */
+.wp-toc-list > li::before {
+	content: counter(lq-toc) ".";
+	position: absolute;
+	inset-inline-start: 0;
+	color: var(--wp--preset--color--accent-1);
+	font-variant-numeric: tabular-nums;
+}
+
+.wp-toc-sublist {
+	margin: 0.2rem 0 0;
+	padding-inline-start: 1rem;
+	list-style: none;
+	border-inline-start: 1px solid var(--wp--preset--color--accent-3);
+}
+
+.wp-toc-sublist li {
+	padding-block: 0.15rem;
+	padding-inline-start: 0.6rem;
+}
+
+/* A list with nesting reads better in one column. */
+.wp-toc-list:has(.wp-toc-sublist) {
+	columns: auto;
+}
+
+.wp-toc-summary {
+	cursor: pointer;
+	list-style-position: inside;
+}
+
+.wp-toc-summary .wp-toc-title {
+	display: inline;
+}
+
+.wp-toc-details[open] .wp-toc-summary {
+	margin-bottom: 0.6rem;
+}
+
+/* Keep headings clear of the top of the window when a contents link jumps
+   to them, and scroll there smoothly unless motion is reduced. */
+:where(h1, h2, h3, h4, h5, h6)[id] {
+	scroll-margin-top: var(--wp-toc-scroll-offset, 2rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	html:has(.wp-toc) {
+		scroll-behavior: smooth;
+	}
+}
+
+.wp-toc-list a,
 .lq-sources__list a {
 	color: var(--wp--preset--color--contrast);
 	text-decoration: underline;
@@ -58,7 +118,7 @@
 	text-underline-offset: 0.2em;
 }
 
-.lq-contents__list a:hover,
+.wp-toc-list a:hover,
 .lq-sources__list a:hover {
 	color: var(--wp--preset--color--accent-1);
 }
@@ -155,7 +215,7 @@
 }
 
 @media (max-width: 600px) {
-	.lq-contents,
+	.wp-toc,
 	.lq-sources {
 		padding-inline: 1rem;
 	}
@@ -167,20 +227,4 @@
 	.lq-pathnav__link--next {
 		grid-column: 1;
 	}
-}
-
-/* Placed contents list (inc/contents.php): nested headings indent and the
-   list stays in one column so the nesting reads. */
-.lq-contents--placed .lq-contents__list {
-	columns: auto;
-}
-
-.lq-contents__list ol {
-	margin: 0.2rem 0 0;
-	padding-inline-start: 1.2rem;
-	list-style: lower-alpha;
-}
-
-.lq-contents__list ol ol {
-	list-style: lower-roman;
 }

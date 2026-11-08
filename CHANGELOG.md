@@ -8,7 +8,7 @@ The table of contents is WP TOC, bundled in the theme, and the theme now needs P
 
 ### Changed
 - **PHP 8.4 or later** is required (`style.css`, `readme.txt`). WP TOC needs it; on an older PHP it does not load, administrators see a notice, and pages show no table of contents.
-- The table of contents on guide pages and wherever one is placed is drawn by WP TOC 1.1.0 (`wp-toc/`, from https://github.com/menj/wp-toc), bundled unchanged and loaded from `functions.php`. It keeps the theme's look (`.wp-toc*` rules in `css/page-parts.css`, numbered, nested levels indented), its place after the In brief box, its H2 headings and three-heading minimum on guide pages, and its title in each language.
+- The table of contents on guide pages and wherever one is placed is drawn by WP TOC 1.1.0 (`wp-toc/`, from https://github.com/menj/wp-toc), bundled unchanged and loaded from `functions.php`. It keeps the theme's look (`.wp-toc*` rules in `css/page-parts.css`, numbered, nested levels indented, links without underlines that turn gold on hover and focus), its place after the In brief box, its H2 headings and three-heading minimum on guide pages, and its title in each language.
 - The Contents block prints WP TOC's `[wp_toc]`. `[auto_toc]` keeps working as WP TOC's alias.
 - WP TOC's sections join the theme's one JSON-LD graph, as `WebPageElement` nodes in the WebPage's `hasPart`; WP TOC prints no graph of its own. The list carries WP TOC's microdata with the same ids.
 

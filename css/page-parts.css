@@ -110,7 +110,20 @@
 	}
 }
 
-.wp-toc-list a,
+/* Contents links: no underline; they turn gold on hover and focus, and
+   the focus ring shows for keyboard users. */
+.wp-toc-list a {
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+	transition: color var(--lq-dur-1, 0.15s) ease;
+}
+
+.wp-toc-list a:hover,
+.wp-toc-list a:focus-visible {
+	color: var(--wp--preset--color--accent-1);
+	text-decoration: none;
+}
+
 .lq-sources__list a {
 	color: var(--wp--preset--color--contrast);
 	text-decoration: underline;
@@ -118,7 +131,6 @@
 	text-underline-offset: 0.2em;
 }
 
-.wp-toc-list a:hover,
 .lq-sources__list a:hover {
 	color: var(--wp--preset--color--accent-1);
 }

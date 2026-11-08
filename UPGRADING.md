@@ -14,6 +14,12 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.22.0
+
+**Check PHP first.** The theme now needs PHP 8.4 or later. Find the version under Tools > Site Health > Info > Server, and have the host raise it before you update. WordPress refuses to install a theme whose PHP requirement the server does not meet; on an older PHP the bundled table of contents does not load and the pages show none, with a notice for administrators.
+
+Then update as usual. Nothing else to do: guide pages show the table of contents in the same place. If the WP TOC plugin is active as well, the plugin's copy runs and the theme's waits; either works, and the plugin can be deactivated.
+
 ## To 1.21.0
 
 Nothing to do. The front page in each language shows the reading path as cards. A home page whose text an editor has replaced keeps that text; to take the cards there, set its "Read the guide" group to wide width and keep the Guide menu block in it with "Split into chapters" on.
@@ -333,6 +339,8 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 
 ### Next
 
+- Run the tests on PHP 8.4 in CI. The theme needs 8.4 since 1.22.0, while the tests here run on whatever PHP the machine has, and WP TOC's own code only loads on 8.4.
+- Keep `wp-toc/` in step with https://github.com/menj/wp-toc. It is a copy, so a new WP TOC release reaches the theme only when the folder is copied again and `inc/toc.php` checked against its filters.
 - Duʿāʾ, evidence and Qurʾān verse blocks, and a glossary. `SSOT.md` planned them for November to mid-December 2026, and `blocks/` has none of them yet.
 - A performance pass and a pre-season SEO review, by 15 January 2027. Ramadan 1448 is expected to begin on 8 February 2027, and `SSOT.md` sets this date.
 - Keep the `.htaccess` sections on a network. `lq_sec_remove_htaccess()` takes them out on any theme switch, while another site on the network may still run the theme; the error pages already stay.

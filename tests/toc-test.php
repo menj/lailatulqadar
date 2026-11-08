@@ -28,6 +28,25 @@ function esc_attr( $s ) {
 function esc_attr__( $s ) {
 	return esc_attr( $s );
 }
+function esc_html( $s ) {
+	return htmlspecialchars( (string) $s, ENT_QUOTES, 'UTF-8' );
+}
+function esc_html__( $s ) {
+	return esc_html( $s );
+}
+function lq_seo_plugin() {
+	return $GLOBALS['seo'] ?? '';
+}
+$GLOBALS['shortcodes'] = array();
+function shortcode_exists( $tag ) {
+	return isset( $GLOBALS['shortcodes'][ $tag ] );
+}
+function __return_empty_string() {
+	return '';
+}
+function add_shortcode( $tag, $cb ) {
+	$GLOBALS['shortcodes'][ $tag ] = $cb;
+}
 function get_the_ID() {
 	return $GLOBALS['post_id'] ?? 0;
 }
@@ -92,6 +111,22 @@ $byurl = lailatulqadar_toc_graph( array( array( '@type' => 'WebPage', '@id' => '
 check( isset( $byurl[0]['hasPart'][0]['@id'] ) && 'https://x.test/q/#b' === $byurl[0]['hasPart'][0]['@id'], 'sections found a page by url when the @id differs' );
 $none = lailatulqadar_toc_graph( array( array( '@type' => 'WebPage', '@id' => 'https://x.test/other/#webpage', 'url' => 'https://x.test/other/' ) ) );
 check( ! isset( $none[0]['hasPart'] ), 'no matching page, nothing added' );
+
+// With another SEO plugin the theme prints no graph, so WP TOC keeps its JSON-LD.
+$GLOBALS['seo'] = 'Yoast SEO';
+check( $ld === lailatulqadar_toc_schema( $ld ), 'Yoast: WP TOC keeps its own JSON-LD' );
+$GLOBALS['seo'] = 'Rank Math';
+check( array() === lailatulqadar_toc_schema( $ld ), 'Rank Math: sections go to the merged graph' );
+$GLOBALS['seo'] = '';
+
+// The visible summary of an untitled collapsible list, in Malay.
+$GLOBALS['post_id'] = 2;
+$sum = lailatulqadar_toc_name( '<summary class="wp-toc-summary"><span class="wp-toc-title auto-toc-title">Table of Contents</span></summary>' );
+check( false !== strpos( $sum, '>Kandungan halaman</span>' ), 'collapsible summary in the page language' );
+
+// Below PHP 8.4 (no WP_TOC class): both shortcodes exist and print nothing.
+lailatulqadar_toc_fallback_shortcodes();
+check( isset( $GLOBALS['shortcodes']['wp_toc'], $GLOBALS['shortcodes']['auto_toc'] ) && '' === call_user_func( $GLOBALS['shortcodes']['wp_toc'] ), 'fallback shortcodes print nothing' );
 
 // Footnote references cited more than once get unique ids.
 $fn  = '<p>a<sup data-fn="u1" class="fn"><a href="#u1" id="u1-link">1</a></sup> b<sup data-fn="u1" class="fn"><a href="#u1" id="u1-link">1</a></sup> c<sup data-fn="u1" class="fn"><a href="#u1" id="u1-link">1</a></sup><sup data-fn="u2" class="fn"><a href="#u2" id="u2-link">2</a></sup></p>';

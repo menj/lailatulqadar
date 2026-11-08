@@ -12,10 +12,13 @@
  *   language.
  * - Its stylesheet is replaced by the theme's (css/page-parts.css), so it
  *   follows the palette and both colour schemes.
- * - Its JSON-LD is not printed on its own: the sections go into the theme's
- *   one graph instead (SSOT.md, Structured data), on the WebPage node whose
- *   @id WP TOC's microdata already points to (the permalink plus #webpage,
- *   or Rank Math's canonical plus #webpage).
+ * - Its JSON-LD is not printed on its own where the theme's graph reaches
+ *   the page (no SEO plugin, or Rank Math): the sections go into that one
+ *   graph instead (SSOT.md, Structured data), on the WebPage node with the
+ *   @id WP TOC's microdata points to, or else the #webpage node of the same
+ *   page. With another SEO plugin, WP TOC keeps its own JSON-LD.
+ * - Below PHP 8.4, [wp_toc] and [auto_toc] print nothing rather than show
+ *   as text.
  *
  * WP TOC needs PHP 8.4; on an older PHP it does not load, and every
  * function here does nothing.
@@ -93,14 +96,32 @@ function lailatulqadar_toc_sections( $data = null ) {
 }
 
 /**
- * Keep WP TOC's JSON-LD for the theme's graph and print none of its own,
- * so the page has one graph. In a block theme the content renders before
- * wp_head, so the sections are known when the graph prints.
+ * Whether the theme's graph reaches the page: printed by the theme with no
+ * SEO plugin, or merged into Rank Math's (inc/schema.php). With another SEO
+ * plugin (Yoast, SEOPress, All in One SEO, The SEO Framework) the theme
+ * prints none, so WP TOC keeps its own JSON-LD, which already takes that
+ * plugin's WebPage @id.
+ *
+ * @return bool
+ */
+function lailatulqadar_toc_theme_graph() {
+	$plugin = function_exists( 'lq_seo_plugin' ) ? lq_seo_plugin() : '';
+	return '' === $plugin || 'Rank Math' === $plugin;
+}
+
+/**
+ * Where the theme's graph reaches the page, keep WP TOC's JSON-LD for it
+ * and print none of its own, so the page has one graph. In a block theme
+ * the content renders before wp_head, so the sections are known when the
+ * graph prints. Otherwise WP TOC's own JSON-LD stays.
  *
  * @param array $data JSON-LD from WP TOC.
- * @return array Empty, so WP TOC prints nothing.
+ * @return array Empty when the theme takes the sections, else unchanged.
  */
 function lailatulqadar_toc_schema( $data ) {
+	if ( ! lailatulqadar_toc_theme_graph() ) {
+		return $data;
+	}
 	lailatulqadar_toc_sections( $data );
 	return array();
 }
@@ -190,21 +211,40 @@ function lailatulqadar_toc_assets() {
 add_action( 'wp_enqueue_scripts', 'lailatulqadar_toc_assets', 20 );
 
 /**
- * A table of contents without a visible title is named "Table of Contents"
- * by WP TOC, for screen readers and the schema name, in English. Give it
- * the page's language instead.
+ * A table of contents without a title is named "Table of Contents" by WP
+ * TOC, in English: for screen readers, as the schema name and, when it is
+ * collapsible, as the visible summary. Give it the page's language instead.
  *
  * @param string $html TOC markup.
  * @return string
  */
 function lailatulqadar_toc_name( $html ) {
 	$english = esc_attr__( 'Table of Contents', 'wp-toc' );
+	$text    = esc_html__( 'Table of Contents', 'wp-toc' );
 	$id      = (int) get_the_ID();
-	$name    = esc_attr( lailatulqadar_t( 'On this page', 'Kandungan halaman', $id ? lq_role_of( $id ) : null ) );
+	$local   = lailatulqadar_t( 'On this page', 'Kandungan halaman', $id ? lq_role_of( $id ) : null );
+	$name    = esc_attr( $local );
 	return str_replace(
-		array( 'aria-label="' . $english . '"', 'itemprop="name" content="' . $english . '"' ),
-		array( 'aria-label="' . $name . '"', 'itemprop="name" content="' . $name . '"' ),
+		array( 'aria-label="' . $english . '"', 'itemprop="name" content="' . $english . '"', '<span class="wp-toc-title auto-toc-title">' . $text . '</span>' ),
+		array( 'aria-label="' . $name . '"', 'itemprop="name" content="' . $name . '"', '<span class="wp-toc-title auto-toc-title">' . esc_html( $local ) . '</span>' ),
 		(string) $html
 	);
 }
 add_filter( 'wp_toc_html', 'lailatulqadar_toc_name' );
+
+/**
+ * On a PHP older than 8.4 WP TOC does not load, so [wp_toc] and [auto_toc]
+ * would show as plain text in a page. Register both to print nothing then.
+ * Runs after WP TOC's own registration on init, and only when it is absent.
+ */
+function lailatulqadar_toc_fallback_shortcodes() {
+	if ( lailatulqadar_toc_active() ) {
+		return;
+	}
+	foreach ( array( 'wp_toc', 'auto_toc' ) as $tag ) {
+		if ( ! shortcode_exists( $tag ) ) {
+			add_shortcode( $tag, '__return_empty_string' );
+		}
+	}
+}
+add_action( 'init', 'lailatulqadar_toc_fallback_shortcodes', 20 );

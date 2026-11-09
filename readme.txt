@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.21.1
+Stable tag: 1.21.2
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -133,6 +133,9 @@ Browsers ask for /favicon.ico at the top of the domain, such as example.com/favi
 
 == Upgrade Notice ==
 
+= 1.21.2 =
+Nothing to do. Keyboard users keep their place in the night window when they change the start date or the year.
+
 = 1.21.1 =
 Nothing to do. Phones get larger tap areas, and long titles in the breadcrumb no longer widen the page.
 
@@ -173,6 +176,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.21.2 =
+* Accessibility audit (WCAG 2.2 AA) in English and under /ms/. In the night window, keyboard focus now stays on the start-date choice or the year button you used. The choices are larger targets. New tests/a11y-axe.js, and RESOURCES.md records the licences.
 
 = 1.21.1 =
 * Mobile-first audit in English and Malay. A long title in the breadcrumb no longer makes a phone scroll sideways, the night window year buttons and the header logo are easier to tap, and the text no longer jumps when the font loads.

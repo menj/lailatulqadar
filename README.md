@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.21.1 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.21.2 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 7.4 or later |
@@ -43,6 +43,7 @@ The checks, run from the theme folder. Each test file runs on its own without Wo
 ```bash
 find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
 php tests/contents-test.php
+node tests/a11y-axe.js            # axe-core, needs playwright and axe-core; see the header of the file
 php tests/error-pages-test.php
 php tests/hardening-test.php
 php tests/htaccess-files-test.php

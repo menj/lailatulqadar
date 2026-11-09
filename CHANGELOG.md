@@ -2,6 +2,18 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.21.2 (2026-11-09)
+
+Accessibility audit against WCAG 2.2 AA with axe-core at 1280 and 375 pixels on the 29 guide pages in English and under `/ms/`, the search and not-found views, keyboard walks, 320 pixel reflow and text-spacing overrides. No feature removed, no identifier renamed, and no new text to translate.
+
+### Fixed
+- In the night window, choosing a start date or a year rebuilt the controls and dropped keyboard focus to the page (2.4.3). `js/night-window.js` now returns focus to the control that had it, and passes it to the other year button when one becomes disabled.
+- The start-date choices were 13 pixel radio buttons hidden behind a label. The input now fills its pill, so the control itself is 44 pixels tall (2.5.8). `css/night-window.css`.
+
+### Added
+- `tests/a11y-axe.js`, an axe-core run at 1280 and 375 pixels that exits 1 on any violation.
+- `RESOURCES.md`, the single record of copyright and asset licences.
+
 ## 1.21.1 (2026-11-09)
 
 Mobile-first audit at 320, 360, 375, 390, 414, 480, 768, 1024 and 1280 pixels, in English and under `/ms/`. No feature removed, no class, id or hook renamed, and no new text to translate.

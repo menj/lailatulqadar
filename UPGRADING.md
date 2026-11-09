@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.21.2
+
+Nothing to do. Clear any page cache so visitors fetch the new `js/night-window.js` and `css/night-window.css`.
+
 ## To 1.21.1
 
 Nothing to do. Clear any page cache so phones fetch `css/mobile.css`.
@@ -377,3 +381,22 @@ Remaining risks and follow-up:
 - Move the `max-width` queries to `min-width` one block at a time, with screenshots at the boundary widths. Why: each restates desktop values, and the night window has four overlapping ranges.
 - Decide on a bigger size for 14 px meta text on phones. Why: it is legible but under the 16 px body target.
 - Test on a real phone with a screen reader.
+
+## Accessibility audit (WCAG 2.2 AA), 1.21.2
+
+Measured on 9 November 2026 in a scratch WordPress with Chromium and axe-core at 1280 and 375 pixels on the 29 guide pages in English and under `/ms/`, the search and not-found views, with keyboard walks, 320 pixel reflow, text-spacing overrides and the debug log.
+
+| id | Severity | Criterion | Component | Finding | Status |
+|---|---|---|---|---|---|
+| LQ-1 | Major | 2.4.3 | Night window | Choosing a start date or a year rebuilt the controls and dropped focus to the page | Fixed |
+| LQ-2 | Minor | 2.5.8 | Night window | Start-date radios were 13 px behind a label | Fixed |
+| LQ-3 | Open | all | Whole site | Screen-reader pass (NVDA, VoiceOver) in both languages not done | Manual review |
+| LQ-4 | Open | 3.1.2 | Guide pages | Arabic inside a link or a mixed line carries no `lang="ar"` (5 elements on `/ms/terjemahan-surah-al-qadr/`, for example a source link) | Manual review |
+
+Axe reports no violation on any page in either language. The skip link shows on focus, `html lang` is `ms-MY` under `/ms/`, and the status and year labels in the night window are live regions. The theme loads nothing remote and tracks nothing, so no privacy change was needed.
+
+Remaining risks and follow-up:
+
+- Run `tests/a11y-axe.js` before a release, against a site that holds the guide pages in both languages.
+- Test the night window with a screen reader in English and Malay.
+

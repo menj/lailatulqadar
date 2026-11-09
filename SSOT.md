@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.21.1. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.21.2. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -14,6 +14,12 @@ Version 1.21.1. This file records the architecture, stored data and binding deci
 | Requirements | WordPress 6.7 or later, PHP 7.4 or later |
 | Licence | GNU GPL version 3 or later (owner decision, 5 November 2026); the full text is in `LICENSE` at the theme root |
 | Languages | Built into the theme: English at the root, Malay beneath /ms/ (docs/languages.md); no plugin |
+
+## Accessibility
+
+- Target: WCAG 2.2 AA, in English and under `/ms/`. `tests/a11y-axe.js` must report no violation before a release. Asset licences are in `RESOURCES.md`.
+- The night window rebuilds its controls on every change and must return focus to the control that had it.
+- `manage_options` guards Theme Options and every admin action. It is kept, because `edit_theme_options` would also admit roles that cannot manage the site.
 
 ## Editorial decisions
 

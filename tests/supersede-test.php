@@ -87,6 +87,12 @@ check( false === lq_can_rename_published( get_post( 13 ), 'k', 'primary', $def )
 lq_note_redirect( '/ms/lama/', 4 ); lq_note_redirect( 'old-slug', 10 );
 check( array( 'ms/lama' => 4, 'old-slug' => 10 ) === $GLOBALS['opt'][ LQ_REDIRECTS_OPTION ], 'Old addresses are recorded without their slashes.' );
 
+// A chain (old, newer, current) ends at the page that stays.
+lq_note_redirect( 'chain-old', 20 ); lq_note_redirect( 'chain-newer', 30, 20 );
+check( 30 === $GLOBALS['opt'][ LQ_REDIRECTS_OPTION ]['chain-old'] && 30 === $GLOBALS['opt'][ LQ_REDIRECTS_OPTION ]['chain-newer'], 'An earlier redirect follows the chain to the page that stays.' );
+lq_note_redirect( 'self', 40, 40 );
+check( ! isset( $GLOBALS['opt'][ LQ_REDIRECTS_OPTION ]['self'] ), 'A page never redirects to itself.' );
+
 // The log keeps the last 100 lines.
 for ( $i = 0; $i < 130; $i++ ) { lq_log( 'p' . $i, 'test' ); }
 $log = $GLOBALS['opt'][ LQ_LOG_OPTION ];

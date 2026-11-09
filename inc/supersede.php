@@ -168,15 +168,26 @@ function lq_is_retired_key( $key, $role ) {
 /**
  * Remember that an old address now belongs to a page, so it answers with a 301 even when the old page is gone.
  *
+ * Earlier entries that pointed at the old page now point at its replacement, so a chain (old, newer, current)
+ * ends at the page that is live.
+ *
  * @param string $old_uri Old page path without slashes at the ends.
  * @param int    $new_id  Page that replaces it.
+ * @param int    $old_id  The old page's ID, when it has one.
  */
-function lq_note_redirect( $old_uri, $new_id ) {
+function lq_note_redirect( $old_uri, $new_id, $old_id = 0 ) {
 	$old_uri = trim( (string) $old_uri, '/' );
-	if ( '' === $old_uri ) {
+	if ( '' === $old_uri || (int) $new_id === (int) $old_id ) {
 		return;
 	}
-	$all             = (array) get_option( LQ_REDIRECTS_OPTION, array() );
+	$all = (array) get_option( LQ_REDIRECTS_OPTION, array() );
+	if ( $old_id ) {
+		foreach ( $all as $path => $target ) {
+			if ( (int) $target === (int) $old_id ) {
+				$all[ $path ] = (int) $new_id;
+			}
+		}
+	}
 	$all[ $old_uri ] = (int) $new_id;
 	update_option( LQ_REDIRECTS_OPTION, array_slice( $all, -500, null, true ), false );
 }
@@ -217,6 +228,37 @@ function lq_supersede_redirect_gone() {
 	}
 }
 add_action( 'template_redirect', 'lq_supersede_redirect_gone', 2 );
+
+/**
+ * With the Unlist Posts plugin active the theme's unlist module stands down, so the hiding of superseded
+ * pages is done here: out of listing queries (feeds and search included) and noindex on the page itself.
+ *
+ * @param WP_Query $query Query.
+ */
+function lq_supersede_pre_get_posts( $query ) {
+	if ( lailatulqadar_unlist_active() || lq_supersede_disabled() || lailatulqadar_unlist_is_editor_context() || $query->is_singular() ) {
+		return;
+	}
+	$ids = lq_superseded_ids();
+	if ( $ids ) {
+		$query->set( 'post__not_in', array_values( array_unique( array_merge( array_filter( array_map( 'intval', (array) $query->get( 'post__not_in' ) ) ), $ids ) ) ) );
+	}
+}
+add_action( 'pre_get_posts', 'lq_supersede_pre_get_posts', 20 );
+
+/**
+ * Noindex on the page of a superseded item while the plugin has the unlist module's place.
+ *
+ * @param array $robots Robots directives.
+ * @return array
+ */
+function lq_supersede_robots( $robots ) {
+	if ( ! lailatulqadar_unlist_active() && is_singular() && in_array( (int) get_queried_object_id(), lq_superseded_ids(), true ) ) {
+		return wp_robots_no_robots( $robots );
+	}
+	return $robots;
+}
+add_filter( 'wp_robots', 'lq_supersede_robots', 20 );
 
 /**
  * Append a line to the setup log (the last 100 lines).
@@ -288,14 +330,22 @@ function lq_retire_pages( &$map, &$report ) {
 		return;
 	}
 	delete_option( 'lailatulqadar_supersede_blocked' );
-	foreach ( lq_superseded_pairs( true ) as $old_id => $new_id ) {
+	$pairs = lq_superseded_pairs( true );
+	foreach ( $pairs as $old_id => $new_id ) {
 		$post = get_post( $old_id );
 		if ( ! $post || 'publish' !== $post->post_status ) {
 			continue;
 		}
 		$old_uri = get_page_uri( $old_id );
+		// Follow a chain (old, newer, current) to the page that stays, with a guard against a loop.
+		$target = $new_id;
+		$seen   = array( $old_id );
+		while ( isset( $pairs[ $target ] ) && ! in_array( $target, $seen, true ) ) {
+			$seen[] = $target;
+			$target = $pairs[ $target ];
+		}
 		if ( wp_trash_post( $old_id ) ) {
-			lq_note_redirect( $old_uri, $new_id );
+			lq_note_redirect( $old_uri, $target, $old_id );
 			$report['trashed'][] = sprintf( /* translators: 1: page title, 2: slug of the replacing page */ __( '%1$s (replaced by %2$s)', 'lailatulqadar' ), $post->post_title, get_post_field( 'post_name', $new_id ) );
 			lq_log( $post->post_title, sprintf( /* translators: %s: slug of the replacing page */ __( 'moved to the Trash, replaced by %s', 'lailatulqadar' ), get_post_field( 'post_name', $new_id ) ) );
 		} else {
@@ -327,7 +377,7 @@ function lq_retire_pages( &$map, &$report ) {
 				lq_log( $post->post_title, __( 'moved to the Trash, removed from the theme', 'lailatulqadar' ) );
 				$supersedes = lq_supersedes_map();
 				if ( isset( $supersedes[ $key ], $map[ $role ][ $supersedes[ $key ] ] ) ) {
-					lq_note_redirect( $old_uri, (int) $map[ $role ][ $supersedes[ $key ] ] );
+					lq_note_redirect( $old_uri, (int) $map[ $role ][ $supersedes[ $key ] ], (int) $id );
 				}
 			}
 			unset( $map[ $role ][ $key ] );

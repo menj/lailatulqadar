@@ -1317,6 +1317,8 @@ function lq_render_tools_tab() {
 		</section>
 	<?php endif; ?>
 
+	<?php lq_render_setup_preview(); ?>
+
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Run setup', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'Setup runs by itself on the first admin visit after the theme is activated or updated; this button runs it again. It creates any missing guide pages in both languages, places the Malay pages beneath the Malay home at /ms/, pairs each page with its translation and sets the front page. Every page whose article ships with the theme is filled and published; pages with no article (About and Contact) stay drafts. When the theme ships a new version of an article, a page nobody has edited takes it (WordPress keeps the old text as a revision); a page an editor has changed is never overwritten and is listed under "Edited, not updated". Obsolete copies of guide pages left by earlier setups go to the trash; pages the theme did not create are never touched. Featured images an editor chose are kept. Empty title tags and meta descriptions are filled from the keyword plan.', 'lailatulqadar' ); ?></p>

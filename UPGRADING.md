@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.21.4
+
+Nothing to do. Nothing changes on an existing site until a pair is added to `inc/data/supersedes.json` or a `former` slug is set. When a page is retired, also update `inc/data/path-chapters.json`, because the reading path groups pages by key and falls back to a plain list when the keys no longer line up.
+
 ## To 1.21.3
 
 Nothing to do. Clear any page cache or browser cache so the admin screen loads its new `css/admin.css`.

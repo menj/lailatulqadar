@@ -14,7 +14,7 @@ New pages now supersede old ones. No feature removed, no option key or identifie
 - A chain of replacements (old, newer, current) ends at the page that stays, and with the Unlist Posts plugin active the theme still hides superseded pages from listings and feeds.
 - Guards: removals stop when the number of page keys falls more than 10 percent below the last good run, or when `LQ_DISABLE_SUPERSEDE` is true in `wp-config.php`.
 - Theme Options, Tools: a dry run of the next setup, a log of the last 100 changes (`lailatulqadar_sync_log`) and a comparison of an edited page with the theme's text.
-- `tests/supersede-test.php`, 35 checks, chains of replaced pages included.
+- `tests/supersede-test.php`, 38 checks, chains and cycles of replaced pages included.
 - 38 strings with their Malay (`languages/ms_MY.po`, compiled to `ms_MY.mo`, and `lailatulqadar.pot`).
 
 ## 1.21.3 (2026-11-09)

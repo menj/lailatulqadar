@@ -51,6 +51,11 @@ function check( $ok, $message ) {
 file_put_contents( $dir . '/inc/data/supersedes.json', json_encode( array( 'Old' => 'new', 'same' => 'same', '' => 'x', 'a b' => 'c' ) ) );
 check( array( 'old' => 'new', 'ab' => 'c' ) === lq_supersedes_map(), 'The map is cleaned: lower case keys, no self replacement, no empty key.' );
 
+// A cycle supersedes nothing.
+check( array( 'x' => 'y' ) === lq_clean_supersedes( array( 'a' => 'b', 'b' => 'a', 'x' => 'y' ) ), 'A cycle supersedes nothing, a plain pair stays.' );
+check( array() === lq_clean_supersedes( array( 'a' => 'b', 'b' => 'c', 'c' => 'a' ) ), 'A longer cycle supersedes nothing.' );
+check( array( 'a' => 'b', 'b' => 'c' ) === lq_clean_supersedes( array( 'a' => 'b', 'b' => 'c' ) ), 'A chain is valid.' );
+
 // The guard.
 check( '' === lq_removal_guard( false, 90, 100 ) && '' === lq_removal_guard( false, 5, 0 ), 'Ten percent fewer pages passes, and no baseline passes.' );
 check( '' !== lq_removal_guard( false, 89, 100 ) && '' !== lq_removal_guard( true, 100, 100 ), 'More than ten percent fewer, or the kill switch, stops removals.' );

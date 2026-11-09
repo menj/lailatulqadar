@@ -44,7 +44,39 @@ function lq_supersede_disabled() {
 }
 
 /**
- * The supersedes map: old page key => new page key, never a key that replaces itself.
+ * Clean a raw supersedes map: lower case keys, no empty key, no key that replaces itself, and no cycle
+ * (A to B, B to A): none of a cycle's keys is superseded. Pure.
+ *
+ * @param mixed $raw Decoded JSON.
+ * @return array<string,string>
+ */
+function lq_clean_supersedes( $raw ) {
+	$map = array();
+	foreach ( is_array( $raw ) ? $raw : array() as $old => $new ) {
+		$old = sanitize_key( (string) $old );
+		$new = sanitize_key( (string) $new );
+		if ( '' !== $old && '' !== $new && $old !== $new ) {
+			$map[ $old ] = $new;
+		}
+	}
+	foreach ( array_keys( $map ) as $start ) {
+		$at   = $start;
+		$seen = array();
+		while ( isset( $map[ $at ] ) && ! in_array( $at, $seen, true ) ) {
+			$seen[] = $at;
+			$at     = $map[ $at ];
+		}
+		if ( $at === $start ) {
+			foreach ( $seen as $key ) {
+				unset( $map[ $key ] );
+			}
+		}
+	}
+	return $map;
+}
+
+/**
+ * The supersedes map from inc/data/supersedes.json: old page key => new page key.
  *
  * @return array<string,string>
  */
@@ -53,14 +85,7 @@ function lq_supersedes_map() {
 	if ( null === $map ) {
 		$file = LQ_DIR . '/inc/data/supersedes.json';
 		$raw  = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : array(); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-		$map  = array();
-		foreach ( is_array( $raw ) ? $raw : array() as $old => $new ) {
-			$old = sanitize_key( (string) $old );
-			$new = sanitize_key( (string) $new );
-			if ( '' !== $old && '' !== $new && $old !== $new ) {
-				$map[ $old ] = $new;
-			}
-		}
+		$map  = lq_clean_supersedes( $raw );
 	}
 	return $map;
 }
@@ -261,6 +286,31 @@ function lq_supersede_robots( $robots ) {
 add_filter( 'wp_robots', 'lq_supersede_robots', 20 );
 
 /**
+ * Plugin mode: superseded pages are also left out of wp_list_pages() and the previous and next links.
+ */
+add_filter(
+	'wp_list_pages_excludes',
+	static function ( $exclude ) {
+		if ( lailatulqadar_unlist_active() || lq_supersede_disabled() || lailatulqadar_unlist_is_editor_context() ) {
+			return $exclude;
+		}
+		return array_values( array_unique( array_merge( array_map( 'intval', (array) $exclude ), lq_superseded_ids() ) ) );
+	}
+);
+/**
+ * Add the NOT IN clause for superseded pages to an adjacent-post query (plugin mode only).
+ *
+ * @param string $where Where clause.
+ * @return string
+ */
+function lq_supersede_adjacent_where( $where ) {
+	$ids = ( lailatulqadar_unlist_active() || lq_supersede_disabled() ) ? array() : lq_superseded_ids();
+	return $ids ? $where . ' AND p.ID NOT IN (' . implode( ',', array_map( 'intval', $ids ) ) . ')' : $where;
+}
+add_filter( 'get_next_post_where', 'lq_supersede_adjacent_where', 20 );
+add_filter( 'get_previous_post_where', 'lq_supersede_adjacent_where', 20 );
+
+/**
  * Append a line to the setup log (the last 100 lines).
  *
  * @param string $item   Page.
@@ -353,6 +403,17 @@ function lq_retire_pages( &$map, &$report ) {
 		}
 	}
 	lq_superseded_pairs( true );
+	// An old page that was already in the Trash before the pair existed still needs its redirect.
+	$defs_now = lq_page_definitions();
+	foreach ( lq_supersedes_map() as $old => $new ) {
+		foreach ( array( 'primary', 'secondary' ) as $role ) {
+			$old_id = isset( $map[ $role ][ $old ] ) ? (int) $map[ $role ][ $old ] : 0;
+			$new_id = isset( $map[ $role ][ $new ] ) ? (int) $map[ $role ][ $new ] : 0;
+			if ( $old_id && $new_id && 'trash' === get_post_status( $old_id ) && 'publish' === get_post_status( $new_id ) && isset( $defs_now[ $old ][ $role ]['slug'] ) ) {
+				lq_note_redirect( ( 'secondary' === $role && 'home' !== $old ? 'ms/' : '' ) . $defs_now[ $old ][ $role ]['slug'], $new_id, $old_id );
+			}
+		}
+	}
 	// A page key the definitions no longer hold.
 	$defs = lq_page_definitions();
 	foreach ( $map as $role => $ids ) {

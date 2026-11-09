@@ -6,7 +6,8 @@
 const { chromium } = require( 'playwright' );
 const axeSource = require( 'fs' ).readFileSync( require.resolve( 'axe-core/axe.min.js' ), 'utf8' );
 const base = process.env.A11Y_BASE || 'http://127.0.0.1:8819';
-const defaults = [ '/start-here/', '/ms/mula-di-sini/', '/night-planner/', '/ms/perancang-malam/', '/faq/', '/ms/soalan-lazim/', '/surah-al-qadr/', '/ms/terjemahan-surah-al-qadr/', '/?s=laylat', '/ms/?s=lailatulqadar', '/nope-404-page/' ];
+// The guide pages in English and Malay, then the search and not-found views in both languages.
+const defaults = [ '/about/', '/faq/', '/hadith-and-sources/', '/islamic-dilemma/', '/last-ten-nights-of-ramadan/', '/laylat-al-qadr-dua/', '/laylat-al-qadr-prayer/', '/ms/amalan-malam-lailatulqadar/', '/ms/apa-itu-lailatulqadar/', '/ms/bilakah-lailatulqadar/', '/ms/dilema-islam/', '/ms/doa-lailatulqadar/', '/ms/hadis-dan-sumber-rujukan/', '/ms/mula-di-sini/', '/ms/perancang-malam/', '/ms/peta-laman/', '/ms/sepuluh-malam-terakhir-ramadan/', '/ms/soalan-lazim/', '/ms/tanda-tanda-lailatulqadar/', '/ms/terjemahan-surah-al-qadr/', '/night-planner/', '/signs-of-laylat-al-qadr/', '/sitemap/', '/start-here/', '/surah-al-qadr/', '/what-is-laylat-al-qadr/', '/when-is-laylat-al-qadr/', '/?s=laylat', '/ms/?s=lailatulqadar', '/nope-404-page/', '/ms/nope-404-page/' ];
 const paths = process.argv.length > 2 ? process.argv.slice( 2 ) : defaults;
 ( async () => {
 	const browser = await chromium.launch();

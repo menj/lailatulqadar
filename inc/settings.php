@@ -1136,7 +1136,7 @@ function lq_render_search_tab() {
 				?>
 			</p>
 		<?php endif; ?>
-		<div class="lq-table-wrap" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Guide pages', 'lailatulqadar' ); ?>">
+		<div class="lq-table-wrap" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Search appearance', 'lailatulqadar' ); ?>">
 		<table class="lq-pages lq-seo-table">
 			<thead>
 				<tr>

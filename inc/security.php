@@ -1326,7 +1326,7 @@ function lq_sec_render_tools() {
 			<span class="lq-sec-status" id="lq-sec-status" role="status" aria-live="polite"></span>
 		</div>
 		<div class="lq-sec-progress" hidden><span id="lq-sec-progress"></span></div>
-		<div class="lq-sec-scroll">
+		<div class="lq-sec-scroll" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Clean up spam', 'lailatulqadar' ); ?>">
 			<table class="widefat striped lq-sec-table" id="lq-sec-results" hidden>
 				<thead>
 					<tr>
@@ -1385,7 +1385,7 @@ function lq_sec_render_tools() {
 		</div>
 
 		<h3><?php esc_html_e( 'Administrator accounts', 'lailatulqadar' ); ?></h3>
-		<div class="lq-sec-scroll">
+		<div class="lq-sec-scroll" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Administrator accounts', 'lailatulqadar' ); ?>">
 			<table class="widefat striped lq-sec-table">
 				<thead><tr><th scope="col"><?php esc_html_e( 'Account', 'lailatulqadar' ); ?></th><th scope="col"><?php esc_html_e( 'Last login', 'lailatulqadar' ); ?></th><th scope="col"><?php esc_html_e( 'Sessions', 'lailatulqadar' ); ?></th><th scope="col"><?php esc_html_e( 'Application passwords', 'lailatulqadar' ); ?></th></tr></thead>
 				<tbody>
@@ -1420,7 +1420,7 @@ function lq_sec_render_tools() {
 		?>
 		<p class="lq-help"><?php esc_html_e( 'Counted per day, in UTC, for the last 30 days. A correct password refused on XML-RPC means the password is known to someone else: change it.', 'lailatulqadar' ); ?></p>
 		<?php if ( $counts ) : ?>
-			<div class="lq-sec-scroll">
+			<div class="lq-sec-scroll" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Attacks seen', 'lailatulqadar' ); ?>">
 				<table class="widefat striped lq-sec-table">
 					<thead><tr><th scope="col"><?php esc_html_e( 'Day', 'lailatulqadar' ); ?></th><?php foreach ( $labels as $label ) : ?><th scope="col"><?php echo esc_html( $label ); ?></th><?php endforeach; ?></tr></thead>
 					<tbody>
@@ -1464,7 +1464,7 @@ function lq_sec_render_tools() {
 		<?php $activity = lq_sec_activity(); ?>
 		<h3><?php esc_html_e( 'Posts per day, last 30 days', 'lailatulqadar' ); ?></h3>
 		<?php if ( $activity['days'] ) : ?>
-			<div class="lq-sec-scroll">
+			<div class="lq-sec-scroll" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Posts per day, last 30 days', 'lailatulqadar' ); ?>">
 				<table class="widefat striped lq-sec-table lq-sec-days">
 					<thead><tr><th scope="col"><?php esc_html_e( 'Day', 'lailatulqadar' ); ?></th><th scope="col"><?php esc_html_e( 'Account and count', 'lailatulqadar' ); ?></th></tr></thead>
 					<tbody>
@@ -1519,7 +1519,7 @@ function lq_sec_render_tools() {
 		$log = is_array( $log ) ? array_reverse( $log ) : array();
 		?>
 		<?php if ( $log ) : ?>
-			<div class="lq-sec-scroll lq-sec-scroll--tall">
+			<div class="lq-sec-scroll lq-sec-scroll--tall" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Security log', 'lailatulqadar' ); ?>">
 				<table class="widefat striped lq-sec-table">
 					<thead><tr><th scope="col"><?php esc_html_e( 'Time', 'lailatulqadar' ); ?></th><th scope="col"><?php esc_html_e( 'Event', 'lailatulqadar' ); ?></th><th scope="col"><?php esc_html_e( 'Detail', 'lailatulqadar' ); ?></th><th scope="col"><?php esc_html_e( 'Account', 'lailatulqadar' ); ?></th><th scope="col"><?php esc_html_e( 'Route', 'lailatulqadar' ); ?></th><th scope="col"><?php esc_html_e( 'IP', 'lailatulqadar' ); ?></th></tr></thead>
 					<tbody>

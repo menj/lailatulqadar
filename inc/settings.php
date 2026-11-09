@@ -313,14 +313,14 @@ function lq_render_settings() {
 	$base    = admin_url( 'themes.php?page=lailatulqadar' );
 	?>
 	<div class="wrap lq-admin">
-		<header class="lq-admin__head">
+		<div class="lq-admin__head">
 			<span class="lq-admin__icon dashicons dashicons-admin-appearance" aria-hidden="true"></span>
 			<div class="lq-admin__titles">
 				<h1><?php esc_html_e( 'Theme Options', 'lailatulqadar' ); ?></h1>
 				<p class="lq-admin__lede"><?php esc_html_e( 'Settings for the Lailatulqadar guide in English and Malay. Each tab saves only its own fields.', 'lailatulqadar' ); ?></p>
 			</div>
 			<span class="lq-admin__version"><?php echo esc_html( sprintf( /* translators: %s: version */ __( 'Version %s', 'lailatulqadar' ), LQ_VERSION ) ); ?></span>
-		</header>
+		</div>
 		<hr class="wp-header-end">
 
 		<?php lq_render_notices(); ?>
@@ -351,11 +351,11 @@ function lq_render_settings() {
 			</div>
 		<?php endforeach; ?>
 
-		<footer class="lq-admin__foot">
+		<div class="lq-admin__foot">
 			<a href="<?php echo esc_url( LQ_URI . '/docs/settings.md' ); ?>"><?php esc_html_e( 'Settings reference', 'lailatulqadar' ); ?></a>
 			<a href="<?php echo esc_url( LQ_URI . '/readme.txt' ); ?>"><?php esc_html_e( 'Theme readme', 'lailatulqadar' ); ?></a>
 			<a href="<?php echo esc_url( 'https://menj.me' ); ?>" rel="noopener"><?php esc_html_e( 'Support', 'lailatulqadar' ); ?></a>
-		</footer>
+		</div>
 	</div>
 	<?php
 }
@@ -672,7 +672,7 @@ function lq_render_general_tab() {
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Guide pages', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'Pages appear in the site menus once published. Drafts stay hidden.', 'lailatulqadar' ); ?></p>
-		<div class="lq-table-wrap">
+		<div class="lq-table-wrap" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Guide pages', 'lailatulqadar' ); ?>">
 		<table class="lq-pages">
 			<thead>
 				<tr>
@@ -1001,7 +1001,7 @@ function lq_render_dates_tab() {
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Automatic dates', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'The site takes the dates of Ramadan from the Umm al-Qura calendar for every year up to 1473 AH (2051), and offers visitors the following day as an alternative start for countries that rely on local sighting. Articles, title tags and the night window switch to the next Ramadan the day after Eid, with no yearly update.', 'lailatulqadar' ); ?></p>
-		<div class="lq-table-wrap">
+		<div class="lq-table-wrap" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Automatic dates', 'lailatulqadar' ); ?>">
 		<table class="lq-pages">
 			<thead>
 				<tr>
@@ -1136,7 +1136,7 @@ function lq_render_search_tab() {
 				?>
 			</p>
 		<?php endif; ?>
-		<div class="lq-table-wrap">
+		<div class="lq-table-wrap" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Guide pages', 'lailatulqadar' ); ?>">
 		<table class="lq-pages lq-seo-table">
 			<thead>
 				<tr>
@@ -1213,7 +1213,7 @@ function lq_render_tools_tab() {
 	<section class="lq-section">
 		<h2><?php esc_html_e( 'Guide pages', 'lailatulqadar' ); ?></h2>
 		<p class="lq-help"><?php esc_html_e( 'Menus, the reading path, the HTML sitemap and search engines see published pages only. Pages still in preparation appear in the reading path as "Coming soon", without a link.', 'lailatulqadar' ); ?></p>
-		<div class="lq-table-wrap">
+		<div class="lq-table-wrap" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Guide pages', 'lailatulqadar' ); ?>">
 		<table class="lq-pages">
 			<thead>
 				<tr>
@@ -1294,6 +1294,7 @@ function lq_render_tools_tab() {
 		<section class="lq-section">
 			<h2><?php esc_html_e( 'Edited, not updated', 'lailatulqadar' ); ?></h2>
 			<p class="lq-help"><?php esc_html_e( 'The theme ships a newer version of these articles, but an editor has changed the page, so setup left it as it is. Compare the page with the shipped version and either keep the edits or replace the page. Replacing publishes the shipped version; the current text stays in the page\'s revisions.', 'lailatulqadar' ); ?></p>
+			<div class="lq-table-wrap" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Edited, not updated', 'lailatulqadar' ); ?>">
 			<table class="lq-pages">
 				<tbody>
 					<?php foreach ( $edited as $row ) : ?>
@@ -1312,6 +1313,7 @@ function lq_render_tools_tab() {
 					<?php endforeach; ?>
 				</tbody>
 			</table>
+			</div>
 		</section>
 	<?php endif; ?>
 

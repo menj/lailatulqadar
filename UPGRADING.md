@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.21.3
+
+Nothing to do. Clear any page cache or browser cache so the admin screen loads its new `css/admin.css`.
+
 ## To 1.21.2
 
 Nothing to do. Clear any page cache so visitors fetch the new `js/night-window.js` and `css/night-window.css`.

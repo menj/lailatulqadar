@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.21.3
+Stable tag: 1.21.4
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -133,6 +133,9 @@ Browsers ask for /favicon.ico at the top of the domain, such as example.com/favi
 
 == Upgrade Notice ==
 
+= 1.21.4 =
+Nothing to do. Under Theme Options, Tools you can now see what the next setup would do and what the last ones did.
+
 = 1.21.3 =
 Nothing to do. Theme Options is easier to use with a keyboard.
 
@@ -179,6 +182,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.21.4 =
+* A newer guide page can replace an older one. The old page answers with a redirect to the new one, leaves the menus, lists, search and sitemaps, and moves to the Trash unless somebody edited it. A published page that took a new address keeps its page and the old address redirects. Pages the theme no longer ships move to the Trash unless edited. Theme Options, Tools shows a dry run of the next setup, a log of the last 100 changes and a side-by-side comparison of an edited page with the theme's text. Everything is in English and Malay.
 
 = 1.21.3 =
 * Theme Options accessibility. The wide tables and the security tables scroll inside regions that take keyboard focus and have names, the page header and footer no longer count as page landmarks, and the post-type checkboxes are 24 pixels.

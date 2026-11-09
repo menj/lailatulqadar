@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.21.3. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.21.4. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -70,6 +70,7 @@ Version 1.21.3. This file records the architecture, stored data and binding deci
 | `inc/data/seed-history.json` | md5 of every version of each article shipped in earlier releases, so a page seeded before `_lq_seed_hash` existed is recognised as unedited. Data only, read with `json_decode()`. Whenever an article changes, run `php bin/build-seed-history.php > inc/data/seed-history.json.new` and move the new file into place: the script adds the versions in the git history of `content/` to the hashes already in the file and never drops one |
 | `inc/social-icons.php`, `blocks/social-icons/`, `css/social-icons.css`, `images/social/` | Social profile icons: footer block, pattern, `[lailatulqadar_social_icons]`; ten SVGs from the Minimalist Social Icons Pack 2.8 (GPL, CC0 sources) |
 | `inc/reading-progress.php`, `js/reading-progress.js`, `css/reading-progress.css` | Reading progress bar on single views; off while the Reading Progress Bar plugin is active |
+| `inc/supersede.php`, `inc/data/supersedes.json`, `tests/supersede-test.php` | Superseded pages, renames in place, retired pages, the setup log and the dry run (see "Superseded pages") |
 | `inc/unlist.php`, `js/unlist-admin.js`, `tests/unlist-test.php` | Unlisted pages (replaces Unlist Posts & Pages); off while that plugin is active |
 | `inc/search-permalinks.php`, `tests/search-permalinks-test.php` | /search/term/ addresses (replaces Pretty Search Permalinks); off while that plugin is active |
 | `inc/error-pages.php`, `inc/error-page-html.php` | The wp-content drop-ins (maintenance 503, php-error 500, db-error 503), written on activation and on an administrator's admin page when missing or outdated, removed on a theme switch, and their Install error pages button on the Tools tab (admin only); the self-contained page builder, also used by `bin/build-error-pages.php` for the static pages in `errors/` (the copies for a site at the domain root); since 1.18.4 it also writes a copy of each into `wp-content/lailatulqadar-errors/` with the site's home address. See `docs/settings.md` |
@@ -138,6 +139,18 @@ Version 1.21.3. This file records the architecture, stored data and binding deci
 | `lq_security_log`, `lq_security_counts`, `lq_security_failed`, `lq_security_gone`, `lq_security_htaccess` | Security tab: the capped log (200 lines), per-day counts for 30 days, failed logins by account name for a rolling day, addresses of trashed spam answered with 410, and the state of the .htaccess block. None autoloaded |
 | Post meta `_lq_spam_held`, user meta `_lq_last_login` | Time the spam gate held a post; last login time and IP of a user |
 | Attachment meta `_lq_credit` | Author, licence, licence deed and source of a Commons attachment |
+
+## Superseded pages
+
+`inc/supersede.php` holds the rules. A page key is a page's identity. `inc/data/supersedes.json` (old key to new key, both pages the theme ships) and a `former` list on a language entry of `inc/data/pages.json` both ship empty.
+
+- While the new page is published in a language, the old page in that language answers with a 301 to it, leaves the menus, lists, search, feeds and sitemaps (through the unlisted pages, with `noindex`), and is moved to the Trash by setup unless it was edited. The 301 goes on working from the Trash, through the option `lailatulqadar_slug_redirects`.
+- A published page whose slug is in its `former` list, and which nobody edited, is renamed in place by setup. The old address redirects. A title changes only when the entry lists it in `former_titles`.
+- A page key that `pages.json` no longer holds is moved to the Trash when unedited. An edited page is kept and leaves the registry.
+- What counts as edited: the text differs from the seed hash the theme recorded, or from every version the theme shipped (`seed-history.json`). A page without the theme's `_lq_lang` marker counts as the owner's and is never touched. The theme moves pages to the Trash and never deletes them.
+- Guards: removals stop when the page keys fall more than 10 percent below the last good run (`lailatulqadar_defs_count`), or when `LQ_DISABLE_SUPERSEDE` is true in `wp-config.php`, which also ends the redirect, the hiding and the renames.
+- Theme Options, Tools shows a dry run, the log of the last 100 changes (`lailatulqadar_sync_log`) and, for an edited page, a comparison with the theme's text. Every string has English and Malay.
+- A retired page changes the reading path: update `inc/data/path-chapters.json` in the same release.
 
 ## Page registry
 

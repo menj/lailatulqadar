@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.21.3 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.21.4 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 7.4 or later |
@@ -53,6 +53,7 @@ php tests/schema-graph-test.php
 php tests/search-permalinks-test.php
 php tests/security-detector-test.php
 php tests/unlist-test.php
+php tests/supersede-test.php
 php bin/build-error-pages.php --check
 python3 bin/check-content.py
 ```

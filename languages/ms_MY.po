@@ -284,7 +284,7 @@ msgstr ""
 #: inc/settings.php:967
 #: inc/settings.php:1044
 msgid "Page"
-msgstr ""
+msgstr "Halaman"
 
 #: inc/settings.php:618
 #: inc/settings.php:1030
@@ -324,7 +324,7 @@ msgstr ""
 
 #: inc/settings.php:655
 msgid "English"
-msgstr ""
+msgstr "Inggeris"
 
 #: inc/settings.php:656
 #: inc/settings.php:663
@@ -333,7 +333,7 @@ msgstr ""
 
 #: inc/settings.php:661
 msgid "Malay"
-msgstr ""
+msgstr "Melayu"
 
 #: inc/settings.php:664
 msgid "Site name on Malay pages"
@@ -1444,3 +1444,143 @@ msgstr ""
 msgctxt "block description"
 msgid "A freely licensed Wikimedia Commons image of a guide page, with caption and credit (author, licence, source), from inc/data/images.json."
 msgstr ""
+
+#: inc/supersede.php
+msgid "the kill switch LQ_DISABLE_SUPERSEDE is on"
+msgstr "suis henti LQ_DISABLE_SUPERSEDE dihidupkan"
+
+#: inc/supersede.php
+msgid "the page definitions list more than 10 percent fewer pages than at the last good run"
+msgstr "takrifan halaman menyenaraikan lebih 10 peratus kurang halaman berbanding larian baik yang terakhir"
+
+#: inc/supersede.php
+msgid "renamed in place; the old address redirects"
+msgstr "dinamakan semula di tempat; alamat lama dialihkan"
+
+#: inc/supersede.php
+msgid "Removals were stopped: %s."
+msgstr "Pembuangan dihentikan: %s."
+
+#: inc/supersede.php
+msgid "%1$s (replaced by %2$s)"
+msgstr "%1$s (diganti dengan %2$s)"
+
+#: inc/supersede.php
+msgid "moved to the Trash, replaced by %s"
+msgstr "dialihkan ke Tong Sampah, diganti dengan %s"
+
+#: inc/supersede.php
+msgid "%s: could not move to the Trash."
+msgstr "%s: tidak dapat dialihkan ke Tong Sampah."
+
+#: inc/supersede.php
+msgid "%s (no longer in the theme)"
+msgstr "%s (tiada lagi dalam tema)"
+
+#: inc/supersede.php
+msgid "no longer in the theme; kept, because it was edited"
+msgstr "tiada lagi dalam tema; dikekalkan kerana telah disunting"
+
+#: inc/supersede.php
+msgid "%s (removed from the theme)"
+msgstr "%s (dibuang daripada tema)"
+
+#: inc/supersede.php
+msgid "moved to the Trash, removed from the theme"
+msgstr "dialihkan ke Tong Sampah, dibuang daripada tema"
+
+#: inc/supersede.php
+msgid "Would be created"
+msgstr "Akan dicipta"
+
+#: inc/supersede.php
+msgid "Matches the theme"
+msgstr "Sepadan dengan tema"
+
+#: inc/supersede.php
+msgid "Would take the theme's new text, because nobody has edited it"
+msgstr "Akan menerima teks baharu tema, kerana tiada sesiapa yang menyuntingnya"
+
+#: inc/supersede.php
+msgid "Stays as it was edited; compare it with the theme's text"
+msgstr "Kekal seperti yang disunting; bandingkan dengan teks tema"
+
+#: inc/supersede.php
+msgid "Would be renamed in place; the old address redirects"
+msgstr "Akan dinamakan semula di tempat; alamat lama dialihkan"
+
+#: inc/supersede.php
+msgid "Would be redirected, hidden and moved to the Trash, because its replacement is live"
+msgstr "Akan dialihkan, disembunyikan dan dialihkan ke Tong Sampah, kerana penggantinya sudah disiarkan"
+
+#: inc/supersede.php
+msgid "Replaced, but it was edited, so it stays as it is"
+msgstr "Telah diganti, tetapi telah disunting, maka ia kekal seperti sedia ada"
+
+#: inc/supersede.php
+msgid "No longer in the theme; would be moved to the Trash"
+msgstr "Tiada lagi dalam tema; akan dialihkan ke Tong Sampah"
+
+#: inc/supersede.php
+msgid "No longer in the theme, but it was edited, so it stays"
+msgstr "Tiada lagi dalam tema, tetapi telah disunting, maka ia kekal"
+
+#: inc/supersede.php
+msgid "Would be removed, but removals are stopped now, so it stays"
+msgstr "Akan dibuang, tetapi pembuangan dihentikan sekarang, maka ia kekal"
+
+#: inc/supersede.php
+msgid "This page"
+msgstr "Halaman ini"
+
+#: inc/supersede.php
+msgid "The theme's text"
+msgstr "Teks tema"
+
+#: inc/supersede.php
+msgid "Next setup, as a dry run"
+msgstr "Persediaan seterusnya, sebagai percubaan"
+
+#: inc/supersede.php
+msgid "Removals are stopped: %s."
+msgstr "Pembuangan dihentikan: %s."
+
+#: inc/supersede.php
+msgid "Nothing would change."
+msgstr "Tiada apa yang akan berubah."
+
+#: inc/supersede.php
+msgid "What setup would do"
+msgstr "Apa yang akan dilakukan oleh persediaan"
+
+#: inc/supersede.php
+msgid "Compare"
+msgstr "Bandingkan"
+
+#: inc/supersede.php
+msgid "This page and the theme's text: %s"
+msgstr "Halaman ini dan teks tema: %s"
+
+#: inc/supersede.php
+msgid "The two texts are the same."
+msgstr "Kedua-dua teks adalah sama."
+
+#: inc/supersede.php
+msgid "To take the theme's text, use \"Replace with the shipped version\" under \"Edited, not updated\". To keep this page, do nothing."
+msgstr "Untuk menerima teks tema, gunakan \"Replace with the shipped version\" di bawah \"Edited, not updated\". Untuk mengekalkan halaman ini, jangan buat apa-apa."
+
+#: inc/supersede.php
+msgid "What changed"
+msgstr "Apa yang berubah"
+
+#: inc/supersede.php
+msgid "created"
+msgstr "dicipta"
+
+#: inc/supersede.php
+msgid "written from the theme"
+msgstr "ditulis daripada tema"
+
+#: inc/supersede.php
+msgid "took the theme's new text"
+msgstr "menerima teks baharu tema"

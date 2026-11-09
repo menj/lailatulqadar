@@ -4,7 +4,8 @@
  */
 
 /* A breadcrumb with one long unbroken word wraps inside the page instead of widening it. */
-.lq-crumbs li {
+.lq-crumbs li,
+.lq-crumbs--rank-math .rank-math-breadcrumb p {
 	min-width: 0;
 	overflow-wrap: anywhere;
 }

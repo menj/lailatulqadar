@@ -2,6 +2,16 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.21.3 (2026-11-09)
+
+Theme Options audited against the owner's admin design brief at 782 and 375 pixels. The screen was already tabbed, with cards, toggles, range sliders and colour pickers, and those are unchanged. Presentation only: no option key, field name or behaviour changed, and no new text to translate.
+
+### Fixed
+- The wide tables on the Dates and Security tabs scroll sideways on a phone but could not take keyboard focus (2.1.1). Each scroll region now takes focus, has a name from an existing heading and shows a focus ring. The "Edited, not updated" table on the Tools tab sat outside any scroll region and widened the page to 449 pixels at 375 pixels. It now scrolls inside its own region.
+- The spam-results region on the Security tab stays hidden, and out of the tab order, until a scan finds something. `js/security.js` shows and hides it with its table.
+- The page header and footer of Theme Options were `header` and `footer` elements, which axe reads as extra banner and contentinfo landmarks (1.3.1). They are plain blocks now.
+- The post-type checkboxes on the Reading tab were 13 pixels (2.5.8) and are 24.
+
 ## 1.21.2 (2026-11-09)
 
 Accessibility audit against WCAG 2.2 AA with axe-core at 1280 and 375 pixels on the 29 guide pages in English and under `/ms/`, the search and not-found views, keyboard walks, 320 pixel reflow and text-spacing overrides. No feature removed, no identifier renamed, and no new text to translate.

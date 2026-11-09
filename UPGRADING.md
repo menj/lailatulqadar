@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.21.1
+
+Nothing to do. Clear any page cache so phones fetch `css/mobile.css`.
+
 ## To 1.21.0
 
 Nothing to do. The front page in each language shows the reading path as cards. A home page whose text an editor has replaced keeps that text; to take the cards there, set its "Read the guide" group to wide width and keep the Guide menu block in it with "Split into chapters" on.
@@ -352,3 +356,24 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 - Remove development files from a live site after an update. Here the `.htaccess` files refuse them, which does nothing on Nginx.
 - Check the one 500 on `/ms/embed/` in the logs.
 - Before upgrading adhan, check its upstream source: `js/vendor/adhan.js` marks its shadow-angle calculation with a TODO.
+
+## Mobile-first audit, 1.21.1
+
+Measured on 9 November 2026 in a scratch WordPress with Chromium and axe-core at nine widths from 320 to 1280 pixels, on 19 views: both front pages, a guide page and the planner in each language, a long stress guide in each language (wide table, code block, embed, gallery, long URLs), the dua and FAQ pages, search with and without results in each language, both 404 pages, log-in, the sitemap and About. The theme has no blog, so there is no post archive to test; guide pages stand in.
+
+| Finding | Severity | Risk of the fix | Action |
+|---|---|---|---|
+| Breadcrumb with one long unbroken word widened the page by up to 267 px at 320 to 480 px | High | Low | Fixed in `css/mobile.css` |
+| Night window year buttons squeezed to 21 px wide | Medium | Low | Fixed |
+| Header brand link, page numbers, log-in links under 44 px | Low | Low | Fixed |
+| Layout shift when EB Garamond swaps in (0.11 to 0.13 on About and front at 480 px) | Medium | Low | Fixed: preload |
+| 14 px text in meta lines, captions and menu credit | Low | Medium | Not changed; labels, not body copy |
+| The header menu is a horizontal scroller, not a toggle, so there is no toggle to test | Info | None | None |
+| Gallery captions and a table outside the guide pages can scroll without keyboard focus (stress page only; guide tables already take focus) | Low | Medium | Not changed |
+| Desktop-first `max-width` queries in `front.css` (5), `night-window.css` (5) and `page-parts.css` (1) | Low | High | Flagged |
+
+Remaining risks and follow-up:
+
+- Move the `max-width` queries to `min-width` one block at a time, with screenshots at the boundary widths. Why: each restates desktop values, and the night window has four overlapping ranges.
+- Decide on a bigger size for 14 px meta text on phones. Why: it is legible but under the 16 px body target.
+- Test on a real phone with a screen reader.

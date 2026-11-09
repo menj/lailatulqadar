@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.21.0
+Stable tag: 1.21.1
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -133,6 +133,9 @@ Browsers ask for /favicon.ico at the top of the domain, such as example.com/favi
 
 == Upgrade Notice ==
 
+= 1.21.1 =
+Nothing to do. Phones get larger tap areas, and long titles in the breadcrumb no longer widen the page.
+
 = 1.21.0 =
 Nothing to do. The front page shows the reading path as cards in both languages.
 
@@ -170,6 +173,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.21.1 =
+* Mobile-first audit in English and Malay. A long title in the breadcrumb no longer makes a phone scroll sideways, the night window year buttons and the header logo are easier to tap, and the text no longer jumps when the font loads.
 
 = 1.21.0 =
 * The front page shows the reading path as cards, in English and Malay: each chapter under an eight-pointed star, a feature card for its first page, and each page with its number, an icon, a summary and its reading time.

@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.21.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.21.1. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -71,6 +71,7 @@ Version 1.21.0. This file records the architecture, stored data and binding deci
 | `blocks/guide-menu/` | Header links, numbered reading path, footer |
 | `blocks/language-switcher/` | Link to the same page in the other language |
 | `css/front.css` | Front end, including dawn and auto schemes |
+| `css/mobile.css` | Mobile-first audit layer: small scoped fixes loaded after `front.css` (1.21.1) |
 | `css/admin.css` | Settings screen (cards, tabs, toggles, sliders, colour grid; stacks at 782px) |
 | `css/editor.css` | Editor-only adjustments (the editor also loads `front.css`) |
 | `js/scheme.js` | Head script for the visitor light/dark switch |

@@ -2,6 +2,19 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.21.1 (2026-11-09)
+
+Mobile-first audit at 320, 360, 375, 390, 414, 480, 768, 1024 and 1280 pixels, in English and under `/ms/`. No feature removed, no class, id or hook renamed, and no new text to translate.
+
+### Fixed
+- A breadcrumb whose last item holds one very long unbroken word no longer widens the page on phones (a sideways scroll of up to 267 px at 320 px in the test). `css/mobile.css`.
+- The night window's year buttons keep their size in a narrow row and are 44 px square (they were squeezed to 21 px wide).
+- The header brand link, search page numbers and the log-in links and "Remember me" label have 44 px tap areas on phones and touch screens.
+- The body face (EB Garamond roman) is preloaded, so the header title and the text below it stop moving when the font arrives (layout shift of 0.11 on the About page at 480 px, 0.13 on the front page).
+
+### Added
+- `css/mobile.css`, loaded after `front.css`.
+
 ## 1.21.0 (2026-11-07)
 
 The front page's reading path is a set of cards. The same design on the English and Malay front pages. No feature removed and no public identifier renamed.

@@ -1,0 +1,41 @@
+/*
+ * Mobile-first audit layer (1.21.1). Loaded after front.css on every front-end view.
+ * Small, scoped additions only; nothing here changes the desktop layout.
+ */
+
+/* A breadcrumb with one long unbroken word wraps inside the page instead of widening it. */
+.lq-crumbs li {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+/* The night window year buttons keep their size in a narrow flex row, and are 44px to tap. */
+.lq-nw .lq-nw__year-btn {
+	flex-shrink: 0;
+	min-width: 2.75rem;
+	min-height: 2.75rem;
+}
+
+/* Touch targets of 44px on phones and wherever the pointer is coarse. The brand link keeps its
+   look; an invisible margin widens the area that takes a tap. */
+@media (max-width: 37.4375rem), (pointer: coarse) {
+	.lq-brand__link {
+		position: relative;
+	}
+
+	.lq-brand__link::after {
+		content: "";
+		position: absolute;
+		inset: -0.5rem;
+	}
+
+	.wp-block-query-pagination .page-numbers,
+	.wp-block-query-pagination-previous,
+	.wp-block-query-pagination-next {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 44px;
+		min-height: 44px;
+	}
+}

@@ -580,3 +580,19 @@ body.interim-login .lq-login-brand__note {
 		transition: none !important;
 	}
 }
+
+/* Mobile-first audit (1.21.1): 44px touch targets on phones and coarse pointers. */
+@media (max-width: 37.4375rem), (pointer: coarse) {
+	.login #nav a,
+	.login #backtoblog a,
+	.login .privacy-policy-link {
+		display: inline-block;
+		padding-block: 0.8rem;
+	}
+
+	.login .forgetmenot label {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+	}
+}

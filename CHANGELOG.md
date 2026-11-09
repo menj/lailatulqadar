@@ -8,6 +8,7 @@ Theme Options audited against the owner's admin design brief at 782 and 375 pixe
 
 ### Fixed
 - The wide tables on the Dates and Security tabs scroll sideways on a phone but could not take keyboard focus (2.1.1). Each scroll region now takes focus, has a name from an existing heading and shows a focus ring. The "Edited, not updated" table on the Tools tab sat outside any scroll region and widened the page to 449 pixels at 375 pixels. It now scrolls inside its own region.
+- The spam-results region on the Security tab stays hidden, and out of the tab order, until a scan finds something. `js/security.js` shows and hides it with its table.
 - The page header and footer of Theme Options were `header` and `footer` elements, which axe reads as extra banner and contentinfo landmarks (1.3.1). They are plain blocks now.
 - The post-type checkboxes on the Reading tab were 13 pixels (2.5.8) and are 24.
 

@@ -1326,7 +1326,7 @@ function lq_sec_render_tools() {
 			<span class="lq-sec-status" id="lq-sec-status" role="status" aria-live="polite"></span>
 		</div>
 		<div class="lq-sec-progress" hidden><span id="lq-sec-progress"></span></div>
-		<div class="lq-sec-scroll" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Clean up spam', 'lailatulqadar' ); ?>">
+		<div class="lq-sec-scroll" tabindex="0" role="region" aria-label="<?php echo esc_attr__( 'Clean up spam', 'lailatulqadar' ); ?>" hidden>
 			<table class="widefat striped lq-sec-table" id="lq-sec-results" hidden>
 				<thead>
 					<tr>

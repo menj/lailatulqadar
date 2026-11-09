@@ -54,6 +54,14 @@
 	var table = document.getElementById( 'lq-sec-results' );
 	var all = document.getElementById( 'lq-sec-all' );
 	var tbody = table ? table.querySelector( 'tbody' ) : null;
+	// The table sits in a focusable scroll region; the region shows and hides with it.
+	var region = table ? table.closest( '.lq-sec-scroll' ) : null;
+	function showResults( on ) {
+		table.hidden = ! on;
+		if ( region ) {
+			region.hidden = ! on;
+		}
+	}
 	// True while a scan or a trash run is going: the trash button stays off
 	// whatever the checkboxes say, until the run finishes.
 	var busy = false;
@@ -127,7 +135,7 @@
 		scanBtn.addEventListener( 'click', function () {
 			var found = 0;
 			tbody.textContent = '';
-			table.hidden = true;
+			showResults( false );
 			scanBtn.disabled = true;
 			trashBtn.disabled = true;
 			busy = true;
@@ -138,7 +146,7 @@
 						data.rows.forEach( addRow );
 						found += data.rows.length;
 						if ( found ) {
-							table.hidden = false;
+							showResults( true );
 						}
 						if ( data.done ) {
 							status.textContent = found ? format( i18n.done, data.next, found ) : i18n.none;

@@ -19,6 +19,56 @@ The table of contents is WP TOC, bundled in the theme, and the theme now needs P
 ### Removed
 - `inc/contents.php`, the theme's own table of contents (1.19.0 to 1.21.0), its automatic guide-page list in `inc/page-parts.php` and `tests/contents-test.php`. Heading ids on guide pages are given as before, so links to sections keep working.
 
+## 1.21.4 (2026-11-09)
+
+New pages now supersede old ones. No feature removed, no option key or identifier renamed. Both data files ship empty, so nothing changes on a site until a pair is added.
+
+### Added
+- `inc/supersede.php`, `inc/data/supersedes.json` (old page key to new page key) and a `former` list of earlier slugs on a page's language entry in `inc/data/pages.json`.
+- A superseded page answers with a 301 to its replacement, leaves the menus, lists, search, feeds and sitemaps (it joins the unlisted pages, so `noindex` applies), and is moved to the Trash by setup unless it was edited. The 301 goes on working from the Trash. This holds in both languages.
+- A published, unedited page under a `former` slug is renamed in place, and the old address redirects. An edited page keeps its address.
+- A page key that `pages.json` no longer holds moves to the Trash when it is unedited. An edited one is kept and leaves the registry.
+- A chain of replacements (old, newer, current) ends at the page that stays, and with the Unlist Posts plugin active the theme still hides superseded pages from listings and feeds.
+- Guards: removals stop when the number of page keys falls more than 10 percent below the last good run, or when `LQ_DISABLE_SUPERSEDE` is true in `wp-config.php`.
+- Theme Options, Tools: a dry run of the next setup, a log of the last 100 changes (`lailatulqadar_sync_log`) and a comparison of an edited page with the theme's text.
+- `tests/supersede-test.php`, 38 checks, chains and cycles of replaced pages included.
+- 38 strings with their Malay (`languages/ms_MY.po`, compiled to `ms_MY.mo`, and `lailatulqadar.pot`).
+
+## 1.21.3 (2026-11-09)
+
+Theme Options audited against the owner's admin design brief at 782 and 375 pixels. The screen was already tabbed, with cards, toggles, range sliders and colour pickers, and those are unchanged. Presentation only: no option key, field name or behaviour changed, and no new text to translate.
+
+### Fixed
+- The wide tables on the Dates and Security tabs scroll sideways on a phone but could not take keyboard focus (2.1.1). Each scroll region now takes focus, has a name from an existing heading and shows a focus ring. The "Edited, not updated" table on the Tools tab sat outside any scroll region and widened the page to 449 pixels at 375 pixels. It now scrolls inside its own region.
+- The spam-results region on the Security tab stays hidden, and out of the tab order, until a scan finds something. `js/security.js` shows and hides it with its table.
+- The page header and footer of Theme Options were `header` and `footer` elements, which axe reads as extra banner and contentinfo landmarks (1.3.1). They are plain blocks now.
+- The post-type checkboxes on the Reading tab were 13 pixels (2.5.8) and are 24.
+
+## 1.21.2 (2026-11-09)
+
+Accessibility audit against WCAG 2.2 AA with axe-core at 1280 and 375 pixels on the 29 guide pages in English and under `/ms/`, the search and not-found views, keyboard walks, 320 pixel reflow and text-spacing overrides. No feature removed, no identifier renamed, and no new text to translate.
+
+### Fixed
+- In the night window, choosing a start date or a year rebuilt the controls and dropped keyboard focus to the page (2.4.3). `js/night-window.js` now returns focus to the control that had it, and passes it to the other year button when one becomes disabled.
+- The start-date choices were 13 pixel radio buttons hidden behind a label. The input now fills its pill, so the control itself is 44 pixels tall (2.5.8). `css/night-window.css`.
+
+### Added
+- `tests/a11y-axe.js`, an axe-core run at 1280 and 375 pixels that exits 1 on any violation.
+- `RESOURCES.md`, the single record of copyright and asset licences.
+
+## 1.21.1 (2026-11-09)
+
+Mobile-first audit at 320, 360, 375, 390, 414, 480, 768, 1024 and 1280 pixels, in English and under `/ms/`. No feature removed, no class, id or hook renamed, and no new text to translate.
+
+### Fixed
+- A breadcrumb whose last item holds one very long unbroken word no longer widens the page on phones (a sideways scroll of up to 267 px at 320 px in the test). `css/mobile.css`.
+- The night window's year buttons keep their size in a narrow row and are 44 px square (they were squeezed to 21 px wide).
+- The header brand link, search page numbers and the log-in links and "Remember me" label have 44 px tap areas on phones and touch screens.
+- The body face (EB Garamond roman) is preloaded, so the header title and the text below it stop moving when the font arrives (layout shift of 0.11 on the About page at 480 px, 0.13 on the front page).
+
+### Added
+- `css/mobile.css`, loaded after `front.css`.
+
 ## 1.21.0 (2026-11-07)
 
 The front page's reading path is a set of cards. The same design on the English and Malay front pages. No feature removed and no public identifier renamed.

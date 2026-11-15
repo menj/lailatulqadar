@@ -55,7 +55,12 @@ function lailatulqadar_unlist_clean( $ids ): array {
  */
 function lailatulqadar_unlisted_ids(): array {
 	lailatulqadar_unlist_sync_legacy();
-	return lailatulqadar_unlist_clean( get_option( 'lailatulqadar_unlisted_posts', array() ) );
+	$ids = (array) get_option( 'lailatulqadar_unlisted_posts', array() );
+	// Pages that a newer page supersedes are hidden the same way (inc/supersede.php).
+	if ( function_exists( 'lq_superseded_ids' ) ) {
+		$ids = array_merge( $ids, lq_superseded_ids() );
+	}
+	return lailatulqadar_unlist_clean( $ids );
 }
 
 /**

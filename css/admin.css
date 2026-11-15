@@ -660,3 +660,17 @@
 	align-items: center;
 	min-height: 24px;
 }
+
+/* Checkboxes in a settings row are 24px, as the toggles and radios are (WCAG 2.5.8). */
+.lq-check input[type="checkbox"] {
+	width: 24px;
+	height: 24px;
+	margin: 0 6px 0 0;
+}
+
+/* A scroll region that takes keyboard focus shows where it is. */
+.lq-table-wrap:focus-visible,
+.lq-sec-scroll:focus-visible {
+	outline: 2px solid var(--lq-admin-accent, #2271b1);
+	outline-offset: 2px;
+}

@@ -42,6 +42,7 @@ The checks, run from the theme folder. Each test file runs on its own without Wo
 
 ```bash
 find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
+node tests/a11y-axe.js            # axe-core, needs playwright and axe-core; see the header of the file
 php tests/error-pages-test.php
 php tests/hardening-test.php
 php tests/htaccess-files-test.php
@@ -52,6 +53,7 @@ php tests/search-permalinks-test.php
 php tests/security-detector-test.php
 php tests/toc-test.php
 php tests/unlist-test.php
+php tests/supersede-test.php
 php bin/build-error-pages.php --check
 python3 bin/check-content.py
 ```

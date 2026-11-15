@@ -43,6 +43,7 @@ $lq_files = array(
 	'/inc/security.php',
 	'/inc/hardening.php',
 	'/inc/setup.php',
+	'/inc/supersede.php',
 	'/inc/slugs.php',
 	'/inc/social-icons.php',
 	'/inc/reading-progress.php',

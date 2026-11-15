@@ -13,6 +13,8 @@ defined( 'ABSPATH' ) || exit;
 function lq_enqueue_front() {
 	wp_enqueue_style( 'lailatulqadar-front', LQ_URI . '/css/front.css', wp_style_is( 'twentytwentyfive-style', 'registered' ) ? array( 'twentytwentyfive-style' ) : array(), LQ_VERSION );
 
+	wp_enqueue_style( 'lailatulqadar-mobile', LQ_URI . '/css/mobile.css', array( 'lailatulqadar-front' ), LQ_VERSION );
+
 	$night = sanitize_hex_color( lq_setting( 'accent_night' ) );
 	$dawn  = sanitize_hex_color( lq_setting( 'accent_dawn' ) );
 	$css   = sprintf(
@@ -78,6 +80,21 @@ function lq_preload_quran_font() {
 	);
 }
 add_action( 'wp_head', 'lq_preload_quran_font', 2 );
+
+/**
+ * Preload the body face (EB Garamond roman, 87 KB WOFF2) so the first paint uses it and the
+ * header title and the text below do not move when it swaps in (layout shift).
+ */
+function lq_preload_body_font() {
+	if ( is_admin() ) {
+		return;
+	}
+	printf(
+		'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+		esc_url( LQ_URI . '/fonts/eb-garamond/eb-garamond-roman.woff2' )
+	);
+}
+add_action( 'wp_head', 'lq_preload_body_font', 2 );
 
 /**
  * Favicon, touch icon, web app manifest and theme colour from the logo mark,

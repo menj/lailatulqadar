@@ -211,6 +211,9 @@
 		function renderStarts() {
 			var yr = yearOf( cfg, state.year );
 			var i = indexOfYear( cfg, state.year );
+			// The pills are rebuilt on every change. Keep keyboard focus on the one that had it (WCAG 2.4.3).
+			var focusedPill = el.pills.contains( document.activeElement ) ? document.activeElement.value : null;
+			var focusedStep = document.activeElement === el.prev || document.activeElement === el.next ? document.activeElement : null;
 			el.pills.innerHTML = [ 'start', 'alt' ].map( function ( key ) {
 				return '<label class="lq-nw__pill"><input type="radio" name="lq-nw-start" value="' + key + '"' + ( key === state.which ? ' checked' : '' ) + '><span>' +
 					esc( fmt( S.firstDay, dayLabel( yr[ key ], S.locale ) ) ) + '</span></label>';
@@ -218,6 +221,16 @@
 			el.yearLabel.textContent = fmt( S.year, yr.hijri + S.hijriSuffix ) + ' · ' + yr.start.slice( 0, 4 );
 			el.prev.disabled = i <= 0;
 			el.next.disabled = i >= cfg.years.length - 1;
+			if ( null !== focusedPill ) {
+				var pill = el.pills.querySelector( 'input[value="' + focusedPill + '"]' );
+				if ( pill ) {
+					pill.focus();
+				}
+			}
+			// A year button that has just become disabled would drop focus to the page; pass it to the other one.
+			if ( focusedStep && focusedStep.disabled ) {
+				( focusedStep === el.prev ? el.next : el.prev ).focus();
+			}
 		}
 
 		function renderStrip() {

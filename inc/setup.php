@@ -166,6 +166,10 @@ function lq_run_setup() {
 
 	foreach ( array( 'primary', 'secondary' ) as $role ) {
 		foreach ( array_keys( lq_page_definitions() ) as $key ) {
+			// A page that a published newer page supersedes is not created again or refreshed.
+			if ( lq_is_retired_key( $key, $role ) ) {
+				continue;
+			}
 			$id = lq_ensure_page( $key, $role, $map, $report );
 			if ( ! $id ) {
 				continue;
@@ -186,6 +190,9 @@ function lq_run_setup() {
 	}
 
 	update_option( LQ_PAGES_OPTION, $map, false );
+	// Superseded and dropped pages go to the Trash unless edited, and unless a guard stops removals.
+	lq_retire_pages( $map, $report );
+	update_option( LQ_PAGES_OPTION, $map, false );
 	lq_trash_duplicates( $map, $report );
 
 	if ( ! empty( $map['primary']['home'] ) ) {
@@ -196,6 +203,20 @@ function lq_run_setup() {
 	lq_migrate_retire_blog();
 
 	update_option( 'lailatulqadar_setup_version', LQ_VERSION, false );
+
+	foreach ( $report['created'] as $title ) {
+		lq_log( $title, __( 'created', 'lailatulqadar' ) );
+	}
+	foreach ( $report['seeded'] as $title ) {
+		lq_log( $title, __( 'written from the theme', 'lailatulqadar' ) );
+	}
+	foreach ( $report['refreshed'] as $title ) {
+		lq_log( $title, __( 'took the theme\'s new text', 'lailatulqadar' ) );
+	}
+	// The baseline moves only after a run that was free to remove things, so a held drop is still seen later.
+	if ( empty( $report['errors'] ) && '' === lq_removal_blocked() ) {
+		lq_record_count();
+	}
 
 	return $report;
 }
@@ -271,6 +292,10 @@ function lq_sync_page( $id, $key, $role, &$report ) {
 			)
 		);
 		$report['renamed'][] = $def['title'];
+	} elseif ( lq_can_rename_published( $post, $key, $role, $def ) ) {
+		// A published page that nobody edited, under a slug the definition lists as former: renamed in place,
+		// and the old address redirects (inc/supersede.php).
+		lq_rename_published( $post, $def, $report );
 	}
 
 	lq_seed_content( $id, $key, $role, $report );

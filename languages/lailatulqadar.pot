@@ -1631,3 +1631,143 @@ msgstr ""
 #: js/editor-blocks.js
 msgid "The list of headings appears on the published page."
 msgstr ""
+
+#: inc/supersede.php
+msgid "the kill switch LQ_DISABLE_SUPERSEDE is on"
+msgstr ""
+
+#: inc/supersede.php
+msgid "the page definitions list more than 10 percent fewer pages than at the last good run"
+msgstr ""
+
+#: inc/supersede.php
+msgid "renamed in place; the old address redirects"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Removals were stopped: %s."
+msgstr ""
+
+#: inc/supersede.php
+msgid "%1$s (replaced by %2$s)"
+msgstr ""
+
+#: inc/supersede.php
+msgid "moved to the Trash, replaced by %s"
+msgstr ""
+
+#: inc/supersede.php
+msgid "%s: could not move to the Trash."
+msgstr ""
+
+#: inc/supersede.php
+msgid "%s (no longer in the theme)"
+msgstr ""
+
+#: inc/supersede.php
+msgid "no longer in the theme; kept, because it was edited"
+msgstr ""
+
+#: inc/supersede.php
+msgid "%s (removed from the theme)"
+msgstr ""
+
+#: inc/supersede.php
+msgid "moved to the Trash, removed from the theme"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Would be created"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Matches the theme"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Would take the theme's new text, because nobody has edited it"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Stays as it was edited; compare it with the theme's text"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Would be renamed in place; the old address redirects"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Would be redirected, hidden and moved to the Trash, because its replacement is live"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Replaced, but it was edited, so it stays as it is"
+msgstr ""
+
+#: inc/supersede.php
+msgid "No longer in the theme; would be moved to the Trash"
+msgstr ""
+
+#: inc/supersede.php
+msgid "No longer in the theme, but it was edited, so it stays"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Would be removed, but removals are stopped now, so it stays"
+msgstr ""
+
+#: inc/supersede.php
+msgid "This page"
+msgstr ""
+
+#: inc/supersede.php
+msgid "The theme's text"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Next setup, as a dry run"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Removals are stopped: %s."
+msgstr ""
+
+#: inc/supersede.php
+msgid "Nothing would change."
+msgstr ""
+
+#: inc/supersede.php
+msgid "What setup would do"
+msgstr ""
+
+#: inc/supersede.php
+msgid "Compare"
+msgstr ""
+
+#: inc/supersede.php
+msgid "This page and the theme's text: %s"
+msgstr ""
+
+#: inc/supersede.php
+msgid "The two texts are the same."
+msgstr ""
+
+#: inc/supersede.php
+msgid "To take the theme's text, use \"Replace with the shipped version\" under \"Edited, not updated\". To keep this page, do nothing."
+msgstr ""
+
+#: inc/supersede.php
+msgid "What changed"
+msgstr ""
+
+#: inc/supersede.php
+msgid "created"
+msgstr ""
+
+#: inc/supersede.php
+msgid "written from the theme"
+msgstr ""
+
+#: inc/supersede.php
+msgid "took the theme's new text"
+msgstr ""

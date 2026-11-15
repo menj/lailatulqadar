@@ -284,6 +284,10 @@ function lq_menu_items( $set, $upcoming = false ) {
 			continue;
 		}
 		$id        = empty( $map[ $role ][ $key ] ) ? 0 : (int) $map[ $role ][ $key ];
+		// A page that a newer page supersedes leaves every menu (inc/supersede.php).
+		if ( $id && function_exists( 'lq_superseded_ids' ) && in_array( $id, lq_superseded_ids(), true ) ) {
+			continue;
+		}
 		$published = $id && 'publish' === get_post_status( $id );
 		if ( ! $published && ! $upcoming ) {
 			continue;

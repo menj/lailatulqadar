@@ -136,6 +136,18 @@ Browsers ask for /favicon.ico at the top of the domain, such as example.com/favi
 = 1.22.0 =
 The theme now needs PHP 8.4 or later. Check your host's PHP version first (Tools > Site Health > Info > Server); on an older PHP the table of contents does not show. If the WP TOC plugin is active, you can deactivate it.
 
+= 1.21.4 =
+Nothing to do. Under Theme Options, Tools you can now see what the next setup would do and what the last ones did.
+
+= 1.21.3 =
+Nothing to do. Theme Options is easier to use with a keyboard.
+
+= 1.21.2 =
+Nothing to do. Keyboard users keep their place in the night window when they change the start date or the year.
+
+= 1.21.1 =
+Nothing to do. Phones get larger tap areas, and long titles in the breadcrumb no longer widen the page.
+
 = 1.21.0 =
 Nothing to do. The front page shows the reading path as cards in both languages.
 
@@ -177,6 +189,18 @@ Theme Options has a new card layout with tabs that switch without a reload. Ever
 = 1.22.0 =
 * The table of contents is now WP TOC, built into the theme: the same box on guide pages and wherever you place one, with the [wp_toc] shortcode, a collapsible option, headings left out with the class no-toc, and its sections described to search engines.
 * The theme needs PHP 8.4 or later.
+
+= 1.21.4 =
+* A newer guide page can replace an older one. The old page answers with a redirect to the new one, leaves the menus, lists, search and sitemaps, and moves to the Trash unless somebody edited it. A published page that took a new address keeps its page and the old address redirects. Pages the theme no longer ships move to the Trash unless edited. Theme Options, Tools shows a dry run of the next setup, a log of the last 100 changes and a side-by-side comparison of an edited page with the theme's text. Everything is in English and Malay.
+
+= 1.21.3 =
+* Theme Options accessibility. The wide tables and the security tables scroll inside regions that take keyboard focus and have names, the page header and footer no longer count as page landmarks, and the post-type checkboxes are 24 pixels.
+
+= 1.21.2 =
+* Accessibility audit (WCAG 2.2 AA) in English and under /ms/. In the night window, keyboard focus now stays on the start-date choice or the year button you used. The choices are larger targets. New tests/a11y-axe.js, and RESOURCES.md records the licences.
+
+= 1.21.1 =
+* Mobile-first audit in English and Malay. A long title in the breadcrumb no longer makes a phone scroll sideways, the night window year buttons and the header logo are easier to tap, and the text no longer jumps when the font loads.
 
 = 1.21.0 =
 * The front page shows the reading path as cards, in English and Malay: each chapter under an eight-pointed star, a feature card for its first page, and each page with its number, an icon, a summary and its reading time.

@@ -20,6 +20,22 @@ Never upload WordPress core to a live folder without `wp-config.php` in place. T
 
 Then update as usual. Nothing else to do: guide pages show the table of contents in the same place. If the WP TOC plugin is active as well, the plugin's copy runs and the theme's waits; either works, and the plugin can be deactivated.
 
+## To 1.21.4
+
+Nothing to do. Nothing changes on an existing site until a pair is added to `inc/data/supersedes.json` or a `former` slug is set. When a page is retired, also update `inc/data/path-chapters.json`, because the reading path groups pages by key and falls back to a plain list when the keys no longer line up.
+
+## To 1.21.3
+
+Nothing to do. Clear any page cache or browser cache so the admin screen loads its new `css/admin.css`.
+
+## To 1.21.2
+
+Nothing to do. Clear any page cache so visitors fetch the new `js/night-window.js` and `css/night-window.css`.
+
+## To 1.21.1
+
+Nothing to do. Clear any page cache so phones fetch `css/mobile.css`.
+
 ## To 1.21.0
 
 Nothing to do. The front page in each language shows the reading path as cards. A home page whose text an editor has replaced keeps that text; to take the cards there, set its "Read the guide" group to wide width and keep the Guide menu block in it with "Split into chapters" on.
@@ -360,3 +376,43 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 - Remove development files from a live site after an update. Here the `.htaccess` files refuse them, which does nothing on Nginx.
 - Check the one 500 on `/ms/embed/` in the logs.
 - Before upgrading adhan, check its upstream source: `js/vendor/adhan.js` marks its shadow-angle calculation with a TODO.
+
+## Mobile-first audit, 1.21.1
+
+Measured on 9 November 2026 in a scratch WordPress with Chromium and axe-core at nine widths from 320 to 1280 pixels, on 19 views: both front pages, a guide page and the planner in each language, a long stress guide in each language (wide table, code block, embed, gallery, long URLs), the dua and FAQ pages, search with and without results in each language, both 404 pages, log-in, the sitemap and About. The theme has no blog, so there is no post archive to test; guide pages stand in.
+
+| Finding | Severity | Risk of the fix | Action |
+|---|---|---|---|
+| Breadcrumb with one long unbroken word widened the page by up to 267 px at 320 to 480 px | High | Low | Fixed in `css/mobile.css` |
+| Night window year buttons squeezed to 21 px wide | Medium | Low | Fixed |
+| Header brand link, page numbers, log-in links under 44 px | Low | Low | Fixed |
+| Layout shift when EB Garamond swaps in (0.11 to 0.13 on About and front at 480 px) | Medium | Low | Fixed: preload |
+| 14 px text in meta lines, captions and menu credit | Low | Medium | Not changed; labels, not body copy |
+| The header menu is a horizontal scroller, not a toggle, so there is no toggle to test | Info | None | None |
+| Gallery captions and a table outside the guide pages can scroll without keyboard focus (stress page only; guide tables already take focus) | Low | Medium | Not changed |
+| Desktop-first `max-width` queries in `front.css` (5), `night-window.css` (5) and `page-parts.css` (1) | Low | High | Flagged |
+
+Remaining risks and follow-up:
+
+- Move the `max-width` queries to `min-width` one block at a time, with screenshots at the boundary widths. Why: each restates desktop values, and the night window has four overlapping ranges.
+- Decide on a bigger size for 14 px meta text on phones. Why: it is legible but under the 16 px body target.
+- Test on a real phone with a screen reader.
+
+## Accessibility audit (WCAG 2.2 AA), 1.21.2
+
+Measured on 9 November 2026 in a scratch WordPress with Chromium and axe-core at 1280 and 375 pixels on the 29 guide pages in English and under `/ms/`, the search and not-found views, with keyboard walks, 320 pixel reflow, text-spacing overrides and the debug log.
+
+| id | Severity | Criterion | Component | Finding | Status |
+|---|---|---|---|---|---|
+| LQ-1 | Major | 2.4.3 | Night window | Choosing a start date or a year rebuilt the controls and dropped focus to the page | Fixed |
+| LQ-2 | Minor | 2.5.8 | Night window | Start-date radios were 13 px behind a label | Fixed |
+| LQ-3 | Open | all | Whole site | Screen-reader pass (NVDA, VoiceOver) in both languages not done | Manual review |
+| LQ-4 | Open | 3.1.2 | Guide pages | Arabic inside a link or a mixed line carries no `lang="ar"` (5 elements on `/ms/terjemahan-surah-al-qadr/`, for example a source link) | Manual review |
+
+Axe reports no violation on any page in either language. The skip link shows on focus, `html lang` is `ms-MY` under `/ms/`, and the status and year labels in the night window are live regions. The theme loads nothing remote and tracks nothing, so no privacy change was needed.
+
+Remaining risks and follow-up:
+
+- Run `tests/a11y-axe.js` before a release, against a site that holds the guide pages in both languages.
+- Test the night window with a screen reader in English and Malay.
+

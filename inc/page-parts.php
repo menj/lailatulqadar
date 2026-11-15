@@ -3,8 +3,8 @@
  * Page parts for the guide pages (the site has no blog, inc/no-blog.php):
  * the details line under the title (published and updated dates, the last
  * review, the reading time), the In brief box for a page whose text has
- * none, the contents list, the sources block and the previous and next row
- * of the reading path. Every string reads in English or in Malay, as the
+ * none, the contents list (drawn by WP TOC, inc/toc.php), the sources
+ * block and the previous and next row of the reading path. Every string reads in English or in Malay, as the
  * page does. The author's name stays in the structured data only.
  *
  * A guide page is a page of the reading path (the `path` set in
@@ -17,7 +17,7 @@
  * their Hijri date.
  *
  * Filters: lailatulqadar_is_guide_page (bool, page ID),
- * lailatulqadar_contents_min (int, default 3).
+ * lailatulqadar_contents_min (int, default 3; read by inc/toc.php).
  *
  * @package Lailatulqadar
  * @since   1.18.10
@@ -243,7 +243,8 @@ function lailatulqadar_heading_id( $text, $reset = false, $taken = false ) {
 
 /**
  * H2 headings in a guide page's rendered text get an id, so the contents
- * list can link to them. A heading with an id keeps it.
+ * list can link to them, with the same ids as before WP TOC took over the
+ * list (it keeps an id a heading already has). A heading with an id keeps it.
  *
  * @param string $html Rendered heading block.
  * @param array  $block Parsed block.
@@ -269,64 +270,7 @@ function lailatulqadar_heading_anchor( $html, $block ) {
 }
 add_filter( 'render_block_core/heading', 'lailatulqadar_heading_anchor', 10, 2 );
 
-/**
- * The contents list for rendered text: the H2 headings that carry an id.
- * Pure: everything it needs is passed in.
- *
- * @param string $html Rendered text.
- * @param int    $min  Fewest headings for a list.
- * @param string $role primary or secondary.
- * @return string '' below the minimum.
- */
-function lailatulqadar_contents_html( $html, $min, $role ) {
-	// Each H2 that carries an id: group 1 the id, group 2 its inner HTML.
-	if ( ! preg_match_all( '#<h2\b[^>]*\sid="([^"]+)"[^>]*>(.*?)</h2>#is', $html, $m, PREG_SET_ORDER ) || count( $m ) < $min ) {
-		return '';
-	}
-	$title = lailatulqadar_t( 'On this page', 'Kandungan halaman', $role );
-	$label = function_exists( 'wp_unique_id' ) ? wp_unique_id( 'lq-contents-title-' ) : 'lq-contents-title';
-	$items = '';
-	foreach ( $m as $heading ) {
-		// Runs of white space become one space.
-		$text = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( $heading[2] ) ) );
-		if ( '' !== $text ) {
-			$items .= '<li><a href="#' . esc_attr( $heading[1] ) . '">' . esc_html( html_entity_decode( $text, ENT_QUOTES, 'UTF-8' ) ) . '</a></li>';
-		}
-	}
-	return '<nav class="lq-contents" aria-labelledby="' . esc_attr( $label ) . '"><p class="lq-contents__title" id="' . esc_attr( $label ) . '">' . esc_html( $title ) . '</p><ol class="lq-contents__list">' . $items . '</ol></nav>';
-}
-
-/**
- * Put the contents list into a guide page's text, after the In brief box
- * when the text opens with one, else at the top, unless the text places
- * its own list (the [auto_toc] shortcode or the Contents block). Priority 30: after the
- * contextual links (25), which never link inside a nav.
- *
- * @param string $content Rendered text.
- * @return string
- */
-function lailatulqadar_contents_filter( $content ) {
-	$id = lailatulqadar_current_guide_page();
-	if ( ! $id || is_admin() || is_feed() || ! is_main_query() || (int) get_the_ID() !== $id || doing_filter( 'get_the_excerpt' ) ) {
-		return $content;
-	}
-	// A list placed by hand (inc/contents.php, at 29) takes the place of this one.
-	if ( false !== strpos( $content, 'lq-contents--placed' ) ) {
-		return $content;
-	}
-	$nav = lailatulqadar_contents_html( $content, max( 1, (int) apply_filters( 'lailatulqadar_contents_min', 3 ) ), lq_role_of( $id ) );
-	if ( '' === $nav ) {
-		return $content;
-	}
-	$at  = strpos( $content, '<aside class="lq-brief"' );
-	$end = false === $at ? false : strpos( $content, '</aside>', $at );
-	if ( false !== $end ) {
-		$end += strlen( '</aside>' );
-		return substr( $content, 0, $end ) . "\n" . $nav . substr( $content, $end );
-	}
-	return $nav . "\n" . $content;
-}
-add_filter( 'the_content', 'lailatulqadar_contents_filter', 30 );
+// The contents list itself is drawn by WP TOC (wp-toc/, set up in inc/toc.php).
 
 /**
  * The sources a guide page shows and its Article cites: the Qurʾān verses and

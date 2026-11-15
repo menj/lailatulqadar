@@ -18,7 +18,7 @@ Social icons in images/social (X, Facebook, YouTube, Instagram, TikTok, Threads,
 KFGQPC HAFS Uthmanic Script, Copyright 2010 King Fahd Glorious Quran Printing Complex. Free to use, copy and distribute; the file must not be modified.
 Served as a WOFF2 conversion of the original TTF by the owner's decision of 2026-10-26, accepting that restriction. See fonts/kfgqpc/LICENSE.txt.
 Theme images: the logo mark, favicons, touch icon, app icons and 512px logo (images/) are original artwork made for the theme; the pixel book (images/book-open.webp) was supplied by the site owner. Both are distributed with the theme under the GNU GPL version 3 or later.
-The contents list is adapted from "WordPress Table-of-Contents Shortcode Done Properly" by Ikram Hawramani, Copyright 2025. MIT License; the notice is kept in inc/contents.php.
+WP TOC 1.1.0 (wp-toc/), Copyright 2026 MENJ, GNU GPL version 3 or later, https://github.com/menj/wp-toc. Based on original work by Ikram Hawramani, MIT License; the notice is kept in wp-toc/LICENSE-MIT-ORIGINAL.
 Photographs in images/commons/ come from Wikimedia Commons, Pixabay and Pexels under the licences listed per file in inc/data/images.json, and are credited beneath each image and on the Sources page.
 
 ## Remote assets

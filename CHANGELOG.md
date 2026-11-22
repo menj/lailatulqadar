@@ -2,6 +2,19 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.23.0 (2026-11-22)
+
+Print and PDF, Google preferred sources, and eleven more social networks.
+
+### Added
+- **Print or save as PDF.** Guide pages carry a button on the details line, "Print or save as PDF" or "Cetak atau simpan sebagai PDF", that opens the browser's print dialog, where "Save as PDF" makes the file (`js/print.js`; hidden until the script runs, so no dead button shows without scripts).
+- **Print layout** (`css/print.css`, loaded with `media="print"` on every view), based on Hartija CSS Print Framework 1.0 (MIT). Black on white whichever scheme is on screen; menus, the language and scheme switches, breadcrumbs, the previous and next row, the footer, the reading progress bar, the table of contents, the night planner's controls and every button left out; the site name as a small running head; the page's address under the title ("Online at", "Dalam talian di"); link addresses written after links in the text, the sources and the notes, except links within the page, footnote numbers and addresses in percent-encoded Arabic; headings kept with what follows; verses, hadith cards, tables rows, pictures and notes kept whole; table headers repeated on each page; the Arabic faces kept.
+- **Google preferred source** (`inc/preferred-source.php`, `blocks/preferred-source/`, `js/preferred-source.js`). A button in the theme's colours with the eight-pointed star, "Add as a preferred source on Google" or "Tambah sebagai sumber pilihan di Google", beside the page details on guide pages and in the footer, and wherever the Preferred source block or `[lailatulqadar_preferred_source]` is placed. Theme Options > Reading and sharing sets the mode: a link to Google's source preferences tool for the site's domain (default, nothing loads from Google), Google's flow in the page (Google's library with manual control; the same button opens the flow in the page's scheme and language, and stays a link until the library is ready), or off. A site in a subdirectory, which Google cannot list, prints no button. Settings `prefsrc_mode`, `prefsrc_guide`, `prefsrc_footer`; filter `lailatulqadar_preferred_source_domain`.
+- Social icons for Signal, LINE, Discord, Reddit, Pinterest, Spotify, SoundCloud, Vimeo, Substack, Medium and GitHub, from the CC0 part of the Minimalist Social Icons Pack (21 networks in all). The pack's LinkedIn and Scribd icons are CC BY 4.0 and stay out. The ten icons already bundled match the new pack's paths.
+
+### Changed
+- The footer part holds the Preferred source block after the social icons.
+
 ## 1.22.1 (2026-11-22)
 
 A security audit of the theme against the owner's WordPress checklist. No feature removed, no option, hook or identifier renamed.

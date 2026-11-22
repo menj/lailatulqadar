@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lailatulqadar/preferred-source",
+	"title": "Preferred source",
+	"category": "theme",
+	"icon": "star-filled",
+	"description": "A button that lets readers add the site as a preferred source in Google Search, set in Theme Options > Reading and sharing.",
+	"textdomain": "lailatulqadar",
+	"attributes": {
+		"context": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "lailatulqadar-editor-blocks",
+	"render": "file:./render.php"
+}

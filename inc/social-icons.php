@@ -2,8 +2,8 @@
 /**
  * Social profile icons: the lailatulqadar/social-icons block (in the footer
  * part), the [lailatulqadar_social_icons] shortcode and the "Social icons"
- * pattern. Inline SVGs from the Minimalist Social Icons Pack 2.8 (GPL; the
- * ten in images/social/ come from CC0 sources). Profile URLs are set in
+ * pattern. Inline SVGs from the Minimalist Social Icons Pack (GPL; the
+ * twenty-one in images/social/ come from CC0 sources). Profile URLs are set in
  * Theme Options > Reading and sharing.
  *
  * @package Lailatulqadar
@@ -19,16 +19,27 @@ defined( 'ABSPATH' ) || exit;
  */
 function lailatulqadar_social_networks() {
 	return array(
-		'x'         => 'X',
-		'facebook'  => 'Facebook',
-		'youtube'   => 'YouTube',
-		'instagram' => 'Instagram',
-		'tiktok'    => 'TikTok',
-		'threads'   => 'Threads',
-		'bluesky'   => 'Bluesky',
-		'mastodon'  => 'Mastodon',
-		'telegram'  => 'Telegram',
-		'whatsapp'  => 'WhatsApp',
+		'x'          => 'X',
+		'facebook'   => 'Facebook',
+		'youtube'    => 'YouTube',
+		'instagram'  => 'Instagram',
+		'tiktok'     => 'TikTok',
+		'threads'    => 'Threads',
+		'bluesky'    => 'Bluesky',
+		'mastodon'   => 'Mastodon',
+		'telegram'   => 'Telegram',
+		'whatsapp'   => 'WhatsApp',
+		'signal'     => 'Signal',
+		'line'       => 'LINE',
+		'discord'    => 'Discord',
+		'reddit'     => 'Reddit',
+		'pinterest'  => 'Pinterest',
+		'spotify'    => 'Spotify',
+		'soundcloud' => 'SoundCloud',
+		'vimeo'      => 'Vimeo',
+		'substack'   => 'Substack',
+		'medium'     => 'Medium',
+		'github'     => 'GitHub',
 	);
 }
 

@@ -15,6 +15,9 @@ function lq_enqueue_front() {
 
 	wp_enqueue_style( 'lailatulqadar-mobile', LQ_URI . '/css/mobile.css', array( 'lailatulqadar-front' ), LQ_VERSION );
 
+	// Paper and "Save as PDF": black on white, no menus or buttons (css/print.css).
+	wp_enqueue_style( 'lailatulqadar-print', LQ_URI . '/css/print.css', array( 'lailatulqadar-mobile' ), LQ_VERSION, 'print' );
+
 	$night = sanitize_hex_color( lq_setting( 'accent_night' ) );
 	$dawn  = sanitize_hex_color( lq_setting( 'accent_dawn' ) );
 	$css   = sprintf(

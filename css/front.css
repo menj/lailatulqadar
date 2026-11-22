@@ -1838,3 +1838,63 @@ video {
 		font-size: 0.8125rem;
 	}
 }
+
+/* ---------- Google preferred source (inc/preferred-source.php) ----------
+ * A pill in the theme's colours with the eight-pointed star, the same on
+ * the details line of a guide page and in the footer. */
+.lq-prefsrc,
+.lq-footer .lq-prefsrc {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5em;
+	min-height: 24px;
+	padding: 0.3em 0.95em 0.3em 0.75em;
+	border: 1px solid color-mix(in srgb, var(--wp--preset--color--accent-1) 55%, transparent);
+	border-radius: 1.25em;
+	background: color-mix(in srgb, var(--wp--preset--color--accent-1) 9%, transparent);
+	color: var(--wp--preset--color--contrast);
+	font-family: var(--wp--preset--font-family--interface);
+	font-size: var(--wp--preset--font-size--small);
+	line-height: 1.3;
+	text-decoration: none;
+	transition: background-color var(--lq-dur-1) var(--lq-ease), border-color var(--lq-dur-1) var(--lq-ease);
+}
+
+.lq-prefsrc:hover,
+.lq-footer .lq-prefsrc:hover {
+	border-color: var(--wp--preset--color--accent-1);
+	background: color-mix(in srgb, var(--wp--preset--color--accent-1) 18%, transparent);
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+}
+
+.lq-prefsrc:focus-visible {
+	outline: var(--lq-focus-width) solid var(--lq-focus-color);
+	outline-offset: 2px;
+}
+
+.lq-prefsrc__icon {
+	flex: none;
+	color: var(--wp--preset--color--accent-1);
+}
+
+.lq-prefsrc-wrap {
+	margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.lq-prefsrc {
+		transition: none;
+	}
+}
+
+@media (forced-colors: active) {
+	.lq-prefsrc {
+		border-color: LinkText;
+		color: LinkText;
+	}
+
+	.lq-prefsrc__icon {
+		color: LinkText;
+	}
+}

@@ -68,7 +68,7 @@ function lq_settings_tabs() {
 					},
 					array_keys( lailatulqadar_social_networks() )
 				),
-				array( 'pretty_search', 'search_base' )
+				array( 'prefsrc_mode', 'prefsrc_footer', 'prefsrc_guide', 'pretty_search', 'search_base' )
 			),
 		),
 		'security'  => array(
@@ -238,6 +238,17 @@ function lq_sanitize_settings( $input ) {
 			case 'social_mastodon':
 			case 'social_telegram':
 			case 'social_whatsapp':
+			case 'social_signal':
+			case 'social_line':
+			case 'social_discord':
+			case 'social_reddit':
+			case 'social_pinterest':
+			case 'social_spotify':
+			case 'social_soundcloud':
+			case 'social_vimeo':
+			case 'social_substack':
+			case 'social_medium':
+			case 'social_github':
 				$value = esc_url_raw( trim( (string) $value ), array( 'http', 'https' ) );
 				break;
 			case 'rpb_color':
@@ -248,6 +259,9 @@ function lq_sanitize_settings( $input ) {
 				break;
 			case 'rpb_position':
 				$value = 'bottom' === $value ? 'bottom' : 'top';
+				break;
+			case 'prefsrc_mode':
+				$value = in_array( $value, array( 'link', 'button', 'off' ), true ) ? $value : 'link';
 				break;
 			case 'rpb_types':
 				// Scalar strings only: a nested array or object in the post is dropped.
@@ -277,6 +291,8 @@ function lq_sanitize_settings( $input ) {
 			case 'sec_gone':
 			case 'rpb_enabled':
 			case 'social_footer':
+			case 'prefsrc_footer':
+			case 'prefsrc_guide':
 			case 'pretty_search':
 				$value = '1' === (string) $value ? '1' : '0';
 				break;
@@ -889,6 +905,33 @@ function lailatulqadar_render_reading_tab() {
 		foreach ( lailatulqadar_social_networks() as $key => $label ) {
 			lailatulqadar_input_row( 'social_' . $key, 'lq-social-' . $key, $label, 'mastodon' === $key ? __( 'The link carries rel="me", so Mastodon can verify the site.', 'lailatulqadar' ) : '', array( 'type' => 'url', 'placeholder' => 'https://' ) );
 		}
+		?>
+	</section>
+
+	<section class="lq-section">
+		<h2><?php esc_html_e( 'Google preferred source', 'lailatulqadar' ); ?></h2>
+		<p class="lq-help"><?php esc_html_e( 'A button, in the theme colours, that lets readers add the site as a preferred source in Google Search, so its pages show more often in Top Stories with a "preferred" badge. It shows beside the page details on guide pages and in the footer; the Preferred source block and the [lailatulqadar_preferred_source] shortcode place it elsewhere. Google lists the site only once it appears in its source preferences tool, and only for a domain or subdomain, never a subdirectory.', 'lailatulqadar' ); ?></p>
+		<?php
+		$lq_prefsrc_domain = lailatulqadar_prefsrc_domain();
+		echo '<p class="lq-help">' . ( '' === $lq_prefsrc_domain
+			? esc_html__( 'This site lives in a subdirectory, so Google cannot list it and the button does not print.', 'lailatulqadar' )
+			/* translators: %s: link to the site in Google's source preferences tool. */
+			: sprintf( esc_html__( 'Check the site in Google\'s tool: %s', 'lailatulqadar' ), '<a href="' . esc_url( lailatulqadar_prefsrc_url() ) . '" target="_blank" rel="noopener">' . esc_html( $lq_prefsrc_domain ) . '</a>' ) ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
+		lailatulqadar_row(
+			'lq-prefsrc-mode',
+			__( 'Mode', 'lailatulqadar' ),
+			static function ( $help_id ) {
+				$value = lailatulqadar_prefsrc_mode();
+				echo '<select' . lailatulqadar_attrs( array( 'id' => 'lq-prefsrc-mode', 'name' => lq_field_name( 'prefsrc_mode' ), 'aria-describedby' => $help_id ? $help_id : null ) ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by lailatulqadar_attrs().
+				echo '<option value="link"' . selected( $value, 'link', false ) . '>' . esc_html__( 'Link to Google\'s tool (no script from Google)', 'lailatulqadar' ) . '</option>';
+				echo '<option value="button"' . selected( $value, 'button', false ) . '>' . esc_html__( 'Google\'s flow in the page (loads Google\'s library)', 'lailatulqadar' ) . '</option>';
+				echo '<option value="off"' . selected( $value, 'off', false ) . '>' . esc_html__( 'Off', 'lailatulqadar' ) . '</option>';
+				echo '</select>';
+			},
+			__( 'The link sends readers to Google and loads nothing from Google on the site. The flow loads a script from news.google.com on the pages that show the button and returns readers to the page once they have added the site.', 'lailatulqadar' )
+		);
+		lailatulqadar_toggle_row( 'prefsrc_guide', 'lq-prefsrc-guide', __( 'Show on guide pages, beside the page details', 'lailatulqadar' ) );
+		lailatulqadar_toggle_row( 'prefsrc_footer', 'lq-prefsrc-footer', __( 'Show in the footer', 'lailatulqadar' ) );
 		?>
 	</section>
 

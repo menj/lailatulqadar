@@ -435,6 +435,7 @@ add_action( 'save_post_page', 'lailatulqadar_save_page_parts_box' );
 function lailatulqadar_page_parts_assets() {
 	if ( lailatulqadar_current_guide_page() ) {
 		wp_enqueue_style( 'lailatulqadar-page-parts', LQ_URI . '/css/page-parts.css', array( 'lailatulqadar-front' ), LQ_VERSION );
+		wp_enqueue_script( 'lailatulqadar-print', LQ_URI . '/js/print.js', array(), LQ_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'lailatulqadar_page_parts_assets', 20 );

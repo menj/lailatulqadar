@@ -14,6 +14,13 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.23.0
+
+1. Clear any page cache, so guide pages show the new buttons and the print layout loads.
+2. Google preferred source: the button shows by default as a plain link. Check the site in Google's source preferences tool (Theme Options > Reading and sharing links to it); if Google does not list the site yet, turn the button off there until it does. Choose "Google's flow in the page" only if you accept a script from news.google.com on the pages that show the button, and mention it in the site's privacy notice.
+3. If you edited the footer in the Site Editor, your copy does not gain the Preferred source block: add it there yourself, or reset the footer to the theme's.
+4. New social networks can be filled in under Reading and sharing > Social icons.
+
 ## To 1.22.1
 
 Security hardening. Nothing changes for visitors or editors.

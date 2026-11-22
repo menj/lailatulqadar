@@ -40,7 +40,8 @@ Appearance > Theme Options. Each tab saves only its own fields. The screen is a 
 
 ## Reading and sharing
 - **Reading progress bar.** On or off; colour (empty follows the scheme accent); height from 2 to 8px; top or bottom of the window; the post types it shows on (pages by default). Never on the language homes, and off while the Reading Progress Bar plugin is active.
-- **Social icons.** A footer switch and an address for X, Facebook, YouTube, Instagram, TikTok, Threads, Bluesky, Mastodon, Telegram and WhatsApp. A network without an address gets no icon. The Social icons block and pattern and `[lailatulqadar_social_icons]` print the same row elsewhere.
+- **Social icons.** A footer switch and an address for X, Facebook, YouTube, Instagram, TikTok, Threads, Bluesky, Mastodon, Telegram, WhatsApp, Signal, LINE, Discord, Reddit, Pinterest, Spotify, SoundCloud, Vimeo, Substack, Medium and GitHub. A network without an address gets no icon. The Social icons block and pattern and `[lailatulqadar_social_icons]` print the same row elsewhere.
+- **Google preferred source** (1.23.0). Mode: "Link to Google's tool" (default; a link to Google's source preferences tool for the site's domain, nothing loads from Google), "Google's flow in the page" (loads Google's preferred sources library on the pages that show the button and opens Google's flow in place), or Off. Two switches: on guide pages beside the page details, and in the footer. The section links to the site in Google's tool, or says the site lives in a subdirectory, which Google cannot list; then no button prints. The Preferred source block and `[lailatulqadar_preferred_source]` place it elsewhere.
 - **Search addresses.** A switch for /search/term/ addresses and the base. The base can also be set in Settings > Permalinks.
 - **Unlisted pages.** No setting here: the Unlisted box sits in the page editor, and Quick Edit and Bulk Edit carry it too.
 

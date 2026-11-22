@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.22.1 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.23.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 8.4 or later. The bundled WP TOC needs it; on an older PHP it does not load and the site shows no table of contents |
@@ -87,7 +87,7 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 | `parts/` | header and footer |
 | `patterns/` | The English and Malay front pages, and the empty-results message |
 | `wp-toc/` | WP TOC 1.1.0, bundled unchanged (table of contents) |
-| `blocks/` | breadcrumbs, contents, guide-menu, image-credits, in-brief, language-switcher, logo-mark, night-window, odd-nights, page-details, path-nav, photo, scheme-toggle, social-icons, sources |
+| `blocks/` | breadcrumbs, contents, guide-menu, image-credits, in-brief, language-switcher, logo-mark, night-window, odd-nights, page-details, path-nav, photo, preferred-source, scheme-toggle, social-icons, sources |
 | `inc/` | One file per feature: languages, setup, SEO and schema, the Ramadan calendar, the night window, contextual links, images, the WP TOC glue (`toc.php`) and footnote ids (`footnotes.php`), security, hardening, error pages, the settings screen and the built-in plugin features |
 | `inc/data/` | The page registry, the shared phrase map, the reading-path chapters, image credits, seed and title histories |
 | `content/<lang>/<key>.json` | The shipped articles, read with `json_decode()` and never executed |
@@ -126,6 +126,16 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 - Below PHP 8.4 WP TOC does not load; `lailatulqadar_toc_fallback_shortcodes()` registers `[wp_toc]` and `[auto_toc]` to print nothing, so they never show as text.
 - The Contents block (`blocks/contents/`, attributes `tags`, `title`, `showTitle`) prints WP TOC's `[wp_toc]` placeholder through `WP_TOC::shortcode()`. `[wp_toc]` and `[auto_toc]` are WP TOC's own.
 
+### Print and PDF
+
+`css/print.css` is enqueued on every front view with `media="print"` (`lq_enqueue_front()`), after `css/mobile.css`. It is based on Hartija CSS Print Framework 1.0 (MIT, `RESOURCES.md`). It sets the palette to black on white through the preset colour variables, so every block follows, whatever `data-scheme` holds; leaves out the screen-only parts by class (header menu, language and scheme switches, breadcrumbs, path navigation, footer, reading progress bar, `.wp-toc`, the night planner's `.lq-nw__app`, buttons, the preferred source button); writes link addresses after external links in the text, `.lq-sources` and `.wp-block-footnotes`, but not after `#` links, footnote numbers, image links or percent-encoded addresses; and keeps verses, hadith cards, the In brief box, figures, table rows and footnotes whole.
+
+The page details block (`blocks/page-details/render.php`) adds two items: the Print or save as PDF button (`.lq-details__item--print`, `hidden` until `js/print.js` runs, then `window.print()`), and the page's address (`.lq-details__item--source`), hidden on screen and shown on paper. `js/print.js` loads with `css/page-parts.css` on guide pages.
+
+### Google preferred source
+
+`inc/preferred-source.php` follows Google's "preferred sources" help page. `lailatulqadar_prefsrc_html( $place )` draws the button (`.lq-prefsrc`, styled in `css/front.css`) for `guide` (page details block), `footer` (the `lailatulqadar/preferred-source` block with `context` footer in `parts/footer.html`) and `inline` (the block elsewhere, `[lailatulqadar_preferred_source]`). The button is always a link to `https://www.google.com/preferences/source?q=<domain>`; `lailatulqadar_prefsrc_domain()` takes the host of `home_url()`, or '' for a site in a subdirectory, which Google does not list, and then nothing prints. In `button` mode `lailatulqadar_prefsrc_enqueue()` loads `https://news.google.com/swg/js/v1/publisher.js` (async, `preferred-sources-control="manual"` added by `lailatulqadar_prefsrc_script_tag()`) and `js/preferred-source.js`, only on views that show the button; the script queues on `PREFERRED_SOURCE`, calls `init()` with the theme (`dark` for night, `light` for dawn, the system's for auto) and `ms` or `en`, and turns a click into `addPreferredSource()`. If the library fails, the link still goes to Google's tool.
+
 `inc/footnotes.php`: `lailatulqadar_footnote_ref_ids()` (on `the_content` at 12) gives the second and later citations of one footnote the ids `<note>-link-2`, `-link-3`, since core repeats `<note>-link` at each.
 
 ## Settings
@@ -153,10 +163,11 @@ The Security tab is drawn by `inc/security.php`, with `js/security.js` and `css/
 | `lailatulqadar_search_reserved_bases` | Words the search base may not take |
 | `lailatulqadar_is_guide_page` | Whether a page takes the guide page parts (default: the pages of the reading path) |
 | `lailatulqadar_contents_min` | Fewest H2 headings for the automatic table of contents (default 3) |
+| `lailatulqadar_preferred_source_domain` | The domain the preferred source button sends to Google's tool; '' prints no button |
 
 The theme also filters `wp_speculation_rules_configuration` (`lq_speculation_rules()` in `inc/assets.php`): prerender with moderate eagerness, in place of WordPress's prefetch.
 
-Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`, `[lailatulqadar_social_icons]`, and WP TOC's `[wp_toc]` and `[auto_toc]` (attributes `tags`, `title`, `depth`, `min`, `collapsible`, `collapsed`).
+Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`, `[lailatulqadar_social_icons]`, `[lailatulqadar_preferred_source]`, and WP TOC's `[wp_toc]` and `[auto_toc]` (attributes `tags`, `title`, `depth`, `min`, `collapsible`, `collapsed`).
 
 | Constant | Set in | Effect |
 |---|---|---|

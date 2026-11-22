@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.22.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.22.1 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 8.4 or later. The bundled WP TOC needs it; on an older PHP it does not load and the site shows no table of contents |
@@ -52,6 +52,7 @@ php tests/schema-graph-test.php
 php tests/search-permalinks-test.php
 php tests/security-detector-test.php
 php tests/toc-test.php
+php tests/admin-actions-test.php
 php tests/unlist-test.php
 php tests/supersede-test.php
 php bin/build-error-pages.php --check
@@ -222,6 +223,7 @@ RewriteRule ^wp-includes/(?!(js/tinymce/wp-tinymce|ms-files)\.php$).+\.php(/|$) 
 RewriteRule ^wp-admin/includes/.+\.php(/|$) - [F]
 RewriteRule ^(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)(/|$) - [F]
 RewriteRule ^wp-content/themes/.+\.php(/|$) - [F]
+RewriteRule ^wp-content/.+\.log$ - [F]
 RewriteRule ^wp-content/themes/lailatulqadar/(tests|bin)(/|$) - [F]
 RewriteRule ^wp-content/themes/lailatulqadar/docs(/(?!settings\.md$)|$) - [F]
 </IfModule>
@@ -231,6 +233,28 @@ RewriteRule ^wp-content/themes/lailatulqadar/docs(/(?!settings\.md$)|$) - [F]
 "Block xmlrpc.php" is there only while XML-RPC is off. The marker name is a common one, so a switch between themes that use it never writes the section twice.
 
 The rules carry the site's own folder prefixes. With WordPress in its own folder below the `.htaccess`, a rule for `wp-config.php` one folder up is added. Define `LQ_BLOCK_DIRECT_FILES` as false to leave the second section out. `tests/htaccess-files-test.php` checks the lines and the theme's own files.
+
+### Security audit and server headers
+
+The theme was audited on 22 November 2026 (1.22.1); `SSOT.md` holds the record. The rules it keeps, each checked by a test:
+
+- Every `admin_post_*` and `wp_ajax_*` handler checks a capability first, then a nonce, before it reads the request, and every refusal answers with its HTTP status (403, or 400 and 409 for a bad page or a running setup). No handler is open to visitors and the theme registers no REST route (`tests/admin-actions-test.php`).
+- The site's `.htaccess` section refuses `.log` files under `wp-content`, `debug.log` above all (`tests/htaccess-files-test.php`).
+- No WordPress version in the page head or the feeds (`the_generator`, `inc/hardening.php`; `tests/hardening-test.php`).
+
+The theme sends no site-wide security headers: they belong to the server, the CDN or a security plugin, where they cover every response. A starting point for Apache:
+
+```apache
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Permissions-Policy "camera=(), microphone=(), payment=()"
+</IfModule>
+Options -Indexes
+```
+
+For Nginx, `add_header` with the same values and `autoindex off;`. Set HSTS once the whole site runs on HTTPS, and `expose_php = Off` in `php.ini` so PHP stops naming its version. The night planner asks for the visitor's location, so leave `geolocation` out of `Permissions-Policy`.
 
 ### Nginx
 
@@ -245,6 +269,7 @@ location ~ ^/wp-includes/(?!js/tinymce/wp-tinymce\.php$|ms-files\.php$).+\.php(/
 location ~ ^/wp-admin/includes/.+\.php(/|$) { return 403; }
 location ~ ^/(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)(/|$) { return 403; }
 location ~ ^/wp-content/themes/.+\.php(/|$) { return 403; }
+location ~* ^/wp-content/.+\.log$ { return 403; }
 location ~ ^/wp-content/themes/lailatulqadar[^/]*/(tests|bin)(/|$) { return 403; }
 location ~ ^/wp-content/themes/lailatulqadar[^/]*/docs(/(?!settings\.md$)|$) { return 403; }
 location ~* ^/wp-content/themes/lailatulqadar[^/]*/(?!docs/settings\.md$).+\.md$ { return 403; }

@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.22.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.22.1. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -237,6 +237,24 @@ The screen needs `manage_options`, kept in 1.16.0 in place of `edit_theme_option
 ## Browser icons
 
 The owner asked on 2026-11-05: "make sure you have favicon too." Until a Site Icon is set, `lq_default_icons()` prints the SVG, 32px, touch icon, manifest and `theme-color` #141b2e on the site, the login screen and the admin, and `lq_serve_favicon()` answers `/favicon.ico`. A Site Icon always wins. Small sizes use the icon variant of the mark (no crescent or star, as `lq_mark_svg( 'icon' )`); 180px and up use the full mark.
+
+## Security audit
+
+Latest audit: 22 November 2026, at version 1.22.0, released as 1.22.1 (patch). Scope: every PHP, JavaScript and `.htaccess` file of the theme, `wp-toc/` included, on WordPress 7.1.4 with PHP 8.3 (WP TOC loaded through a test-only shim) and SQLite, no plugins. Method: static review of every hook, admin-post and AJAX handler, shortcode, block, request input, query, file operation, redirect and output; then controlled tests on a local copy only, as anonymous, subscriber, contributor, editor and administrator. No production system was touched.
+
+| Item | Count |
+|---|---|
+| Confirmed findings | 3 (low or informational) |
+| Fixed in code | 3 |
+| Proposed outside the theme | 4 |
+| False positives | 4 |
+| Residual risks | 2 |
+
+- Fixed: Theme Options actions refused unauthorised users with HTTP 500 instead of 403 (no state change was possible); `.log` files under `wp-content` were not refused by the theme's `.htaccess` section; the WordPress version was printed in the page head and feeds.
+- Proposed (server, CDN or host): security headers (`X-Content-Type-Options`, `Referrer-Policy`, frame ancestors, `Permissions-Policy`, HSTS), directory listing off, `expose_php = Off`, `WP_DEBUG_LOG` off or outside the web root in production. `README.md` gives the lines.
+- False positives: the "upload guard" is the half-uploaded-theme guard, not a file-upload handler (the theme has none); `innerHTML` in `js/night-window.js` receives only escaped or numeric values; the `wp_upload_bits()` call copies the theme's own photographs from validated names; every `$wpdb` query is prepared or has no input.
+- Residual risks: WP TOC's PHP 8.4 code was not run on a real PHP 8.4 here; the theme's public asset version (`?ver=`) and `readme.txt` show its version, as for any public theme.
+- Tests: all PHP self-tests, `tests/admin-actions-test.php` (new), a 78-check dynamic run by role and a crawl of every page. Release readiness: version, changelog, upgrade notes, readme and this record updated.
 
 ## Milestones and standing decisions
 

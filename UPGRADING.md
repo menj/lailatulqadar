@@ -14,6 +14,17 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.22.1
+
+Security hardening. Nothing changes for visitors or editors.
+
+1. Open any admin page once after the update. The theme rewrites its "block direct file access" section in the site's `.htaccess` within the hour, or at once when you save Theme Options; the new line refuses `.log` files under `wp-content`.
+2. On Nginx, add `location ~* ^/wp-content/.+\.log$ { return 403; }` to the server block with the other rules in `README.md`.
+3. If `WP_DEBUG_LOG` is on in production, turn it off, or point it to a file outside the web root, and delete any old `wp-content/debug.log`.
+4. At the server or CDN: set the security headers listed in `README.md` (Security audit and server headers), `Options -Indexes` (Apache) or `autoindex off` (Nginx), and `expose_php = Off`. The theme does not set them.
+
+Developers: a handler added to `admin_post_*` or `wp_ajax_*` must check a capability before its nonce, and every `wp_die()` must pass a status, or `tests/admin-actions-test.php` fails.
+
 ## To 1.22.0
 
 **Check PHP first.** The theme now needs PHP 8.4 or later. Find the version under Tools > Site Health > Info > Server, and have the host raise it before you update. WordPress refuses to install a theme whose PHP requirement the server does not meet; on an older PHP the bundled table of contents does not load and the pages show none, with a notice for administrators.

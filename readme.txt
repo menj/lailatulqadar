@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 8.4
-Stable tag: 1.22.0
+Stable tag: 1.22.1
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -133,6 +133,9 @@ Browsers ask for /favicon.ico at the top of the domain, such as example.com/favi
 
 == Upgrade Notice ==
 
+= 1.22.1 =
+Security hardening. Open any admin page once after updating, so the theme rewrites its section in the site's .htaccess. On Nginx, add the new .log line from the README.
+
 = 1.22.0 =
 The theme now needs PHP 8.4 or later. Check your host's PHP version first (Tools > Site Health > Info > Server); on an older PHP the table of contents does not show. If the WP TOC plugin is active, you can deactivate it.
 
@@ -185,6 +188,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.22.1 =
+* Security: hardened the Theme Options actions (a user without permission now gets a clear refusal), log files under wp-content are refused, and the WordPress version is no longer shown in the page source or the feeds.
 
 = 1.22.0 =
 * The table of contents is now WP TOC, built into the theme: the same box on guide pages and wherever you place one, with the [wp_toc] shortcode, a collapsible option, headings left out with the class no-toc, and its sections described to search engines.

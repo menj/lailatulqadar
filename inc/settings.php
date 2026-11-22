@@ -1436,12 +1436,12 @@ function lailatulqadar_notice( $html, $type = 'success' ) {
  */
 function lq_handle_run_setup() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'You do not have permission to run setup.', 'lailatulqadar' ) );
+		wp_die( esc_html__( 'You do not have permission to run setup.', 'lailatulqadar' ), 403 );
 	}
 	check_admin_referer( 'lq_run_setup' );
 	$report = lq_run_setup_locked();
 	if ( null === $report ) {
-		wp_die( esc_html__( 'Setup is already running. Try again in a minute.', 'lailatulqadar' ) );
+		wp_die( esc_html__( 'Setup is already running. Try again in a minute.', 'lailatulqadar' ), 409 );
 	}
 	set_transient( 'lailatulqadar_setup_report', $report, MINUTE_IN_SECONDS * 10 );
 	wp_safe_redirect( admin_url( 'themes.php?page=lailatulqadar&tab=tools' ) );
@@ -1454,7 +1454,7 @@ add_action( 'admin_post_lq_run_setup', 'lq_handle_run_setup' );
  */
 function lq_handle_replace_shipped() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'You do not have permission to replace pages.', 'lailatulqadar' ) );
+		wp_die( esc_html__( 'You do not have permission to replace pages.', 'lailatulqadar' ), 403 );
 	}
 	// The nonce action names the page, so the ID is read before the nonce check.
 	$id = isset( $_POST['page_id'] ) ? absint( $_POST['page_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked on the next line.
@@ -1482,7 +1482,7 @@ function lq_handle_replace_shipped() {
 		}
 	}
 	if ( ! $found ) {
-		wp_die( esc_html__( 'That page is not one of the guide pages, so there is no shipped version to replace it with.', 'lailatulqadar' ) );
+		wp_die( esc_html__( 'That page is not one of the guide pages, so there is no shipped version to replace it with.', 'lailatulqadar' ), 400 );
 	}
 	set_transient( 'lailatulqadar_setup_report', $report, MINUTE_IN_SECONDS * 10 );
 	wp_safe_redirect( admin_url( 'themes.php?page=lailatulqadar&tab=tools' ) );
@@ -1495,7 +1495,7 @@ add_action( 'admin_post_lq_replace_shipped', 'lq_handle_replace_shipped' );
  */
 function lq_handle_reset_settings() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'You do not have permission to reset settings.', 'lailatulqadar' ) );
+		wp_die( esc_html__( 'You do not have permission to reset settings.', 'lailatulqadar' ), 403 );
 	}
 	check_admin_referer( 'lq_reset_settings' );
 	delete_option( LQ_OPTION );
@@ -1513,7 +1513,7 @@ add_action( 'admin_post_lq_reset_settings', 'lq_handle_reset_settings' );
  */
 function lq_bulk_page_status( $state, $status, $nonce ) {
 	if ( ! current_user_can( 'publish_pages' ) ) {
-		wp_die( esc_html__( 'You are not allowed to do this.', 'lailatulqadar' ) );
+		wp_die( esc_html__( 'You are not allowed to do this.', 'lailatulqadar' ), 403 );
 	}
 	check_admin_referer( $nonce );
 	$done = array();

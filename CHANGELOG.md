@@ -2,6 +2,19 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.22.1 (2026-11-22)
+
+A security audit of the theme against the owner's WordPress checklist. No feature removed, no option, hook or identifier renamed.
+
+### Security
+- The Theme Options actions (run setup, replace with the shipped article, reset settings, publish ready drafts, unpublish empty pages) refuse a user without the capability with HTTP 403, where they answered 500. They refused before as well; the status now says so to logs, monitors and firewalls. A running setup answers 409, a page that is not a guide page 400.
+- The "block direct file access" section the theme keeps in the site's `.htaccess` also refuses `.log` files under `wp-content`, `debug.log` above all. The Nginx rules in `README.md` gain the same line.
+- No WordPress version in the page head or the feeds: the generator tag is removed.
+
+### Added
+- `tests/admin-actions-test.php`: every admin handler checks a capability before its nonce and before reading the request, every `wp_die()` sends a status, nothing is open to visitors, every REST route has a permission callback.
+- `README.md`: the audit's rules and the security headers to set at the server.
+
 ## 1.22.0 (2026-11-08)
 
 The table of contents is WP TOC, bundled in the theme, and the theme now needs PHP 8.4.

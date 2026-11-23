@@ -17,7 +17,7 @@ Never upload WordPress core to a live folder without `wp-config.php` in place. T
 ## To 1.23.0
 
 1. Clear any page cache, so guide pages show the new buttons and the print layout loads.
-2. Google preferred source: the button shows by default as a plain link. Check the site in Google's source preferences tool (Theme Options > Reading and sharing links to it); if Google does not list the site yet, turn the button off there until it does. Choose "Google's flow in the page" only if you accept a script from news.google.com on the pages that show the button, and mention it in the site's privacy notice.
+2. Google preferred source: on a site at the root of a domain or subdomain, the button shows by default as a plain link; a site in a subdirectory, which Google cannot list, shows none. Check the site in Google's source preferences tool (Theme Options > Reading and sharing links to it); if Google does not list the site yet, turn the button off there until it does. Choose "Google's flow in the page" only if you accept a script from news.google.com on the pages that show the button, and mention it in the site's privacy notice.
 3. If you edited the footer in the Site Editor, your copy does not gain the Preferred source block: add it there yourself, or reset the footer to the theme's.
 4. New social networks can be filled in under Reading and sharing > Social icons.
 
@@ -25,8 +25,8 @@ Never upload WordPress core to a live folder without `wp-config.php` in place. T
 
 Security hardening. Nothing changes for visitors or editors.
 
-1. Open any admin page once after the update. The theme rewrites its "block direct file access" section in the site's `.htaccess` within the hour, or at once when you save Theme Options; the new line refuses `.log` files under `wp-content`.
-2. On Nginx, add `location ~* ^/wp-content/.+\.log$ { return 403; }` to the server block with the other rules in `README.md`.
+1. Open any admin page once after the update. The theme rewrites its "block direct file access" section in the site's `.htaccess` within the hour, or at once when you change and save a setting in Theme Options (saving with nothing changed does not count); the new line refuses `.log` files under `wp-content`.
+2. On Nginx, add `location ~* ^/wp-content/.+\.log(/|$) { return 403; }` to the server block with the other rules in `README.md`.
 3. If `WP_DEBUG_LOG` is on in production, turn it off, or point it to a file outside the web root, and delete any old `wp-content/debug.log`.
 4. At the server or CDN: set the security headers listed in `README.md` (Security audit and server headers), `Options -Indexes` (Apache) or `autoindex off` (Nginx), and `expose_php = Off`. The theme does not set them.
 

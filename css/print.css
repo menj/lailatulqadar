@@ -248,7 +248,10 @@ a:visited {
 .wp-block-post-content sup a::after,
 .wp-block-post-content a:has(img)::after,
 .wp-block-footnotes a[href^="#"]::after,
-a[href*="%"]::after {
+a[href*="%D8" i]::after,
+a[href*="%D9" i]::after,
+a[href*="%DA" i]::after,
+a[href*="%DB" i]::after {
 	content: "" !important;
 }
 

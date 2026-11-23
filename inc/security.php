@@ -182,10 +182,11 @@ function lq_sec_files_htaccess_lines( $home = '' ) {
 		$rules[] = 'RewriteRule ^' . $themes . '.+\.php(/|$) - [F]';
 	}
 	// Log files under wp-content (debug.log above all, written there when
-	// WP_DEBUG_LOG is on): paths, queries and errors, never a page.
+	// WP_DEBUG_LOG is on): paths, queries and errors, never a page. Also
+	// with a path after the name (debug.log/x), where PATH_INFO is accepted.
 	$content = lq_sec_rewrite_prefix( WP_CONTENT_DIR, $home );
 	if ( null !== $content && '' !== $content ) {
-		$rules[] = 'RewriteRule ^' . $content . '.+\.log$ - [F]';
+		$rules[] = 'RewriteRule ^' . $content . '.+\.log(/|$) - [F]';
 	}
 	if ( null !== $theme && '' !== $theme ) {
 		$rules[] = 'RewriteRule ^' . $theme . '(tests|bin)(/|$) - [F]';

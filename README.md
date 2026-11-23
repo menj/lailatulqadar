@@ -128,13 +128,13 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 
 ### Print and PDF
 
-`css/print.css` is enqueued on every front view with `media="print"` (`lq_enqueue_front()`), after `css/mobile.css`. It is based on Hartija CSS Print Framework 1.0 (MIT, `RESOURCES.md`). It sets the palette to black on white through the preset colour variables, so every block follows, whatever `data-scheme` holds; leaves out the screen-only parts by class (header menu, language and scheme switches, breadcrumbs, path navigation, footer, reading progress bar, `.wp-toc`, the night planner's `.lq-nw__app`, buttons, the preferred source button); writes link addresses after external links in the text, `.lq-sources` and `.wp-block-footnotes`, but not after `#` links, footnote numbers, image links or percent-encoded addresses; and keeps verses, hadith cards, the In brief box, figures, table rows and footnotes whole.
+`css/print.css` is enqueued on every front view with `media="print"` (`lq_enqueue_front()`), after `css/mobile.css`. It is based on Hartija CSS Print Framework 1.0 (MIT, `RESOURCES.md`). It sets the palette to black on white through the preset colour variables, so every block follows, whatever `data-scheme` holds; leaves out the screen-only parts by class (header menu, language and scheme switches, breadcrumbs, path navigation, footer, reading progress bar, `.wp-toc`, the night planner's `.lq-nw__app`, buttons, the preferred source button); writes link addresses after external links in the text, `.lq-sources` and `.wp-block-footnotes`, but not after `#` links, footnote numbers, image links or addresses in percent-encoded Arabic; and keeps verses, hadith cards, the In brief box, figures, table rows and footnotes whole.
 
 The page details block (`blocks/page-details/render.php`) adds two items: the Print or save as PDF button (`.lq-details__item--print`, `hidden` until `js/print.js` runs, then `window.print()`), and the page's address (`.lq-details__item--source`), hidden on screen and shown on paper. `js/print.js` loads with `css/page-parts.css` on guide pages.
 
 ### Google preferred source
 
-`inc/preferred-source.php` follows Google's "preferred sources" help page. `lailatulqadar_prefsrc_html( $place )` draws the button (`.lq-prefsrc`, styled in `css/front.css`) for `guide` (page details block), `footer` (the `lailatulqadar/preferred-source` block with `context` footer in `parts/footer.html`) and `inline` (the block elsewhere, `[lailatulqadar_preferred_source]`). The button is always a link to `https://www.google.com/preferences/source?q=<domain>`; `lailatulqadar_prefsrc_domain()` takes the host of `home_url()`, or '' for a site in a subdirectory, which Google does not list, and then nothing prints. In `button` mode `lailatulqadar_prefsrc_enqueue()` loads `https://news.google.com/swg/js/v1/publisher.js` (async, `preferred-sources-control="manual"` added by `lailatulqadar_prefsrc_script_tag()`) and `js/preferred-source.js`, only on views that show the button; the script queues on `PREFERRED_SOURCE`, calls `init()` with the theme (`dark` for night, `light` for dawn, the system's for auto) and `ms` or `en`, and turns a click into `addPreferredSource()`. If the library fails, the link still goes to Google's tool.
+`inc/preferred-source.php` follows Google's "preferred sources" help page. `lailatulqadar_prefsrc_html( $place )` draws the button (`.lq-prefsrc`, styled in `css/front.css`) for `guide` (page details block), `footer` (the `lailatulqadar/preferred-source` block with `context` footer in `parts/footer.html`) and `inline` (the block elsewhere, `[lailatulqadar_preferred_source]`). The button is always a link to `https://www.google.com/preferences/source?q=<domain>`; `lailatulqadar_prefsrc_domain()` takes the host of `home_url()`, or '' for a site in a subdirectory, which Google does not list, and then nothing prints. In `button` mode `lailatulqadar_prefsrc_enqueue()`, called each time a button prints, loads `https://news.google.com/swg/js/v1/publisher.js` (async, `preferred-sources-control="manual"` added by `lailatulqadar_prefsrc_script_tag()`) and `js/preferred-source.js`, so only views that print a button load them (a block theme renders the template before `wp_head`); the script queues on `PREFERRED_SOURCE`, calls `init()` with the theme (`dark` for night, `light` for dawn, the system's for auto) and `ms` or `en`, and turns a click into `addPreferredSource()`. If the library fails, the link still goes to Google's tool.
 
 `inc/footnotes.php`: `lailatulqadar_footnote_ref_ids()` (on `the_content` at 12) gives the second and later citations of one footnote the ids `<note>-link-2`, `-link-3`, since core repeats `<note>-link` at each.
 
@@ -234,7 +234,7 @@ RewriteRule ^wp-includes/(?!(js/tinymce/wp-tinymce|ms-files)\.php$).+\.php(/|$) 
 RewriteRule ^wp-admin/includes/.+\.php(/|$) - [F]
 RewriteRule ^(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)(/|$) - [F]
 RewriteRule ^wp-content/themes/.+\.php(/|$) - [F]
-RewriteRule ^wp-content/.+\.log$ - [F]
+RewriteRule ^wp-content/.+\.log(/|$) - [F]
 RewriteRule ^wp-content/themes/lailatulqadar/(tests|bin)(/|$) - [F]
 RewriteRule ^wp-content/themes/lailatulqadar/docs(/(?!settings\.md$)|$) - [F]
 </IfModule>
@@ -280,7 +280,7 @@ location ~ ^/wp-includes/(?!js/tinymce/wp-tinymce\.php$|ms-files\.php$).+\.php(/
 location ~ ^/wp-admin/includes/.+\.php(/|$) { return 403; }
 location ~ ^/(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)(/|$) { return 403; }
 location ~ ^/wp-content/themes/.+\.php(/|$) { return 403; }
-location ~* ^/wp-content/.+\.log$ { return 403; }
+location ~* ^/wp-content/.+\.log(/|$) { return 403; }
 location ~ ^/wp-content/themes/lailatulqadar[^/]*/(tests|bin)(/|$) { return 403; }
 location ~ ^/wp-content/themes/lailatulqadar[^/]*/docs(/(?!settings\.md$)|$) { return 403; }
 location ~* ^/wp-content/themes/lailatulqadar[^/]*/(?!docs/settings\.md$).+\.md$ { return 403; }

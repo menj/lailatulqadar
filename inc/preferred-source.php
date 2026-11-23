@@ -95,6 +95,7 @@ function lailatulqadar_prefsrc_html( $place = 'inline' ) {
 	if ( ! lailatulqadar_prefsrc_shows( $place ) ) {
 		return '';
 	}
+	lailatulqadar_prefsrc_enqueue();
 	$url  = lailatulqadar_prefsrc_url();
 	$text = lailatulqadar_t( 'Add as a preferred source on Google', 'Tambah sebagai sumber pilihan di Google' );
 	$star = '<svg class="lq-prefsrc__icon" width="16" height="16" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><rect x="8" y="8" width="24" height="24" fill="none" stroke="currentColor" stroke-width="3"/><rect x="8" y="8" width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" transform="rotate(45 20 20)"/></svg>';
@@ -102,40 +103,20 @@ function lailatulqadar_prefsrc_html( $place = 'inline' ) {
 }
 
 /**
- * Whether Google's library should load on this view: button mode and a
- * place on the view that shows the button.
- *
- * @return bool
- */
-function lailatulqadar_prefsrc_needs_library() {
-	if ( is_admin() || 'button' !== lailatulqadar_prefsrc_mode() || '' === lailatulqadar_prefsrc_domain() ) {
-		return false;
-	}
-	if ( lailatulqadar_prefsrc_shows( 'footer' ) ) {
-		return true;
-	}
-	if ( lailatulqadar_prefsrc_shows( 'guide' ) && function_exists( 'lailatulqadar_current_guide_page' ) && lailatulqadar_current_guide_page() ) {
-		return true;
-	}
-	if ( is_singular() ) {
-		$post = get_post( get_queried_object_id() );
-		return $post && ( has_shortcode( $post->post_content, 'lailatulqadar_preferred_source' ) || has_block( 'lailatulqadar/preferred-source', $post ) );
-	}
-	return false;
-}
-
-/**
  * In button mode, Google's library (manual control, so it draws no badge of
- * its own) and the theme's script that hands it the button.
+ * its own) and the theme's script that hands it the button. Called by
+ * lailatulqadar_prefsrc_html() each time a button prints, so the library
+ * loads only on views that show one, whatever the footer or the content
+ * holds. A block theme renders the template before wp_head, so the library
+ * still goes in the head.
  */
 function lailatulqadar_prefsrc_enqueue() {
-	if ( ! lailatulqadar_prefsrc_needs_library() ) {
+	if ( is_admin() || 'button' !== lailatulqadar_prefsrc_mode() ) {
 		return;
 	}
 	wp_enqueue_script( 'lailatulqadar-prefsrc-google', LAILATULQADAR_PREFSRC_LIBRARY, array(), null, array( 'strategy' => 'async', 'in_footer' => false ) ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Google's library, versioned by its address.
 	wp_enqueue_script( 'lailatulqadar-prefsrc', LQ_URI . '/js/preferred-source.js', array(), LQ_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 }
-add_action( 'wp_enqueue_scripts', 'lailatulqadar_prefsrc_enqueue', 25 );
 
 /**
  * Mark Google's library for manual control.

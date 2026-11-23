@@ -976,9 +976,10 @@ function lq_schema_author_id() {
 }
 
 /**
- * The author Person: Mohd Elfie Nieshaem Juferi, at https://menj.bio. The
- * owner ruled on 4 November 2026 that the structured data names him as the
- * author; nothing visible changes. The author address set in the settings,
+ * The author Person: MENJ, at https://menj.bio. The owner ruled on
+ * 4 November 2026 that the structured data names the owner as the author,
+ * and on 23 November 2026 that the name is MENJ, never the full name;
+ * nothing visible changes. The author address set in the settings,
  * if any, stays in sameAs ahead of https://menj.bio.
  *
  * @return array
@@ -988,7 +989,7 @@ function lq_schema_author_node() {
 	return array(
 		'@type'  => 'Person',
 		'@id'    => lq_schema_author_id(),
-		'name'   => 'Mohd Elfie Nieshaem Juferi',
+		'name'   => 'MENJ',
 		'url'    => 'https://menj.bio',
 		'sameAs' => lq_schema_with_menj( '' !== $url ? array( $url ) : array() ),
 	);

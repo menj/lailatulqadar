@@ -1,10 +1,10 @@
-# Copyright (C) 2026 Mohd Elfie Nieshaem Juferi
+# Copyright (C) 2026 MENJ
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: Lailatulqadar 1.18.1\n"
 "Report-Msgid-Bugs-To: https://lailatulqadar.guide\n"
-"Last-Translator: Mohd Elfie Nieshaem Juferi\n"
+"Last-Translator: MENJ\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,7 +31,7 @@ msgstr ""
 
 #. Author of the theme
 #: style.css
-msgid "Mohd Elfie Nieshaem Juferi"
+msgid "MENJ"
 msgstr ""
 
 #. Author URI of the theme
@@ -666,7 +666,7 @@ msgid "Author for structured data"
 msgstr ""
 
 #: inc/settings.php:572
-msgid "The structured data names Mohd Elfie Nieshaem Juferi, at https://menj.bio, as the author of every page. A profile URL entered here is added to the author’s sameAs. The name field is kept but no longer read."
+msgid "The structured data names MENJ, at https://menj.bio, as the author of every page. A profile URL entered here is added to the author’s sameAs. The name field is kept but no longer read."
 msgstr ""
 
 #. translators: %s: SEO plugin name

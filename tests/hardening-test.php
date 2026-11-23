@@ -13,8 +13,10 @@ if ( 'cli' !== PHP_SAPI ) {
 
 define( 'ABSPATH', __DIR__ . '/' );
 $GLOBALS['lq_logged_in'] = false;
-function add_filter() {}
-function add_action() {}
+$GLOBALS['lq_hooks'] = array();
+function add_filter( $hook = '', $cb = null ) { $GLOBALS['lq_hooks'][ $hook ][] = $cb; }
+function add_action( $hook = '', $cb = null ) { $GLOBALS['lq_hooks'][ $hook ][] = $cb; }
+function remove_action( $hook = '', $cb = null ) { $GLOBALS['lq_removed'][ $hook ][] = $cb; }
 function is_user_logged_in() { return $GLOBALS['lq_logged_in']; }
 require dirname( __DIR__ ) . '/inc/hardening.php';
 
@@ -37,6 +39,10 @@ $anon   = lq_hide_rest_users( $routes );
 check( ! isset( $anon['/wp/v2/users'], $anon['/wp/v2/users/(?P<id>[\d]+)'], $anon['/wp/v2/users/me'] ) && isset( $anon['/wp/v2/posts'], $anon['/wp/v2/usersettings'] ), 'a visitor gets no user routes, and the others stay' );
 $GLOBALS['lq_logged_in'] = true;
 check( lq_hide_rest_users( $routes ) === $routes, 'a logged-in user keeps every route' );
+
+// No WordPress version in the head or the feeds.
+check( in_array( '__return_empty_string', $GLOBALS['lq_hooks']['the_generator'] ?? array(), true ), 'the_generator prints nothing' );
+check( in_array( 'wp_generator', $GLOBALS['lq_removed']['wp_head'] ?? array(), true ), 'wp_generator removed from wp_head' );
 
 echo $fail ? "$fail failed\n" : "all passed\n";
 exit( $fail ? 1 : 0 );

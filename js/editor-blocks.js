@@ -105,6 +105,15 @@
 		}
 	} );
 
+	registerBlockType( 'lailatulqadar/preferred-source', {
+		edit: function ( props ) {
+			return el( 'div', useBlockProps(), el( ServerSideRender, { block: 'lailatulqadar/preferred-source', attributes: props.attributes } ) );
+		},
+		save: function () {
+			return null;
+		}
+	} );
+
 	registerBlockType( 'lailatulqadar/photo', {
 		edit: function ( props ) {
 			return el( 'div', useBlockProps(), el( ServerSideRender, { block: 'lailatulqadar/photo', attributes: props.attributes } ) );

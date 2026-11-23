@@ -142,9 +142,10 @@ function lq_sec_rewrite_quote( $segment ) {
 /**
  * mod_rewrite lines that answer 403 for files that never serve a page: PHP
  * in wp-includes, wp-admin/includes and the themes folder, the installer
- * and version files, any path segment that starts with .git or .claude, and
- * this theme's tests and bin folders and docs/ (but for docs/settings.md,
- * which the Theme Options footer links to).
+ * and version files, any path segment that starts with .git or .claude,
+ * log files under wp-content (debug.log), and this theme's tests and bin
+ * folders and docs/ (but for docs/settings.md, which the Theme Options
+ * footer links to).
  *
  * wp-includes/js/tinymce/wp-tinymce.php (the classic editor) and
  * wp-includes/ms-files.php (uploads on old multisite networks) stay open, as
@@ -179,6 +180,13 @@ function lq_sec_files_htaccess_lines( $home = '' ) {
 	}
 	if ( null !== $themes && '' !== $themes ) {
 		$rules[] = 'RewriteRule ^' . $themes . '.+\.php(/|$) - [F]';
+	}
+	// Log files under wp-content (debug.log above all, written there when
+	// WP_DEBUG_LOG is on): paths, queries and errors, never a page. Also
+	// with a path after the name (debug.log/x), where PATH_INFO is accepted.
+	$content = lq_sec_rewrite_prefix( WP_CONTENT_DIR, $home );
+	if ( null !== $content && '' !== $content ) {
+		$rules[] = 'RewriteRule ^' . $content . '.+\.log(/|$) - [F]';
 	}
 	if ( null !== $theme && '' !== $theme ) {
 		$rules[] = 'RewriteRule ^' . $theme . '(tests|bin)(/|$) - [F]';

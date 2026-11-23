@@ -1,0 +1,269 @@
+/**
+ * Print and "Save as PDF" (loaded with media="print").
+ *
+ * Based on Hartija CSS Print Framework 1.0, (c) 2014 Vladimir Carrer, MIT
+ * licence (css/print-LICENSE.txt, RESOURCES.md): serif body in points, headings kept with the
+ * text after them, orphans and widows, link addresses written out after
+ * the link, table header repeated on each page, rows and images not split.
+ * Fitted to the theme: black on white in both colour schemes, the Arabic
+ * faces kept, the screen-only parts (menus, buttons, the reading progress
+ * bar, the night planner's controls, the table of contents) left out, and
+ * the page's address printed under the title.
+ *
+ * @package Lailatulqadar
+ * @since   1.23.0
+ */
+
+@page {
+	margin: 18mm 16mm 20mm;
+}
+
+/* Black on white, whichever scheme the visitor has on screen. */
+html:root[data-scheme] {
+	color-scheme: light;
+	--wp--preset--color--base: #ffffff;
+	--wp--preset--color--contrast: #000000;
+	--wp--preset--color--accent-1: #5c430c;
+	--wp--preset--color--accent-2: #5c430c;
+	--wp--preset--color--accent-3: #bbbbbb;
+	--wp--preset--color--accent-4: #333333;
+	--wp--preset--color--accent-5: #ffffff;
+	--wp--preset--color--accent-6: #f2f2f2;
+}
+
+html,
+body,
+.wp-site-blocks,
+.lq-main {
+	background: #ffffff !important;
+	color: #000000 !important;
+}
+
+body {
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	font-size: 12pt;
+	line-height: 1.45;
+}
+
+*,
+*::before,
+*::after {
+	box-shadow: none !important;
+	text-shadow: none !important;
+	animation: none !important;
+	transition: none !important;
+}
+
+/* ---------- Left out on paper ---------- */
+
+.lq-header__nav,
+.lq-menu,
+.lq-lang,
+.lq-scheme-wrap,
+.lq-scheme-toggle,
+.lq-rpb,
+.lq-crumbs,
+.wp-block-lailatulqadar-breadcrumbs,
+.lq-pathnav,
+.wp-block-lailatulqadar-path-nav,
+.lq-footer,
+.lq-social,
+.wp-toc,
+.lq-nw__app,
+.lq-nw__noscript,
+.lq-details__item--print,
+.lq-details__item--prefsrc,
+.lq-prefsrc,
+.wp-block-search,
+.skip-link,
+button,
+video,
+audio,
+iframe {
+	display: none !important;
+}
+
+/* The site's name at the top, small, as a running head. */
+.lq-header,
+.lq-header__bar {
+	position: static !important;
+	padding: 0 0 6pt !important;
+	margin: 0 0 12pt !important;
+	border: 0 !important;
+	border-bottom: 0.5pt solid #999999 !important;
+	background: none !important;
+}
+
+.lq-header .lq-mark {
+	display: none !important;
+}
+
+.lq-header .wp-block-site-title,
+.lq-header__title {
+	font-size: 10pt !important;
+	letter-spacing: 0.04em;
+}
+
+.lq-main {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+.lq-main > *,
+.wp-block-post-content > * {
+	max-width: none !important;
+}
+
+/* The page's address, written on screen only for print. */
+.lq-details__item--source {
+	display: block !important;
+	flex-basis: 100%;
+	word-break: break-all;
+}
+
+/* ---------- Type ---------- */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #000000 !important;
+	break-after: avoid;
+	page-break-after: avoid;
+	break-inside: avoid;
+}
+
+h1 { font-size: 22pt; }
+h2 { font-size: 16pt; }
+h3 { font-size: 13.5pt; }
+h4, h5, h6 { font-size: 12pt; }
+
+p,
+li,
+h2,
+h3 {
+	orphans: 3;
+	widows: 3;
+}
+
+/* The Arabic keeps its faces and direction; only the colour changes. */
+[lang="ar"],
+.lq-quran,
+.lq-verse,
+.lq-calli {
+	color: #000000 !important;
+	-webkit-print-color-adjust: exact;
+	print-color-adjust: exact;
+}
+
+/* ---------- Blocks kept whole ---------- */
+
+figure,
+blockquote,
+pre,
+img,
+svg,
+tr,
+.lq-verse,
+.lq-hadith-card,
+.lq-brief,
+.lq-photo,
+.lq-figure,
+.wp-block-footnotes li {
+	break-inside: avoid;
+	page-break-inside: avoid;
+}
+
+img {
+	max-width: 100% !important;
+	height: auto !important;
+}
+
+.lq-photo img,
+.lq-figure img {
+	max-height: 70mm;
+	width: auto !important;
+	object-fit: contain;
+}
+
+blockquote,
+.lq-brief,
+.lq-hadith-card,
+.lq-verse {
+	background: none !important;
+	border-color: #999999 !important;
+	color: #000000 !important;
+}
+
+/* ---------- Tables ---------- */
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+thead {
+	display: table-header-group;
+}
+
+th,
+td {
+	padding: 4pt 8pt 4pt 0;
+	border-bottom: 0.5pt solid #555555;
+	background: none !important;
+	color: #000000 !important;
+}
+
+th {
+	font-weight: 700;
+}
+
+/* ---------- Links ---------- */
+
+a,
+a:visited {
+	color: #000000 !important;
+	background: transparent !important;
+	text-decoration: underline;
+}
+
+/* The address after each link in the text, the sources and the notes, so
+   a reader of the paper copy can find it. Not after a link within the
+   page, a footnote number, a link that wraps an image or an address
+   written in percent-encoded Arabic, which no reader could type. */
+.wp-block-post-content a[href^="http"]::after,
+.lq-sources a[href^="http"]::after,
+.wp-block-footnotes a[href^="http"]::after {
+	content: " <" attr(href) ">";
+	font-size: 85%;
+	font-weight: 400;
+	word-break: break-all;
+}
+
+.wp-block-post-content a[href^="#"]::after,
+.wp-block-post-content sup a::after,
+.wp-block-post-content a:has(img)::after,
+.wp-block-footnotes a[href^="#"]::after,
+a[href*="%D8" i]::after,
+a[href*="%D9" i]::after,
+a[href*="%DA" i]::after,
+a[href*="%DB" i]::after {
+	content: "" !important;
+}
+
+/* Footnote numbers and back-links stay plain. */
+sup.fn a {
+	text-decoration: none;
+}
+
+.wp-block-footnotes a[href^="#"] {
+	display: none;
+}
+
+abbr[title]::after {
+	content: " (" attr(title) ")";
+}

@@ -2,6 +2,33 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.23.0 (2026-11-22)
+
+Print and PDF, Google preferred sources, and eleven more social networks.
+
+### Added
+- **Print or save as PDF.** Guide pages carry a button on the details line, "Print or save as PDF" or "Cetak atau simpan sebagai PDF", that opens the browser's print dialog, where "Save as PDF" makes the file (`js/print.js`; hidden until the script runs, so no dead button shows without scripts).
+- **Print layout** (`css/print.css`, loaded with `media="print"` on every view), based on Hartija CSS Print Framework 1.0 (MIT). Black on white whichever scheme is on screen; menus, the language and scheme switches, breadcrumbs, the previous and next row, the footer, the reading progress bar, the table of contents, the night planner's controls and every button left out; the site name as a small running head; the page's address under the title ("Online at", "Dalam talian di"); link addresses written after links in the text, the sources and the notes, except links within the page, footnote numbers and addresses in percent-encoded Arabic; headings kept with what follows; verses, hadith cards, table rows, pictures and notes kept whole; table headers repeated on each page; the Arabic faces kept.
+- **Google preferred source** (`inc/preferred-source.php`, `blocks/preferred-source/`, `js/preferred-source.js`). A button in the theme's colours with the eight-pointed star, "Add as a preferred source on Google" or "Tambah sebagai sumber pilihan di Google", beside the page details on guide pages and in the footer, and wherever the Preferred source block or `[lailatulqadar_preferred_source]` is placed. Theme Options > Reading and sharing sets the mode: a link to Google's source preferences tool for the site's domain (default, nothing loads from Google), Google's flow in the page (Google's library with manual control; the same button opens the flow in the page's scheme and language, and stays a link until the library is ready), or off. A site in a subdirectory, which Google cannot list, prints no button. Settings `prefsrc_mode`, `prefsrc_guide`, `prefsrc_footer`; filter `lailatulqadar_preferred_source_domain`.
+- Social icons for Signal, LINE, Discord, Reddit, Pinterest, Spotify, SoundCloud, Vimeo, Substack, Medium and GitHub, from the CC0 part of the Minimalist Social Icons Pack (21 networks in all). The pack's LinkedIn and Scribd icons are CC BY 4.0 and stay out. The ten icons already bundled match the new pack's paths.
+
+### Changed
+- The footer part holds the Preferred source block after the social icons.
+- The "block direct file access" `.log` rule (1.22.1) also refuses a log path with more after it (`debug.log/x`), and the Nginx line in `README.md` matches.
+
+## 1.22.1 (2026-11-22)
+
+A security audit of the theme against the owner's WordPress checklist. No feature removed, no option, hook or identifier renamed.
+
+### Security
+- The Theme Options actions (run setup, replace with the shipped article, reset settings, publish ready drafts, unpublish empty pages) refuse a user without the capability with HTTP 403, where they answered 500. They refused before as well; the status now says so to logs, monitors and firewalls. A running setup answers 409, a page that is not a guide page 400.
+- The "block direct file access" section the theme keeps in the site's `.htaccess` also refuses `.log` files under `wp-content`, `debug.log` above all. The Nginx rules in `README.md` gain the same line.
+- No WordPress version in the page head or the feeds: the generator tag is removed.
+
+### Added
+- `tests/admin-actions-test.php`: every admin handler checks a capability before its nonce and before reading the request, every `wp_die()` sends a status, nothing is open to visitors, every REST route has a permission callback.
+- `README.md`: the audit's rules and the security headers to set at the server.
+
 ## 1.22.0 (2026-11-08)
 
 The table of contents is WP TOC, bundled in the theme, and the theme now needs PHP 8.4.

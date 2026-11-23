@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.22.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.23.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 8.4 or later. The bundled WP TOC needs it; on an older PHP it does not load and the site shows no table of contents |
@@ -52,6 +52,7 @@ php tests/schema-graph-test.php
 php tests/search-permalinks-test.php
 php tests/security-detector-test.php
 php tests/toc-test.php
+php tests/admin-actions-test.php
 php tests/unlist-test.php
 php tests/supersede-test.php
 php bin/build-error-pages.php --check
@@ -86,7 +87,7 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 | `parts/` | header and footer |
 | `patterns/` | The English and Malay front pages, and the empty-results message |
 | `wp-toc/` | WP TOC 1.1.0, bundled unchanged (table of contents) |
-| `blocks/` | breadcrumbs, contents, guide-menu, image-credits, in-brief, language-switcher, logo-mark, night-window, odd-nights, page-details, path-nav, photo, scheme-toggle, social-icons, sources |
+| `blocks/` | breadcrumbs, contents, guide-menu, image-credits, in-brief, language-switcher, logo-mark, night-window, odd-nights, page-details, path-nav, photo, preferred-source, scheme-toggle, social-icons, sources |
 | `inc/` | One file per feature: languages, setup, SEO and schema, the Ramadan calendar, the night window, contextual links, images, the WP TOC glue (`toc.php`) and footnote ids (`footnotes.php`), security, hardening, error pages, the settings screen and the built-in plugin features |
 | `inc/data/` | The page registry, the shared phrase map, the reading-path chapters, image credits, seed and title histories |
 | `content/<lang>/<key>.json` | The shipped articles, read with `json_decode()` and never executed |
@@ -125,6 +126,16 @@ To release: bump the version in `style.css`, `functions.php` (`LQ_VERSION`), `re
 - Below PHP 8.4 WP TOC does not load; `lailatulqadar_toc_fallback_shortcodes()` registers `[wp_toc]` and `[auto_toc]` to print nothing, so they never show as text.
 - The Contents block (`blocks/contents/`, attributes `tags`, `title`, `showTitle`) prints WP TOC's `[wp_toc]` placeholder through `WP_TOC::shortcode()`. `[wp_toc]` and `[auto_toc]` are WP TOC's own.
 
+### Print and PDF
+
+`css/print.css` is enqueued on every front view with `media="print"` (`lq_enqueue_front()`), after `css/mobile.css`. It is based on Hartija CSS Print Framework 1.0 (MIT, `RESOURCES.md`). It sets the palette to black on white through the preset colour variables, so every block follows, whatever `data-scheme` holds; leaves out the screen-only parts by class (header menu, language and scheme switches, breadcrumbs, path navigation, footer, reading progress bar, `.wp-toc`, the night planner's `.lq-nw__app`, buttons, the preferred source button); writes link addresses after external links in the text, `.lq-sources` and `.wp-block-footnotes`, but not after `#` links, footnote numbers, image links or addresses in percent-encoded Arabic; and keeps verses, hadith cards, the In brief box, figures, table rows and footnotes whole.
+
+The page details block (`blocks/page-details/render.php`) adds two items: the Print or save as PDF button (`.lq-details__item--print`, `hidden` until `js/print.js` runs, then `window.print()`), and the page's address (`.lq-details__item--source`), hidden on screen and shown on paper. `js/print.js` loads with `css/page-parts.css` on guide pages.
+
+### Google preferred source
+
+`inc/preferred-source.php` follows Google's "preferred sources" help page. `lailatulqadar_prefsrc_html( $place )` draws the button (`.lq-prefsrc`, styled in `css/front.css`) for `guide` (page details block), `footer` (the `lailatulqadar/preferred-source` block with `context` footer in `parts/footer.html`) and `inline` (the block elsewhere, `[lailatulqadar_preferred_source]`). The button is always a link to `https://www.google.com/preferences/source?q=<domain>`; `lailatulqadar_prefsrc_domain()` takes the host of `home_url()`, or '' for a site in a subdirectory, which Google does not list, and then nothing prints. In `button` mode `lailatulqadar_prefsrc_enqueue()`, called each time a button prints, loads `https://news.google.com/swg/js/v1/publisher.js` (async, `preferred-sources-control="manual"` added by `lailatulqadar_prefsrc_script_tag()`) and `js/preferred-source.js`, so only views that print a button load them (a block theme renders the template before `wp_head`); the script queues on `PREFERRED_SOURCE`, calls `init()` with the theme (`dark` for night, `light` for dawn, the system's for auto) and `ms` or `en`, and turns a click into `addPreferredSource()`. If the library fails, the link still goes to Google's tool.
+
 `inc/footnotes.php`: `lailatulqadar_footnote_ref_ids()` (on `the_content` at 12) gives the second and later citations of one footnote the ids `<note>-link-2`, `-link-3`, since core repeats `<note>-link` at each.
 
 ## Settings
@@ -152,10 +163,11 @@ The Security tab is drawn by `inc/security.php`, with `js/security.js` and `css/
 | `lailatulqadar_search_reserved_bases` | Words the search base may not take |
 | `lailatulqadar_is_guide_page` | Whether a page takes the guide page parts (default: the pages of the reading path) |
 | `lailatulqadar_contents_min` | Fewest H2 headings for the automatic table of contents (default 3) |
+| `lailatulqadar_preferred_source_domain` | The domain the preferred source button sends to Google's tool; '' prints no button |
 
 The theme also filters `wp_speculation_rules_configuration` (`lq_speculation_rules()` in `inc/assets.php`): prerender with moderate eagerness, in place of WordPress's prefetch.
 
-Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`, `[lailatulqadar_social_icons]`, and WP TOC's `[wp_toc]` and `[auto_toc]` (attributes `tags`, `title`, `depth`, `min`, `collapsible`, `collapsed`).
+Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`, `[lailatulqadar_social_icons]`, `[lailatulqadar_preferred_source]`, and WP TOC's `[wp_toc]` and `[auto_toc]` (attributes `tags`, `title`, `depth`, `min`, `collapsible`, `collapsed`).
 
 | Constant | Set in | Effect |
 |---|---|---|
@@ -222,6 +234,7 @@ RewriteRule ^wp-includes/(?!(js/tinymce/wp-tinymce|ms-files)\.php$).+\.php(/|$) 
 RewriteRule ^wp-admin/includes/.+\.php(/|$) - [F]
 RewriteRule ^(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)(/|$) - [F]
 RewriteRule ^wp-content/themes/.+\.php(/|$) - [F]
+RewriteRule ^wp-content/.+\.log(/|$) - [F]
 RewriteRule ^wp-content/themes/lailatulqadar/(tests|bin)(/|$) - [F]
 RewriteRule ^wp-content/themes/lailatulqadar/docs(/(?!settings\.md$)|$) - [F]
 </IfModule>
@@ -231,6 +244,28 @@ RewriteRule ^wp-content/themes/lailatulqadar/docs(/(?!settings\.md$)|$) - [F]
 "Block xmlrpc.php" is there only while XML-RPC is off. The marker name is a common one, so a switch between themes that use it never writes the section twice.
 
 The rules carry the site's own folder prefixes. With WordPress in its own folder below the `.htaccess`, a rule for `wp-config.php` one folder up is added. Define `LQ_BLOCK_DIRECT_FILES` as false to leave the second section out. `tests/htaccess-files-test.php` checks the lines and the theme's own files.
+
+### Security audit and server headers
+
+The theme was audited on 22 November 2026 (1.22.1); `SSOT.md` holds the record. The rules it keeps, each checked by a test:
+
+- Every `admin_post_*` and `wp_ajax_*` handler checks a capability first, then a nonce, before it reads the request, and every refusal answers with its HTTP status (403, or 400 and 409 for a bad page or a running setup). No handler is open to visitors and the theme registers no REST route (`tests/admin-actions-test.php`).
+- The site's `.htaccess` section refuses `.log` files under `wp-content`, `debug.log` above all (`tests/htaccess-files-test.php`).
+- No WordPress version in the page head or the feeds (`the_generator`, `inc/hardening.php`; `tests/hardening-test.php`).
+
+The theme sends no site-wide security headers: they belong to the server, the CDN or a security plugin, where they cover every response. A starting point for Apache:
+
+```apache
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Permissions-Policy "camera=(), microphone=(), payment=()"
+</IfModule>
+Options -Indexes
+```
+
+For Nginx, `add_header` with the same values and `autoindex off;`. Set HSTS once the whole site runs on HTTPS, and `expose_php = Off` in `php.ini` so PHP stops naming its version. The night planner asks for the visitor's location, so leave `geolocation` out of `Permissions-Policy`.
 
 ### Nginx
 
@@ -245,6 +280,7 @@ location ~ ^/wp-includes/(?!js/tinymce/wp-tinymce\.php$|ms-files\.php$).+\.php(/
 location ~ ^/wp-admin/includes/.+\.php(/|$) { return 403; }
 location ~ ^/(wp-config\.php|wp-settings\.php|wp-config-sample\.php|wp-admin/install\.php|readme\.html)(/|$) { return 403; }
 location ~ ^/wp-content/themes/.+\.php(/|$) { return 403; }
+location ~* ^/wp-content/.+\.log(/|$) { return 403; }
 location ~ ^/wp-content/themes/lailatulqadar[^/]*/(tests|bin)(/|$) { return 403; }
 location ~ ^/wp-content/themes/lailatulqadar[^/]*/docs(/(?!settings\.md$)|$) { return 403; }
 location ~* ^/wp-content/themes/lailatulqadar[^/]*/(?!docs/settings\.md$).+\.md$ { return 403; }

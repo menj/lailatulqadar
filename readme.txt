@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 8.4
-Stable tag: 1.22.0
+Stable tag: 1.23.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -28,7 +28,9 @@ The site has no blog. Post addresses and feeds send visitors to the home page of
 * Title tags in the form "page title | Lailatulqadar" under 60 characters, meta descriptions, structured data, an XML and an image sitemap. With Rank Math active the theme hands over and joins its graph.
 * Guide pages show when they were published and last updated, the date they were last checked against their sources, the reading time, a contents list, the evidence and sources they rest on, and the previous and next page of the reading path. Every date carries its Hijri date, in English or in Malay as the page is.
 * Contextual links from the first mention of a subject to the page that treats it, on this site or another.
-* Social profile icons, a reading progress bar, unlisted pages and search addresses of the form /search/term/.
+* Social profile icons for twenty-one networks, a reading progress bar, unlisted pages and search addresses of the form /search/term/.
+* A Print or save as PDF button on guide pages, and a print layout in black on white with the menus left out, the link addresses written out and the Arabic kept in its own type.
+* A button, in the theme colours, that lets readers add the site as a preferred source in Google Search.
 * A Security tab that closes XML-RPC, application passwords and REST writes from outside the browser, holds gambling spam as Pending and offers a spam scan.
 
 == Usage ==
@@ -45,7 +47,7 @@ Most tabs switch without a reload; General, Search, Security and Tools reload th
 * Search: every title tag and meta description with its length, and the Google and Bing verification codes.
 * Contextual links: switches and sliders for links to this site and to other sites, extra phrases and pages left without links.
 * Images: whether setup sets each page's lead image as its featured image.
-* Reading and sharing: the reading progress bar, the social profile addresses and the search address base.
+* Reading and sharing: the reading progress bar, the social profile addresses, the Google preferred source button and the search address base.
 * Security: the five security switches, the spam scan, password and session tools, and the reports and log.
 * Tools: page states, publishing written drafts, Run setup and Reset settings.
 
@@ -88,6 +90,8 @@ UPGRADING.md in the theme folder has a note for each version and says what is pl
 == Privacy ==
 
 The theme makes no remote requests and loads no tracking, fonts or scripts from other servers. Every font, image and script ships in the theme.
+
+One exception, off unless you choose it: with Reading and sharing > Google preferred source set to "Google's flow in the page", the pages that show the preferred source button load Google's preferred sources library from news.google.com, and Google receives the visit as it does for any script it serves. The default, a plain link to Google's tool, loads nothing from Google; a visitor reaches Google only by following the link.
 
 Two things stay in the visitor's own browser (localStorage) and never reach the server: the light or dark choice made with the switch, and the city and start date chosen in the night window of the Night Planner. The night window asks for the visitor's location only when the visitor presses its location button. It works out the times in the browser and keeps that position in localStorage as the chosen city; it sends it nowhere.
 
@@ -132,6 +136,12 @@ Guide pages get one by themselves, listing their sections. Elsewhere, add the Co
 Browsers ask for /favicon.ico at the top of the domain, such as example.com/favicon.ico, even when the site lives in example.com/blog/. WordPress never sees that request, so put a copy of the theme's favicon.ico in the domain root folder. The icon tags in each page cover the pages either way. If you have set a Site Icon, put that icon there as favicon.ico instead.
 
 == Upgrade Notice ==
+
+= 1.23.0 =
+Guide pages gain a Print or save as PDF button and a Google preferred source button. If you edited the footer in the Site Editor, add the Preferred source block there yourself. Eleven more social networks can be set under Reading and sharing.
+
+= 1.22.1 =
+Security hardening. Open any admin page once after updating, so the theme rewrites its section in the site's .htaccess. On Nginx, add the new .log line from the README.
 
 = 1.22.0 =
 The theme now needs PHP 8.4 or later. Check your host's PHP version first (Tools > Site Health > Info > Server); on an older PHP the table of contents does not show. If the WP TOC plugin is active, you can deactivate it.
@@ -185,6 +195,14 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.23.0 =
+* Print or save as PDF: a button on every guide page, in English and Malay, and a print layout that prints black on white in both colour schemes, leaves out the menus, buttons and table of contents, writes out link addresses, keeps verses, tables and pictures whole on a page and prints the page's address under the title.
+* Google preferred source: a button in the theme colours, on guide pages and in the footer, that lets readers add the site as a preferred source in Google Search. By default it is a plain link to Google's tool; Google's flow in the page can be turned on instead. Also a block and the [lailatulqadar_preferred_source] shortcode.
+* Social icons for Signal, LINE, Discord, Reddit, Pinterest, Spotify, SoundCloud, Vimeo, Substack, Medium and GitHub.
+
+= 1.22.1 =
+* Security: hardened the Theme Options actions (a user without permission now gets a clear refusal), log files under wp-content are refused, and the WordPress version is no longer shown in the page source or the feeds.
 
 = 1.22.0 =
 * The table of contents is now WP TOC, built into the theme: the same box on guide pages and wherever you place one, with the [wp_toc] shortcode, a collapsible option, headings left out with the class no-toc, and its sections described to search engines.
@@ -250,7 +268,8 @@ EB Garamond, Copyright 2017 The EB Garamond Project Authors. SIL Open Font Licen
 Arslan Wessam A and B, by Arslan (Dev-Point.com). No licence text is included in the font files. See fonts/arslan-wessam/NOTICE.txt.
 Noto Naskh Arabic, Copyright 2022 The Noto Project Authors. SIL Open Font License 1.1. See fonts/noto-naskh-arabic/OFL.txt.
 adhan 4.4.6 (prayer-time calculation), Copyright 2016 Batoul Apps. MIT License. See js/vendor/adhan-LICENSE.txt. js/vendor/adhan.js is the unminified source of js/vendor/adhan.min.js, both from the adhan 4.4.6 npm package (lib/bundles/adhan.umd.js and adhan.umd.min.js).
-Social icons in images/social (X, Facebook, YouTube, Instagram, TikTok, Threads, Bluesky, Mastodon, Telegram, WhatsApp): Minimalist Social Icons Pack 2.8, GPL. These ten come from CC0 sources; the pack's two CC BY 4.0 icons are not bundled. The brand marks belong to their owners.
+Social icons in images/social (X, Facebook, YouTube, Instagram, TikTok, Threads, Bluesky, Mastodon, Telegram, WhatsApp, Signal, LINE, Discord, Reddit, Pinterest, Spotify, SoundCloud, Vimeo, Substack, Medium, GitHub): Minimalist Social Icons Pack, GPL. These twenty-one come from CC0 sources; the pack's two CC BY 4.0 icons (LinkedIn and Scribd, from Font Awesome Free) are not bundled. The brand marks belong to their owners.
+Print stylesheet (css/print.css): based on Hartija CSS Print Framework 1.0, Copyright 2014 Vladimir Carrer, MIT License. See css/print-LICENSE.txt.
 KFGQPC HAFS Uthmanic Script, Copyright 2010 King Fahd Glorious Quran Printing Complex. Free to use, copy and distribute; the file must not be modified.
 Served as a WOFF2 conversion of the original TTF by the owner's decision of 2026-10-26, accepting that restriction. See fonts/kfgqpc/LICENSE.txt.
 Theme images: the logo mark, favicons, touch icon, app icons and 512px logo (images/) are original artwork made for the theme; the pixel book (images/book-open.webp) was supplied by the site owner. Both are distributed with the theme under the GNU GPL version 3 or later.

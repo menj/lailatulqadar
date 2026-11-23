@@ -124,3 +124,12 @@ function lq_short_circuit_probe() {
 	exit;
 }
 add_action( 'init', 'lq_short_circuit_probe', 0 );
+
+/*
+ * No WordPress version in the page head or the feeds. The generator tag
+ * names the exact release, which helps an automated scan pick its exploits
+ * and serves no reader. the_generator covers every place WordPress prints
+ * it (head, feeds, OPML); removing the head action saves the call.
+ */
+add_filter( 'the_generator', '__return_empty_string', 99 );
+remove_action( 'wp_head', 'wp_generator' );

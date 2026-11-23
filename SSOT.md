@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.22.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.23.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -68,7 +68,9 @@ Version 1.22.0. This file records the architecture, stored data and binding deci
 | `inc/setup.php` | Setup on activation, on update and on demand: page creation, publishing of shipped articles, content refresh, trashing of obsolete copies, draft renaming, SEO prefill |
 | `inc/slugs.php` | Addresses WordPress builds from a title leave out the words a, an and the |
 | `inc/data/seed-history.json` | md5 of every version of each article shipped in earlier releases, so a page seeded before `_lq_seed_hash` existed is recognised as unedited. Data only, read with `json_decode()`. Whenever an article changes, run `php bin/build-seed-history.php > inc/data/seed-history.json.new` and move the new file into place: the script adds the versions in the git history of `content/` to the hashes already in the file and never drops one |
-| `inc/social-icons.php`, `blocks/social-icons/`, `css/social-icons.css`, `images/social/` | Social profile icons: footer block, pattern, `[lailatulqadar_social_icons]`; ten SVGs from the Minimalist Social Icons Pack 2.8 (GPL, CC0 sources) |
+| `inc/social-icons.php`, `blocks/social-icons/`, `css/social-icons.css`, `images/social/` | Social profile icons: footer block, pattern, `[lailatulqadar_social_icons]`; twenty-one SVGs from the Minimalist Social Icons Pack (GPL, CC0 sources; the pack's CC BY 4.0 LinkedIn and Scribd stay out) |
+| `css/print.css`, `js/print.js` | Print layout (based on Hartija CSS Print Framework 1.0, MIT) and the Print or save as PDF button on guide pages |
+| `inc/preferred-source.php`, `blocks/preferred-source/`, `js/preferred-source.js` | Google preferred source button: guide pages, footer, block, `[lailatulqadar_preferred_source]`; a link by default, Google's flow on request |
 | `inc/reading-progress.php`, `js/reading-progress.js`, `css/reading-progress.css` | Reading progress bar on single views; off while the Reading Progress Bar plugin is active |
 | `inc/supersede.php`, `inc/data/supersedes.json`, `tests/supersede-test.php` | Superseded pages, renames in place, retired pages, the setup log and the dry run (see "Superseded pages") |
 | `inc/unlist.php`, `js/unlist-admin.js`, `tests/unlist-test.php` | Unlisted pages (replaces Unlist Posts & Pages); off while that plugin is active |
@@ -121,7 +123,7 @@ Version 1.22.0. This file records the architecture, stored data and binding deci
 | Option | Contents |
 |---|---|
 | `lailatulqadar_settings` | Array: `primary_slug`, `secondary_slug`, `primary_label`, `secondary_label`, `footer_note_primary`, `footer_note_secondary`, `scheme` (`night`, `dawn`, `auto`), `scheme_toggle` (`show`, `hide`), `accent_night`, `accent_dawn`, `calligraphy_id`, `login_tagline_primary`, `login_tagline_secondary`, `login_note_primary`, `login_note_secondary`, `verify_google`, `verify_bing`, `author_name`, `author_url`, `ramadan_year`, `ramadan_start`, `ramadan_alt` (optional override for one year; empty means automatic), `ctx_own`, `ctx_sister` (`1` or `0`), `ctx_own_max` (0 to 15), `ctx_sister_max` (0 to 10), `ctx_extra`, `ctx_extra_ms`, `ctx_exclude`, `sec_xmlrpc_off`, `sec_app_passwords_off`, `sec_rest_lock`, `sec_spam_gate`, `sec_gone` (`1` or `0`, all `1` by default) |
-| `lailatulqadar_settings` (1.17.0) | Also `rpb_enabled`, `rpb_color` (empty follows the accent), `rpb_height` (2 to 8), `rpb_position` (`top`, `bottom`), `rpb_types` (comma list, default `page`), `social_footer`, `social_<network>` (URLs), `pretty_search`, `search_base` |
+| `lailatulqadar_settings` (1.17.0) | Also `rpb_enabled`, `rpb_color` (empty follows the accent), `rpb_height` (2 to 8), `rpb_position` (`top`, `bottom`), `rpb_types` (comma list, default `page`), `social_footer`, `social_<network>` (URLs; 21 networks from 1.23.0), `prefsrc_mode` (1.23.0: `link`, `button`, `off`; default `link`), `prefsrc_guide`, `prefsrc_footer` (1.23.0, default `1`), `pretty_search`, `search_base` |
 | `lailatulqadar_unlisted_posts` | IDs of unlisted pages; copied once from the plugin's `unlist_posts` |
 | `lailatulqadar_rewrite_version` | Theme version and search base of the last rewrite flush |
 | `lailatulqadar_pages` | Page IDs keyed by role (`primary`, `secondary`) then page key |
@@ -222,7 +224,7 @@ On 3 November 2026 the owner decided that lailatulqadar.guide has no blog. The s
 
 ## Guide page parts
 
-Since 1.18.10 every guide page (a page of the reading path) carries, in this order: breadcrumbs, title, the details line (Published, Updated only when it falls on a later day, Last reviewed when set, Reading time), the In brief box, the contents list (three or more H2 headings), the text, Evidence and sources, and the previous and next row. Each string reads in English or in baku Malay as the page does, and the author's name never shows on the page (structured data only). The parts offer no price, no buy button and no sign-up.
+Since 1.18.10 every guide page (a page of the reading path) carries, in this order: breadcrumbs, title, the details line (Published, Updated only when it falls on a later day, Last reviewed when set, Reading time), the In brief box, the contents list (three or more H2 headings), the text, Evidence and sources, and the previous and next row. From 1.23.0 the details line also carries the Print or save as PDF button and the Google preferred source button; on paper neither prints, and the page's address does. Each string reads in English or in baku Malay as the page does, and the author's name never shows on the page (structured data only). The parts offer no price, no buy button and no sign-up.
 
 - Dates follow the Dates rule below: each shows with its Umm al-Qura Hijri date, and on a server without PHP's intl extension the dates are left out instead.
 - Hijri months in Malay: Muharam, Safar, Rabiulawal, Rabiulakhir, Jamadilawal, Jamadilakhir, Rejab, Syaaban, Ramadan, Syawal, Zulkaedah, Zulhijah.
@@ -237,6 +239,24 @@ The screen needs `manage_options`, kept in 1.16.0 in place of `edit_theme_option
 ## Browser icons
 
 The owner asked on 2026-11-05: "make sure you have favicon too." Until a Site Icon is set, `lq_default_icons()` prints the SVG, 32px, touch icon, manifest and `theme-color` #141b2e on the site, the login screen and the admin, and `lq_serve_favicon()` answers `/favicon.ico`. A Site Icon always wins. Small sizes use the icon variant of the mark (no crescent or star, as `lq_mark_svg( 'icon' )`); 180px and up use the full mark.
+
+## Security audit
+
+Latest audit: 22 November 2026, at version 1.22.0, released as 1.22.1 (patch). Scope: every PHP, JavaScript and `.htaccess` file of the theme, `wp-toc/` included, on WordPress 7.1.4 with PHP 8.3 (WP TOC loaded through a test-only shim) and SQLite, no plugins. Method: static review of every hook, admin-post and AJAX handler, shortcode, block, request input, query, file operation, redirect and output; then controlled tests on a local copy only, as anonymous, subscriber, contributor, editor and administrator. No production system was touched.
+
+| Item | Count |
+|---|---|
+| Confirmed findings | 3 (low or informational) |
+| Fixed in code | 3 |
+| Proposed outside the theme | 4 |
+| False positives | 4 |
+| Residual risks | 2 |
+
+- Fixed: Theme Options actions refused unauthorised users with HTTP 500 instead of 403 (no state change was possible); `.log` files under `wp-content` were not refused by the theme's `.htaccess` section; the WordPress version was printed in the page head and feeds.
+- Proposed (server, CDN or host): security headers (`X-Content-Type-Options`, `Referrer-Policy`, frame ancestors, `Permissions-Policy`, HSTS), directory listing off, `expose_php = Off`, `WP_DEBUG_LOG` off or outside the web root in production. `README.md` gives the lines.
+- False positives: the "upload guard" is the half-uploaded-theme guard, not a file-upload handler (the theme has none); `innerHTML` in `js/night-window.js` receives only escaped or numeric values; the `wp_upload_bits()` call copies the theme's own photographs from validated names; every `$wpdb` query is prepared or has no input.
+- Residual risks: WP TOC's PHP 8.4 code was not run on a real PHP 8.4 here; the theme's public asset version (`?ver=`) and `readme.txt` show its version, as for any public theme.
+- Tests: all PHP self-tests, `tests/admin-actions-test.php` (new), a 78-check dynamic run by role and a crawl of every page. Release readiness: version, changelog, upgrade notes, readme and this record updated.
 
 ## Milestones and standing decisions
 
@@ -282,6 +302,10 @@ English text anywhere in the theme (page content, interface strings, JavaScript 
 
 Pages, the readme and `docs/settings.md` (both served) never say that the site is related to other sites or that it belongs to a group of sites. Links to other sites are ordinary links, and the readme and `docs/settings.md` call them links to other sites. The Theme Options screen, which only administrators see, still uses an older label for them.
 
+Remote requests (decision of 22 November 2026, with 1.23.0): the theme loads nothing from another server by default. The one exception is the owner's choice of "Google's flow in the page" for the preferred source button, which loads Google's library on the pages that show it; the default is a plain link.
+
+Print (1.23.0): a printed or PDF page is black on white in both schemes, carries its own address under the title and leaves out everything that only works on screen.
+
 ## Release checklist
 
 1. The version is the same in `style.css`, `LQ_VERSION` in `functions.php`, `readme.txt` (Stable tag and changelog), the top entry of `CHANGELOG.md`, the version line at the top of this file and the At a glance table of `README.md`.
@@ -294,4 +318,4 @@ Pages, the readme and `docs/settings.md` (both served) never say that the site i
 
 ## Credits that must stay
 
-The Copyright section of `readme.txt` (fonts, adhan, the social icons, the theme images and the photographs), the licence files in `fonts/` and `js/vendor/`, `wp-toc/LICENSE` and `wp-toc/LICENSE-MIT-ORIGINAL`, and the credit beneath every image and in the credits list on the Sources page.
+The Copyright section of `readme.txt` (fonts, adhan, the social icons, the theme images and the photographs), the licence files in `fonts/` and `js/vendor/`, `wp-toc/LICENSE` and `wp-toc/LICENSE-MIT-ORIGINAL`, `css/print-LICENSE.txt` (Hartija), and the credit beneath every image and in the credits list on the Sources page.

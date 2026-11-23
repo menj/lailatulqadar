@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.22.0' );
+define( 'LQ_VERSION', '1.23.0' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 
@@ -46,6 +46,7 @@ $lq_files = array(
 	'/inc/supersede.php',
 	'/inc/slugs.php',
 	'/inc/social-icons.php',
+	'/inc/preferred-source.php',
 	'/inc/reading-progress.php',
 	'/inc/unlist.php',
 	'/inc/search-permalinks.php',

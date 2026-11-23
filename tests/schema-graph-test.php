@@ -235,7 +235,7 @@ function lq_test_check( $graph, $key, $role, $rank_math, $vocab ) {
 		$errors[] = 'Event on a page that shows no Ramadan dates';
 	}
 	// The author (owner rule, 4 November 2026): one Person, #author, named
-	// MENJ at https://menj.bio, with sameAs including
+	// Mohd Elfie Nieshaem Juferi at https://menj.bio, with sameAs including
 	// it; every author value in the graph points to it.
 	$persons = array();
 	foreach ( isset( $types['Person'] ) ? $types['Person'] : array() as $person ) {
@@ -252,7 +252,7 @@ function lq_test_check( $graph, $key, $role, $rank_math, $vocab ) {
 	if ( ! is_array( $owner ) ) {
 		$errors[] = 'twice' === $owner ? 'two author Person nodes' : 'no author Person node';
 	} else {
-		if ( 'MENJ' !== ( $owner['name'] ?? '' ) || 'https://menj.bio' !== ( $owner['url'] ?? '' ) ) {
+		if ( 'Mohd Elfie Nieshaem Juferi' !== ( $owner['name'] ?? '' ) || 'https://menj.bio' !== ( $owner['url'] ?? '' ) ) {
 			$errors[] = 'author Person has the wrong name or url';
 		}
 		if ( ! in_array( 'https://menj.bio', (array) ( $owner['sameAs'] ?? array() ), true ) ) {

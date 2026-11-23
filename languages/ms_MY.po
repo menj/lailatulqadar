@@ -254,7 +254,7 @@ msgid "Author for structured data"
 msgstr ""
 
 #: inc/settings.php:572
-msgid "The structured data names MENJ, at https://menj.bio, as the author of every page. A profile URL entered here is added to the author’s sameAs. The name field is kept but no longer read."
+msgid "The structured data names Mohd Elfie Nieshaem Juferi, at https://menj.bio, as the author of every page. A profile URL entered here is added to the author’s sameAs. The name field is kept but no longer read."
 msgstr ""
 
 #. translators: %s: SEO plugin name

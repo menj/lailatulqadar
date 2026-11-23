@@ -10,6 +10,7 @@ Version 1.23.0. This file records the architecture, stored data and binding deci
 | Folder and text domain | `lailatulqadar` |
 | Parent | Twenty Twenty-Five (`twentytwentyfive`) |
 | Site | https://lailatulqadar.guide |
+| Theme author | MENJ (the `Author` header in `style.css`, owner decision of 23 November 2026), Author URI https://menj.me. The structured data keeps the full name, Mohd Elfie Nieshaem Juferi |
 | Package name | `lailatulqadar-[version].zip` |
 | Requirements | WordPress 6.7 or later, PHP 8.4 or later (since 1.22.0, for the bundled WP TOC) |
 | Licence | GNU GPL version 3 or later (owner decision, 5 November 2026); the full text is in `LICENSE` at the theme root |

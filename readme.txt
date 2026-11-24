@@ -3,7 +3,7 @@ Contributors: menj
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 8.4
-Stable tag: 1.23.0
+Stable tag: 1.24.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -137,6 +137,9 @@ Browsers ask for /favicon.ico at the top of the domain, such as example.com/favi
 
 == Upgrade Notice ==
 
+= 1.24.0 =
+The theme now deletes .git, the other dot files and the bin, tests and tools folders from its folder on the live server, on the first request after the update and every hour. A staging copy that should keep them sets WP_ENVIRONMENT_TYPE to development or defines LQ_KEEP_DOTFILES as true first. With DISABLE_WP_CRON set, call wp-cron.php from a server cron at least hourly.
+
 = 1.23.0 =
 Guide pages gain a Print or save as PDF button and a Google preferred source button. If you edited the footer in the Site Editor, add the Preferred source block there yourself. Eleven more social networks can be set under Reading and sharing.
 
@@ -195,6 +198,9 @@ Four plugin features are built in. Once the new Reading and sharing tab is set, 
 Theme Options has a new card layout with tabs that switch without a reload. Every setting keeps its value. Setup runs once on the first admin visit.
 
 == Changelog ==
+
+= 1.24.0 =
+* The development files an FTP upload brings along (.git and the other dot files, and the bin, tests and tools folders) are deleted from the live theme folder on the first request after an update and every hour after, one request at a time. Local and development sites keep them, as does any site that defines LQ_KEEP_DOTFILES as true.
 
 = 1.23.0 =
 * Print or save as PDF: a button on every guide page, in English and Malay, and a print layout that prints black on white in both colour schemes, leaves out the menus, buttons and table of contents, writes out link addresses, keeps verses, tables and pictures whole on a page and prints the page's address under the title.

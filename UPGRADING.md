@@ -14,6 +14,15 @@ An upload straight into the live folder is riskier. While one of the PHP files `
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## To 1.24.0
+
+The theme now deletes its development files from the live server by itself: every dot entry at the top of the theme folder but `.htaccess`, `.user.ini` and `.well-known` (so `.git`, `.github`, `.gitignore`, `.claude` and the like), and the `bin/`, `tests/` and `tools/` folders. Nothing else in the theme is touched.
+
+1. Upload as usual. The first request after the update, from a visitor, an administrator or cron, removes them. Check the theme folder by FTP afterwards: if anything is left, the error log says how many entries could not be removed (one line a day), and they should be deleted by FTP.
+2. Keep the theme folder's `.htaccess` first in each upload: until the clean-up has run, it refuses the dot files and the `tests/`, `bin/` and `docs/` folders on Apache. On Nginx nothing refuses them until then.
+3. The clean-up runs again every hour, because an upload can put `.git` back at any time. That hourly run needs WP-Cron. A host that sets `DISABLE_WP_CRON` in `wp-config.php` must call `wp-cron.php` from a server cron at least hourly, for example `*/15 * * * * curl -s https://lailatulqadar.guide/wp-cron.php?doing_wp_cron >/dev/null`, or the files that return after the first clean-up stay until the next version.
+4. A site that should keep its development files, such as a staging copy run from a working copy, sets `WP_ENVIRONMENT_TYPE` to `local` or `development`, or defines `LQ_KEEP_DOTFILES` as true in `wp-config.php`. Set it before uploading 1.24.0.
+
 ## To 1.23.0
 
 1. Clear any page cache, so guide pages show the new buttons and the print layout loads.
@@ -391,7 +400,6 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 - A Hijri date without intl. The guide pages leave their dates out on a server without the extension; the Umm al-Qura table in `inc/ramadan.php` holds only the start of each Ramadan and Shawwal, so it cannot date other months.
 - Translate the Guide page box and the new editor labels in `languages/ms_MY.po`. The admin strings there are still empty, so an administrator working in Malay sees them in English.
 
-- Remove development files from a live site after an update. Here the `.htaccess` files refuse them, which does nothing on Nginx.
 - Check the one 500 on `/ms/embed/` in the logs.
 - Before upgrading adhan, check its upstream source: `js/vendor/adhan.js` marks its shadow-angle calculation with a TODO.
 

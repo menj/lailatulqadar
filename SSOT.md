@@ -1,6 +1,6 @@
 # Lailatulqadar: Single Source of Truth
 
-Version 1.23.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
+Version 1.24.0. This file records the architecture, stored data and binding decisions for the Lailatulqadar child theme. Update it with every release.
 
 ## Identity
 
@@ -76,6 +76,7 @@ Version 1.23.0. This file records the architecture, stored data and binding deci
 | `inc/supersede.php`, `inc/data/supersedes.json`, `tests/supersede-test.php` | Superseded pages, renames in place, retired pages, the setup log and the dry run (see "Superseded pages") |
 | `inc/unlist.php`, `js/unlist-admin.js`, `tests/unlist-test.php` | Unlisted pages (replaces Unlist Posts & Pages); off while that plugin is active |
 | `inc/search-permalinks.php`, `tests/search-permalinks-test.php` | /search/term/ addresses (replaces Pretty Search Permalinks); off while that plugin is active |
+| `inc/dev-files.php`, `tests/dev-files-test.php` | Development files clean-up (1.24.0): deletes the top-level dot entries but `.htaccess`, `.user.ini` and `.well-known`, and `bin/`, `tests/`, `tools/`, on the first request after a version change and hourly through WP-Cron, under a lease; kept on local and development sites and with `LQ_KEEP_DOTFILES` |
 | `inc/error-pages.php`, `inc/error-page-html.php` | The wp-content drop-ins (maintenance 503, php-error 500, db-error 503), written on activation and on an administrator's admin page when missing or outdated, removed on a theme switch, and their Install error pages button on the Tools tab (admin only); the self-contained page builder, also used by `bin/build-error-pages.php` for the static pages in `errors/` (the copies for a site at the domain root); since 1.18.4 it also writes a copy of each into `wp-content/lailatulqadar-errors/` with the site's home address. See `docs/settings.md` |
 | `inc/settings.php` | Tabbed settings screen and Tools handlers (admin only): card layout, ARIA tabs switched without a reload, toggle, slider and colour-picker rows (`lailatulqadar_*_row()`), assets enqueued by hook suffix |
 | `blocks/guide-menu/` | Header links, numbered reading path, footer |
@@ -141,6 +142,7 @@ Version 1.23.0. This file records the architecture, stored data and binding deci
 | Post meta `_lq_seed_edited` | Set when an editor has changed a page and the shipped article differs; the Tools tab lists it as "Edited, not updated" |
 | Post meta `_lq_reviewed`, `_lq_brief` | From the Guide page box (1.18.10): the date the page was last reviewed against its sources (Y-m-d), and In brief points, one a line, shown only when the page's text has no In brief box |
 | Post meta `_lq_featured_seeded` | Set once setup has given a page its featured image, so an image an editor removes is not put back |
+| `lailatulqadar_devfiles_version`, `lailatulqadar_devfiles_lease`, `lailatulqadar_devfiles_logged` (1.24.0) | Development files clean-up: the theme version last cleaned (autoloaded), the lease (`<unix time> <token>`, stale after five minutes, not autoloaded) and the day of the last error-log line. Cron event `lailatulqadar_devfiles_hourly` |
 | `lq_security_log`, `lq_security_counts`, `lq_security_failed`, `lq_security_gone`, `lq_security_htaccess` | Security tab: the capped log (200 lines), per-day counts for 30 days, failed logins by account name for a rolling day, addresses of trashed spam answered with 410, and the state of the .htaccess block. None autoloaded |
 | Post meta `_lq_spam_held`, user meta `_lq_last_login` | Time the spam gate held a post; last login time and IP of a user |
 | Attachment meta `_lq_credit` | Author, licence, licence deed and source of a Commons attachment |
@@ -306,6 +308,8 @@ Pages, the readme and `docs/settings.md` (both served) never say that the site i
 Remote requests (decision of 22 November 2026, with 1.23.0): the theme loads nothing from another server by default. The one exception is the owner's choice of "Google's flow in the page" for the preferred source button, which loads Google's library on the pages that show it; the default is a plain link.
 
 Print (1.23.0): a printed or PDF page is black on white in both schemes, carries its own address under the title and leaves out everything that only works on screen.
+
+Development files (decision of 24 November 2026, with 1.24.0): the live theme folder holds no repository or development folders. The theme deletes the top-level dot entries except `.htaccess`, `.user.ini` and `.well-known`, and `bin/`, `tests/` and `tools/`, on the first request after each version change and every hour; `docs/` stays, since Theme Options links to `docs/settings.md`. Local and development sites, and `LQ_KEEP_DOTFILES`, keep them. Only one request runs it, under a database lease.
 
 ## Release checklist
 

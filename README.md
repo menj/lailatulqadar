@@ -10,7 +10,7 @@ Releases are in `CHANGELOG.md`, and the update notes and the roadmap in `UPGRADI
 
 | Item | Value |
 |---|---|
-| Version | 1.23.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
+| Version | 1.24.0 (`style.css`, `LQ_VERSION` in `functions.php`) |
 | Parent | Twenty Twenty-Five, which must stay installed (tested with its 1.5) |
 | WordPress | 6.7 or later, tested up to 7.1 |
 | PHP | 8.4 or later. The bundled WP TOC needs it; on an older PHP it does not load and the site shows no table of contents |
@@ -55,6 +55,7 @@ php tests/toc-test.php
 php tests/admin-actions-test.php
 php tests/unlist-test.php
 php tests/supersede-test.php
+php tests/dev-files-test.php
 php bin/build-error-pages.php --check
 python3 bin/check-content.py
 ```
@@ -174,13 +175,14 @@ Shortcodes: `[lq_ramadan]` (the year or dates of the next Ramadan), `[lq_lanah]`
 | `LQ_VERSION`, `LQ_DIR`, `LQ_URI` | `functions.php` | Version and theme paths |
 | `LQ_SECURITY_LOCK` | `wp-config.php` | False turns off the three remote-publishing locks (XML-RPC, application passwords, REST writes) without changing the settings |
 | `LQ_BLOCK_DIRECT_FILES` | `wp-config.php` | False leaves out the "block direct file access" section |
+| `LQ_KEEP_DOTFILES` | `wp-config.php` | True keeps the development files in the theme folder on any site; local and development sites keep them anyway |
 | `LQ_SPAM_THRESHOLD` | `wp-config.php` | The score at which the spam gate holds a post |
 | `LQ_TITLE_LIMIT`, `LQ_TITLE_SITE`, `LQ_TITLE_SEP` | `inc/seo.php` | 59, "Lailatulqadar" and " \| ": the whole title tag stays under 60 characters |
 | `LQ_SEC_FILES_MARKER` | `inc/security.php` | The marker of the direct-access section |
 | `LAILATULQADAR_META_REVIEWED`, `LAILATULQADAR_META_BRIEF` | `inc/page-parts.php` | `_lq_reviewed` and `_lq_brief`, the Guide page box's meta keys |
 | `WP_TOC_VERSION`, `WP_TOC_FILE`, `WP_TOC_DIR` | `wp-toc/wp-toc.php` | Defined by WP TOC when it loads; `WP_TOC_URL` may be set in `wp-config.php` to give its folder URL |
 
-The theme defines no `*_KEEP_*` or `*_ALLOW_*` constant, since it has no production clean-up of development files and no switch for core files (see the roadmap in `UPGRADING.md`).
+The theme defines no `*_ALLOW_*` constant, since it has no switch for core files (see the roadmap in `UPGRADING.md`).
 
 ## Security
 
@@ -191,6 +193,18 @@ The owner uploads over FTP, one file at a time. While a file is missing or half 
 The login screen (known by its path), AJAX, cron and WP-CLI go on. The admin sees the page only when a file broke part-way through loading.
 
 `functions.php` holds the guard and is parsed before any of it runs, so it cannot guard itself: a `functions.php` cut off part-way still gives a PHP error. Uploading to a temporary folder and renaming it into place avoids that.
+
+### Development files clean-up
+
+An FTP upload of the working copy brings the repository and the development folders to the server. `inc/dev-files.php` deletes them: every entry at the top of the theme folder whose name begins with a dot, but `.htaccess`, `.user.ini` and `.well-known`, and the `bin/`, `tests/` and `tools/` folders (`lailatulqadar_devfiles_entries()`). `docs/`, `inc/data/`, the code and the rest stay. Read-only entries are made writable first; a symlink is unlinked and never followed (`lailatulqadar_devfiles_remove()`).
+
+- When: on `init` (priority 1) of the first request of any kind whose theme version differs from `lailatulqadar_devfiles_version` (autoloaded, so the check costs no query; `lailatulqadar_devfiles_maybe_run()`), and every hour through the WP-Cron event `lailatulqadar_devfiles_hourly`, which does nothing while the folder has no development entries and otherwise deletes the recorded version and runs the same clean-up (`lailatulqadar_devfiles_hourly()`). The event is scheduled on `init` and cleared on `switch_theme`. It needs WP-Cron, or a server cron that calls `wp-cron.php` at least hourly where `DISABLE_WP_CRON` is set.
+- One request at a time, through the lease `lailatulqadar_devfiles_lease` (`"<unix time> <token>"`, not autoloaded). A request reads it first, so one held fresh costs one query. A free lease is taken with one `INSERT IGNORE`; core's `add_option()` is not used, because it is an `INSERT ... ON DUPLICATE KEY UPDATE` that two requests missing the row would both win. A lease unrenewed for five minutes is taken over with one `UPDATE ... WHERE option_value = <the stale value>`, which only one request changes; the running clean-up renews it the same way at most once a minute and stops if it lost it. `lailatulqadar_devfiles_release()` deletes it only while it holds this request's value. After taking it, the version is read from the table, past the cache, and the run stops if another request recorded it.
+- The version is recorded only when nothing is left. Otherwise the lease stays, so the next try waits five minutes, and the error log gets one line a day (`lailatulqadar_devfiles_logged` holds the day): how many entries could not be removed, to be deleted by FTP.
+- Kept on a local or development site (`wp_get_environment_type()`) and where `LQ_KEEP_DOTFILES` is true; there the event is not scheduled, and an existing one is cleared.
+- Until the first clean-up has run, the theme folder's `.htaccess` (below) refuses the dot entries and `tests/`, `bin/` and `docs/` on Apache.
+
+`tests/dev-files-test.php` builds a temporary theme folder and a fake `$wpdb` with MySQL's rows-affected rules and checks every case above.
 
 ### Accounts, probes and XML-RPC
 

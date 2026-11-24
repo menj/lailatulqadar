@@ -1,5 +1,5 @@
 # Copyright (C) 2026 MENJ
-# This file is distributed under the GNU General Public License v2 or later.
+# This file is distributed under the GNU General Public License v3 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: Lailatulqadar 1.18.1\n"

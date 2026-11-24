@@ -2,7 +2,7 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
-## 1.23.0 (2026-11-22)
+## 1.23.0 (2026-11-23)
 
 Print and PDF, Google preferred sources, and eleven more social networks.
 

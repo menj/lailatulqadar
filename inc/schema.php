@@ -976,9 +976,10 @@ function lq_schema_author_id() {
 }
 
 /**
- * The author Person: Mohd Elfie Nieshaem Juferi, at https://menj.bio. The
- * owner ruled on 4 November 2026 that the structured data names him as the
- * author; nothing visible changes. The author address set in the settings,
+ * The author Person: Mohd Elfie Nieshaem Juferi, at https://menj.bio. The owner
+ * ruled on 4 November 2026 that the structured data names the owner as the
+ * author, and on 23 November 2026 that it keeps the full name while the
+ * theme's author elsewhere is MENJ; nothing visible changes. The author address set in the settings,
  * if any, stays in sameAs ahead of https://menj.bio.
  *
  * @return array

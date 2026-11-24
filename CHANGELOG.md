@@ -2,7 +2,7 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
-## 1.23.0 (2026-11-22)
+## 1.23.0 (2026-11-23)
 
 Print and PDF, Google preferred sources, and eleven more social networks.
 
@@ -13,6 +13,7 @@ Print and PDF, Google preferred sources, and eleven more social networks.
 - Social icons for Signal, LINE, Discord, Reddit, Pinterest, Spotify, SoundCloud, Vimeo, Substack, Medium and GitHub, from the CC0 part of the Minimalist Social Icons Pack (21 networks in all). The pack's LinkedIn and Scribd icons are CC BY 4.0 and stay out. The ten icons already bundled match the new pack's paths.
 
 ### Changed
+- The theme's author is MENJ, in the `style.css` header and the translation files, in place of the owner's full name. The structured data keeps the full name.
 - The footer part holds the Preferred source block after the social icons.
 - The "block direct file access" `.log` rule (1.22.1) also refuses a log path with more after it (`debug.log/x`), and the Nginx line in `README.md` matches.
 

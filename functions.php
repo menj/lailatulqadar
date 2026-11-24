@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LQ_VERSION', '1.23.0' );
+define( 'LQ_VERSION', '1.24.0' );
 define( 'LQ_DIR', get_stylesheet_directory() );
 define( 'LQ_URI', get_stylesheet_directory_uri() );
 
@@ -51,6 +51,7 @@ $lq_files = array(
 	'/inc/unlist.php',
 	'/inc/search-permalinks.php',
 	'/inc/error-pages.php',
+	'/inc/dev-files.php',
 );
 
 /**

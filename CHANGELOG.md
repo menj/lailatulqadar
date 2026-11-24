@@ -2,6 +2,18 @@
 
 All notable changes to the Lailatulqadar theme are recorded here.
 
+## 1.24.0 (2026-11-24)
+
+Development files clean-up: an FTP upload of the working copy no longer leaves the repository and the development folders on the live server.
+
+### Added
+- `inc/dev-files.php`. On the first request of any kind after the theme version changes, the theme deletes every entry at the top of its folder whose name begins with a dot (`.git`, `.gitignore`, `.gitattributes`, `.github`, `.claude`, `.env` and the like) except `.htaccess`, `.user.ini` and `.well-known`, and the `bin/`, `tests/` and `tools/` folders. Read-only files, as git keeps its objects, are made writable first; a symlink is removed itself and never followed. `docs/`, `inc/data/`, the code and the rest of the theme stay.
+- One request at a time, through a lease in the option `lailatulqadar_devfiles_lease`: a free lease is taken with one `INSERT IGNORE`, a lease unrenewed for five minutes is taken over with one compare-and-set `UPDATE`, the running clean-up renews it at most once a minute, and it is released with one `DELETE` only while it holds this request's value. After taking it, the recorded version is read again from the table, past the cache, and the run stops if another request finished.
+- The version is recorded (`lailatulqadar_devfiles_version`, autoloaded, so the check per request costs no query) only once nothing is left. When something cannot be removed, the lease stays, so the next try comes after five minutes, never on every request, and the error log gets one line a day with the count and a request to delete the files by FTP.
+- The WP-Cron event `lailatulqadar_devfiles_hourly` runs the same clean-up every hour, since an upload can bring `.git` back at any time; it does nothing while the folder has no development entries. Scheduled on `init`, cleared on `switch_theme`.
+- Nothing is removed, and the event is not scheduled, on a local or development site (`wp_get_environment_type()`) or where `wp-config.php` defines `LQ_KEEP_DOTFILES` as true.
+- `tests/dev-files-test.php`: listing, the kept environments and the constant, the lease (fresh, stale, two requests racing, renewal, loss), what is removed and what stays, symlinks, the recorded version, the stale-cache case, the hourly event and an unremovable file.
+
 ## 1.23.0 (2026-11-23)
 
 Print and PDF, Google preferred sources, and eleven more social networks.
